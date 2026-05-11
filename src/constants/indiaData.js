@@ -1,0 +1,68 @@
+﻿export const STATES = [
+  'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
+  'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand',
+  'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
+  'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab',
+  'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura',
+  'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
+  'Andaman & Nicobar Islands', 'Chandigarh', 'Dadra & Nagar Haveli',
+  'Daman & Diu', 'Delhi', 'Jammu & Kashmir', 'Ladakh',
+  'Lakshadweep', 'Puducherry',
+];
+
+export const BOARDS_BY_STATE = {
+  'Tamil Nadu': ['Tamil Nadu State Board (TNBSE)', 'CBSE', 'ICSE', 'Matriculation Board'],
+  'Maharashtra': ['Maharashtra State Board (MSBSHSE)', 'CBSE', 'ICSE'],
+  'Karnataka': ['Karnataka State Board (KSEEB)', 'CBSE', 'ICSE', 'PUC Board'],
+  'Kerala': ['Kerala State Board (DHSE)', 'CBSE', 'ICSE'],
+  'Andhra Pradesh': ['Andhra Pradesh State Board (BIEAP)', 'CBSE', 'ICSE'],
+  'Telangana': ['Telangana State Board (TSBIE)', 'CBSE', 'ICSE'],
+  'Uttar Pradesh': ['UP State Board (UPMSP)', 'CBSE', 'ICSE'],
+  'West Bengal': ['West Bengal State Board (WBBSE)', 'CBSE', 'ICSE'],
+  'Rajasthan': ['Rajasthan State Board (RBSE)', 'CBSE', 'ICSE'],
+  'Gujarat': ['Gujarat State Board (GSEB)', 'CBSE', 'ICSE'],
+  'Bihar': ['Bihar State Board (BSEB)', 'CBSE', 'ICSE'],
+  'Madhya Pradesh': ['MP State Board (MPBSE)', 'CBSE', 'ICSE'],
+  'Punjab': ['Punjab State Board (PSEB)', 'CBSE', 'ICSE'],
+  'Haryana': ['Haryana State Board (HBSE)', 'CBSE', 'ICSE'],
+  'Delhi': ['CBSE', 'ICSE', 'Delhi State Board'],
+  'Odisha': ['Odisha State Board (BSE)', 'CBSE', 'ICSE', 'CHSE Odisha'],
+  'Assam': ['Assam State Board (SEBA)', 'CBSE', 'ICSE', 'AHSEC'],
+  'Jharkhand': ['Jharkhand State Board (JAC)', 'CBSE', 'ICSE'],
+  'Chhattisgarh': ['Chhattisgarh State Board (CGBSE)', 'CBSE', 'ICSE'],
+  'Himachal Pradesh': ['HP State Board (HPBOSE)', 'CBSE', 'ICSE'],
+  'Uttarakhand': ['Uttarakhand State Board (UBSE)', 'CBSE', 'ICSE'],
+  'Goa': ['Goa Board (GBSHSE)', 'CBSE', 'ICSE'],
+  'Manipur': ['Manipur State Board (BSEM)', 'CBSE', 'ICSE', 'COHSEM'],
+  'Meghalaya': ['Meghalaya State Board (MBOSE)', 'CBSE', 'ICSE'],
+  'Tripura': ['Tripura State Board (TBSE)', 'CBSE', 'ICSE'],
+  'Nagaland': ['Nagaland State Board (NBSE)', 'CBSE', 'ICSE'],
+  'Mizoram': ['Mizoram State Board (MBSE)', 'CBSE', 'ICSE'],
+  'Arunachal Pradesh': ['Arunachal State Board (APDHSTE)', 'CBSE', 'ICSE'],
+  'Sikkim': ['Sikkim State Board (SBSE)', 'CBSE', 'ICSE'],
+  'Jammu & Kashmir': ['J&K State Board (JKBOSE)', 'CBSE', 'ICSE'],
+  'Ladakh': ['CBSE', 'J&K State Board (JKBOSE)'],
+  'Puducherry': ['Puducherry State Board', 'CBSE', 'ICSE'],
+  'Chandigarh': ['CBSE', 'ICSE'],
+  'Andaman & Nicobar Islands': ['CBSE', 'ICSE'],
+  'Lakshadweep': ['CBSE'],
+  'Dadra & Nagar Haveli': ['CBSE', 'ICSE'],
+  'Daman & Diu': ['CBSE', 'ICSE'],
+};
+
+export const getBoards = (state) => {
+  return BOARDS_BY_STATE[state] || ['CBSE', 'ICSE', 'State Board'];
+};
+
+export const DEPARTMENTS = [
+  { id: 'engineering', label: 'Engineering (B.E / B.Tech)', icon: '⚙️' },
+  { id: 'medical', label: 'Medical (MBBS / BDS)', icon: '🏥' },
+  { id: 'arts_science', label: 'Arts & Science (B.A / B.Sc)', icon: '🎨' },
+  { id: 'law', label: 'Law (LLB)', icon: '⚖️' },
+  { id: 'commerce', label: 'Commerce (B.Com / BBA)', icon: '💼' },
+  { id: 'pharmacy', label: 'Pharmacy (B.Pharm)', icon: '💊' },
+  { id: 'architecture', label: 'Architecture (B.Arch)', icon: '🏛️' },
+  { id: 'agriculture', label: 'Agriculture (B.Sc Agri)', icon: '🌾' },
+  { id: 'management', label: 'Management (MBA)', icon: '📊' },
+  { id: 'education', label: 'Education (B.Ed)', icon: '📚' },
+];
