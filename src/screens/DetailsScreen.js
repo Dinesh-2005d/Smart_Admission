@@ -27,11 +27,10 @@ export default function DetailsScreen({ route, navigation }) {
   const { college } = route.params;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [activeTab, setActiveTab] = useState('overview');
-  const [mapLoaded, setMapLoaded] = useState(false);
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }).start();
-  }, []);
+  }, [fadeAnim]);
 
   const openMapsExternal = () => {
     const query = encodeURIComponent(college.mapQuery || college.name + ' ' + college.location);
@@ -47,7 +46,7 @@ export default function DetailsScreen({ route, navigation }) {
       await Share.share({
         message: `Check out ${college.name} in ${college.location}!\n⭐ Rating: ${college.rating}\n📈 Placement: ${college.placementRate}%\n💰 Fee: ₹${college.annualFee}\n\nFound via SmartCampus AI`,
       });
-    } catch (e) {}
+    } catch (_e) {}
   };
 
   const getTypeColor = (type) => {
@@ -209,7 +208,6 @@ export default function DetailsScreen({ route, navigation }) {
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 title={college.name + ' Map'}
-                onLoad={() => setMapLoaded(true)}
               />
             </View>
 

@@ -1,9 +1,8 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
   TextInput, SafeAreaView, StatusBar, ActivityIndicator,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 export default function CompareScreen({ navigation }) {
   const [college1Query, setCollege1Query] = useState('');

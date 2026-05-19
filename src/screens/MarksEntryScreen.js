@@ -1,12 +1,10 @@
-﻿import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
   TextInput, Animated, StatusBar, Platform, SafeAreaView, Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { DEPARTMENTS } from '../constants/indiaData';
-
-const { width } = Dimensions.get('window');
 
 export default function MarksEntryScreen({ navigation, route }) {
   const { state, board } = route.params;
@@ -18,7 +16,7 @@ export default function MarksEntryScreen({ navigation, route }) {
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, { toValue: 1, duration: 700, useNativeDriver: true }).start();
-  }, []);
+  }, [fadeAnim]);
 
   const getEntranceLabel = () => {
     if (selectedDept === 'engineering') return 'JEE / State Entrance Score (optional)';
@@ -203,8 +201,8 @@ const styles = StyleSheet.create({
   infoChipText: { color: '#2563eb', fontSize: 12, fontWeight: '600' },
   card: { backgroundColor: '#f8f9fa', borderRadius: 24, padding: 16, borderWidth: 1, borderColor: '#e2e8f0', marginBottom: 16, elevation: 6 },
   sectionTitle: { color: '#0f172a', fontSize: 16, fontWeight: '700', marginBottom: 14 },
-  deptGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-  deptCard: { width: (width - 62) / 2, backgroundColor: '#ffffff', borderRadius: 16, padding: 14, borderWidth: 1, borderColor: '#e2e8f0', position: 'relative' },
+  deptGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
+  deptCard: { width: '48%', backgroundColor: '#ffffff', borderRadius: 16, padding: 14, borderWidth: 1, borderColor: '#e2e8f0', position: 'relative', marginBottom: 14 },
   deptCardSelected: { borderColor: '#2563eb', backgroundColor: '#0f172a' },
   deptIcon: { fontSize: 26, marginBottom: 8 },
   deptLabel: { color: '#334155', fontSize: 13, fontWeight: '600', marginBottom: 2 },

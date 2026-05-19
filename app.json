@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "SmartCampusAI",
-    "slug": "SmartCampusAI",
+    "name": "Smart Admission",
+    "slug": "Smart-Admission",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

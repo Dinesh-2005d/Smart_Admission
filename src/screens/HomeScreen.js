@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  TextInput, Animated, StatusBar, Platform, FlatList,
+  TextInput, Animated, StatusBar, Platform,
   Dimensions, SafeAreaView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -25,7 +25,7 @@ export default function HomeScreen({ navigation }) {
       Animated.timing(slideAnim, { toValue: 0, duration: 900, useNativeDriver: true }),
       Animated.spring(scaleAnim, { toValue: 1, friction: 6, useNativeDriver: true }),
     ]).start();
-  }, []);
+  }, [fadeAnim, scaleAnim, slideAnim]);
 
   const filteredStates = STATES.filter(s =>
     s.toLowerCase().includes(stateSearch.toLowerCase())
@@ -55,7 +55,7 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.logoBadge}>
             <Text style={styles.logoText}>🎓</Text>
           </View>
-          <Text style={styles.appTitle}>SmartCampus<Text style={styles.appTitleAI}> AI</Text></Text>
+          <Text style={styles.appTitle}>Smart<Text style={styles.appTitleAI}> Admission</Text></Text>
           <Text style={styles.appTagline}>Your Intelligent College Admission Guide</Text>
           <View style={styles.heroBadgesRow}>
             <View style={styles.heroBadge}><Text style={styles.heroBadgeText}>🇮🇳 India</Text></View>
