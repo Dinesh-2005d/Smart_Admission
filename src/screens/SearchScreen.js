@@ -1,7 +1,7 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  TextInput, SafeAreaView, StatusBar,
+  TextInput, SafeAreaView, StatusBar, KeyboardAvoidingView, Platform
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { searchColleges } from '../constants/collegeDatabase';
@@ -10,12 +10,14 @@ export default function SearchScreen({ navigation }) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [searched, setSearched] = useState(false);
+  const [page, setPage] = useState(1);
 
   const handleSearch = (text) => {
     setQuery(text);
-    if (text.length > 2) {
+    setPage(1);
+    if (text.trim().length > 0) {
       setSearched(true);
-      setResults(searchColleges(text));
+      setResults(searchColleges(text.trim()));
     } else {
       setSearched(false);
       setResults([]);
@@ -31,6 +33,7 @@ export default function SearchScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'padding'} style={{ flex: 1 }}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>🔍 Search Colleges</Text>
         <Text style={styles.headerSub}>Search by name, city, state or course</Text>
@@ -41,13 +44,13 @@ export default function SearchScreen({ navigation }) {
           <Ionicons name="search" size={18} color="#2563eb" style={{ marginRight: 8 }} />
           <TextInput
             style={styles.searchInput}
-            placeholder="e.g. IIT, Medical, Tamil Nadu, CSE..."
+            placeholder="e.g. Engineering, Government, Delhi..."
             placeholderTextColor="#475569"
             value={query}
             onChangeText={handleSearch}
           />
           {query.length > 0 && (
-            <TouchableOpacity onPress={() => { setQuery(''); setResults([]); setSearched(false); }}>
+            <TouchableOpacity onPress={() => { setQuery(''); setResults([]); setSearched(false); setPage(1); }}>
               <Ionicons name="close-circle" size={18} color="#475569" />
             </TouchableOpacity>
           )}
@@ -59,7 +62,7 @@ export default function SearchScreen({ navigation }) {
           <View>
             <Text style={styles.suggestLabel}>🔥 Popular Searches</Text>
             <View style={styles.tagsWrap}>
-              {['IIT', 'Medical', 'Tamil Nadu', 'Government', 'Engineering', 'MBA', 'Law', 'Pharmacy', 'Karnataka', 'Delhi'].map((s) => (
+              {['Engineering', 'Medical', 'Management', 'Government', 'Private', 'Education', 'Law', 'Pharmacy', 'Commerce'].map((s) => (
                 <TouchableOpacity key={s} style={styles.quickTag} onPress={() => handleSearch(s)}>
                   <Text style={styles.quickTagText}>{s}</Text>
                 </TouchableOpacity>
@@ -67,7 +70,7 @@ export default function SearchScreen({ navigation }) {
             </View>
 
             <Text style={styles.suggestLabel}>💡 Search Suggestions</Text>
-            {['Engineering colleges Tamil Nadu', 'Medical colleges Karnataka', 'IIT colleges India', 'Government colleges Delhi', 'Law colleges Mumbai'].map((s, i) => (
+            {['Engineering colleges', 'Medical colleges', 'Government colleges', 'Private colleges', 'Management colleges'].map((s, i) => (
               <TouchableOpacity key={i} style={styles.suggestionRow} onPress={() => handleSearch(s)}>
                 <Ionicons name="search-outline" size={15} color="#2563eb" />
                 <Text style={styles.suggestionText}>{s}</Text>
@@ -89,7 +92,7 @@ export default function SearchScreen({ navigation }) {
           <Text style={styles.resultCount}>Found {results.length} colleges</Text>
         )}
 
-        {results.map((college, index) => (
+        {results.slice(0, page * 10).map((college, index) => (
           <TouchableOpacity
             key={index}
             style={styles.collegeCard}
@@ -109,24 +112,30 @@ export default function SearchScreen({ navigation }) {
             <View style={styles.statsRow}>
               <Text style={styles.stat}>⭐ {college.rating}</Text>
               <Text style={styles.stat}>📈 {college.placementRate}%</Text>
-              <Text style={styles.stat}>💰 ₹{college.annualFee}</Text>
               <Text style={styles.stat}>NAAC {college.naacGrade}</Text>
             </View>
             <Text style={styles.deptBadge}>🎓 {college.department.replace('_', ' & ').toUpperCase()}</Text>
           </TouchableOpacity>
         ))}
+
+        {searched && results.length > page * 10 && (
+          <TouchableOpacity style={styles.loadMoreBtn} onPress={() => setPage(page + 1)}>
+            <Text style={styles.loadMoreText}>Show Next 10 Colleges ⬇️</Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#ffffff' },
-  header: { paddingHorizontal: 16, paddingTop: 16, paddingBottom: 10 },
-  headerTitle: { color: '#0f172a', fontSize: 22, fontWeight: '800' },
-  headerSub: { color: '#475569', fontSize: 13, marginTop: 2 },
-  searchRow: { paddingHorizontal: 16, paddingBottom: 12 },
-  searchBox: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#f8f9fa', borderRadius: 14, paddingHorizontal: 14, paddingVertical: 14, borderWidth: 1, borderColor: '#e2e8f0' },
+  header: { paddingHorizontal: 16, paddingTop: 4, paddingBottom: 4 },
+  headerTitle: { color: '#0f172a', fontSize: 20, fontWeight: '800' },
+  headerSub: { color: '#475569', fontSize: 12, marginTop: 2 },
+  searchRow: { paddingHorizontal: 16, paddingBottom: 8 },
+  searchBox: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#f8f9fa', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 10, borderWidth: 1, borderColor: '#e2e8f0' },
   searchInput: { flex: 1, color: '#0f172a', fontSize: 14 },
   container: { flex: 1 },
   contentContainer: { paddingHorizontal: 16, paddingBottom: 40 },
@@ -153,4 +162,6 @@ const styles = StyleSheet.create({
   statsRow: { flexDirection: 'row', gap: 12, marginBottom: 8 },
   stat: { color: '#334155', fontSize: 12 },
   deptBadge: { color: '#2563eb', fontSize: 11, fontWeight: '600' },
+  loadMoreBtn: { backgroundColor: '#e2e8f0', borderRadius: 12, paddingVertical: 14, alignItems: 'center', marginTop: 8, marginBottom: 20 },
+  loadMoreText: { color: '#0f172a', fontSize: 13, fontWeight: '700' },
 });

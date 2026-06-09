@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
   Animated, StatusBar, SafeAreaView, ActivityIndicator, Switch,
@@ -22,6 +22,7 @@ export default function CollegeListScreen({ navigation, route }) {
   const [preferGovt, setPreferGovt] = useState(false);
   const [needHostel, setNeedHostel] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [page, setPage] = useState(1);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => { loadColleges(); }, [preferGovt, needHostel]);
@@ -30,11 +31,28 @@ export default function CollegeListScreen({ navigation, route }) {
     setLoading(true);
     setTimeout(() => {
       let results = getCollegesForStudent(state, department, percentage, entranceScore);
-      if (preferGovt) results = results.filter(c => c.type === "Government").concat(results.filter(c => c.type !== "Government")).slice(0, 4);
-      if (needHostel) results = results.filter(c => c.hostelAvailable);
-      if (results.length === 0) results = getCollegesForStudent(state, department, percentage, entranceScore);
+      
+      if (preferGovt) {
+        const govtOnly = results.filter(c => c.type === "Government");
+        if (govtOnly.length > 0) {
+          results = govtOnly.concat(results.filter(c => c.type !== "Government"));
+        }
+      }
+      
+      if (needHostel) {
+        const hostelOnly = results.filter(c => c.hostelAvailable);
+        if (hostelOnly.length > 0) {
+          results = hostelOnly;
+        }
+      }
+      
+      if (results.length === 0) {
+        results = getCollegesForStudent(state, department, percentage, entranceScore);
+      }
+      
       setColleges(results);
       setAiMessage(getAIMessage(results, percentage, departmentLabel, state));
+      setPage(1);
       setLoading(false);
       Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }).start();
     }, 1200);
@@ -117,13 +135,13 @@ export default function CollegeListScreen({ navigation, route }) {
 
         {/* College Cards */}
         <Animated.View style={{ opacity: fadeAnim }}>
-          {colleges.map((college, index) => {
+          {colleges.slice(0, page * 10).map((college, index) => {
             const admission = predictAdmissionChance(college, percentage, entranceScore);
             return (
               <TouchableOpacity
                 key={index}
                 style={[styles.collegeCard, { borderColor: index === 0 ? COLORS.purple + '88' : COLORS.border }]}
-                onPress={() => navigation.navigate('Details', { college })}
+                onPress={() => navigation.navigate('Details', { college, departmentLabel })}
                 activeOpacity={0.85}
               >
                 {index === 0 && (
@@ -169,11 +187,6 @@ export default function CollegeListScreen({ navigation, route }) {
                   </View>
                   <View style={styles.statDivider} />
                   <View style={styles.statItem}>
-                    <Text style={[styles.statValue, { color: COLORS.purple }]}>₹{college.annualFee}</Text>
-                    <Text style={styles.statLabel}>Annual Fee</Text>
-                  </View>
-                  <View style={styles.statDivider} />
-                  <View style={styles.statItem}>
                     <Text style={styles.statValue}>{college.hostelAvailable ? '✅' : '❌'}</Text>
                     <Text style={styles.statLabel}>Hostel</Text>
                   </View>
@@ -201,6 +214,12 @@ export default function CollegeListScreen({ navigation, route }) {
             );
           })}
         </Animated.View>
+
+        {colleges.length > page * 10 && (
+          <TouchableOpacity style={styles.loadMoreBtn} onPress={() => setPage(page + 1)}>
+            <Text style={styles.loadMoreText}>Show Next 10 Colleges ⬇️</Text>
+          </TouchableOpacity>
+        )}
 
         <TouchableOpacity style={styles.refreshBtn} onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={18} color={COLORS.purple} />
@@ -263,6 +282,8 @@ const styles = StyleSheet.create({
   companiesText: { color: COLORS.sub, fontSize: 12, fontWeight: '600', flex: 1 },
   viewDetailRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 6, borderTopWidth: 1, borderTopColor: COLORS.border, paddingTop: 12, marginTop: 4 },
   viewDetailText: { color: COLORS.purple, fontSize: 13, fontWeight: '700' },
-  refreshBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: COLORS.card, borderRadius: 14, paddingVertical: 14, borderWidth: 1, borderColor: COLORS.border, marginTop: 4 },
+  refreshBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: COLORS.card, borderRadius: 14, paddingVertical: 14, borderWidth: 1, borderColor: COLORS.border, marginTop: 4, marginBottom: 20 },
   refreshBtnText: { color: COLORS.purple, fontSize: 14, fontWeight: '700' },
+  loadMoreBtn: { backgroundColor: '#e2e8f0', borderRadius: 12, paddingVertical: 14, alignItems: 'center', marginTop: 8, marginBottom: 12 },
+  loadMoreText: { color: '#0f172a', fontSize: 13, fontWeight: '700' },
 });

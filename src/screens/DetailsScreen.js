@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  StatusBar, SafeAreaView, Linking, Animated, Dimensions, Share, Image
+  StatusBar, SafeAreaView, Linking, Animated, Dimensions, Share, Image, Modal
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -24,9 +24,10 @@ const COLORS = {
 };
 
 export default function DetailsScreen({ route, navigation }) {
-  const { college } = route.params;
+  const { college, departmentLabel } = route.params;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [activeTab, setActiveTab] = useState('overview');
+  const [selectedFacility, setSelectedFacility] = useState(null);
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }).start();
@@ -44,7 +45,7 @@ export default function DetailsScreen({ route, navigation }) {
   const handleShare = async () => {
     try {
       await Share.share({
-        message: `Check out ${college.name} in ${college.location}!\n⭐ Rating: ${college.rating}\n📈 Placement: ${college.placementRate}%\n💰 Fee: ₹${college.annualFee}\n\nFound via SmartCampus AI`,
+        message: `Check out ${college.name} in ${college.location}!\n⭐ Rating: ${college.rating}\n📈 Placement: ${college.placementRate}%\n\nFound via SmartCampus AI`,
       });
     } catch (_e) {}
   };
@@ -62,7 +63,46 @@ export default function DetailsScreen({ route, navigation }) {
   };
 
   const mapQuery = encodeURIComponent(college.mapQuery || college.name + ' ' + college.location);
-  const embedMapUrl = `https://maps.google.com/maps?q=${mapQuery}&output=embed&z=15`;
+  
+  const getFacilityDetails = (facilityId) => {
+    const type = college.type.toLowerCase();
+    const dept = college.department.toLowerCase();
+    const rating = college.rating;
+
+    switch (facilityId) {
+      case 'Hostel':
+        return rating >= 4.3 
+          ? "Premium AC and Non-AC rooms available. Configurations include 2-in-1, 4-in-1, and dormitories. Separate blocks for boys and girls with strict security and biometric entry."
+          : "Standard Non-AC rooms available. Common configurations are 4-in-1 and 6-in-1 dormitories. Basic amenities provided.";
+      case 'Canteen':
+        return type === 'private'
+          ? "Multi-cuisine food court serving North Indian thali, South Indian meals, fast food, and fresh juices. Special diet and hygienic options available."
+          : "Standard college canteen serving hygienic subsidized South Indian meals, snacks, and tea/coffee.";
+      case 'WiFi':
+        return "Campus-wide WiFi zone coverage. Student limit: " + (rating > 4.2 ? "Unlimited data at 100 Mbps." : "2GB per day at 10 Mbps.");
+      case 'Sports':
+        return "Available Sports Facilities:\n• Cricket Ground\n• Football Turf\n• Basketball Court\n• Volleyball\n• Indoor Badminton\n• Table Tennis\n• Athletics Track";
+      case 'Labs':
+        if (dept === 'medical') return "State-of-the-art Anatomy, Pathology, Biochemistry, and Microbiology labs equipped for advanced clinical research.";
+        if (dept === 'engineering') return "Advanced CS/AI labs, IoT & Robotics centers, Physics, Chemistry, and specialized core engineering workshops.";
+        if (dept === 'pharmacy') return "Pharmaceutical Chemistry, Pharmaceutics, and Pharmacology labs meeting industry standards.";
+        if (dept === 'architecture') return "Design studios, CAD labs, material testing, and model making workshops.";
+        return "Standard computer and science labs equipped for practicals.";
+      case 'Auditorium':
+        return "Main auditorium seating capacity: " + (rating >= 4.3 ? "3000+" : "1000+") + ". Fully air-conditioned with modern AV systems for seminars and cultural events.";
+      case 'Medical':
+        if (dept === 'medical') return "Massive 1000+ bed teaching hospital on campus providing 24/7 care and practical clinical exposure.";
+        return "24/7 on-campus Health Center with stationed doctors, standby ambulance, and tie-ups with nearby multispecialty hospitals.";
+      case 'Transport':
+        return "Fleet of " + (type === 'private' ? "50+" : "15+") + " college buses covering major city routes and surrounding districts. GPS tracking enabled for safety.";
+      case 'Library':
+        return "Central library with over " + (rating > 4.3 ? "1,00,000" : "25,000") + " volumes, digital subscriptions (IEEE/EBSCO), and dedicated reading halls.";
+      case 'Computer Lab':
+        return "High-end computing facilities with latest hardware, fast internet, and specialized software licenses tailored for " + dept + " students.";
+      default:
+        return "Standard facility available for all enrolled students.";
+    }
+  };
 
   const tabs = [
     { id: 'overview', label: 'ℹ️ Overview', color: COLORS.purple },
@@ -70,6 +110,19 @@ export default function DetailsScreen({ route, navigation }) {
     { id: 'placement', label: '💼 Placement', color: COLORS.green },
     { id: 'courses', label: '🎓 Courses', color: COLORS.blue },
     { id: 'facilities', label: '🏛️ Facilities', color: COLORS.pink },
+  ];
+
+  const facilitiesList = [
+    { id: 'Hostel', icon: college.hostelAvailable ? '🏠' : '❌', available: college.hostelAvailable, color: COLORS.teal },
+    { id: 'Canteen', icon: '🍽️', available: true, color: COLORS.orange },
+    { id: 'WiFi', icon: '📶', available: true, color: COLORS.blue },
+    { id: 'Sports', icon: '🏟️', available: true, color: COLORS.green },
+    { id: 'Labs', icon: '🔬', available: true, color: COLORS.pink },
+    { id: 'Library', icon: '📚', available: true, color: COLORS.purple },
+    { id: 'Computer Lab', icon: '💻', available: true, color: COLORS.gold },
+    { id: 'Auditorium', icon: '🎭', available: true, color: COLORS.teal },
+    { id: 'Medical', icon: '🏥', available: true, color: COLORS.pink },
+    { id: 'Transport', icon: '🚌', available: true, color: COLORS.blue },
   ];
 
   return (
@@ -132,7 +185,6 @@ export default function DetailsScreen({ route, navigation }) {
           {[
             { label: 'Rating', value: college.rating, icon: '⭐', color: COLORS.gold, bg: COLORS.gold + '15' },
             { label: 'Placement', value: college.placementRate + '%', icon: '📈', color: placementColor(college.placementRate), bg: placementColor(college.placementRate) + '15' },
-            { label: 'Annual Fee', value: '₹' + college.annualFee, icon: '💰', color: COLORS.purple, bg: COLORS.purple + '15' },
             { label: 'Min Marks', value: college.minPercentage + '%', icon: '🎯', color: COLORS.blue, bg: COLORS.blue + '15' },
           ].map((s) => (
             <View key={s.label} style={[styles.statBox, { backgroundColor: s.bg, borderColor: s.color + '44' }]}>
@@ -167,7 +219,7 @@ export default function DetailsScreen({ route, navigation }) {
                 { img: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=200&q=80', label: 'Main Building', color: COLORS.purple },
                 { img: 'https://images.unsplash.com/photo-1568667256549-094345857637?w=200&q=80', label: 'Library', color: COLORS.blue },
                 { img: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=200&q=80', label: 'Hostel', color: COLORS.teal },
-                { img: 'https://images.unsplash.com/photo-1574629810360-7efbb1b38430?w=200&q=80', label: 'Sports', color: COLORS.green },
+                { img: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=200&q=80', label: 'Sports', color: COLORS.green },
                 { img: 'https://images.unsplash.com/photo-1543353071-873f17a7a088?w=200&q=80', label: 'Canteen', color: COLORS.orange },
                 { img: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=200&q=80', label: 'Labs', color: COLORS.pink },
                 { img: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=200&q=80', label: 'Computer Lab', color: COLORS.gold },
@@ -197,19 +249,11 @@ export default function DetailsScreen({ route, navigation }) {
               <Text style={styles.mapAddress}>{college.location}</Text>
             </View>
 
-            {/* Embedded Google Map */}
-            <View style={styles.mapContainer}>
-              <iframe
-                src={embedMapUrl}
-                width="100%"
-                height="350"
-                style={{ border: 'none', borderRadius: 14 }}
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title={college.name + ' Map'}
-              />
-            </View>
+            {/* Map Placeholder */}
+            <TouchableOpacity style={[styles.mapContainer, { justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.card, borderWidth: 1, borderColor: COLORS.border }]} onPress={openMapsExternal}>
+              <Ionicons name="map" size={48} color={COLORS.blue} style={{ opacity: 0.5, marginBottom: 8 }} />
+              <Text style={{ color: COLORS.dim, fontSize: 14, fontWeight: '500' }}>Tap to view on Google Maps</Text>
+            </TouchableOpacity>
 
             <View style={styles.mapBtnsRow}>
               <TouchableOpacity style={[styles.mapBtn, { backgroundColor: COLORS.green, flex: 2 }]} onPress={openMapsExternal}>
@@ -280,14 +324,27 @@ export default function DetailsScreen({ route, navigation }) {
                   </View>
                   <Text style={styles.courseText}>{course}</Text>
                   <View style={[styles.courseBadge, { backgroundColor: c + '15' }]}>
-                    <Text style={[styles.courseBadgeText, { color: c }]}>4 Yrs</Text>
+                    <Text style={[styles.courseBadgeText, { color: c }]}>
+                      {college.department === 'medical' ? '5.5 Yrs' : 
+                       college.department === 'law' ? '5 Yrs' : 
+                       (college.department === 'arts_science' || college.department === 'commerce') ? '3 Yrs' : 
+                       college.department === 'education' ? '2 Yrs' : '4 Yrs'}
+                    </Text>
                   </View>
                 </View>
               );
             })}
             <View style={[styles.durationBox, { backgroundColor: COLORS.blue + '15', borderColor: COLORS.blue + '44' }]}>
               <Ionicons name="time" size={16} color={COLORS.blue} />
-              <Text style={[styles.durationText, { color: COLORS.blue }]}>Duration: 4 Years (B.Tech) / 3 Years (B.Sc/B.Com) / 5 Years (LLB)</Text>
+              <Text style={[styles.durationText, { color: COLORS.blue }]}>
+                {college.department === 'medical' ? 'Duration: 5.5 Years (MBBS) / 4 Years (Nursing)' : 
+                 college.department === 'law' ? 'Duration: 5 Years (Integrated) / 3 Years (LLB)' : 
+                 (college.department === 'arts_science' || college.department === 'commerce') ? 'Duration: 3 Years (UG) / 2 Years (PG)' : 
+                 college.department === 'pharmacy' ? 'Duration: 4 Years (B.Pharm) / 6 Years (Pharm.D)' :
+                 college.department === 'architecture' ? 'Duration: 5 Years (B.Arch)' :
+                 college.department === 'education' ? 'Duration: 2 Years (B.Ed)' :
+                 'Duration: 4 Years (B.Tech / B.Sc Agri)'}
+              </Text>
             </View>
           </View>
         )}
@@ -296,34 +353,32 @@ export default function DetailsScreen({ route, navigation }) {
         {activeTab === 'facilities' && (
           <View style={styles.sectionCard}>
             <Text style={styles.sectionTitle}>🏛️ Hostel & Facilities</Text>
+            <Text style={{ color: COLORS.dim, fontSize: 12, marginBottom: 16 }}>Tap any facility to view details specifically for {college.name}</Text>
             <View style={styles.facilityGrid}>
-              {[
-                { icon: college.hostelAvailable ? '🏠' : '❌', label: 'Hostel', available: college.hostelAvailable, color: COLORS.teal },
-                { icon: '🍽️', label: 'Canteen', available: true, color: COLORS.orange },
-                { icon: '📶', label: 'WiFi', available: true, color: COLORS.blue },
-                { icon: '🏟️', label: 'Sports', available: true, color: COLORS.green },
-                { icon: '🔬', label: 'Labs', available: true, color: COLORS.pink },
-                { icon: '📚', label: 'Library', available: true, color: COLORS.purple },
-                { icon: '💻', label: 'Computer Lab', available: true, color: COLORS.gold },
-                { icon: '🎭', label: 'Auditorium', available: true, color: COLORS.teal },
-                { icon: '🏥', label: 'Medical', available: true, color: COLORS.pink },
-                { icon: '🚌', label: 'Transport', available: true, color: COLORS.blue },
-              ].map((f, i) => (
-                <View key={i} style={[styles.facilityItem, {
-                  backgroundColor: f.available ? f.color + '15' : '#1a1a2e',
-                  borderColor: f.available ? f.color + '55' : '#e2e8f0',
-                  opacity: f.available ? 1 : 0.5,
-                }]}>
+              {facilitiesList.map((f, i) => (
+                <TouchableOpacity 
+                  key={i} 
+                  style={[styles.facilityItem, {
+                    backgroundColor: f.available ? f.color + '15' : '#1a1a2e',
+                    borderColor: f.available ? f.color + '55' : '#e2e8f0',
+                    opacity: f.available ? 1 : 0.5,
+                  }]}
+                  onPress={() => {
+                    if (f.available) setSelectedFacility(f);
+                  }}
+                  activeOpacity={0.7}
+                  disabled={!f.available}
+                >
                   <Text style={styles.facilityIcon}>{f.icon}</Text>
-                  <Text style={[styles.facilityLabel, { color: f.available ? f.color : COLORS.dim }]}>{f.label}</Text>
-                </View>
+                  <Text style={[styles.facilityLabel, { color: f.available ? f.color : COLORS.dim }]}>{f.id}</Text>
+                </TouchableOpacity>
               ))}
             </View>
           </View>
         )}
 
         {/* Bottom Actions */}
-        <TouchableOpacity style={styles.chatBtn} onPress={() => navigation.navigate('CollegeChat', { college })} activeOpacity={0.85}>
+        <TouchableOpacity style={styles.chatBtn} onPress={() => navigation.navigate('CollegeChat', { college, departmentLabel })} activeOpacity={0.85}>
           <Ionicons name="chatbubble-ellipses" size={20} color="#ffffff" />
           <Text style={styles.chatBtnText}>🤖 Ask AI About This College</Text>
         </TouchableOpacity>
@@ -343,6 +398,34 @@ export default function DetailsScreen({ route, navigation }) {
         </View>
 
       </Animated.ScrollView>
+
+      {/* Facility Details Modal */}
+      <Modal
+        visible={!!selectedFacility}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setSelectedFacility(null)}
+      >
+        <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setSelectedFacility(null)}>
+          <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
+            <View style={[styles.modalIconBox, { backgroundColor: selectedFacility?.color + '15', borderColor: selectedFacility?.color + '55' }]}>
+              <Text style={styles.modalIcon}>{selectedFacility?.icon}</Text>
+            </View>
+            <Text style={[styles.modalTitle, { color: selectedFacility?.color }]}>{selectedFacility?.id} Details</Text>
+            <Text style={styles.modalSub}>{college.name}</Text>
+            <View style={styles.modalDivider} />
+            
+            <Text style={styles.modalDesc}>
+              {selectedFacility ? getFacilityDetails(selectedFacility.id) : ''}
+            </Text>
+
+            <TouchableOpacity style={[styles.modalCloseBtn, { backgroundColor: selectedFacility?.color }]} onPress={() => setSelectedFacility(null)}>
+              <Text style={styles.modalCloseText}>Awesome!</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+
     </SafeAreaView>
   );
 }
@@ -418,5 +501,14 @@ const styles = StyleSheet.create({
   chatBtnText: { color: '#ffffff', fontSize: 15, fontWeight: '800' },
   bottomBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, borderRadius: 14, paddingVertical: 14 },
   bottomBtnText: { fontSize: 13, fontWeight: '800' },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center', padding: 20 },
+  modalContent: { backgroundColor: '#ffffff', borderRadius: 24, padding: 24, width: '100%', alignItems: 'center', elevation: 10 },
+  modalIconBox: { width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center', marginBottom: 16, borderWidth: 1 },
+  modalIcon: { fontSize: 32 },
+  modalTitle: { fontSize: 22, fontWeight: '900', marginBottom: 4 },
+  modalSub: { color: COLORS.dim, fontSize: 14, marginBottom: 16, textAlign: 'center' },
+  modalDivider: { width: '100%', height: 1, backgroundColor: COLORS.border, marginBottom: 16 },
+  modalDesc: { color: COLORS.text, fontSize: 15, lineHeight: 24, textAlign: 'center', marginBottom: 24 },
+  modalCloseBtn: { paddingVertical: 14, paddingHorizontal: 32, borderRadius: 14 },
+  modalCloseText: { color: '#ffffff', fontSize: 16, fontWeight: '800' },
 });
-

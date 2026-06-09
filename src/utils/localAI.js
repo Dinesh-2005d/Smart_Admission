@@ -141,8 +141,9 @@ class LocalAIEngine {
     return bestIntent;
   }
 
-  generateResponse(intent, college) {
+  generateResponse(intent, college, departmentLabel) {
     const name = college.name;
+    const deptName = departmentLabel ? departmentLabel.split('(')[0].trim() : 'your selected';
     const fee = college.annualFee ? `₹${parseInt(college.annualFee).toLocaleString('en-IN')}` : 'N/A';
     
     switch (intent) {
@@ -155,9 +156,9 @@ class LocalAIEngine {
         
       case 'fees':
         return pickRandom([
-          `💰 The annual tuition fee at ${name} is approximately **${fee}**.\n\nWe also offer various scholarships based on merit!`,
-          `If you're asking about costs, the fee is around **${fee}** per year here at ${name}. Educational loans are easily available if needed!`,
-          `💵 You can expect to invest about **${fee}** annually for your studies here.`
+          `💰 The annual tuition fee for the **${deptName}** department at ${name} is approximately **${fee}**.\n\nWe also offer various scholarships based on merit!`,
+          `If you're asking about costs, the fee is around **${fee}** per year for ${deptName} students here at ${name}. Educational loans are easily available if needed!`,
+          `💵 You can expect to invest about **${fee}** annually for your ${deptName} studies here.`
         ]);
 
       case 'hostel':
@@ -177,16 +178,16 @@ class LocalAIEngine {
         const rate = college.placementRate ? `**${college.placementRate}%**` : 'excellent';
         const companies = college.topCompanies ? college.topCompanies.slice(0,3).join(', ') : 'top MNCs';
         return pickRandom([
-          `📈 Placements at ${name} are fantastic! We have a placement rate of ${rate}.\n\nOur students are actively recruited by companies like ${companies} and many more! 💼`,
-          `When it comes to careers, ${name} boasts a ${rate} placement success rate. Top recruiters include ${companies}. You're in good hands! 🎯`,
-          `Our dedicated placement cell ensures you get the best opportunities. We see ${rate} of our students placed annually in top-tier companies!`
+          `📈 Placements for **${deptName}** at ${name} are fantastic! We have an overall placement rate of ${rate}.\n\nOur students are actively recruited by companies like ${companies} and many more! 💼`,
+          `When it comes to careers, ${name} boasts a ${rate} placement success rate for ${deptName}. Top recruiters include ${companies}. You're in good hands! 🎯`,
+          `Our dedicated placement cell ensures ${deptName} students get the best opportunities. We see ${rate} of our students placed annually in top-tier companies!`
         ]);
 
       case 'courses':
         const courses = college.courses ? college.courses.join(', ') : 'a wide variety of degree programs';
         return pickRandom([
-          `🎓 ${name} offers some amazing programs! We currently offer:\n${courses}.`,
-          `Looking to study here? We provide top-notch education in:\n${courses}.\n\nLet me know if you want details on a specific branch! 📚`
+          `🎓 For **${deptName}**, ${name} offers some amazing programs! We currently offer:\n${courses}.`,
+          `Looking to study ${deptName} here? We provide top-notch education in:\n${courses}.\n\nLet me know if you want details on a specific branch! 📚`
         ]);
 
       case 'admission':
@@ -270,10 +271,10 @@ class LocalAIEngine {
 
 const engine = new LocalAIEngine();
 
-export const generateAIResponse = (text, college) => {
+export const generateAIResponse = (text, college, departmentLabel) => {
   const intent = engine.classifyIntent(text);
   return {
-    text: engine.generateResponse(intent, college),
+    text: engine.generateResponse(intent, college, departmentLabel),
     type: intent
   };
 };

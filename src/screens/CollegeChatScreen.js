@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  TextInput, KeyboardAvoidingView, Platform, SafeAreaView, Animated,
+  TextInput, KeyboardAvoidingView, Platform, SafeAreaView, Animated, useWindowDimensions
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { generateAIResponse } from '../utils/localAI';
@@ -25,11 +25,16 @@ const QUICK_QUESTIONS = [
 ];
 
 export default function CollegeChatScreen({ route, navigation }) {
-  const { college } = route.params;
+  const { width } = useWindowDimensions();
+  // Scale down for small devices, scale up for large devices (tablets)
+  const scale = width < 380 ? 0.9 : (width > 700 ? 1.2 : 1);
+  const styles = getStyles(scale);
+
+  const { college, departmentLabel } = route.params;
   const [messages, setMessages] = useState([
     {
       id: 1,
-      text: `👋 Hello! I'm the AI Assistant for **${college.name}**.\n\nI can only answer questions about this college. Ask me anything about:\n\n💰 Fees | 🏠 Hostel | 📊 Placements\n🎓 Courses | 📋 Admission | 🏛️ Facilities\n⭐ Ratings | 📍 Location | 💼 Internships`,
+      text: `👋 Hello! I'm the AI Assistant for **${college.name}**.\n\nI can only answer questions about this college. I notice you're interested in the **${departmentLabel?.split('(')[0].trim() || 'selected'}** department. Ask me anything about:\n\n💰 Fees | 🏠 Hostel | 📊 Placements\n🎓 Courses | 📋 Admission | 🏛️ Facilities\n⭐ Ratings | 📍 Location | 💼 Internships`,
       sender: 'ai',
       type: 'welcome',
     }
@@ -56,9 +61,8 @@ export default function CollegeChatScreen({ route, navigation }) {
     setInputText('');
     setIsTyping(true);
 
-    // Simulate AI thinking time to make it feel natural
     setTimeout(() => {
-      const response = generateAIResponse(msgText, college);
+      const response = generateAIResponse(msgText, college, departmentLabel);
       const aiMsg = {
         id: Date.now() + 1,
         text: response.text,
@@ -67,7 +71,7 @@ export default function CollegeChatScreen({ route, navigation }) {
       };
       setMessages(prev => [...prev, aiMsg]);
       setIsTyping(false);
-    }, 600 + Math.random() * 400); // Random delay between 600ms and 1000ms
+    }, 600 + Math.random() * 400); 
   };
 
   const getMessageColor = (type) => {
@@ -95,7 +99,7 @@ export default function CollegeChatScreen({ route, navigation }) {
   const formatText = (text) => {
     return text.split('**').map((part, i) =>
       i % 2 === 1
-        ? <Text key={i} style={{ fontWeight: '800', color: '#fff' }}>{part}</Text>
+        ? <Text key={i} style={{ fontWeight: '800', color: COLORS.purple }}>{part}</Text>
         : <Text key={i}>{part}</Text>
     );
   };
@@ -104,7 +108,7 @@ export default function CollegeChatScreen({ route, navigation }) {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-          <Ionicons name="arrow-back" size={22} color={COLORS.purple} />
+          <Ionicons name="arrow-back" size={22 * scale} color={COLORS.purple} />
         </TouchableOpacity>
         <View style={styles.headerInfo}>
           <Text style={styles.headerTitle} numberOfLines={1}>🤖 AI Assistant</Text>
@@ -114,9 +118,10 @@ export default function CollegeChatScreen({ route, navigation }) {
       </View>
 
       <Animated.View style={[{ flex: 1 }, { opacity: fadeAnim }]}>
-        <ScrollView
-          ref={scrollRef}
-          style={styles.messagesContainer}
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+          <ScrollView
+            ref={scrollRef}
+            style={styles.messagesContainer}
           contentContainerStyle={styles.messagesContent}
           showsVerticalScrollIndicator={false}
         >
@@ -156,7 +161,7 @@ export default function CollegeChatScreen({ route, navigation }) {
         </ScrollView>
 
         {/* Quick Questions */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickQs} contentContainerStyle={{ paddingHorizontal: 12, gap: 8 }}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickQs} contentContainerStyle={styles.quickQsContent}>
           {QUICK_QUESTIONS.map((q, i) => (
             <TouchableOpacity key={i} style={styles.quickQBtn} onPress={() => sendMessage(q)}>
               <Text style={styles.quickQText}>{q}</Text>
@@ -164,8 +169,7 @@ export default function CollegeChatScreen({ route, navigation }) {
           ))}
         </ScrollView>
 
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-          <View style={styles.inputRow}>
+        <View style={styles.inputRow}>
             <TextInput
               style={styles.input}
               placeholder="Ask about this college..."
@@ -181,7 +185,7 @@ export default function CollegeChatScreen({ route, navigation }) {
               onPress={() => sendMessage()}
               disabled={!inputText.trim()}
             >
-              <Ionicons name="send" size={20} color={inputText.trim() ? '#ffffff' : COLORS.dim} />
+              <Ionicons name="send" size={20 * scale} color={inputText.trim() ? '#ffffff' : COLORS.dim} />
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
@@ -190,30 +194,31 @@ export default function CollegeChatScreen({ route, navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (scale) => StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: COLORS.bg },
-  header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12, backgroundColor: COLORS.card, borderBottomWidth: 1, borderBottomColor: COLORS.border, gap: 12 },
-  backBtn: { padding: 4 },
+  header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 * scale, paddingVertical: 12 * scale, backgroundColor: COLORS.card, borderBottomWidth: 1, borderBottomColor: COLORS.border, gap: 12 * scale },
+  backBtn: { padding: 4 * scale },
   headerInfo: { flex: 1 },
-  headerTitle: { color: COLORS.text, fontSize: 16, fontWeight: '700' },
-  headerSub: { color: COLORS.dim, fontSize: 12 },
-  onlineDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: COLORS.green },
+  headerTitle: { color: COLORS.text, fontSize: 16 * scale, fontWeight: '700' },
+  headerSub: { color: COLORS.dim, fontSize: 12 * scale },
+  onlineDot: { width: 10 * scale, height: 10 * scale, borderRadius: 5 * scale, backgroundColor: COLORS.green },
   messagesContainer: { flex: 1 },
-  messagesContent: { paddingHorizontal: 16, paddingVertical: 12, gap: 12 },
-  messageBubble: { maxWidth: '85%', borderRadius: 16, padding: 12, borderWidth: 1 },
-  userBubble: { alignSelf: 'flex-end', backgroundColor: COLORS.purple + '22', borderColor: COLORS.purple + '55', borderBottomRightRadius: 4 },
-  aiBubble: { alignSelf: 'flex-start', backgroundColor: COLORS.card, borderBottomLeftRadius: 4 },
-  aiLabel: { fontSize: 10, fontWeight: '700', marginBottom: 6, letterSpacing: 0.5 },
-  messageText: { fontSize: 13, lineHeight: 20 },
+  messagesContent: { paddingHorizontal: 16 * scale, paddingVertical: 12 * scale, gap: 12 * scale },
+  messageBubble: { maxWidth: '85%', borderRadius: 16 * scale, padding: 12 * scale, borderWidth: 1 },
+  userBubble: { alignSelf: 'flex-end', backgroundColor: COLORS.purple + '22', borderColor: COLORS.purple + '55', borderBottomRightRadius: 4 * scale },
+  aiBubble: { alignSelf: 'flex-start', backgroundColor: COLORS.card, borderBottomLeftRadius: 4 * scale },
+  aiLabel: { fontSize: 10 * scale, fontWeight: '700', marginBottom: 6 * scale, letterSpacing: 0.5 },
+  messageText: { fontSize: 13 * scale, lineHeight: 20 * scale },
   userText: { color: COLORS.text },
   aiText: { color: COLORS.sub },
-  messageTime: { color: COLORS.dim, fontSize: 10, marginTop: 6, textAlign: 'right' },
-  typingText: { color: COLORS.purple, fontSize: 18, letterSpacing: 4 },
-  quickQs: { borderTopWidth: 1, borderTopColor: COLORS.border, paddingVertical: 8, maxHeight: 56 },
-  quickQBtn: { backgroundColor: COLORS.card, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 8, borderWidth: 1, borderColor: COLORS.border },
-  quickQText: { color: COLORS.purple, fontSize: 12, fontWeight: '600' },
-  inputRow: { flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 12, paddingVertical: 10, borderTopWidth: 1, borderTopColor: COLORS.border, gap: 10 },
-  input: { flex: 1, backgroundColor: COLORS.card, borderRadius: 20, paddingHorizontal: 16, paddingVertical: 12, color: COLORS.text, fontSize: 14, borderWidth: 1, borderColor: COLORS.border, maxHeight: 100 },
-  sendBtn: { width: 44, height: 44, borderRadius: 22, backgroundColor: COLORS.purple, alignItems: 'center', justifyContent: 'center' },
+  messageTime: { color: COLORS.dim, fontSize: 10 * scale, marginTop: 6 * scale, textAlign: 'right' },
+  typingText: { color: COLORS.purple, fontSize: 18 * scale, letterSpacing: 4 * scale },
+  quickQs: { borderTopWidth: 1, borderTopColor: COLORS.border, paddingVertical: 8 * scale, maxHeight: 60 * scale },
+  quickQsContent: { paddingHorizontal: 12 * scale, gap: 8 * scale, alignItems: 'center' },
+  quickQBtn: { backgroundColor: COLORS.card, borderRadius: 20 * scale, paddingHorizontal: 14 * scale, paddingVertical: 8 * scale, borderWidth: 1, borderColor: COLORS.border },
+  quickQText: { color: COLORS.purple, fontSize: 12 * scale, fontWeight: '600' },
+  inputRow: { flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 12 * scale, paddingVertical: 10 * scale, borderTopWidth: 1, borderTopColor: COLORS.border, gap: 10 * scale },
+  input: { flex: 1, backgroundColor: COLORS.card, borderRadius: 20 * scale, paddingHorizontal: 16 * scale, paddingVertical: 12 * scale, color: COLORS.text, fontSize: 14 * scale, borderWidth: 1, borderColor: COLORS.border, maxHeight: 100 * scale },
+  sendBtn: { width: 44 * scale, height: 44 * scale, borderRadius: 22 * scale, backgroundColor: COLORS.purple, alignItems: 'center', justifyContent: 'center' },
   sendBtnDisabled: { backgroundColor: COLORS.card, borderWidth: 1, borderColor: COLORS.border },
 });

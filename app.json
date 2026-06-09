@@ -9,7 +9,11 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.deepanjagan.SmartCampusAI",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -46,7 +50,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "017a7e57-7c55-49dd-b0c6-ac7908b09e08"
+        "projectId": "5d6167fd-3290-4b90-acb5-f9c4eea3bace"
       }
     }
   }

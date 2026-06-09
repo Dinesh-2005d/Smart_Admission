@@ -1,4 +1,4 @@
-﻿export const STATES = [
+export const STATES = [
   'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
   'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand',
   'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
@@ -57,12 +57,17 @@ export const getBoards = (state) => {
 export const DEPARTMENTS = [
   { id: 'engineering', label: 'Engineering (B.E / B.Tech)', icon: '⚙️' },
   { id: 'medical', label: 'Medical (MBBS / BDS)', icon: '🏥' },
+  { id: 'nursing', label: 'Nursing (B.Sc Nursing)', icon: '🩺' },
+  { id: 'paramedical', label: 'Paramedical', icon: '🚑' },
+  { id: 'polytechnic', label: 'Polytechnic (Diploma)', icon: '📐' },
   { id: 'arts_science', label: 'Arts & Science (B.A / B.Sc)', icon: '🎨' },
   { id: 'law', label: 'Law (LLB)', icon: '⚖️' },
   { id: 'commerce', label: 'Commerce (B.Com / BBA)', icon: '💼' },
   { id: 'pharmacy', label: 'Pharmacy (B.Pharm)', icon: '💊' },
   { id: 'architecture', label: 'Architecture (B.Arch)', icon: '🏛️' },
   { id: 'agriculture', label: 'Agriculture (B.Sc Agri)', icon: '🌾' },
-  { id: 'management', label: 'Management (MBA)', icon: '📊' },
-  { id: 'education', label: 'Education (B.Ed)', icon: '📚' },
+  { id: 'management', label: 'Management (MBA / PGDM)', icon: '📊' },
+  { id: 'hotel_management', label: 'Hotel Management', icon: '🏨' },
+  { id: 'teacher_training', label: 'Teacher Training (B.Ed)', icon: '👩‍🏫' },
+  { id: 'education', label: 'Education', icon: '📚' },
 ];

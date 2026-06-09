@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -11,6 +11,7 @@ import DetailsScreen from './src/screens/DetailsScreen';
 import MarksEntryScreen from './src/screens/MarksEntryScreen';
 import CollegeListScreen from './src/screens/CollegeListScreen';
 import CollegeChatScreen from './src/screens/CollegeChatScreen';
+import AnimatedSplashScreen from './src/screens/AnimatedSplashScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -40,6 +41,12 @@ function MainTabs() {
 }
 
 export default function App() {
+  const [isReady, setIsReady] = useState(false);
+
+  if (!isReady) {
+    return <AnimatedSplashScreen onFinish={() => setIsReady(true)} />;
+  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator

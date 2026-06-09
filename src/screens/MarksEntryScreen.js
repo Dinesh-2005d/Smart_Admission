@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  TextInput, Animated, StatusBar, Platform, SafeAreaView, Dimensions,
+  TextInput, Animated, StatusBar, Platform, SafeAreaView, Dimensions, KeyboardAvoidingView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { DEPARTMENTS } from '../constants/indiaData';
@@ -60,7 +60,15 @@ export default function MarksEntryScreen({ navigation, route }) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
-      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'padding'} style={{ flex: 1 }}>
+        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+
+        <View style={styles.headerRow}>
+          <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.backBtn}>
+            <Ionicons name="home" size={18} color="#0f172a" />
+            <Text style={styles.backBtnText}>Back to Home</Text>
+          </TouchableOpacity>
+        </View>
 
         <View style={styles.stepRow}>
           <View style={styles.stepDone}><Ionicons name="checkmark" size={16} color="#ffffff" /></View>
@@ -93,7 +101,7 @@ export default function MarksEntryScreen({ navigation, route }) {
                 <Text style={[styles.deptSub, selectedDept === dept.id && styles.deptSubSelected]}>
                   {dept.label.match(/\(([^)]+)\)/)?.[1] || ''}
                 </Text>
-                {selectedDept === dept.id && <View style={styles.deptCheck}><Ionicons name="checkmark-circle" size={16} color="#2563eb" /></View>}
+                {selectedDept === dept.id && <View style={styles.deptCheck}><Ionicons name="checkmark-circle" size={16} color="#16a34a" /></View>}
               </TouchableOpacity>
             ))}
           </View>
@@ -178,7 +186,8 @@ export default function MarksEntryScreen({ navigation, route }) {
             <Text style={styles.promptText}>Select a department above to continue</Text>
           </View>
         )}
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -186,7 +195,10 @@ export default function MarksEntryScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#ffffff' },
   container: { flex: 1, backgroundColor: '#ffffff' },
-  contentContainer: { paddingHorizontal: 16, paddingBottom: 40, paddingTop: Platform.OS === 'android' ? 16 : 8 },
+  contentContainer: { paddingHorizontal: 16, paddingBottom: 40, paddingTop: Platform.OS === 'android' ? 16 : 16 },
+  headerRow: { flexDirection: 'row', marginBottom: 16 },
+  backBtn: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#f1f5f9', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, alignSelf: 'flex-start', borderWidth: 1, borderColor: '#e2e8f0' },
+  backBtnText: { color: '#0f172a', fontWeight: '700', marginLeft: 6, fontSize: 13 },
   stepRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 6 },
   stepDone: { width: 34, height: 34, borderRadius: 17, backgroundColor: '#2563eb', alignItems: 'center', justifyContent: 'center' },
   stepActive: { width: 34, height: 34, borderRadius: 17, backgroundColor: '#2563eb', alignItems: 'center', justifyContent: 'center' },
@@ -203,12 +215,12 @@ const styles = StyleSheet.create({
   sectionTitle: { color: '#0f172a', fontSize: 16, fontWeight: '700', marginBottom: 14 },
   deptGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
   deptCard: { width: '48%', backgroundColor: '#ffffff', borderRadius: 16, padding: 14, borderWidth: 1, borderColor: '#e2e8f0', position: 'relative', marginBottom: 14 },
-  deptCardSelected: { borderColor: '#2563eb', backgroundColor: '#0f172a' },
+  deptCardSelected: { borderColor: '#16a34a', backgroundColor: '#dcfce7' },
   deptIcon: { fontSize: 26, marginBottom: 8 },
   deptLabel: { color: '#334155', fontSize: 13, fontWeight: '600', marginBottom: 2 },
-  deptLabelSelected: { color: '#0f172a' },
+  deptLabelSelected: { color: '#16a34a' },
   deptSub: { color: '#475569', fontSize: 11 },
-  deptSubSelected: { color: '#2563eb' },
+  deptSubSelected: { color: '#15803d' },
   deptCheck: { position: 'absolute', top: 10, right: 10 },
   label: { color: '#334155', fontSize: 12, fontWeight: '700', marginBottom: 10, textTransform: 'uppercase', letterSpacing: 0.5 },
   inputRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#ffffff', borderRadius: 14, borderWidth: 1, borderColor: '#e2e8f0', overflow: 'hidden' },
@@ -219,9 +231,9 @@ const styles = StyleSheet.create({
   scoreFill: { height: '100%', borderRadius: 3 },
   hintBox: { backgroundColor: '#fffbeb', borderRadius: 10, padding: 12, marginTop: 8, borderWidth: 1, borderColor: '#fde047' },
   hintText: { color: '#ca8a04', fontSize: 13, lineHeight: 18 },
-  findBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, backgroundColor: '#2563eb', borderRadius: 16, paddingVertical: 17, marginTop: 20 },
+  findBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#2563eb', borderRadius: 12, paddingVertical: 12, marginTop: 16 },
   findBtnDisabled: { backgroundColor: '#0f172a' },
-  findBtnText: { color: '#ffffff', fontSize: 16, fontWeight: '900' },
+  findBtnText: { color: '#ffffff', fontSize: 15, fontWeight: '800' },
   promptBox: { alignItems: 'center', padding: 30, gap: 8 },
   promptEmoji: { fontSize: 32 },
   promptText: { color: '#475569', fontSize: 14, textAlign: 'center' },

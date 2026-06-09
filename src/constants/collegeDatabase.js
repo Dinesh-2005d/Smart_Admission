@@ -1,484 +1,205 @@
-﻿const getCompanies = (dept, tier) => {
+// src/constants/collegeDatabase.js
+
+const getCompanies = (dept, tier) => {
   const top = {
-    engineering: ["Google","Microsoft","Amazon","Goldman Sachs","DE Shaw","Qualcomm","Samsung","Apple"],
-    medical: ["AIIMS","Apollo Hospitals","Fortis","Max Healthcare","Narayana Health","Manipal Hospitals","Government Hospitals"],
-    arts_science: ["TCS","Infosys","Banks","Civil Services","Teaching","Research Institutes","Government Jobs"],
-    law: ["Supreme Court","High Court","AZB Partners","Cyril Amarchand","Khaitan & Co","SAM","Trilegal"],
-    commerce: ["Deloitte","KPMG","PwC","EY","TCS","Banks","CA Firms","Accenture"],
-    management: ["McKinsey","BCG","Amazon","Goldman Sachs","Google","Bain & Co","Deloitte","KPMG"],
-    agriculture: ["ICAR","State Agri Dept","Mahindra Agri","UPL","PI Industries","ITC Agri","Nuziveedu Seeds"],
-    pharmacy: ["Sun Pharma","Cipla","Dr Reddys","Lupin","Aurobindo","Biocon","Abbott","Pfizer"],
-    architecture: ["Hafeez Contractor","CP Kukreja","Morphogenesis","HOK","Gensler","AECOM","L&T Construction"],
-    education: ["KV Schools","Navodaya Schools","State Govt Schools","NCERT","Private Schools","CBSE Schools"],
+    engineering: ["Google","Microsoft","Amazon","TCS","Infosys"],
+    medical: ["AIIMS","Apollo Hospitals","Fortis"],
+    arts_science: ["TCS","Infosys","Wipro","Cognizant"],
+    law: ["Supreme Court","High Court","Tier-1 Law Firms"],
+    management: ["McKinsey","BCG","Bain","Deloitte","KPMG"],
+    agriculture: ["ICAR","State Agri Dept","ITC","Monsanto","Mahindra Agri"],
+    pharmacy: ["Sun Pharma","Cipla","Dr Reddys"],
+    architecture: ["Hafeez Contractor", "L&T Construction"],
+    education: ["KV Schools", "International Schools"],
   };
   const mid = {
-    engineering: ["TCS","Infosys","Wipro","HCL","Tech Mahindra","Cognizant","Capgemini","L&T"],
-    medical: ["Apollo","Fortis","Government Hospitals","Care Hospitals","KIMS","Yashoda","Medicover"],
-    arts_science: ["TCS","Infosys","Banks","Government Jobs","Teaching","NGOs"],
-    law: ["High Court","Law Firms","Corporate Legal","Government","Advocate Practice"],
-    commerce: ["TCS","Banks","CA Firms","Government","Teaching","Retail Companies"],
-    management: ["TCS","Infosys","Banks","Government","FMCG Companies","Consulting Firms"],
-    agriculture: ["State Agri Dept","ICAR","Seed Companies","Fertilizer Companies","Teaching"],
-    pharmacy: ["Dr Reddys","Cipla","Sun Pharma","Generic Pharma","Hospital Pharmacy","QC Labs"],
-    architecture: ["Construction Companies","PWD","Real Estate Firms","Urban Planning Depts"],
-    education: ["State Govt Schools","Private Schools","CBSE Schools","Coaching Institutes"],
+    engineering: ["TCS","Infosys","Cognizant","Wipro"],
+    medical: ["Local Hospitals","Apollo","Fortis"],
+    arts_science: ["TCS","BPO","Local Firms"],
+    law: ["District Court","Law Firms"],
+    management: ["TCS","Banks","HDFC","ICICI"],
+    agriculture: ["State Agri Dept", "Local Agri Firms", "Fertilizer Companies"],
+    pharmacy: ["Local Pharma", "Apollo Pharmacy"],
+    architecture: ["Construction Companies", "Local Builders"],
+    education: ["State Govt Schools", "Private Schools"],
   };
   return tier === "top" ? top[dept] || top.engineering : mid[dept] || mid.engineering;
 };
 
-const makeCollege = (name, location, state, dept, type, gender, rating, minPct, fee, placement, tier, hostel, naac, est, desc, courses, highlight, mapQ) => ({
+const makeCollege = (name, location, state, dept, type, gender, rating, minPct, fee, placement, tier, hostel, naac, est, desc, courses, highlight) => ({
   name, location, state, department: dept, type, gender, rating, minPercentage: minPct,
   annualFee: fee, placementRate: placement, topCompanies: getCompanies(dept, tier),
   hostelAvailable: hostel, naacGrade: naac, established: est, description: desc,
-  courses, highlight, mapQuery: mapQ || name + " " + location
+  courses, highlight, mapQuery: name + " " + location + " " + state
 });
 
-export const COLLEGE_DATABASE = [
-  // ===== ANDHRA PRADESH =====
-  makeCollege("Andhra University College of Engineering","Visakhapatnam, Andhra Pradesh","Andhra Pradesh","engineering","Government","Co-Education",4.4,80,"45000",82,"mid",true,"A",1935,"Oldest engineering college in AP.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Oldest engineering college in AP","Andhra University College of Engineering Visakhapatnam"),
-  makeCollege("JNTU Anantapur","Anantapur, Andhra Pradesh","Andhra Pradesh","engineering","Government","Co-Education",4.2,72,"35000",78,"mid",true,"A",1981,"JNTU campus serving Rayalaseema region.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top government university in Rayalaseema","JNTU Anantapur Andhra Pradesh"),
-  makeCollege("KL University","Vijayawada, Andhra Pradesh","Andhra Pradesh","engineering","Private","Co-Education",4.3,70,"150000",83,"mid",true,"A+",1980,"Deemed university with strong industry partnerships.",["B.Tech CSE","B.Tech ECE","B.Tech AI&ML","B.Tech IT"],"Top private university in AP","KL University Vijayawada Andhra Pradesh"),
-  makeCollege("GITAM University","Visakhapatnam, Andhra Pradesh","Andhra Pradesh","engineering","Private","Co-Education",4.2,68,"160000",80,"mid",true,"A",1980,"Multi-campus university offering quality technical education.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Strong research and innovation culture","GITAM University Visakhapatnam AP"),
-  makeCollege("VIT-AP University","Amaravati, Andhra Pradesh","Andhra Pradesh","engineering","Private","Co-Education",4.1,65,"180000",79,"mid",true,"A",2017,"VIT Group campus in AP capital region.",["B.Tech CSE","B.Tech ECE","B.Tech AI&ML"],"VIT brand quality in AP","VIT-AP University Amaravati AP"),
-  makeCollege("Vignan University","Guntur, Andhra Pradesh","Andhra Pradesh","engineering","Private","Co-Education",4.0,65,"120000",76,"mid",true,"A",2008,"Deemed university with focus on technical education.",["B.Tech CSE","B.Tech ECE","B.Tech Mech"],"Strong industrial collaborations","Vignan University Guntur AP"),
-  makeCollege("SRM University AP","Amaravati, Andhra Pradesh","Andhra Pradesh","engineering","Private","Co-Education",4.1,65,"175000",78,"mid",true,"A",2017,"SRM Group campus in AP.",["B.Tech CSE","B.Tech ECE","B.Tech IT"],"SRM brand with modern campus","SRM University AP Amaravati"),
-  makeCollege("Andhra Medical College","Visakhapatnam, Andhra Pradesh","Andhra Pradesh","medical","Government","Co-Education",4.6,90,"18000",95,"mid",true,"A+",1923,"One of the oldest medical colleges in AP.",["MBBS","BDS","Nursing"],"Oldest medical college in AP","Andhra Medical College Visakhapatnam"),
-  makeCollege("Guntur Medical College","Guntur, Andhra Pradesh","Andhra Pradesh","medical","Government","Co-Education",4.4,87,"15000",93,"mid",true,"A",1946,"Government medical college with excellent clinical training.",["MBBS","BDS","Nursing"],"Strong clinical training in Guntur","Guntur Medical College AP"),
-  makeCollege("NRI Medical College","Guntur, Andhra Pradesh","Andhra Pradesh","medical","Private","Co-Education",4.2,82,"750000",90,"mid",true,"A",1993,"Private medical college with modern facilities.",["MBBS","BDS","Nursing"],"Top private medical college in AP","NRI Medical College Guntur AP"),
-  makeCollege("Andhra University","Visakhapatnam, Andhra Pradesh","Andhra Pradesh","arts_science","Government","Co-Education",4.3,65,"20000",72,"mid",true,"A+",1926,"Premier central university in AP.",["B.Sc Physics","B.Sc Chemistry","B.Sc Maths","B.A English","B.Com"],"Top university in AP - 95+ years legacy","Andhra University Visakhapatnam AP"),
-  makeCollege("Sri Venkateswara University","Tirupati, Andhra Pradesh","Andhra Pradesh","arts_science","Government","Co-Education",4.2,60,"18000",70,"mid",true,"A",1954,"University in the holy city of Tirupati.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com","BBA"],"Located in the holy city of Tirupati","Sri Venkateswara University Tirupati AP"),
-  makeCollege("Damodaram Sanjivayya National Law University","Visakhapatnam, Andhra Pradesh","Andhra Pradesh","law","Government","Co-Education",4.3,70,"45000",80,"mid",true,"A",2008,"National law university in AP.",["LLB","BBA LLB","B.Com LLB","BA LLB"],"Only National Law University in AP","DSNLU Visakhapatnam AP"),
-  makeCollege("Acharya Nagarjuna University","Guntur, Andhra Pradesh","Andhra Pradesh","commerce","Government","Co-Education",4.1,58,"22000",68,"mid",true,"A",1976,"Largest affiliating university in AP.",["B.Com","BBA","B.Sc CS","M.Com"],"Largest affiliating university in AP","Acharya Nagarjuna University Guntur AP"),
-  makeCollege("IIM Visakhapatnam","Visakhapatnam, Andhra Pradesh","Andhra Pradesh","management","Government","Co-Education",4.5,80,"1800000",96,"top",true,"A+",2015,"IIM in the port city of Vizag.",["MBA","PGP","Executive MBA"],"IIM brand in AP","IIM Visakhapatnam AP"),
-  makeCollege("Acharya NG Ranga Agricultural University","Guntur, Andhra Pradesh","Andhra Pradesh","agriculture","Government","Co-Education",4.3,65,"25000",75,"mid",true,"A",1964,"Premier agricultural university in AP.",["B.Sc Agriculture","B.Sc Horticulture","B.Tech Food Tech"],"Top agricultural university in AP","ANGRAU Guntur AP"),
-  makeCollege("GITAM School of Pharmacy","Visakhapatnam, Andhra Pradesh","Andhra Pradesh","pharmacy","Private","Co-Education",4.1,65,"95000",78,"mid",true,"A",2001,"GITAM pharmacy with strong industry connections.",["B.Pharm","Pharm.D","M.Pharm"],"Strong AP pharma industry connections","GITAM School of Pharmacy Visakhapatnam AP"),
-  makeCollege("JNAFAU Hyderabad","Hyderabad, Telangana","Andhra Pradesh","architecture","Government","Co-Education",4.5,78,"35000",83,"mid",true,"A+",1949,"Dedicated architecture university in South India.",["B.Arch","B.Planning","M.Arch"],"Only dedicated architecture university in South India","JNAFAU Hyderabad"),
-  makeCollege("Andhra University Education","Visakhapatnam, Andhra Pradesh","Andhra Pradesh","education","Government","Co-Education",4.0,55,"15000",72,"mid",true,"B+",1926,"B.Ed program at Andhra University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training at premier AP university","Andhra University Education Visakhapatnam"),
+// A curated list of top real colleges in India
+const TOP_COLLEGES = [
+  // Tamil Nadu - Engineering
+  makeCollege("IIT Madras", "Chennai", "Tamil Nadu", "engineering", "Government", "Co-Education", 4.9, 98, "2,00,000", 99, "top", true, "A++", 1959, "Ranked #1 in India for Engineering", ["B.Tech", "M.Tech", "Ph.D"], "Top IIT in India"),
+  makeCollege("NIT Trichy", "Tiruchirappalli", "Tamil Nadu", "engineering", "Government", "Co-Education", 4.8, 95, "1,50,000", 95, "top", true, "A++", 1964, "Top ranked NIT in India", ["B.Tech", "M.Tech"], "Top NIT"),
+  makeCollege("Anna University (CEG)", "Chennai", "Tamil Nadu", "engineering", "Government", "Co-Education", 4.7, 92, "40,000", 90, "top", true, "A+", 1794, "Oldest engineering college in India", ["B.E", "B.Tech"], "State's Best Govt College"),
+  makeCollege("VIT Vellore", "Vellore", "Tamil Nadu", "engineering", "Private", "Co-Education", 4.5, 85, "3,00,000", 92, "top", true, "A++", 1984, "Leading private institution with excellent placements", ["B.Tech"], "Highest Placement Offers"),
+  makeCollege("SRM Institute of Science and Technology", "Kattankulathur", "Tamil Nadu", "engineering", "Private", "Co-Education", 4.3, 80, "2,50,000", 88, "top", true, "A++", 1985, "Huge campus with global exposure", ["B.Tech"], "Global Partnerships"),
 
-  // ===== ARUNACHAL PRADESH =====
-  makeCollege("NIT Arunachal Pradesh","Yupia, Arunachal Pradesh","Arunachal Pradesh","engineering","Government","Co-Education",4.2,78,"65000",78,"mid",true,"A",2010,"National Institute of Technology in Arunachal Pradesh.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Premier NIT in Arunachal Pradesh","NIT Arunachal Pradesh Yupia"),
-  makeCollege("Rajiv Gandhi University","Itanagar, Arunachal Pradesh","Arunachal Pradesh","engineering","Government","Co-Education",4.0,65,"40000",70,"mid",true,"B+",1984,"Central university serving Arunachal Pradesh.",["B.Tech CSE","B.Tech ECE","B.Sc Physics","B.Sc Chemistry"],"Premier central university in Arunachal Pradesh","Rajiv Gandhi University Itanagar"),
-  makeCollege("NERIST Nirjuli","Nirjuli, Arunachal Pradesh","Arunachal Pradesh","engineering","Government","Co-Education",4.1,70,"45000",74,"mid",true,"A",1984,"North Eastern Regional Institute of Science & Technology.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top technical institute in North-East","NERIST Nirjuli Arunachal Pradesh"),
-  makeCollege("RIMS Imphal","Imphal, Manipur","Arunachal Pradesh","medical","Government","Co-Education",4.4,85,"15000",90,"mid",true,"A",1972,"Regional Institute of Medical Sciences.",["MBBS","BDS","Nursing"],"Best medical institute in North-East","RIMS Imphal Manipur"),
-  makeCollege("Rajiv Gandhi University Arts","Itanagar, Arunachal Pradesh","Arunachal Pradesh","arts_science","Government","Co-Education",4.0,55,"12000",65,"mid",true,"B+",1984,"Central university arts programs.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.A Political Science"],"Premier arts college in Arunachal","Rajiv Gandhi University Itanagar Arunachal Pradesh"),
-  makeCollege("IIM Shillong","Shillong, Meghalaya","Arunachal Pradesh","management","Government","Co-Education",4.5,80,"1900000",96,"top",true,"A++",2007,"IIM serving North-East India.",["MBA","PGP","Executive MBA"],"Gateway IIM for North-East India","IIM Shillong Meghalaya"),
-  makeCollege("Rajiv Gandhi University Law","Itanagar, Arunachal Pradesh","Arunachal Pradesh","law","Government","Co-Education",3.9,55,"20000",65,"mid",false,"B",1984,"Law programs at Rajiv Gandhi University.",["LLB","BA LLB"],"Only law school in Arunachal Pradesh","Rajiv Gandhi University Law Itanagar"),
-  makeCollege("Rajiv Gandhi University Commerce","Itanagar, Arunachal Pradesh","Arunachal Pradesh","commerce","Government","Co-Education",3.8,50,"12000",60,"mid",true,"B",1984,"Commerce programs at RGU.",["B.Com","BBA","M.Com"],"Top commerce programs in Arunachal","Rajiv Gandhi University Commerce Itanagar"),
-  makeCollege("NERIST Pharmacy","Nirjuli, Arunachal Pradesh","Arunachal Pradesh","pharmacy","Government","Co-Education",4.0,60,"40000",70,"mid",true,"B+",1984,"Pharmacy at NERIST.",["B.Pharm","M.Pharm"],"Best pharmacy college in Arunachal","NERIST Pharmacy Nirjuli Arunachal Pradesh"),
-  makeCollege("College of Agriculture Basar","Basar, Arunachal Pradesh","Arunachal Pradesh","agriculture","Government","Co-Education",3.9,55,"18000",68,"mid",true,"B",2000,"Agriculture college in Arunachal Pradesh.",["B.Sc Agriculture","B.Sc Horticulture"],"Top agriculture college in Arunachal","College of Agriculture Basar Arunachal Pradesh"),
-  makeCollege("Government College of Teacher Education Itanagar","Itanagar, Arunachal Pradesh","Arunachal Pradesh","education","Government","Co-Education",3.8,50,"10000",65,"mid",true,"B",1990,"Government teacher training college.",["B.Ed","D.El.Ed"],"Top teacher training college in Arunachal","Government College of Teacher Education Itanagar"),
-  makeCollege("NIT Arunachal Architecture","Yupia, Arunachal Pradesh","Arunachal Pradesh","architecture","Government","Co-Education",4.0,72,"65000",72,"mid",true,"A",2010,"Architecture at NIT Arunachal Pradesh.",["B.Arch"],"Best architecture program in Arunachal","NIT Arunachal Pradesh Architecture Yupia"),
+  // Tamil Nadu - Medical
+  makeCollege("Christian Medical College (CMC)", "Vellore", "Tamil Nadu", "medical", "Private", "Co-Education", 4.9, 97, "1,00,000", 99, "top", true, "A++", 1900, "One of the top medical colleges in India", ["MBBS", "BDS"], "World-class Hospital Attached"),
+  makeCollege("Madras Medical College", "Chennai", "Tamil Nadu", "medical", "Government", "Co-Education", 4.8, 95, "18,000", 98, "top", true, "A+", 1835, "Oldest medical college in India", ["MBBS", "BDS"], "Govt Top Choice"),
+  
+  // Tamil Nadu - Agriculture
+  makeCollege("Tamil Nadu Agricultural University (TNAU)", "Coimbatore", "Tamil Nadu", "agriculture", "Government", "Co-Education", 4.8, 88, "45,000", 85, "top", true, "A++", 1971, "Leading agricultural university in India", ["B.Sc Agriculture", "B.Tech Agriculture"], "ICAR Recognized Top University"),
+  makeCollege("Annamalai University (Faculty of Agriculture)", "Chidambaram", "Tamil Nadu", "agriculture", "Government", "Co-Education", 4.2, 75, "60,000", 70, "mid", true, "A", 1929, "Historic university with vast agricultural land", ["B.Sc Agriculture"], "Large Agricultural Farms"),
 
-  // ===== ASSAM =====
-  makeCollege("IIT Guwahati","Guwahati, Assam","Assam","engineering","Government","Co-Education",4.7,95,"100000",91,"top",true,"A++",1994,"Premier IIT for North-East India.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil","B.Tech Chemical"],"Premier IIT for North-East India","IIT Guwahati Assam"),
-  makeCollege("NIT Silchar","Silchar, Assam","Assam","engineering","Government","Co-Education",4.4,82,"65000",84,"mid",true,"A",1967,"National Institute of Technology in Assam.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top NIT in North-East India","NIT Silchar Assam"),
-  makeCollege("Tezpur University","Tezpur, Assam","Assam","engineering","Government","Co-Education",4.3,78,"55000",80,"mid",true,"A+",1994,"Central university with strong research.",["B.Tech CSE","B.Tech ECE","B.Tech Mech"],"Best central university in North-East","Tezpur University Assam"),
-  makeCollege("Assam Engineering College","Guwahati, Assam","Assam","engineering","Government","Co-Education",4.1,72,"40000",76,"mid",true,"A",1955,"Oldest engineering college in Assam.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Oldest engineering college in Assam","Assam Engineering College Guwahati"),
-  makeCollege("Gauhati Medical College","Guwahati, Assam","Assam","medical","Government","Co-Education",4.5,88,"14000",94,"mid",true,"A",1960,"Premier government medical college in Assam.",["MBBS","BDS","Nursing"],"Largest hospital in North-East India","Gauhati Medical College Guwahati Assam"),
-  makeCollege("Assam Medical College","Dibrugarh, Assam","Assam","medical","Government","Co-Education",4.3,85,"13000",92,"mid",true,"A",1947,"Oldest medical college in North-East India.",["MBBS","BDS","Nursing"],"Serving Upper Assam and Arunachal","Assam Medical College Dibrugarh"),
-  makeCollege("Gauhati University","Guwahati, Assam","Assam","arts_science","Government","Co-Education",4.2,60,"12000",68,"mid",true,"A+",1948,"Premier university in Assam.",["B.Sc Physics","B.Sc Chemistry","B.Sc Maths","B.A English","B.Com"],"Premier university of North-East India","Gauhati University Guwahati Assam"),
-  makeCollege("Gauhati University Law","Guwahati, Assam","Assam","law","Government","Co-Education",4.1,60,"15000",70,"mid",true,"A+",1948,"Law programs at Gauhati University.",["LLB","BA LLB","BBA LLB"],"Best law school in North-East India","Gauhati University Law Guwahati Assam"),
-  makeCollege("Gauhati University Commerce","Guwahati, Assam","Assam","commerce","Government","Co-Education",4.0,58,"12000",65,"mid",true,"A+",1948,"Commerce programs at Gauhati University.",["B.Com","BBA","M.Com"],"Top commerce programs in Assam","Gauhati University Commerce Guwahati"),
-  makeCollege("IIM Guwahati","Guwahati, Assam","Assam","management","Government","Co-Education",4.5,80,"1900000",97,"top",true,"A++",1995,"IIM for North-East India.",["MBA","PGP","Executive MBA"],"Gateway IIM for North-East India","IIM Guwahati Assam"),
-  makeCollege("Assam Agricultural University","Jorhat, Assam","Assam","agriculture","Government","Co-Education",4.2,62,"18000",74,"mid",true,"A",1969,"Premier agricultural university in North-East.",["B.Sc Agriculture","B.Sc Horticulture","B.V.Sc"],"World famous tea research facilities","Assam Agricultural University Jorhat"),
-  makeCollege("Gauhati University Pharmacy","Guwahati, Assam","Assam","pharmacy","Government","Co-Education",4.1,62,"35000",72,"mid",true,"A+",1948,"Pharmacy at Gauhati University.",["B.Pharm","M.Pharm","Pharm.D"],"Top pharmacy programs in North-East","Gauhati University Pharmacy Guwahati"),
-  makeCollege("NIT Silchar Architecture","Silchar, Assam","Assam","architecture","Government","Co-Education",4.2,78,"65000",76,"mid",true,"A",1967,"Architecture at NIT Silchar.",["B.Arch","M.Arch"],"Best architecture program in Assam","NIT Silchar Architecture Assam"),
-  makeCollege("Gauhati University Education","Guwahati, Assam","Assam","education","Government","Co-Education",4.0,55,"12000",68,"mid",true,"A+",1948,"B.Ed programs at Gauhati University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training at premier Assam university","Gauhati University Education Guwahati"),
+  // Maharashtra - Engineering
+  makeCollege("IIT Bombay", "Mumbai", "Maharashtra", "engineering", "Government", "Co-Education", 5.0, 99, "2,20,000", 99, "top", true, "A++", 1958, "Premier engineering institute in India", ["B.Tech"], "Unmatched Placements"),
+  makeCollege("College of Engineering Pune (COEP)", "Pune", "Maharashtra", "engineering", "Government", "Co-Education", 4.7, 94, "90,000", 92, "top", true, "A+", 1854, "One of the oldest and best state engineering colleges", ["B.Tech"], "Rich Heritage"),
+  makeCollege("VJTI", "Mumbai", "Maharashtra", "engineering", "Government", "Co-Education", 4.6, 92, "85,000", 90, "top", false, "A", 1887, "Prestigious state college in Mumbai", ["B.Tech"], "Excellent Mumbai Placements"),
 
-  // ===== BIHAR =====
-  makeCollege("NIT Patna","Patna, Bihar","Bihar","engineering","Government","Co-Education",4.4,82,"65000",84,"mid",true,"A",1924,"National Institute of Technology in Bihar.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top NIT in Bihar","NIT Patna Bihar"),
-  makeCollege("IIT Patna","Patna, Bihar","Bihar","engineering","Government","Co-Education",4.5,92,"100000",86,"top",true,"A+",2008,"IIT in the historic city of Patna.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Chemical"],"IIT brand in Bihar","IIT Patna Bihar"),
-  makeCollege("BIT Mesra Ranchi","Ranchi, Jharkhand","Bihar","engineering","Private","Co-Education",4.3,78,"120000",82,"mid",true,"A",1955,"Birla Institute of Technology - top private.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top private engineering college in East India","BIT Mesra Ranchi"),
-  makeCollege("Patna Medical College","Patna, Bihar","Bihar","medical","Government","Co-Education",4.5,88,"15000",93,"mid",true,"A",1925,"Oldest and most prestigious medical college in Bihar.",["MBBS","BDS","Nursing"],"Oldest medical college in Bihar","Patna Medical College Bihar"),
-  makeCollege("AIIMS Patna","Patna, Bihar","Bihar","medical","Government","Co-Education",4.6,90,"8000",95,"mid",true,"A+",2012,"AIIMS in Bihar.",["MBBS","BDS","B.Sc Nursing"],"AIIMS brand in Bihar","AIIMS Patna Bihar"),
-  makeCollege("Patna University","Patna, Bihar","Bihar","arts_science","Government","Co-Education",4.2,58,"10000",65,"mid",true,"A",1917,"Oldest university in Bihar.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.A History","B.Com"],"Oldest university in Bihar","Patna University Bihar"),
-  makeCollege("CNLU Patna","Patna, Bihar","Bihar","law","Government","Co-Education",4.4,73,"130000",85,"mid",true,"A+",2006,"Chanakya National Law University in Bihar.",["LLB","BA LLB","BBA LLB","LLM"],"Only NLU in Bihar","Chanakya National Law University Patna Bihar"),
-  makeCollege("Patna University Commerce","Patna, Bihar","Bihar","commerce","Government","Co-Education",4.0,55,"10000",62,"mid",true,"A",1917,"Commerce programs at Patna University.",["B.Com","BBA","M.Com"],"Top commerce programs in Bihar","Patna University Commerce Bihar"),
-  makeCollege("IIM Patna","Patna, Bihar","Bihar","management","Government","Co-Education",4.5,80,"1800000",96,"top",true,"A+",2010,"IIM in the historic city of Patna.",["MBA","PGP","Executive MBA"],"IIM brand in Bihar","IIM Patna Bihar"),
-  makeCollege("Bihar Agricultural University","Sabour, Bihar","Bihar","agriculture","Government","Co-Education",4.1,62,"18000",70,"mid",true,"A",2010,"State agricultural university in Bihar.",["B.Sc Agriculture","B.Sc Horticulture","B.V.Sc"],"Top agricultural university in Bihar","Bihar Agricultural University Sabour Bihar"),
-  makeCollege("Patna University Pharmacy","Patna, Bihar","Bihar","pharmacy","Government","Co-Education",4.0,60,"30000",68,"mid",true,"A",1917,"Pharmacy programs at Patna University.",["B.Pharm","M.Pharm"],"Top pharmacy programs in Bihar","Patna University Pharmacy Bihar"),
-  makeCollege("NIT Patna Architecture","Patna, Bihar","Bihar","architecture","Government","Co-Education",4.2,75,"65000",75,"mid",true,"A",1924,"Architecture at NIT Patna.",["B.Arch","M.Arch"],"Best architecture program in Bihar","NIT Patna Architecture Bihar"),
-  makeCollege("Patna University Education","Patna, Bihar","Bihar","education","Government","Co-Education",3.9,52,"10000",65,"mid",true,"A",1917,"B.Ed programs at Patna University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training at oldest Bihar university","Patna University Education Bihar"),
+  // Maharashtra - Agriculture
+  makeCollege("Mahatma Phule Krishi Vidyapeeth (MPKV)", "Rahuri", "Maharashtra", "agriculture", "Government", "Co-Education", 4.6, 82, "40,000", 80, "top", true, "A+", 1968, "Premier agriculture university in Maharashtra", ["B.Sc Agriculture"], "Top Agri Research"),
 
-  // ===== CHHATTISGARH =====
-  makeCollege("NIT Raipur","Raipur, Chhattisgarh","Chhattisgarh","engineering","Government","Co-Education",4.4,82,"65000",84,"mid",true,"A",1956,"National Institute of Technology in Chhattisgarh.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Mining"],"Top NIT in Chhattisgarh","NIT Raipur Chhattisgarh"),
-  makeCollege("IIT Bhilai","Bhilai, Chhattisgarh","Chhattisgarh","engineering","Government","Co-Education",4.4,90,"100000",85,"top",true,"A+",2016,"New generation IIT in Chhattisgarh.",["B.Tech CSE","B.Tech ECE","B.Tech Mech"],"IIT brand in Chhattisgarh","IIT Bhilai Chhattisgarh"),
-  makeCollege("Rungta College of Engineering","Bhilai, Chhattisgarh","Chhattisgarh","engineering","Private","Co-Education",4.0,65,"80000",74,"mid",true,"A",1997,"Top private engineering college in CG.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Best private engineering college in CG","Rungta College of Engineering Bhilai"),
-  makeCollege("AIIMS Raipur","Raipur, Chhattisgarh","Chhattisgarh","medical","Government","Co-Education",4.6,90,"8000",95,"mid",true,"A+",2012,"AIIMS in Chhattisgarh.",["MBBS","BDS","B.Sc Nursing"],"AIIMS brand in Chhattisgarh","AIIMS Raipur Chhattisgarh"),
-  makeCollege("Pt JNM Medical College","Raipur, Chhattisgarh","Chhattisgarh","medical","Government","Co-Education",4.3,85,"15000",91,"mid",true,"A",1963,"Oldest government medical college in CG.",["MBBS","BDS","Nursing"],"Oldest medical college in Chhattisgarh","Pt JNM Medical College Raipur CG"),
-  makeCollege("Pt Ravishankar Shukla University","Raipur, Chhattisgarh","Chhattisgarh","arts_science","Government","Co-Education",4.1,57,"10000",64,"mid",true,"A",1964,"Premier university in Chhattisgarh.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com"],"Top university in Chhattisgarh","Pt Ravishankar Shukla University Raipur"),
-  makeCollege("HNLU Raipur","Raipur, Chhattisgarh","Chhattisgarh","law","Government","Co-Education",4.4,73,"130000",84,"mid",true,"A+",2003,"Hidayatullah National Law University in CG.",["LLB","BA LLB","BBA LLB","LLM"],"Only NLU in Chhattisgarh","HNLU Raipur Chhattisgarh"),
-  makeCollege("Pt Ravishankar Shukla Commerce","Raipur, Chhattisgarh","Chhattisgarh","commerce","Government","Co-Education",3.9,53,"10000",62,"mid",true,"A",1964,"Commerce programs at PRSU.",["B.Com","BBA","M.Com"],"Top commerce programs in CG","Pt Ravishankar Shukla University Commerce Raipur"),
-  makeCollege("IIM Raipur","Raipur, Chhattisgarh","Chhattisgarh","management","Government","Co-Education",4.5,80,"1800000",96,"top",true,"A+",2010,"IIM in Chhattisgarh.",["MBA","PGP","Executive MBA"],"IIM brand in Chhattisgarh","IIM Raipur Chhattisgarh"),
-  makeCollege("IGKV Raipur","Raipur, Chhattisgarh","Chhattisgarh","agriculture","Government","Co-Education",4.2,62,"18000",72,"mid",true,"A",2012,"Indira Gandhi Krishi Vishwavidyalaya.",["B.Sc Agriculture","B.Sc Horticulture","B.Tech Food Tech"],"Top agricultural university in CG","IGKV Raipur Chhattisgarh"),
-  makeCollege("Columbia Institute of Pharmacy","Raipur, Chhattisgarh","Chhattisgarh","pharmacy","Private","Co-Education",4.0,60,"75000",70,"mid",true,"B+",1997,"Top pharmacy college in CG.",["B.Pharm","M.Pharm","Pharm.D"],"Best pharmacy college in Chhattisgarh","Columbia Institute of Pharmacy Raipur"),
-  makeCollege("NIT Raipur Architecture","Raipur, Chhattisgarh","Chhattisgarh","architecture","Government","Co-Education",4.2,75,"65000",76,"mid",true,"A",1956,"Architecture at NIT Raipur.",["B.Arch","M.Arch"],"Best architecture program in CG","NIT Raipur Architecture Chhattisgarh"),
-  makeCollege("Pt Ravishankar Shukla Education","Raipur, Chhattisgarh","Chhattisgarh","education","Government","Co-Education",3.9,52,"10000",64,"mid",true,"A",1964,"B.Ed programs at PRSU.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training in Chhattisgarh","Pt Ravishankar Shukla University Education Raipur"),
+  // Delhi - Engineering & Medical
+  makeCollege("IIT Delhi", "New Delhi", "Delhi", "engineering", "Government", "Co-Education", 4.9, 98, "2,10,000", 98, "top", true, "A++", 1961, "Eminent engineering institution", ["B.Tech"], "Capital City Exposure"),
+  makeCollege("AIIMS New Delhi", "New Delhi", "Delhi", "medical", "Government", "Co-Education", 5.0, 99, "5,000", 100, "top", true, "A++", 1956, "The best medical college in India", ["MBBS"], "Best Medical Infrastructure"),
+  
+  // Delhi - Agriculture
+  makeCollege("Indian Agricultural Research Institute (IARI)", "New Delhi", "Delhi", "agriculture", "Government", "Co-Education", 4.9, 90, "30,000", 90, "top", true, "A++", 1905, "The seat of India's Green Revolution", ["B.Sc Agriculture", "M.Sc"], "Seat of Green Revolution"),
 
-  // ===== GOA =====
-  makeCollege("NIT Goa","Ponda, Goa","Goa","engineering","Government","Co-Education",4.4,83,"65000",85,"mid",true,"A",2010,"National Institute of Technology in Goa.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top NIT in Goa","NIT Goa Ponda"),
-  makeCollege("BITS Pilani Goa","Goa, Goa","Goa","engineering","Private","Co-Education",4.7,92,"450000",93,"top",true,"A+",2004,"BITS Pilani campus in Goa.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Chemical"],"BITS brand in the beach state","BITS Pilani Goa Campus"),
-  makeCollege("Goa Engineering College","Farmagudi, Goa","Goa","engineering","Government","Co-Education",4.2,78,"40000",79,"mid",true,"A",1986,"Government engineering college in Goa.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Oldest government engineering college in Goa","Goa Engineering College Farmagudi"),
-  makeCollege("Goa Medical College","Panaji, Goa","Goa","medical","Government","Co-Education",4.5,88,"18000",93,"mid",true,"A",1963,"Only government medical college in Goa.",["MBBS","BDS","Nursing"],"Premier medical college in Goa","Goa Medical College Panaji"),
-  makeCollege("Goa University","Panaji, Goa","Goa","arts_science","Government","Co-Education",4.2,60,"15000",70,"mid",true,"A+",1985,"State university in Goa.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com","BBA"],"Premier university in Goa","Goa University Panaji"),
-  makeCollege("Goa University Law","Panaji, Goa","Goa","law","Government","Co-Education",4.1,60,"20000",72,"mid",false,"A+",1985,"Law programs at Goa University.",["LLB","BA LLB","BBA LLB"],"Top law school in Goa","Goa University Law Panaji"),
-  makeCollege("Goa University Commerce","Panaji, Goa","Goa","commerce","Government","Co-Education",4.1,58,"15000",70,"mid",false,"A+",1985,"Commerce programs at Goa University.",["B.Com","BBA","M.Com"],"Top commerce programs in Goa","Goa University Commerce Panaji"),
-  makeCollege("Goa Institute of Management","Sanquelim, Goa","Goa","management","Private","Co-Education",4.5,78,"1800000",95,"top",true,"A+",1993,"Premier management institute in Goa.",["MBA","PGDM","Executive MBA"],"Best B-School in Goa","Goa Institute of Management Sanquelim"),
-  makeCollege("Goa University Agriculture","Panaji, Goa","Goa","agriculture","Government","Co-Education",4.0,58,"15000",68,"mid",true,"A+",1985,"Agriculture programs at Goa University.",["B.Sc Agriculture","B.Sc Horticulture"],"Top agriculture programs in Goa","Goa University Agriculture Panaji"),
-  makeCollege("Goa College of Pharmacy","Panaji, Goa","Goa","pharmacy","Government","Co-Education",4.3,65,"30000",78,"mid",false,"A",1959,"Government pharmacy college in Goa.",["B.Pharm","M.Pharm","Pharm.D"],"Best pharmacy college in Goa","Goa College of Pharmacy Panaji"),
-  makeCollege("Goa College of Architecture","Panaji, Goa","Goa","architecture","Government","Co-Education",4.3,75,"35000",80,"mid",false,"A",1965,"Government architecture college in Goa.",["B.Arch","M.Arch"],"Best architecture college in Goa","Goa College of Architecture Panaji"),
-  makeCollege("Goa University Education","Panaji, Goa","Goa","education","Government","Co-Education",4.0,55,"15000",68,"mid",false,"A+",1985,"B.Ed programs at Goa University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training in Goa","Goa University Education Panaji"),
+  // Karnataka - Engineering & Agriculture
+  makeCollege("NITK Surathkal", "Mangalore", "Karnataka", "engineering", "Government", "Co-Education", 4.8, 96, "1,40,000", 94, "top", true, "A++", 1960, "Top NIT in Karnataka", ["B.Tech"], "Private Beach Campus"),
+  makeCollege("University of Agricultural Sciences (UAS)", "Bangalore", "Karnataka", "agriculture", "Government", "Co-Education", 4.7, 85, "50,000", 82, "top", true, "A+", 1964, "Top agricultural university in Karnataka", ["B.Sc Agriculture"], "Silicon Valley Agri-Tech"),
 
-  // ===== GUJARAT =====
-  makeCollege("IIT Gandhinagar","Gandhinagar, Gujarat","Gujarat","engineering","Government","Co-Education",4.6,96,"100000",89,"top",true,"A++",2008,"IIT with liberal arts interdisciplinary approach.",["B.Tech CSE","B.Tech EE","B.Tech Mech","B.Tech Chemical"],"Liberal arts + engineering curriculum","IIT Gandhinagar Gujarat"),
-  makeCollege("SVNIT Surat","Surat, Gujarat","Gujarat","engineering","Government","Co-Education",4.4,83,"65000",84,"mid",true,"A",1961,"Sardar Vallabhbhai National Institute of Technology.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top NIT in Gujarat","SVNIT Surat Gujarat"),
-  makeCollege("DAIICT Gandhinagar","Gandhinagar, Gujarat","Gujarat","engineering","Private","Co-Education",4.5,88,"250000",88,"mid",true,"A+",2001,"Top ICT university in India.",["B.Tech ICT","B.Tech MnC","B.Tech EC"],"Best ICT university in India","DAIICT Gandhinagar Gujarat"),
-  makeCollege("Nirma University","Ahmedabad, Gujarat","Gujarat","engineering","Private","Co-Education",4.3,78,"180000",83,"mid",true,"A+",2003,"Top private university in Gujarat.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top private engineering in Gujarat","Nirma University Ahmedabad Gujarat"),
-  makeCollege("BJ Medical College","Ahmedabad, Gujarat","Gujarat","medical","Government","Co-Education",4.6,90,"15000",95,"mid",true,"A",1878,"Oldest and most prestigious medical college in Gujarat.",["MBBS","BDS","Nursing"],"Oldest medical college in Gujarat","BJ Medical College Ahmedabad Gujarat"),
-  makeCollege("Gujarat University","Ahmedabad, Gujarat","Gujarat","arts_science","Government","Co-Education",4.1,58,"10000",65,"mid",true,"A+",1950,"Premier state university in Gujarat.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com","BBA"],"Premier university in Gujarat","Gujarat University Ahmedabad"),
-  makeCollege("GNLU Gandhinagar","Gandhinagar, Gujarat","Gujarat","law","Government","Co-Education",4.6,78,"200000",90,"mid",true,"A++",2004,"Gujarat National Law University.",["LLB","BA LLB","BBA LLB","LLM"],"Only NLU in Gujarat","Gujarat National Law University Gandhinagar"),
-  makeCollege("Gujarat University Commerce","Ahmedabad, Gujarat","Gujarat","commerce","Government","Co-Education",4.1,57,"10000",65,"mid",true,"A+",1950,"Commerce programs at Gujarat University.",["B.Com","BBA","M.Com"],"Top commerce programs in Gujarat","Gujarat University Commerce Ahmedabad"),
-  makeCollege("IIM Ahmedabad","Ahmedabad, Gujarat","Gujarat","management","Government","Co-Education",5.0,85,"2300000",100,"top",true,"A++",1961,"India's #1 business school.",["MBA","PGP","Executive MBA","PhD Management"],"India Best Business School","IIM Ahmedabad Gujarat"),
-  makeCollege("Anand Agricultural University","Anand, Gujarat","Gujarat","agriculture","Government","Co-Education",4.2,63,"18000",73,"mid",true,"A",2004,"Premier agricultural university in Gujarat.",["B.Sc Agriculture","B.Sc Horticulture","B.Tech Food Tech"],"Top agricultural university in Gujarat","Anand Agricultural University Gujarat"),
-  makeCollege("MS University Baroda Pharmacy","Vadodara, Gujarat","Gujarat","pharmacy","Government","Co-Education",4.3,65,"25000",78,"mid",true,"A++",1950,"Pharmacy at Maharaja Sayajirao University.",["B.Pharm","M.Pharm","Pharm.D"],"Best pharmacy university in Gujarat","MS University Baroda Pharmacy Gujarat"),
-  makeCollege("CEPT University","Ahmedabad, Gujarat","Gujarat","architecture","Private","Co-Education",4.7,78,"250000",88,"top",true,"A+",1962,"India's best planning and architecture school.",["B.Arch","B.Planning","M.Arch","Urban Design"],"India #1 Architecture and Planning School","CEPT University Ahmedabad Gujarat"),
-  makeCollege("Gujarat University Education","Ahmedabad, Gujarat","Gujarat","education","Government","Co-Education",4.0,54,"10000",65,"mid",true,"A+",1950,"B.Ed programs at Gujarat University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training at premier Gujarat university","Gujarat University Education Ahmedabad"),
-
-  // ===== HARYANA =====
-  makeCollege("NIT Kurukshetra","Kurukshetra, Haryana","Haryana","engineering","Government","Co-Education",4.5,84,"65000",86,"mid",true,"A+",1963,"National Institute of Technology in Haryana.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top NIT in Haryana","NIT Kurukshetra Haryana"),
-  makeCollege("Thapar University Patiala","Patiala, Punjab","Haryana","engineering","Private","Co-Education",4.5,80,"250000",87,"mid",true,"A+",1956,"Deemed university in Punjab.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Chemical"],"Best private engineering in Punjab/Haryana","Thapar University Patiala Punjab"),
-  makeCollege("MDU Rohtak","Rohtak, Haryana","Haryana","engineering","Government","Co-Education",4.1,70,"35000",75,"mid",true,"A",1976,"Maharshi Dayanand University in Haryana.",["B.Tech CSE","B.Tech ECE","B.Tech Mech"],"Top state university in Haryana","MDU Rohtak Haryana"),
-  makeCollege("PGIMER Chandigarh","Chandigarh, Punjab","Haryana","medical","Government","Co-Education",4.8,92,"10000",97,"mid",true,"A++",1962,"Premier postgraduate medical institute in North India.",["MBBS","BDS","Nursing","Paramedical"],"Best medical institution in North India","PGIMER Chandigarh"),
-  makeCollege("Kurukshetra University","Kurukshetra, Haryana","Haryana","arts_science","Government","Co-Education",4.1,58,"10000",64,"mid",true,"A+",1956,"Central university in Haryana.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com"],"Top university in Haryana","Kurukshetra University Haryana"),
-  makeCollege("MDU Law Rohtak","Rohtak, Haryana","Haryana","law","Government","Co-Education",4.0,58,"15000",68,"mid",true,"A",1976,"Law programs at MDU Rohtak.",["LLB","BA LLB","BBA LLB"],"Top law programs in Haryana","MDU Law Rohtak Haryana"),
-  makeCollege("MDU Commerce","Rohtak, Haryana","Haryana","commerce","Government","Co-Education",3.9,55,"10000",62,"mid",true,"A",1976,"Commerce programs at MDU.",["B.Com","BBA","M.Com"],"Top commerce programs in Haryana","MDU Commerce Rohtak Haryana"),
-  makeCollege("IIM Rohtak","Rohtak, Haryana","Haryana","management","Government","Co-Education",4.5,80,"1800000",95,"top",true,"A+",2009,"IIM in Haryana.",["MBA","PGP","Executive MBA"],"IIM brand in Haryana","IIM Rohtak Haryana"),
-  makeCollege("CCS Haryana Agricultural University","Hisar, Haryana","Haryana","agriculture","Government","Co-Education",4.3,63,"18000",73,"mid",true,"A",1970,"Premier agricultural university in Haryana.",["B.Sc Agriculture","B.Sc Horticulture","B.V.Sc"],"Top agricultural university in Haryana","CCS Haryana Agricultural University Hisar"),
-  makeCollege("Guru Gobind Singh College of Pharmacy","Yamunanagar, Haryana","Haryana","pharmacy","Private","Co-Education",4.0,60,"70000",70,"mid",true,"B+",1996,"Top pharmacy college in Haryana.",["B.Pharm","M.Pharm","Pharm.D"],"Best pharmacy college in Haryana","Guru Gobind Singh College of Pharmacy Yamunanagar"),
-  makeCollege("NIT Kurukshetra Architecture","Kurukshetra, Haryana","Haryana","architecture","Government","Co-Education",4.3,78,"65000",78,"mid",true,"A+",1963,"Architecture at NIT Kurukshetra.",["B.Arch","M.Arch"],"Best architecture program in Haryana","NIT Kurukshetra Architecture Haryana"),
-  makeCollege("MDU Education","Rohtak, Haryana","Haryana","education","Government","Co-Education",3.9,53,"10000",64,"mid",true,"A",1976,"B.Ed programs at MDU.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training in Haryana","MDU Education Rohtak Haryana"),
-
-  // ===== HIMACHAL PRADESH =====
-  makeCollege("NIT Hamirpur","Hamirpur, Himachal Pradesh","Himachal Pradesh","engineering","Government","Co-Education",4.4,82,"65000",84,"mid",true,"A",1986,"National Institute of Technology in HP.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top NIT in Himachal Pradesh","NIT Hamirpur Himachal Pradesh"),
-  makeCollege("IIT Mandi","Mandi, Himachal Pradesh","Himachal Pradesh","engineering","Government","Co-Education",4.4,90,"100000",85,"top",true,"A+",2009,"IIT in the hills of Himachal Pradesh.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"IIT brand in Himachal Pradesh","IIT Mandi Himachal Pradesh"),
-  makeCollege("Shoolini University","Solan, Himachal Pradesh","Himachal Pradesh","engineering","Private","Co-Education",4.1,68,"130000",76,"mid",true,"A",2009,"Top private university in HP.",["B.Tech CSE","B.Tech ECE","B.Tech Biotech"],"Best private university in HP","Shoolini University Solan HP"),
-  makeCollege("IGMC Shimla","Shimla, Himachal Pradesh","Himachal Pradesh","medical","Government","Co-Education",4.5,87,"14000",93,"mid",true,"A",1966,"Indira Gandhi Medical College in HP.",["MBBS","BDS","Nursing"],"Premier medical college in HP","IGMC Shimla Himachal Pradesh"),
-  makeCollege("Himachal Pradesh University","Shimla, Himachal Pradesh","Himachal Pradesh","arts_science","Government","Co-Education",4.1,57,"10000",64,"mid",true,"A+",1970,"State university in HP.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com"],"Premier university in HP","Himachal Pradesh University Shimla"),
-  makeCollege("HP University Law","Shimla, Himachal Pradesh","Himachal Pradesh","law","Government","Co-Education",4.0,56,"14000",68,"mid",true,"A+",1970,"Law programs at HP University.",["LLB","BA LLB"],"Top law programs in HP","Himachal Pradesh University Law Shimla"),
-  makeCollege("HP University Commerce","Shimla, Himachal Pradesh","Himachal Pradesh","commerce","Government","Co-Education",3.9,54,"10000",62,"mid",true,"A+",1970,"Commerce programs at HP University.",["B.Com","BBA","M.Com"],"Top commerce programs in HP","Himachal Pradesh University Commerce Shimla"),
-  makeCollege("IIM Sirmaur","Sirmaur, Himachal Pradesh","Himachal Pradesh","management","Government","Co-Education",4.3,78,"1700000",93,"top",true,"A",2015,"IIM in the hills of Himachal Pradesh.",["MBA","PGP"],"IIM brand in Himachal Pradesh","IIM Sirmaur Himachal Pradesh"),
-  makeCollege("CSK HPKV Palampur","Palampur, Himachal Pradesh","Himachal Pradesh","agriculture","Government","Co-Education",4.2,62,"16000",72,"mid",true,"A",1978,"Chaudhary Sarwan Kumar HP Agricultural University.",["B.Sc Agriculture","B.Sc Horticulture","B.V.Sc"],"Top agricultural university in HP","CSK HPKV Palampur Himachal Pradesh"),
-  makeCollege("Shoolini University Pharmacy","Solan, Himachal Pradesh","Himachal Pradesh","pharmacy","Private","Co-Education",4.1,60,"110000",72,"mid",true,"A",2009,"Pharmacy at Shoolini University.",["B.Pharm","M.Pharm","Pharm.D"],"Best pharmacy college in HP","Shoolini University Pharmacy Solan HP"),
-  makeCollege("NIT Hamirpur Architecture","Hamirpur, Himachal Pradesh","Himachal Pradesh","architecture","Government","Co-Education",4.2,75,"65000",76,"mid",true,"A",1986,"Architecture at NIT Hamirpur.",["B.Arch","M.Arch"],"Best architecture program in HP","NIT Hamirpur Architecture HP"),
-  makeCollege("HP University Education","Shimla, Himachal Pradesh","Himachal Pradesh","education","Government","Co-Education",3.9,52,"10000",64,"mid",true,"A+",1970,"B.Ed programs at HP University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training in Himachal Pradesh","Himachal Pradesh University Education Shimla"),
-
-  // ===== JHARKHAND =====
-  makeCollege("NIT Jamshedpur","Jamshedpur, Jharkhand","Jharkhand","engineering","Government","Co-Education",4.5,84,"65000",86,"mid",true,"A+",1960,"National Institute of Technology in Jharkhand.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top NIT in Jharkhand","NIT Jamshedpur Jharkhand"),
-  makeCollege("IIT ISM Dhanbad","Dhanbad, Jharkhand","Jharkhand","engineering","Government","Co-Education",4.5,88,"100000",87,"top",true,"A+",1926,"IIT formerly known as ISM Dhanbad.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Mining"],"Best mining engineering college in India","IIT ISM Dhanbad Jharkhand"),
-  makeCollege("RIMS Ranchi","Ranchi, Jharkhand","Jharkhand","medical","Government","Co-Education",4.4,85,"14000",91,"mid",true,"A",1960,"Rajendra Institute of Medical Sciences.",["MBBS","BDS","Nursing"],"Premier medical college in Jharkhand","RIMS Ranchi Jharkhand"),
-  makeCollege("Ranchi University","Ranchi, Jharkhand","Jharkhand","arts_science","Government","Co-Education",4.0,56,"9000",62,"mid",true,"B+",1960,"Premier university in Jharkhand.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com"],"Top university in Jharkhand","Ranchi University Jharkhand"),
-  makeCollege("XLRI Jamshedpur","Jamshedpur, Jharkhand","Jharkhand","management","Private","Co-Education",4.8,82,"2300000",99,"top",true,"A++",1949,"Xavier Labour Relations Institute.",["MBA","HRM","BM","PGDM"],"Best HRM and Business Management school in India","XLRI Jamshedpur Jharkhand"),
-  makeCollege("Birsa Agricultural University","Ranchi, Jharkhand","Jharkhand","agriculture","Government","Co-Education",4.1,62,"16000",70,"mid",true,"A",1981,"State agricultural university in Jharkhand.",["B.Sc Agriculture","B.Sc Horticulture","B.V.Sc"],"Top agricultural university in Jharkhand","Birsa Agricultural University Ranchi Jharkhand"),
-  makeCollege("Ranchi University Law","Ranchi, Jharkhand","Jharkhand","law","Government","Co-Education",3.9,55,"12000",65,"mid",true,"B+",1960,"Law programs at Ranchi University.",["LLB","BA LLB"],"Top law programs in Jharkhand","Ranchi University Law Jharkhand"),
-  makeCollege("Ranchi University Commerce","Ranchi, Jharkhand","Jharkhand","commerce","Government","Co-Education",3.8,53,"9000",60,"mid",true,"B+",1960,"Commerce programs at Ranchi University.",["B.Com","BBA","M.Com"],"Top commerce programs in Jharkhand","Ranchi University Commerce Jharkhand"),
-  makeCollege("BIT Mesra Pharmacy","Ranchi, Jharkhand","Jharkhand","pharmacy","Private","Co-Education",4.2,65,"110000",76,"mid",true,"A",1955,"Pharmacy at BIT Mesra.",["B.Pharm","M.Pharm","Pharm.D"],"Best pharmacy college in Jharkhand","BIT Mesra Pharmacy Ranchi Jharkhand"),
-  makeCollege("NIT Jamshedpur Architecture","Jamshedpur, Jharkhand","Jharkhand","architecture","Government","Co-Education",4.3,77,"65000",78,"mid",true,"A+",1960,"Architecture at NIT Jamshedpur.",["B.Arch","M.Arch"],"Best architecture program in Jharkhand","NIT Jamshedpur Architecture Jharkhand"),
-  makeCollege("Ranchi University Education","Ranchi, Jharkhand","Jharkhand","education","Government","Co-Education",3.8,51,"9000",62,"mid",true,"B+",1960,"B.Ed programs at Ranchi University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training in Jharkhand","Ranchi University Education Jharkhand"),
-
-  // ===== KARNATAKA =====
-  makeCollege("IISc Bangalore","Bengaluru, Karnataka","Karnataka","engineering","Government","Co-Education",4.9,98,"25000",95,"top",true,"A++",1909,"India premier research university.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Sc Research"],"India #1 Research Institution","Indian Institute of Science Bangalore Karnataka"),
-  makeCollege("NIT Karnataka Surathkal","Surathkal, Karnataka","Karnataka","engineering","Government","Co-Education",4.6,88,"70000",89,"top",true,"A+",1960,"Premier NIT on Karnataka coast.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top NIT in Karnataka","NIT Karnataka Surathkal"),
-  makeCollege("RV College of Engineering","Bengaluru, Karnataka","Karnataka","engineering","Private","Co-Education",4.5,85,"150000",88,"top",true,"A+",1963,"One of Karnataka top engineering colleges.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech ISE"],"Best private engineering college in Bengaluru","RV College of Engineering Bangalore Karnataka"),
-  makeCollege("BMS College of Engineering","Bengaluru, Karnataka","Karnataka","engineering","Private","Co-Education",4.4,82,"130000",85,"mid",true,"A+",1946,"Historic engineering college with excellent placement.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"75+ years of engineering excellence","BMS College of Engineering Bangalore Karnataka"),
-  makeCollege("Manipal Institute of Technology","Manipal, Karnataka","Karnataka","engineering","Private","Co-Education",4.4,75,"250000",86,"mid",true,"A+",1957,"Premier private engineering institution with global exposure.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech IT"],"Best private college on West Coast","Manipal Institute of Technology Karnataka"),
-  makeCollege("Kasturba Medical College Manipal","Manipal, Karnataka","Karnataka","medical","Private","Co-Education",4.7,90,"900000",97,"top",true,"A++",1953,"World-renowned medical college.",["MBBS","BDS","B.Pharm","Physiotherapy"],"Top 5 medical college in India","Kasturba Medical College Manipal Karnataka"),
-  makeCollege("MS Ramaiah Medical College","Bengaluru, Karnataka","Karnataka","medical","Private","Co-Education",4.5,88,"750000",95,"mid",true,"A+",1979,"Prestigious private medical college in Bengaluru.",["MBBS","BDS","B.Sc Nursing"],"Top private medical college in Bengaluru","MS Ramaiah Medical College Bangalore Karnataka"),
-  makeCollege("NLSIU Bangalore","Bengaluru, Karnataka","Karnataka","law","Government","Co-Education",4.9,85,"250000",98,"top",true,"A++",1987,"India premier law school.",["LLB","BBA LLB","BA LLB","LLM"],"India #1 Law School","National Law School of India University Bangalore"),
-  makeCollege("IIM Bangalore","Bengaluru, Karnataka","Karnataka","management","Government","Co-Education",4.9,85,"2400000",100,"top",true,"A++",1973,"India top B-school.",["MBA","PGP","Executive MBA"],"Top B-School for Entrepreneurship","IIM Bangalore Karnataka"),
-  makeCollege("University of Agricultural Sciences Bangalore","Bengaluru, Karnataka","Karnataka","agriculture","Government","Co-Education",4.3,65,"22000",76,"mid",true,"A",1964,"Premier agricultural university in Karnataka.",["B.Sc Agriculture","B.Sc Horticulture","B.Sc Forestry","B.V.Sc"],"Best agricultural university in South India","University of Agricultural Sciences Bangalore Karnataka"),
-  makeCollege("JSS College of Pharmacy Mysuru","Mysuru, Karnataka","Karnataka","pharmacy","Private","Co-Education",4.5,70,"120000",85,"top",true,"A+",1980,"One of India top pharmacy colleges.",["B.Pharm","Pharm.D","M.Pharm"],"Top pharmacy college in South India","JSS College of Pharmacy Mysuru Karnataka"),
-  makeCollege("Bangalore University","Bengaluru, Karnataka","Karnataka","arts_science","Government","Co-Education",4.1,60,"12000",68,"mid",true,"A+",1964,"Large state university serving Bengaluru.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com","BBA"],"Largest university in Bengaluru","Bangalore University Bengaluru Karnataka"),
-  makeCollege("Bangalore University Commerce","Bengaluru, Karnataka","Karnataka","commerce","Government","Co-Education",4.1,58,"12000",68,"mid",true,"A+",1964,"Commerce programs at Bangalore University.",["B.Com","BBA","M.Com"],"Top commerce programs in Bengaluru","Bangalore University Commerce Bengaluru"),
-  makeCollege("BMS College of Architecture","Bengaluru, Karnataka","Karnataka","architecture","Private","Co-Education",4.3,75,"180000",82,"mid",false,"A",1970,"One of the best architecture schools in South India.",["B.Arch","M.Arch","Urban Design"],"Top architecture school in South India","BMS College of Architecture Bangalore Karnataka"),
-  makeCollege("Regional Institute of Education Mysuru","Mysuru, Karnataka","Karnataka","education","Government","Co-Education",4.3,65,"15000",78,"mid",true,"A",1963,"NCERT teacher training institution.",["B.Ed","M.Ed","B.Sc B.Ed","B.A B.Ed"],"NCERT institution - Best B.Ed in South India","Regional Institute of Education Mysuru Karnataka"),
-
-  // ===== KERALA =====
-  makeCollege("NIT Calicut","Kozhikode, Kerala","Kerala","engineering","Government","Co-Education",4.6,88,"70000",88,"top",true,"A+",1961,"National Institute of Technology in Kerala.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil","B.Tech EEE"],"Top NIT in South India","NIT Calicut Kerala"),
-  makeCollege("College of Engineering Trivandrum","Thiruvananthapuram, Kerala","Kerala","engineering","Government","Co-Education",4.4,82,"30000",83,"mid",true,"A",1939,"Kerala oldest and most prestigious engineering college.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Oldest engineering college in Kerala","College of Engineering Trivandrum Kerala"),
-  makeCollege("CUSAT Cochin","Kochi, Kerala","Kerala","engineering","Government","Co-Education",4.3,78,"50000",80,"mid",true,"A+",1971,"Cochin University of Science and Technology.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Naval"],"Top university in Kochi","CUSAT Cochin Kerala"),
-  makeCollege("AIIMS Thiruvananthapuram","Thiruvananthapuram, Kerala","Kerala","medical","Government","Co-Education",4.7,92,"8000",97,"mid",true,"A++",2012,"AIIMS in Kerala.",["MBBS","BDS","B.Sc Nursing"],"AIIMS brand in Kerala","AIIMS Thiruvananthapuram Kerala"),
-  makeCollege("Government Medical College Thiruvananthapuram","Thiruvananthapuram, Kerala","Kerala","medical","Government","Co-Education",4.5,88,"14000",94,"mid",true,"A",1951,"Premier government medical college in Kerala.",["MBBS","BDS","Nursing"],"Top medical college in Kerala","Government Medical College Thiruvananthapuram Kerala"),
-  makeCollege("University of Kerala","Thiruvananthapuram, Kerala","Kerala","arts_science","Government","Co-Education",4.2,60,"10000",68,"mid",true,"A+",1937,"Premier state university in Kerala.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com","BBA"],"Premier university in Kerala","University of Kerala Thiruvananthapuram"),
-  makeCollege("NUALS Kochi","Kochi, Kerala","Kerala","law","Government","Co-Education",4.4,72,"100000",85,"mid",true,"A",2005,"National University of Advanced Legal Studies.",["LLB","BA LLB","BBA LLB","LLM"],"Only NLU in Kerala","NUALS Kochi Kerala"),
-  makeCollege("Kerala University Commerce","Thiruvananthapuram, Kerala","Kerala","commerce","Government","Co-Education",4.1,58,"10000",65,"mid",true,"A+",1937,"Commerce programs at Kerala University.",["B.Com","BBA","M.Com"],"Top commerce programs in Kerala","University of Kerala Commerce Thiruvananthapuram"),
-  makeCollege("IIM Kozhikode","Kozhikode, Kerala","Kerala","management","Government","Co-Education",4.7,82,"2000000",99,"top",true,"A++",1996,"IIM in Kerala.",["MBA","PGP","Executive MBA"],"Top IIM for Digital Business","IIM Kozhikode Kerala"),
-  makeCollege("Kerala Agricultural University","Thrissur, Kerala","Kerala","agriculture","Government","Co-Education",4.3,63,"20000",76,"mid",true,"A",1971,"Premier agricultural university in Kerala.",["B.Sc Agriculture","B.Sc Horticulture","B.V.Sc"],"Best agricultural university in Kerala","Kerala Agricultural University Thrissur"),
-  makeCollege("Amrita College of Pharmacy","Kochi, Kerala","Kerala","pharmacy","Private","Co-Education",4.3,65,"150000",80,"mid",true,"A+",2003,"Amrita pharmacy college in Kochi.",["B.Pharm","Pharm.D","M.Pharm"],"Top pharmacy college in Kerala","Amrita College of Pharmacy Kochi Kerala"),
-  makeCollege("NIT Calicut Architecture","Kozhikode, Kerala","Kerala","architecture","Government","Co-Education",4.4,80,"70000",82,"mid",true,"A+",1961,"Architecture at NIT Calicut.",["B.Arch","M.Arch"],"Best architecture program in Kerala","NIT Calicut Architecture Kerala"),
-  makeCollege("Kerala University Education","Thiruvananthapuram, Kerala","Kerala","education","Government","Co-Education",4.0,55,"10000",68,"mid",true,"A+",1937,"B.Ed programs at Kerala University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training at premier Kerala university","University of Kerala Education Thiruvananthapuram"),
-
-  // ===== MADHYA PRADESH =====
-  makeCollege("IIT Indore","Indore, Madhya Pradesh","Madhya Pradesh","engineering","Government","Co-Education",4.5,95,"100000",87,"top",true,"A+",2009,"New generation IIT in MP.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil","B.Tech Electrical"],"Fastest growing IIT in India","IIT Indore Madhya Pradesh"),
-  makeCollege("MANIT Bhopal","Bhopal, Madhya Pradesh","Madhya Pradesh","engineering","Government","Co-Education",4.4,82,"65000",84,"mid",true,"A",1960,"Maulana Azad National Institute of Technology.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top NIT in MP","MANIT Bhopal Madhya Pradesh"),
-  makeCollege("IIIT Gwalior","Gwalior, Madhya Pradesh","Madhya Pradesh","engineering","Government","Co-Education",4.4,85,"300000",87,"mid",true,"A",1997,"IIIT in the heritage city of Gwalior.",["B.Tech CSE","B.Tech ECE","B.Tech IT","B.Tech MnC"],"Best IIIT in Central India","IIIT Gwalior Madhya Pradesh"),
-  makeCollege("AIIMS Bhopal","Bhopal, Madhya Pradesh","Madhya Pradesh","medical","Government","Co-Education",4.6,90,"8000",95,"mid",true,"A+",2012,"AIIMS in the heart of India.",["MBBS","BDS","B.Sc Nursing"],"AIIMS brand in Madhya Pradesh","AIIMS Bhopal Madhya Pradesh"),
-  makeCollege("Gandhi Medical College","Bhopal, Madhya Pradesh","Madhya Pradesh","medical","Government","Co-Education",4.4,87,"15000",92,"mid",true,"A",1955,"Oldest government medical college in MP.",["MBBS","BDS","Nursing"],"Oldest medical college in MP","Gandhi Medical College Bhopal Madhya Pradesh"),
-  makeCollege("Devi Ahilya Vishwavidyalaya","Indore, Madhya Pradesh","Madhya Pradesh","arts_science","Government","Co-Education",4.2,58,"10000",66,"mid",true,"A+",1964,"Premier university in Indore.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com"],"Top university in MP","Devi Ahilya Vishwavidyalaya Indore Madhya Pradesh"),
-  makeCollege("NLIU Bhopal","Bhopal, Madhya Pradesh","Madhya Pradesh","law","Government","Co-Education",4.5,75,"150000",88,"mid",true,"A+",1997,"National Law Institute University in Bhopal.",["LLB","BA LLB","BBA LLB","LLM"],"Only NLU in Madhya Pradesh","NLIU Bhopal Madhya Pradesh"),
-  makeCollege("DAVV Commerce","Indore, Madhya Pradesh","Madhya Pradesh","commerce","Government","Co-Education",4.1,57,"10000",65,"mid",true,"A+",1964,"Commerce at Devi Ahilya University.",["B.Com","BBA","M.Com"],"Top commerce programs in MP","DAVV Commerce Indore Madhya Pradesh"),
-  makeCollege("IIM Indore","Indore, Madhya Pradesh","Madhya Pradesh","management","Government","Co-Education",4.7,82,"2000000",99,"top",true,"A++",1996,"IIM with unique 5-year IPM program.",["MBA","PGP","Executive MBA","IPM 5-Year"],"IIM brand in MP with 5-year IPM program","IIM Indore Madhya Pradesh"),
-  makeCollege("JNKVV Jabalpur","Jabalpur, Madhya Pradesh","Madhya Pradesh","agriculture","Government","Co-Education",4.2,62,"17000",72,"mid",true,"A",1964,"Jawaharlal Nehru Krishi Vishwa Vidyalaya.",["B.Sc Agriculture","B.Sc Horticulture","B.Tech Food Tech"],"Top agricultural university in MP","JNKVV Jabalpur Madhya Pradesh"),
-  makeCollege("IPS Academy Pharmacy","Indore, Madhya Pradesh","Madhya Pradesh","pharmacy","Private","Co-Education",4.1,62,"80000",72,"mid",true,"B+",1999,"IPS Academy pharmacy in Indore.",["B.Pharm","M.Pharm","Pharm.D"],"Top pharmacy college in MP","IPS Academy Pharmacy Indore Madhya Pradesh"),
-  makeCollege("SPA Bhopal","Bhopal, Madhya Pradesh","Madhya Pradesh","architecture","Government","Co-Education",4.6,80,"30000",85,"mid",true,"A+",2008,"School of Planning and Architecture in Bhopal.",["B.Arch","B.Planning","M.Arch"],"Best architecture school in Central India","School of Planning and Architecture Bhopal"),
-  makeCollege("DAVV Education","Indore, Madhya Pradesh","Madhya Pradesh","education","Government","Co-Education",3.9,53,"10000",64,"mid",true,"A+",1964,"B.Ed programs at DAVV.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training in Madhya Pradesh","DAVV Education Indore Madhya Pradesh"),
-
-  // ===== MAHARASHTRA =====
-  makeCollege("IIT Bombay","Mumbai, Maharashtra","Maharashtra","engineering","Government","Co-Education",4.9,99,"100000",97,"top",true,"A++",1958,"India premier engineering institution.",["B.Tech CSE","B.Tech EE","B.Tech Mech","B.Tech Chemical"],"Top IIT - Highest packages in India","IIT Bombay Mumbai Maharashtra"),
-  makeCollege("VJTI Mumbai","Mumbai, Maharashtra","Maharashtra","engineering","Government","Co-Education",4.5,85,"40000",87,"mid",true,"A",1887,"One of Mumbai oldest engineering colleges.",["B.Tech CSE","B.Tech IT","B.Tech Mech","B.Tech Civil"],"135+ years of engineering legacy","VJTI Mumbai Maharashtra"),
-  makeCollege("COEP Pune","Pune, Maharashtra","Maharashtra","engineering","Government","Co-Education",4.4,84,"45000",86,"mid",true,"A+",1854,"College of Engineering Pune - oldest in Asia.",["B.Tech CSE","B.Tech Mech","B.Tech Civil","B.Tech ECE"],"Oldest engineering college in Asia after CEG","College of Engineering Pune Maharashtra"),
-  makeCollege("Grant Medical College Mumbai","Mumbai, Maharashtra","Maharashtra","medical","Government","Co-Education",4.6,90,"20000",96,"mid",true,"A",1845,"One of Asia oldest medical colleges.",["MBBS","BDS","Nursing"],"175+ years of medical excellence","Grant Medical College Mumbai Maharashtra"),
-  makeCollege("BJ Medical College Pune","Pune, Maharashtra","Maharashtra","medical","Government","Co-Education",4.5,88,"18000",94,"mid",true,"A",1946,"Premier government medical college in Pune.",["MBBS","BDS","Nursing"],"Best medical college in Pune","BJ Medical College Pune Maharashtra"),
-  makeCollege("Government Law College Mumbai","Mumbai, Maharashtra","Maharashtra","law","Government","Co-Education",4.5,72,"5000",85,"mid",false,"A",1855,"Asia oldest law college.",["LLB","BLS LLB","BA LLB"],"Asia oldest law college","Government Law College Mumbai Maharashtra"),
-  makeCollege("JBIMS Mumbai","Mumbai, Maharashtra","Maharashtra","management","Government","Co-Education",4.7,80,"500000",99,"top",false,"A+",1965,"Jamnalal Bajaj Institute - top MBA in western India.",["MBA","MMS","Executive MBA"],"Best ROI MBA - Lowest fees highest package","Jamnalal Bajaj Institute Mumbai Maharashtra"),
-  makeCollege("Mahatma Phule Krishi Vidyapeeth","Rahuri, Maharashtra","Maharashtra","agriculture","Government","Co-Education",4.2,62,"20000",74,"mid",true,"A",1968,"Premier agricultural university in Maharashtra.",["B.Sc Agriculture","B.Sc Horticulture","B.Tech Food Tech"],"Top agricultural university in Maharashtra","Mahatma Phule Krishi Vidyapeeth Rahuri Maharashtra"),
-  makeCollege("Bombay College of Pharmacy","Mumbai, Maharashtra","Maharashtra","pharmacy","Government","Co-Education",4.4,68,"35000",82,"mid",false,"A+",1957,"Government pharmacy college in Mumbai.",["B.Pharm","Pharm.D","M.Pharm"],"Best government pharmacy college in Maharashtra","Bombay College of Pharmacy Mumbai Maharashtra"),
-  makeCollege("University of Mumbai","Mumbai, Maharashtra","Maharashtra","arts_science","Government","Co-Education",4.2,60,"15000",70,"mid",true,"A+",1857,"One of the oldest universities in India.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com","BBA"],"165+ years of academic excellence","University of Mumbai Maharashtra"),
-  makeCollege("HR College of Commerce Mumbai","Mumbai, Maharashtra","Maharashtra","commerce","Private","Co-Education",4.3,70,"30000",78,"mid",false,"A",1960,"Premier commerce college in Mumbai.",["B.Com","BMS","BAF","BBI"],"Top commerce college in Mumbai","HR College of Commerce Mumbai Maharashtra"),
-  makeCollege("Sir JJ College of Architecture","Mumbai, Maharashtra","Maharashtra","architecture","Government","Co-Education",4.6,80,"30000",88,"top",false,"A+",1896,"India oldest and most prestigious architecture school.",["B.Arch","M.Arch","Urban Design"],"India oldest architecture college","Sir JJ College of Architecture Mumbai Maharashtra"),
-  makeCollege("Mumbai University Education","Mumbai, Maharashtra","Maharashtra","education","Government","Co-Education",4.0,55,"18000",70,"mid",false,"A+",1857,"B.Ed programs at Mumbai University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training in Mumbai","University of Mumbai Education Department"),
-
-  // ===== MANIPUR =====
-  makeCollege("NIT Manipur","Imphal, Manipur","Manipur","engineering","Government","Co-Education",4.2,78,"65000",78,"mid",true,"A",2010,"National Institute of Technology in Manipur.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top NIT in Manipur","NIT Manipur Imphal"),
-  makeCollege("RIMS Imphal Medical","Imphal, Manipur","Manipur","medical","Government","Co-Education",4.4,85,"14000",91,"mid",true,"A",1972,"Regional Institute of Medical Sciences.",["MBBS","BDS","Nursing"],"Premier medical college in Manipur","RIMS Imphal Manipur"),
-  makeCollege("Manipur University","Imphal, Manipur","Manipur","arts_science","Government","Co-Education",4.1,56,"10000",63,"mid",true,"A+",1980,"Central university in Manipur.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com"],"Premier university in Manipur","Manipur University Imphal"),
-  makeCollege("Manipur University Law","Imphal, Manipur","Manipur","law","Government","Co-Education",3.9,54,"12000",65,"mid",true,"A+",1980,"Law programs at Manipur University.",["LLB","BA LLB"],"Top law programs in Manipur","Manipur University Law Imphal"),
-  makeCollege("Manipur University Commerce","Imphal, Manipur","Manipur","commerce","Government","Co-Education",3.8,52,"10000",60,"mid",true,"A+",1980,"Commerce programs at Manipur University.",["B.Com","BBA","M.Com"],"Top commerce programs in Manipur","Manipur University Commerce Imphal"),
-  makeCollege("Central Agricultural University","Imphal, Manipur","Manipur","agriculture","Government","Co-Education",4.2,62,"18000",72,"mid",true,"A",1993,"Central Agricultural University serving North-East.",["B.Sc Agriculture","B.Sc Horticulture","B.V.Sc"],"Top agricultural university in North-East","Central Agricultural University Imphal Manipur"),
-  makeCollege("RIMS Pharmacy","Imphal, Manipur","Manipur","pharmacy","Government","Co-Education",4.0,60,"30000",68,"mid",true,"A",1972,"Pharmacy at RIMS Imphal.",["B.Pharm","M.Pharm"],"Best pharmacy college in Manipur","RIMS Pharmacy Imphal Manipur"),
-  makeCollege("NIT Manipur Architecture","Imphal, Manipur","Manipur","architecture","Government","Co-Education",4.0,72,"65000",70,"mid",true,"A",2010,"Architecture at NIT Manipur.",["B.Arch"],"Best architecture program in Manipur","NIT Manipur Architecture Imphal"),
-  makeCollege("IIM Shillong Management","Shillong, Meghalaya","Manipur","management","Government","Co-Education",4.5,80,"1900000",96,"top",true,"A++",2007,"IIM serving North-East India.",["MBA","PGP","Executive MBA"],"Best management school for North-East India","IIM Shillong Meghalaya"),
-  makeCollege("Manipur University Education","Imphal, Manipur","Manipur","education","Government","Co-Education",3.8,50,"10000",62,"mid",true,"A+",1980,"B.Ed programs at Manipur University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training in Manipur","Manipur University Education Imphal"),
-
-  // ===== MEGHALAYA =====
-  makeCollege("NIT Meghalaya","Shillong, Meghalaya","Meghalaya","engineering","Government","Co-Education",4.2,78,"65000",78,"mid",true,"A",2010,"National Institute of Technology in Meghalaya.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top NIT in Meghalaya","NIT Meghalaya Shillong"),
-  makeCollege("NEIGRIHMS Shillong","Shillong, Meghalaya","Meghalaya","medical","Government","Co-Education",4.5,87,"12000",92,"mid",true,"A",1987,"North-East Indira Gandhi Regional Institute of Health Sciences.",["MBBS","BDS","Nursing"],"Premier medical institute in Meghalaya","NEIGRIHMS Shillong Meghalaya"),
-  makeCollege("NEHU Shillong","Shillong, Meghalaya","Meghalaya","arts_science","Government","Co-Education",4.2,58,"12000",65,"mid",true,"A+",1973,"North-Eastern Hill University.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com"],"Premier university in Meghalaya","North-Eastern Hill University Shillong"),
-  makeCollege("NEHU Law Shillong","Shillong, Meghalaya","Meghalaya","law","Government","Co-Education",4.0,55,"14000",66,"mid",true,"A+",1973,"Law programs at NEHU.",["LLB","BA LLB"],"Top law programs in Meghalaya","NEHU Law Shillong Meghalaya"),
-  makeCollege("NEHU Commerce","Shillong, Meghalaya","Meghalaya","commerce","Government","Co-Education",3.9,53,"12000",62,"mid",true,"A+",1973,"Commerce programs at NEHU.",["B.Com","BBA","M.Com"],"Top commerce programs in Meghalaya","NEHU Commerce Shillong Meghalaya"),
-  makeCollege("IIM Shillong Management School","Shillong, Meghalaya","Meghalaya","management","Government","Co-Education",4.5,80,"1900000",96,"top",true,"A++",2007,"IIM serving North-East India.",["MBA","PGP","Executive MBA"],"Gateway IIM for North-East India","IIM Shillong Meghalaya Management"),
-  makeCollege("College of Agriculture Tura","Tura, Meghalaya","Meghalaya","agriculture","Government","Co-Education",3.9,55,"15000",65,"mid",true,"B+",2005,"Agriculture college in Meghalaya.",["B.Sc Agriculture","B.Sc Horticulture"],"Top agriculture college in Meghalaya","College of Agriculture Tura Meghalaya"),
-  makeCollege("NEHU Pharmacy","Shillong, Meghalaya","Meghalaya","pharmacy","Government","Co-Education",4.0,58,"30000",66,"mid",true,"A+",1973,"Pharmacy at NEHU.",["B.Pharm","M.Pharm"],"Best pharmacy programs in Meghalaya","NEHU Pharmacy Shillong Meghalaya"),
-  makeCollege("NIT Meghalaya Architecture","Shillong, Meghalaya","Meghalaya","architecture","Government","Co-Education",4.0,72,"65000",70,"mid",true,"A",2010,"Architecture at NIT Meghalaya.",["B.Arch"],"Best architecture program in Meghalaya","NIT Meghalaya Architecture Shillong"),
-  makeCollege("NEHU Education","Shillong, Meghalaya","Meghalaya","education","Government","Co-Education",3.9,51,"12000",63,"mid",true,"A+",1973,"B.Ed programs at NEHU.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training in Meghalaya","NEHU Education Shillong Meghalaya"),
-
-  // ===== MIZORAM =====
-  makeCollege("NIT Mizoram","Aizawl, Mizoram","Mizoram","engineering","Government","Co-Education",4.1,76,"65000",75,"mid",true,"A",2010,"National Institute of Technology in Mizoram.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top NIT in Mizoram","NIT Mizoram Aizawl"),
-  makeCollege("Mizoram University","Aizawl, Mizoram","Mizoram","arts_science","Government","Co-Education",4.1,55,"10000",63,"mid",true,"A+",2001,"Central university in Mizoram.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com"],"Premier university in Mizoram","Mizoram University Aizawl"),
-  makeCollege("Zoram Medical College","Aizawl, Mizoram","Mizoram","medical","Government","Co-Education",4.2,83,"14000",88,"mid",true,"A",2020,"Government medical college in Mizoram.",["MBBS","BDS","Nursing"],"Premier medical college in Mizoram","Zoram Medical College Aizawl Mizoram"),
-  makeCollege("Mizoram University Law","Aizawl, Mizoram","Mizoram","law","Government","Co-Education",3.9,53,"12000",63,"mid",true,"A+",2001,"Law programs at Mizoram University.",["LLB","BA LLB"],"Top law programs in Mizoram","Mizoram University Law Aizawl"),
-  makeCollege("Mizoram University Commerce","Aizawl, Mizoram","Mizoram","commerce","Government","Co-Education",3.8,51,"10000",60,"mid",true,"A+",2001,"Commerce programs at Mizoram University.",["B.Com","BBA","M.Com"],"Top commerce programs in Mizoram","Mizoram University Commerce Aizawl"),
-  makeCollege("IIM Shillong NE Management","Shillong, Meghalaya","Mizoram","management","Government","Co-Education",4.5,80,"1900000",96,"top",true,"A++",2007,"IIM serving all of North-East India.",["MBA","PGP"],"Best management college for North-East India","IIM Shillong Meghalaya NE"),
-  makeCollege("Mizoram University Agriculture","Aizawl, Mizoram","Mizoram","agriculture","Government","Co-Education",3.8,53,"14000",62,"mid",true,"A+",2001,"Agriculture programs at Mizoram University.",["B.Sc Agriculture","B.Sc Horticulture"],"Top agriculture programs in Mizoram","Mizoram University Agriculture Aizawl"),
-  makeCollege("NIT Mizoram Pharmacy","Aizawl, Mizoram","Mizoram","pharmacy","Government","Co-Education",4.0,57,"50000",65,"mid",true,"A",2010,"Pharmacy at NIT Mizoram.",["B.Pharm","M.Pharm"],"Best pharmacy programs in Mizoram","NIT Mizoram Pharmacy Aizawl"),
-  makeCollege("NIT Mizoram Architecture","Aizawl, Mizoram","Mizoram","architecture","Government","Co-Education",3.9,70,"65000",68,"mid",true,"A",2010,"Architecture at NIT Mizoram.",["B.Arch"],"Best architecture program in Mizoram","NIT Mizoram Architecture Aizawl"),
-  makeCollege("Mizoram University Education","Aizawl, Mizoram","Mizoram","education","Government","Co-Education",3.8,50,"10000",61,"mid",true,"A+",2001,"B.Ed programs at Mizoram University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training in Mizoram","Mizoram University Education Aizawl"),
-
-  // ===== NAGALAND =====
-  makeCollege("NIT Nagaland","Chumukedima, Nagaland","Nagaland","engineering","Government","Co-Education",4.1,76,"65000",74,"mid",true,"A",2010,"National Institute of Technology in Nagaland.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top NIT in Nagaland","NIT Nagaland Chumukedima"),
-  makeCollege("Nagaland University","Kohima, Nagaland","Nagaland","arts_science","Government","Co-Education",4.0,54,"10000",62,"mid",true,"B+",1994,"Central university in Nagaland.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com"],"Premier university in Nagaland","Nagaland University Lumami"),
-  makeCollege("Naga Hospital Authority Kohima","Kohima, Nagaland","Nagaland","medical","Government","Co-Education",4.1,80,"12000",85,"mid",true,"B+",1964,"Government hospital and medical college in Nagaland.",["MBBS","Nursing","Paramedical"],"Premier medical institution in Nagaland","Naga Hospital Authority Kohima Nagaland"),
-  makeCollege("Nagaland University Law","Kohima, Nagaland","Nagaland","law","Government","Co-Education",3.8,52,"12000",62,"mid",true,"B+",1994,"Law programs at Nagaland University.",["LLB","BA LLB"],"Top law programs in Nagaland","Nagaland University Law Kohima"),
-  makeCollege("Nagaland University Commerce","Kohima, Nagaland","Nagaland","commerce","Government","Co-Education",3.7,50,"10000",58,"mid",true,"B+",1994,"Commerce programs at Nagaland University.",["B.Com","BBA","M.Com"],"Top commerce programs in Nagaland","Nagaland University Commerce Kohima"),
-  makeCollege("IIM Shillong NE Management 2","Shillong, Meghalaya","Nagaland","management","Government","Co-Education",4.5,80,"1900000",96,"top",true,"A++",2007,"IIM for all North-East states.",["MBA","PGP"],"Best management for NE students","IIM Shillong Meghalaya NE2"),
-  makeCollege("Nagaland University Agriculture","Kohima, Nagaland","Nagaland","agriculture","Government","Co-Education",3.8,52,"14000",62,"mid",true,"B+",1994,"Agriculture at Nagaland University.",["B.Sc Agriculture","B.Sc Horticulture"],"Top agriculture programs in Nagaland","Nagaland University Agriculture Kohima"),
-  makeCollege("NIT Nagaland Pharmacy","Chumukedima, Nagaland","Nagaland","pharmacy","Government","Co-Education",3.9,55,"50000",63,"mid",true,"A",2010,"Pharmacy at NIT Nagaland.",["B.Pharm","M.Pharm"],"Best pharmacy programs in Nagaland","NIT Nagaland Pharmacy Chumukedima"),
-  makeCollege("NIT Nagaland Architecture","Chumukedima, Nagaland","Nagaland","architecture","Government","Co-Education",3.9,68,"65000",66,"mid",true,"A",2010,"Architecture at NIT Nagaland.",["B.Arch"],"Best architecture program in Nagaland","NIT Nagaland Architecture Chumukedima"),
-  makeCollege("Nagaland University Education","Kohima, Nagaland","Nagaland","education","Government","Co-Education",3.7,49,"10000",60,"mid",true,"B+",1994,"B.Ed programs at Nagaland University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training in Nagaland","Nagaland University Education Kohima"),
-
-  // ===== ODISHA =====
-  makeCollege("IIT Bhubaneswar","Bhubaneswar, Odisha","Odisha","engineering","Government","Co-Education",4.5,90,"100000",86,"top",true,"A+",2008,"IIT in Odisha.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"IIT brand in Odisha","IIT Bhubaneswar Odisha"),
-  makeCollege("NIT Rourkela","Rourkela, Odisha","Odisha","engineering","Government","Co-Education",4.6,85,"65000",88,"top",true,"A++",1961,"One of the oldest and most prestigious NITs.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil","B.Tech Chemical"],"Top NIT in East India","NIT Rourkela Odisha"),
-  makeCollege("KIIT University","Bhubaneswar, Odisha","Odisha","engineering","Private","Co-Education",4.3,72,"180000",82,"mid",true,"A+",1997,"Top private university in Odisha.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Best private engineering in Odisha","KIIT University Bhubaneswar Odisha"),
-  makeCollege("AIIMS Bhubaneswar","Bhubaneswar, Odisha","Odisha","medical","Government","Co-Education",4.6,90,"8000",95,"mid",true,"A+",2012,"AIIMS in Odisha.",["MBBS","BDS","B.Sc Nursing"],"AIIMS brand in Odisha","AIIMS Bhubaneswar Odisha"),
-  makeCollege("SCB Medical College","Cuttack, Odisha","Odisha","medical","Government","Co-Education",4.5,88,"14000",93,"mid",true,"A",1944,"Oldest and most prestigious medical college in Odisha.",["MBBS","BDS","Nursing"],"Oldest medical college in Odisha","SCB Medical College Cuttack Odisha"),
-  makeCollege("Utkal University","Bhubaneswar, Odisha","Odisha","arts_science","Government","Co-Education",4.2,57,"9000",65,"mid",true,"A+",1943,"Premier state university in Odisha.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com"],"Premier university in Odisha","Utkal University Bhubaneswar Odisha"),
-  makeCollege("NLU Odisha Cuttack","Cuttack, Odisha","Odisha","law","Government","Co-Education",4.4,73,"130000",85,"mid",true,"A+",2008,"National Law University in Odisha.",["LLB","BA LLB","BBA LLB","LLM"],"Only NLU in Odisha","National Law University Odisha Cuttack"),
-  makeCollege("Utkal University Commerce","Bhubaneswar, Odisha","Odisha","commerce","Government","Co-Education",4.0,55,"9000",63,"mid",true,"A+",1943,"Commerce programs at Utkal University.",["B.Com","BBA","M.Com"],"Top commerce programs in Odisha","Utkal University Commerce Bhubaneswar"),
-  makeCollege("IIM Sambalpur","Sambalpur, Odisha","Odisha","management","Government","Co-Education",4.4,78,"1700000",93,"top",true,"A",2015,"IIM in Odisha.",["MBA","PGP"],"IIM brand in Odisha","IIM Sambalpur Odisha"),
-  makeCollege("OUAT Bhubaneswar","Bhubaneswar, Odisha","Odisha","agriculture","Government","Co-Education",4.2,63,"17000",73,"mid",true,"A",1962,"Orissa University of Agriculture and Technology.",["B.Sc Agriculture","B.Sc Horticulture","B.V.Sc"],"Top agricultural university in Odisha","OUAT Bhubaneswar Odisha"),
-  makeCollege("KIIT School of Pharmacy","Bhubaneswar, Odisha","Odisha","pharmacy","Private","Co-Education",4.2,63,"150000",76,"mid",true,"A+",1997,"Pharmacy at KIIT University.",["B.Pharm","Pharm.D","M.Pharm"],"Top pharmacy college in Odisha","KIIT School of Pharmacy Bhubaneswar Odisha"),
-  makeCollege("NIT Rourkela Architecture","Rourkela, Odisha","Odisha","architecture","Government","Co-Education",4.4,78,"65000",80,"mid",true,"A++",1961,"Architecture at NIT Rourkela.",["B.Arch","M.Arch"],"Best architecture program in Odisha","NIT Rourkela Architecture Odisha"),
-  makeCollege("Utkal University Education","Bhubaneswar, Odisha","Odisha","education","Government","Co-Education",3.9,52,"9000",64,"mid",true,"A+",1943,"B.Ed programs at Utkal University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training in Odisha","Utkal University Education Bhubaneswar"),
-
-  // ===== PUNJAB =====
-  makeCollege("IIT Ropar","Ropar, Punjab","Punjab","engineering","Government","Co-Education",4.5,90,"100000",86,"top",true,"A+",2008,"IIT in Punjab.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Chemical"],"IIT brand in Punjab","IIT Ropar Punjab"),
-  makeCollege("NIT Jalandhar","Jalandhar, Punjab","Punjab","engineering","Government","Co-Education",4.4,83,"65000",84,"mid",true,"A",1987,"National Institute of Technology in Punjab.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top NIT in Punjab","NIT Jalandhar Punjab"),
-  makeCollege("Chandigarh University","Mohali, Punjab","Punjab","engineering","Private","Co-Education",4.4,72,"170000",84,"mid",true,"A+",2012,"Fastest growing private university.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech IT","B.Tech AI"],"Fastest growing university in North India","Chandigarh University Mohali Punjab"),
-  makeCollege("Thapar University","Patiala, Punjab","Punjab","engineering","Private","Co-Education",4.5,80,"250000",87,"mid",true,"A+",1956,"Deemed university in Punjab.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Chemical"],"Best private engineering in Punjab","Thapar University Patiala Punjab"),
-  makeCollege("PGIMER Chandigarh Medical","Chandigarh, Punjab","Punjab","medical","Government","Co-Education",4.8,92,"10000",97,"mid",true,"A++",1962,"Premier postgraduate medical institute in North India.",["MBBS","BDS","Nursing","Paramedical"],"Best medical institution in North India","PGIMER Chandigarh Medical"),
-  makeCollege("Panjab University","Chandigarh, Punjab","Punjab","arts_science","Government","Co-Education",4.3,62,"12000",68,"mid",true,"A++",1882,"Premier central university in Punjab.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com"],"Premier university in Punjab","Panjab University Chandigarh"),
-  makeCollege("RGNUL Patiala","Patiala, Punjab","Punjab","law","Government","Co-Education",4.3,72,"130000",82,"mid",true,"A",2006,"Rajiv Gandhi National University of Law.",["LLB","BA LLB","BBA LLB","LLM"],"Only NLU in Punjab","RGNUL Patiala Punjab"),
-  makeCollege("Panjab University Commerce","Chandigarh, Punjab","Punjab","commerce","Government","Co-Education",4.2,60,"12000",67,"mid",true,"A++",1882,"Commerce programs at Panjab University.",["B.Com","BBA","M.Com"],"Top commerce programs in Punjab","Panjab University Commerce Chandigarh"),
-  makeCollege("IIM Amritsar","Amritsar, Punjab","Punjab","management","Government","Co-Education",4.4,78,"1700000",93,"top",true,"A",2015,"IIM in the holy city of Amritsar.",["MBA","PGP"],"IIM brand in Punjab","IIM Amritsar Punjab"),
-  makeCollege("Punjab Agricultural University","Ludhiana, Punjab","Punjab","agriculture","Government","Co-Education",4.4,64,"18000",76,"mid",true,"A+",1962,"One of India's top agricultural universities.",["B.Sc Agriculture","B.Sc Horticulture","B.Tech Food Tech"],"Top agricultural university in North India","Punjab Agricultural University Ludhiana"),
-  makeCollege("Chitkara College of Pharmacy","Rajpura, Punjab","Punjab","pharmacy","Private","Co-Education",4.2,62,"120000",75,"mid",true,"A+",2002,"Top pharmacy college in Punjab.",["B.Pharm","Pharm.D","M.Pharm"],"Best pharmacy college in Punjab","Chitkara College of Pharmacy Rajpura Punjab"),
-  makeCollege("NIT Jalandhar Architecture","Jalandhar, Punjab","Punjab","architecture","Government","Co-Education",4.2,76,"65000",76,"mid",true,"A",1987,"Architecture at NIT Jalandhar.",["B.Arch","M.Arch"],"Best architecture program in Punjab","NIT Jalandhar Architecture Punjab"),
-  makeCollege("Panjab University Education","Chandigarh, Punjab","Punjab","education","Government","Co-Education",4.1,57,"12000",67,"mid",true,"A++",1882,"B.Ed programs at Panjab University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training at premier Punjab university","Panjab University Education Chandigarh"),
-
-  // ===== RAJASTHAN =====
-  makeCollege("IIT Jodhpur","Jodhpur, Rajasthan","Rajasthan","engineering","Government","Co-Education",4.5,95,"100000",88,"top",true,"A+",2008,"New generation IIT in Rajasthan.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Chemical"],"IIT brand with modern curriculum","IIT Jodhpur Rajasthan"),
-  makeCollege("BITS Pilani","Pilani, Rajasthan","Rajasthan","engineering","Private","Co-Education",4.8,93,"450000",94,"top",true,"A+",1964,"India most prestigious private university.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Chemical","B.Tech Civil"],"Best private engineering university in India","BITS Pilani Rajasthan"),
-  makeCollege("MNIT Jaipur","Jaipur, Rajasthan","Rajasthan","engineering","Government","Co-Education",4.5,85,"65000",87,"mid",true,"A+",1963,"Malaviya National Institute of Technology.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top NIT in Rajasthan","MNIT Jaipur Rajasthan"),
-  makeCollege("AIIMS Jodhpur","Jodhpur, Rajasthan","Rajasthan","medical","Government","Co-Education",4.6,90,"8000",96,"mid",true,"A+",2012,"AIIMS in Rajasthan.",["MBBS","BDS","B.Sc Nursing"],"AIIMS brand in Rajasthan","AIIMS Jodhpur Rajasthan"),
-  makeCollege("SMS Medical College","Jaipur, Rajasthan","Rajasthan","medical","Government","Co-Education",4.5,88,"15000",93,"mid",true,"A",1947,"Oldest and most prestigious medical college in Rajasthan.",["MBBS","BDS","Nursing"],"Oldest medical college in Rajasthan","SMS Medical College Jaipur Rajasthan"),
-  makeCollege("University of Rajasthan","Jaipur, Rajasthan","Rajasthan","arts_science","Government","Co-Education",4.1,57,"9000",63,"mid",true,"A+",1947,"Premier state university in Rajasthan.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com"],"Premier university in Rajasthan","University of Rajasthan Jaipur"),
-  makeCollege("RLNLU Jodhpur","Jodhpur, Rajasthan","Rajasthan","law","Government","Co-Education",4.5,75,"150000",88,"mid",true,"A+",2010,"Rajasthan Law University in Jodhpur.",["LLB","BA LLB","BBA LLB","LLM"],"Only NLU in Rajasthan","RLNLU Jodhpur Rajasthan"),
-  makeCollege("University of Rajasthan Commerce","Jaipur, Rajasthan","Rajasthan","commerce","Government","Co-Education",4.0,55,"9000",62,"mid",true,"A+",1947,"Commerce programs at University of Rajasthan.",["B.Com","BBA","M.Com"],"Top commerce programs in Rajasthan","University of Rajasthan Commerce Jaipur"),
-  makeCollege("IIM Udaipur","Udaipur, Rajasthan","Rajasthan","management","Government","Co-Education",4.6,80,"1900000",97,"top",true,"A+",2011,"IIM in the city of lakes.",["MBA","PGP","Executive MBA"],"IIM brand in Rajasthan","IIM Udaipur Rajasthan"),
-  makeCollege("Agriculture University Jodhpur","Jodhpur, Rajasthan","Rajasthan","agriculture","Government","Co-Education",4.1,62,"17000",70,"mid",true,"A",2013,"State agricultural university in Rajasthan.",["B.Sc Agriculture","B.Sc Horticulture","B.V.Sc"],"Top agricultural university in Rajasthan","Agriculture University Jodhpur Rajasthan"),
-  makeCollege("BITS Pilani Pharmacy","Pilani, Rajasthan","Rajasthan","pharmacy","Private","Co-Education",4.6,88,"450000",88,"top",true,"A+",1964,"Pharmacy at BITS Pilani.",["B.Pharm","M.Pharm","Pharm.D"],"Best pharmacy college in Rajasthan","BITS Pilani Pharmacy Pilani Rajasthan"),
-  makeCollege("MNIT Jaipur Architecture","Jaipur, Rajasthan","Rajasthan","architecture","Government","Co-Education",4.3,78,"65000",78,"mid",true,"A+",1963,"Architecture at MNIT Jaipur.",["B.Arch","M.Arch"],"Best architecture program in Rajasthan","MNIT Jaipur Architecture Rajasthan"),
-  makeCollege("University of Rajasthan Education","Jaipur, Rajasthan","Rajasthan","education","Government","Co-Education",3.9,53,"9000",63,"mid",true,"A+",1947,"B.Ed programs at University of Rajasthan.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training in Rajasthan","University of Rajasthan Education Jaipur"),
-
-  // ===== SIKKIM =====
-  makeCollege("NIT Sikkim","Ravangla, Sikkim","Sikkim","engineering","Government","Co-Education",4.2,77,"65000",76,"mid",true,"A",2010,"National Institute of Technology in Sikkim.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top NIT in Sikkim","NIT Sikkim Ravangla"),
-  makeCollege("Sikkim Manipal Institute of Technology","Majitar, Sikkim","Sikkim","engineering","Private","Co-Education",4.2,72,"180000",78,"mid",true,"A",2000,"Top private engineering in Sikkim.",["B.Tech CSE","B.Tech ECE","B.Tech Mech"],"Best private engineering in Sikkim","Sikkim Manipal Institute of Technology Majitar"),
-  makeCollege("Sikkim University","Gangtok, Sikkim","Sikkim","arts_science","Government","Co-Education",4.1,55,"10000",63,"mid",true,"A+",2007,"Central university in Sikkim.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com"],"Premier university in Sikkim","Sikkim University Gangtok"),
-  makeCollege("STNM Hospital Medical","Gangtok, Sikkim","Sikkim","medical","Government","Co-Education",4.2,80,"12000",85,"mid",true,"B+",1974,"Sir Thutob Namgyal Memorial Hospital medical college.",["MBBS","Nursing"],"Premier medical institution in Sikkim","STNM Hospital Gangtok Sikkim"),
-  makeCollege("Sikkim University Law","Gangtok, Sikkim","Sikkim","law","Government","Co-Education",3.9,53,"12000",63,"mid",true,"A+",2007,"Law programs at Sikkim University.",["LLB","BA LLB"],"Top law programs in Sikkim","Sikkim University Law Gangtok"),
-  makeCollege("Sikkim University Commerce","Gangtok, Sikkim","Sikkim","commerce","Government","Co-Education",3.9,51,"10000",60,"mid",true,"A+",2007,"Commerce programs at Sikkim University.",["B.Com","BBA","M.Com"],"Top commerce programs in Sikkim","Sikkim University Commerce Gangtok"),
-  makeCollege("IIM Shillong NE 3","Shillong, Meghalaya","Sikkim","management","Government","Co-Education",4.5,80,"1900000",96,"top",true,"A++",2007,"IIM for North-East India students.",["MBA","PGP"],"Best management for Sikkim students","IIM Shillong Meghalaya Sikkim"),
-  makeCollege("Himalayan Pharmacy Institute","Majitar, Sikkim","Sikkim","pharmacy","Private","Co-Education",4.2,62,"120000",75,"mid",true,"A",2002,"Himalayan Pharmacy Institute in Sikkim.",["B.Pharm","M.Pharm","Pharm.D"],"Best pharmacy college in Sikkim","Himalayan Pharmacy Institute Majitar Sikkim"),
-  makeCollege("Government Agricultural College","Gangtok, Sikkim","Sikkim","agriculture","Government","Co-Education",3.9,54,"14000",63,"mid",true,"B+",1995,"Government agriculture college in Sikkim.",["B.Sc Agriculture","B.Sc Horticulture"],"Top agriculture programs in Sikkim","Government Agricultural College Gangtok Sikkim"),
-  makeCollege("NIT Sikkim Architecture","Ravangla, Sikkim","Sikkim","architecture","Government","Co-Education",3.9,70,"65000",66,"mid",true,"A",2010,"Architecture at NIT Sikkim.",["B.Arch"],"Best architecture program in Sikkim","NIT Sikkim Architecture Ravangla"),
-  makeCollege("Sikkim University Education","Gangtok, Sikkim","Sikkim","education","Government","Co-Education",3.8,50,"10000",61,"mid",true,"A+",2007,"B.Ed programs at Sikkim University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training in Sikkim","Sikkim University Education Gangtok"),
-
-  // ===== TAMIL NADU =====
-  makeCollege("IIT Madras","Chennai, Tamil Nadu","Tamil Nadu","engineering","Government","Co-Education",4.9,99,"100000",95,"top",true,"A++",1959,"India #1 ranked engineering institution.",["B.Tech CSE","B.Tech EE","B.Tech Mech","B.Tech Chemical"],"India #1 Engineering Institution - NIRF Rankings","IIT Madras Chennai Tamil Nadu"),
-  makeCollege("NIT Tiruchirappalli","Trichy, Tamil Nadu","Tamil Nadu","engineering","Government","Co-Education",4.7,90,"75000",91,"top",true,"A++",1964,"Best NIT in South India.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Best NIT in India for Placements","NIT Tiruchirappalli Tamil Nadu"),
-  makeCollege("Anna University","Chennai, Tamil Nadu","Tamil Nadu","engineering","Government","Co-Education",4.8,90,"35000",92,"top",true,"A++",1978,"Premier technical university in Tamil Nadu.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Ranked #1 in Tamil Nadu for Engineering","Anna University Chennai Tamil Nadu"),
-  makeCollege("PSG College of Technology","Coimbatore, Tamil Nadu","Tamil Nadu","engineering","Private","Co-Education",4.6,85,"95000",89,"top",true,"A+",1951,"One of the oldest engineering colleges in South India.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech EEE"],"100% placement for top branches","PSG College of Technology Coimbatore Tamil Nadu"),
-  makeCollege("VIT Vellore","Vellore, Tamil Nadu","Tamil Nadu","engineering","Private","Co-Education",4.5,75,"180000",87,"mid",true,"A++",1984,"Top private university with excellent placements.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech IT"],"Largest private university campus in Asia","VIT University Vellore Tamil Nadu"),
-  makeCollege("Madras Medical College","Chennai, Tamil Nadu","Tamil Nadu","medical","Government","Co-Education",4.9,95,"15000",98,"top",true,"A++",1835,"One of Asia oldest medical colleges.",["MBBS","BDS","Nursing"],"Asia oldest medical college","Madras Medical College Chennai Tamil Nadu"),
-  makeCollege("Christian Medical College Vellore","Vellore, Tamil Nadu","Tamil Nadu","medical","Private","Co-Education",4.9,95,"80000",99,"top",true,"A++",1900,"World-renowned medical institution.",["MBBS","BDS","B.Sc Nursing"],"Ranked #1 Medical College in India","Christian Medical College Vellore Tamil Nadu"),
-  makeCollege("Tamil Nadu National Law School","Trichy, Tamil Nadu","Tamil Nadu","law","Government","Co-Education",4.3,72,"50000",82,"mid",true,"A",2012,"National law school in Tamil Nadu.",["LLB","BBA LLB","B.Com LLB"],"Only NLU in Tamil Nadu","Tamil Nadu National Law School Trichy"),
-  makeCollege("IIM Trichy","Trichy, Tamil Nadu","Tamil Nadu","management","Government","Co-Education",4.6,80,"1800000",98,"top",true,"A+",2011,"IIM in South India.",["MBA","PGP","Executive MBA"],"IIM brand in Tamil Nadu","IIM Trichy Tamil Nadu"),
-  makeCollege("Tamil Nadu Agricultural University","Coimbatore, Tamil Nadu","Tamil Nadu","agriculture","Government","Co-Education",4.4,65,"20000",78,"mid",true,"A+",1971,"Premier agricultural university in Tamil Nadu.",["B.Sc Agriculture","B.Sc Horticulture","B.Tech Food Tech"],"Top agricultural university in TN","Tamil Nadu Agricultural University Coimbatore"),
-  makeCollege("JSS College of Pharmacy Ooty","Ooty, Tamil Nadu","Tamil Nadu","pharmacy","Private","Co-Education",4.5,70,"120000",85,"top",true,"A+",1980,"Top pharmacy college in Tamil Nadu.",["B.Pharm","Pharm.D","M.Pharm"],"Best pharmacy college in TN","JSS College of Pharmacy Ooty Tamil Nadu"),
-  makeCollege("Presidency College Chennai","Chennai, Tamil Nadu","Tamil Nadu","arts_science","Government","Co-Education",4.6,80,"8000",75,"mid",true,"A+",1840,"One of the oldest colleges in India.",["B.Sc Physics","B.Sc Chemistry","B.Sc Maths","B.A English"],"180+ years of academic excellence","Presidency College Chennai Tamil Nadu"),
-  makeCollege("Loyola College Commerce","Chennai, Tamil Nadu","Tamil Nadu","commerce","Private","Co-Education",4.5,75,"45000",80,"mid",false,"A+",1925,"Premier autonomous college for commerce.",["B.Com","BBA","B.Sc CS"],"Top autonomous college for Commerce in TN","Loyola College Chennai Tamil Nadu"),
-  makeCollege("Anna University Architecture","Chennai, Tamil Nadu","Tamil Nadu","architecture","Government","Co-Education",4.4,78,"35000",82,"mid",true,"A++",1978,"Anna University architecture school.",["B.Arch","M.Arch","Urban Design"],"Top architecture school in TN","Anna University School of Architecture Chennai"),
-  makeCollege("University of Madras Education","Chennai, Tamil Nadu","Tamil Nadu","education","Government","Co-Education",4.1,58,"12000",72,"mid",false,"A+",1857,"B.Ed programs at University of Madras.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training at 165-year-old institution","University of Madras Chennai Tamil Nadu"),
-
-  // ===== TELANGANA =====
-  makeCollege("IIT Hyderabad","Hyderabad, Telangana","Telangana","engineering","Government","Co-Education",4.7,96,"100000",90,"top",true,"A++",2008,"New generation IIT with innovative curriculum.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Design"],"India most innovative IIT for research","IIT Hyderabad Telangana"),
-  makeCollege("NIT Warangal","Warangal, Telangana","Telangana","engineering","Government","Co-Education",4.6,88,"70000",90,"top",true,"A++",1959,"One of the oldest and most prestigious NITs.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top NIT in South India","NIT Warangal Telangana"),
-  makeCollege("IIIT Hyderabad","Hyderabad, Telangana","Telangana","engineering","Private","Co-Education",4.7,92,"350000",93,"top",true,"A+",1998,"Premier IIIT for AI and CS research.",["B.Tech CSE","B.Tech ECE","B.Tech CSD"],"Best IIIT in India for AI Research","IIIT Hyderabad Telangana"),
-  makeCollege("BITS Pilani Hyderabad","Hyderabad, Telangana","Telangana","engineering","Private","Co-Education",4.7,92,"450000",93,"top",true,"A+",2008,"BITS Pilani campus in Hyderabad.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Chemical"],"BITS Pilani brand - Top packages guaranteed","BITS Pilani Hyderabad Campus Telangana"),
-  makeCollege("Osmania Medical College","Hyderabad, Telangana","Telangana","medical","Government","Co-Education",4.5,88,"16000",93,"mid",true,"A",1846,"One of the oldest medical colleges in South India.",["MBBS","BDS","Nursing"],"175+ years of medical education","Osmania Medical College Hyderabad Telangana"),
-  makeCollege("NALSAR University Hyderabad","Hyderabad, Telangana","Telangana","law","Government","Co-Education",4.7,80,"200000",94,"top",true,"A+",1998,"National law university in Hyderabad.",["LLB","BA LLB","BBA LLB","LLM"],"Top 3 NLU in India","NALSAR University Hyderabad Telangana"),
-  makeCollege("ISB Hyderabad","Hyderabad, Telangana","Telangana","management","Private","Co-Education",4.8,85,"3500000",100,"top",true,"A+",2001,"India leading globally ranked business school.",["MBA","PGP","Executive MBA"],"India only globally ranked Business School","Indian School of Business Hyderabad"),
-  makeCollege("PJTSAU Hyderabad","Hyderabad, Telangana","Telangana","agriculture","Government","Co-Education",4.2,63,"22000",74,"mid",true,"A",2014,"State agricultural university in Telangana.",["B.Sc Agriculture","B.Sc Horticulture","B.V.Sc"],"Premier agricultural university in Telangana","PJTSAU Hyderabad Telangana"),
-  makeCollege("Osmania University","Hyderabad, Telangana","Telangana","arts_science","Government","Co-Education",4.2,60,"12000",68,"mid",true,"A+",1918,"One of the oldest universities in South India.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com"],"100+ years of academic heritage","Osmania University Hyderabad Telangana"),
-  makeCollege("Osmania University Commerce","Hyderabad, Telangana","Telangana","commerce","Government","Co-Education",4.0,58,"12000",68,"mid",false,"A+",1918,"Commerce programs at Osmania University.",["B.Com","BBA","M.Com"],"Top commerce programs in Hyderabad","Osmania University Commerce Hyderabad"),
-  makeCollege("Vaagdevi College of Pharmacy","Warangal, Telangana","Telangana","pharmacy","Private","Co-Education",4.1,65,"85000",78,"mid",true,"A",1995,"Pharmacy with Hyderabad pharma connections.",["B.Pharm","Pharm.D","M.Pharm"],"Strong Hyderabad pharma industry connections","Vaagdevi College of Pharmacy Warangal Telangana"),
-  makeCollege("JNAFAU Architecture Telangana","Hyderabad, Telangana","Telangana","architecture","Government","Co-Education",4.5,78,"35000",83,"mid",true,"A+",1949,"Dedicated architecture university in Telangana.",["B.Arch","B.Planning","M.Arch"],"Best architecture college in Telangana","JNAFAU Architecture Hyderabad Telangana"),
-  makeCollege("Osmania University Education","Hyderabad, Telangana","Telangana","education","Government","Co-Education",4.0,56,"12000",70,"mid",false,"A+",1918,"B.Ed programs at Osmania University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training at 100-year-old institution","Osmania University Education Hyderabad"),
-
-  // ===== TRIPURA =====
-  makeCollege("NIT Agartala","Agartala, Tripura","Tripura","engineering","Government","Co-Education",4.3,80,"65000",81,"mid",true,"A",1965,"National Institute of Technology in Tripura.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top NIT in Tripura","NIT Agartala Tripura"),
-  makeCollege("Tripura University","Agartala, Tripura","Tripura","arts_science","Government","Co-Education",4.1,55,"9000",63,"mid",true,"A+",1987,"Central university in Tripura.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com"],"Premier university in Tripura","Tripura University Agartala"),
-  makeCollege("Government Medical College Agartala","Agartala, Tripura","Tripura","medical","Government","Co-Education",4.3,83,"13000",88,"mid",true,"A",1981,"Government medical college in Tripura.",["MBBS","BDS","Nursing"],"Premier medical college in Tripura","Government Medical College Agartala Tripura"),
-  makeCollege("Tripura University Law","Agartala, Tripura","Tripura","law","Government","Co-Education",3.9,52,"12000",63,"mid",true,"A+",1987,"Law programs at Tripura University.",["LLB","BA LLB"],"Top law programs in Tripura","Tripura University Law Agartala"),
-  makeCollege("Tripura University Commerce","Agartala, Tripura","Tripura","commerce","Government","Co-Education",3.8,50,"9000",60,"mid",true,"A+",1987,"Commerce programs at Tripura University.",["B.Com","BBA","M.Com"],"Top commerce programs in Tripura","Tripura University Commerce Agartala"),
-  makeCollege("IIM Shillong NE 4","Shillong, Meghalaya","Tripura","management","Government","Co-Education",4.5,80,"1900000",96,"top",true,"A++",2007,"IIM for North-East India students.",["MBA","PGP"],"Best management for Tripura students","IIM Shillong Meghalaya Tripura"),
-  makeCollege("College of Agriculture Lembucherra","Lembucherra, Tripura","Tripura","agriculture","Government","Co-Education",3.9,55,"15000",65,"mid",true,"B+",1975,"Agriculture college in Tripura.",["B.Sc Agriculture","B.Sc Horticulture"],"Top agriculture college in Tripura","College of Agriculture Lembucherra Tripura"),
-  makeCollege("NIT Agartala Pharmacy","Agartala, Tripura","Tripura","pharmacy","Government","Co-Education",4.1,60,"50000",68,"mid",true,"A",1965,"Pharmacy at NIT Agartala.",["B.Pharm","M.Pharm"],"Best pharmacy programs in Tripura","NIT Agartala Pharmacy Tripura"),
-  makeCollege("NIT Agartala Architecture","Agartala, Tripura","Tripura","architecture","Government","Co-Education",4.1,72,"65000",72,"mid",true,"A",1965,"Architecture at NIT Agartala.",["B.Arch"],"Best architecture program in Tripura","NIT Agartala Architecture Tripura"),
-  makeCollege("Tripura University Education","Agartala, Tripura","Tripura","education","Government","Co-Education",3.8,50,"9000",61,"mid",true,"A+",1987,"B.Ed programs at Tripura University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training in Tripura","Tripura University Education Agartala"),
-
-  // ===== UTTAR PRADESH =====
-  makeCollege("IIT Kanpur","Kanpur, Uttar Pradesh","Uttar Pradesh","engineering","Government","Co-Education",4.8,98,"100000",95,"top",true,"A++",1959,"Pioneer in Computer Science education in India.",["B.Tech CSE","B.Tech EE","B.Tech Mech","B.Tech Chemical","B.Tech Aerospace"],"Pioneer in Computer Science education in India","IIT Kanpur Uttar Pradesh"),
-  makeCollege("IIT Varanasi BHU","Varanasi, Uttar Pradesh","Uttar Pradesh","engineering","Government","Co-Education",4.6,92,"100000",88,"top",true,"A++",1919,"IIT in the holy city of Varanasi.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Chemical","B.Tech Metallurgy"],"IIT in the city of light","IIT Varanasi BHU Uttar Pradesh"),
-  makeCollege("MNNIT Allahabad","Allahabad, Uttar Pradesh","Uttar Pradesh","engineering","Government","Co-Education",4.5,84,"65000",86,"mid",true,"A+",1961,"Motilal Nehru National Institute of Technology.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top NIT in UP","MNNIT Allahabad Uttar Pradesh"),
-  makeCollege("AIIMS Lucknow","Lucknow, Uttar Pradesh","Uttar Pradesh","medical","Government","Co-Education",4.7,92,"8000",97,"mid",true,"A+",2012,"AIIMS in the state capital of UP.",["MBBS","BDS","B.Sc Nursing"],"AIIMS brand in Uttar Pradesh","AIIMS Lucknow Uttar Pradesh"),
-  makeCollege("KGMU Lucknow","Lucknow, Uttar Pradesh","Uttar Pradesh","medical","Government","Co-Education",4.6,88,"15000",94,"mid",true,"A+",1911,"King George's Medical University.",["MBBS","BDS","Nursing"],"Oldest and most prestigious medical college in UP","KGMU Lucknow Uttar Pradesh"),
-  makeCollege("Banaras Hindu University","Varanasi, Uttar Pradesh","Uttar Pradesh","arts_science","Government","Co-Education",4.4,62,"8000",70,"mid",true,"A++",1916,"One of the largest residential universities in Asia.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.A History","B.Com"],"Largest residential university in Asia","Banaras Hindu University Varanasi UP"),
-  makeCollege("RMLNLU Lucknow","Lucknow, Uttar Pradesh","Uttar Pradesh","law","Government","Co-Education",4.5,75,"130000",88,"mid",true,"A+",2006,"Dr. Ram Manohar Lohiya National Law University.",["LLB","BA LLB","BBA LLB","LLM"],"Top NLU in North India","RMLNLU Lucknow Uttar Pradesh"),
-  makeCollege("Lucknow University Commerce","Lucknow, Uttar Pradesh","Uttar Pradesh","commerce","Government","Co-Education",4.1,58,"8000",65,"mid",true,"A+",1920,"Commerce programs at Lucknow University.",["B.Com","BBA","M.Com"],"Top commerce programs in UP","Lucknow University Commerce Uttar Pradesh"),
-  makeCollege("IIM Lucknow","Lucknow, Uttar Pradesh","Uttar Pradesh","management","Government","Co-Education",4.7,82,"1900000",99,"top",true,"A++",1984,"IIM in the capital of UP.",["MBA","PGP","Executive MBA"],"IIM brand in Uttar Pradesh","IIM Lucknow Uttar Pradesh"),
-  makeCollege("GBPUAT Pantnagar","Pantnagar, Uttarakhand","Uttar Pradesh","agriculture","Government","Co-Education",4.3,64,"18000",74,"mid",true,"A+",1960,"Govind Ballabh Pant University of Agriculture.",["B.Sc Agriculture","B.Sc Horticulture","B.Tech Food Tech","B.V.Sc"],"Green Revolution pioneer university","GBPUAT Pantnagar Uttarakhand"),
-  makeCollege("KGMU Pharmacy","Lucknow, Uttar Pradesh","Uttar Pradesh","pharmacy","Government","Co-Education",4.3,65,"15000",78,"mid",true,"A+",1911,"Pharmacy at King George's Medical University.",["B.Pharm","M.Pharm","Pharm.D"],"Best pharmacy programs in UP","KGMU Pharmacy Lucknow UP"),
-  makeCollege("IIT Roorkee Architecture","Roorkee, Uttarakhand","Uttar Pradesh","architecture","Government","Co-Education",4.6,82,"100000",85,"top",true,"A++",1847,"Architecture at IIT Roorkee - oldest technical institute.",["B.Arch","M.Arch","Urban Design"],"Oldest technical institute in Asia","IIT Roorkee Architecture Uttarakhand"),
-  makeCollege("BHU Education","Varanasi, Uttar Pradesh","Uttar Pradesh","education","Government","Co-Education",4.2,58,"8000",70,"mid",true,"A++",1916,"B.Ed programs at Banaras Hindu University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training at premier central university","BHU Education Varanasi UP"),
-
-  // ===== UTTARAKHAND =====
-  makeCollege("IIT Roorkee","Roorkee, Uttarakhand","Uttarakhand","engineering","Government","Co-Education",4.8,95,"100000",93,"top",true,"A++",1847,"Oldest technical institute in Asia.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil","B.Tech Chemical"],"Oldest technical institute in Asia","IIT Roorkee Uttarakhand"),
-  makeCollege("NIT Uttarakhand","Srinagar, Uttarakhand","Uttarakhand","engineering","Government","Co-Education",4.2,78,"65000",78,"mid",true,"A",2009,"National Institute of Technology in Uttarakhand.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top NIT in Uttarakhand","NIT Uttarakhand Srinagar"),
-  makeCollege("Graphic Era University","Dehradun, Uttarakhand","Uttarakhand","engineering","Private","Co-Education",4.2,70,"130000",78,"mid",true,"A+",2008,"Top private university in Uttarakhand.",["B.Tech CSE","B.Tech ECE","B.Tech Mech"],"Best private engineering in Uttarakhand","Graphic Era University Dehradun Uttarakhand"),
-  makeCollege("AIIMS Rishikesh","Rishikesh, Uttarakhand","Uttarakhand","medical","Government","Co-Education",4.7,90,"8000",96,"mid",true,"A+",2012,"AIIMS in the yoga capital of the world.",["MBBS","BDS","B.Sc Nursing"],"AIIMS brand in Uttarakhand","AIIMS Rishikesh Uttarakhand"),
-  makeCollege("HNB Garhwal University","Srinagar, Uttarakhand","Uttarakhand","arts_science","Government","Co-Education",4.1,56,"9000",63,"mid",true,"A+",1973,"Central university in Uttarakhand.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com"],"Premier university in Uttarakhand","HNB Garhwal University Srinagar Uttarakhand"),
-  makeCollege("HNB Garhwal University Law","Srinagar, Uttarakhand","Uttarakhand","law","Government","Co-Education",3.9,54,"12000",64,"mid",true,"A+",1973,"Law programs at HNB Garhwal University.",["LLB","BA LLB"],"Top law programs in Uttarakhand","HNB Garhwal University Law Srinagar"),
-  makeCollege("HNB Garhwal University Commerce","Srinagar, Uttarakhand","Uttarakhand","commerce","Government","Co-Education",3.9,52,"9000",61,"mid",true,"A+",1973,"Commerce programs at HNB Garhwal University.",["B.Com","BBA","M.Com"],"Top commerce programs in Uttarakhand","HNB Garhwal University Commerce Srinagar"),
-  makeCollege("IIM Kashipur","Kashipur, Uttarakhand","Uttarakhand","management","Government","Co-Education",4.5,80,"1800000",95,"top",true,"A+",2011,"IIM in Uttarakhand.",["MBA","PGP","Executive MBA"],"IIM brand in Uttarakhand","IIM Kashipur Uttarakhand"),
-  makeCollege("GBPUAT Agriculture","Pantnagar, Uttarakhand","Uttarakhand","agriculture","Government","Co-Education",4.3,64,"18000",74,"mid",true,"A+",1960,"Govind Ballabh Pant University of Agriculture.",["B.Sc Agriculture","B.Sc Horticulture","B.V.Sc"],"Green Revolution pioneer institution","GBPUAT Pantnagar Agriculture Uttarakhand"),
-  makeCollege("UPES Pharmacy","Dehradun, Uttarakhand","Uttarakhand","pharmacy","Private","Co-Education",4.1,62,"130000",73,"mid",true,"A+",2003,"Pharmacy at UPES Dehradun.",["B.Pharm","M.Pharm","Pharm.D"],"Best pharmacy college in Uttarakhand","UPES Pharmacy Dehradun Uttarakhand"),
-  makeCollege("IIT Roorkee Architecture Dept","Roorkee, Uttarakhand","Uttarakhand","architecture","Government","Co-Education",4.6,82,"100000",85,"top",true,"A++",1847,"Architecture at IIT Roorkee.",["B.Arch","M.Arch","Urban Design"],"Best architecture at oldest tech institute","IIT Roorkee Architecture Department"),
-  makeCollege("HNB Garhwal University Education","Srinagar, Uttarakhand","Uttarakhand","education","Government","Co-Education",3.9,51,"9000",62,"mid",true,"A+",1973,"B.Ed programs at HNB Garhwal University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training in Uttarakhand","HNB Garhwal University Education Srinagar"),
-
-  // ===== WEST BENGAL =====
-  makeCollege("IIT Kharagpur","Kharagpur, West Bengal","West Bengal","engineering","Government","Co-Education",4.8,98,"100000",94,"top",true,"A++",1951,"India first IIT.",["B.Tech CSE","B.Tech EE","B.Tech Mech","B.Tech Civil","B.Tech Chemical"],"India First IIT - Largest campus in India","IIT Kharagpur West Bengal"),
-  makeCollege("Jadavpur University","Kolkata, West Bengal","West Bengal","engineering","Government","Co-Education",4.5,85,"20000",85,"mid",true,"A+",1906,"Premier state university in Eastern India.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Top state university in Eastern India","Jadavpur University Kolkata West Bengal"),
-  makeCollege("IIEST Shibpur","Howrah, West Bengal","West Bengal","engineering","Government","Co-Education",4.4,82,"55000",83,"mid",true,"A+",1856,"One of the oldest engineering colleges in India.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech Civil"],"Second oldest engineering college in India","IIEST Shibpur Howrah West Bengal"),
-  makeCollege("Medical College Kolkata","Kolkata, West Bengal","West Bengal","medical","Government","Co-Education",4.6,88,"14000",94,"mid",true,"A",1835,"One of Asia oldest medical colleges.",["MBBS","BDS","Nursing"],"Asia oldest medical college along with Madras","Medical College Hospital Kolkata West Bengal"),
-  makeCollege("AIIMS Kalyani","Kalyani, West Bengal","West Bengal","medical","Government","Co-Education",4.5,88,"8000",93,"mid",true,"A",2019,"AIIMS in West Bengal.",["MBBS","BDS","B.Sc Nursing"],"AIIMS brand in West Bengal","AIIMS Kalyani West Bengal"),
-  makeCollege("University of Calcutta","Kolkata, West Bengal","West Bengal","arts_science","Government","Co-Education",4.3,62,"8000",68,"mid",true,"A++",1857,"One of the oldest and most prestigious universities in India.",["B.Sc Physics","B.Sc Chemistry","B.A English","B.Com"],"One of the oldest universities in Asia","University of Calcutta West Bengal"),
-  makeCollege("WBNUJS Kolkata","Kolkata, West Bengal","West Bengal","law","Government","Co-Education",4.6,78,"150000",92,"mid",true,"A+",1999,"West Bengal National University of Juridical Sciences.",["LLB","BA LLB","BBA LLB","LLM"],"Top 5 NLU in India","WBNUJS Kolkata West Bengal"),
-  makeCollege("Calcutta University Commerce","Kolkata, West Bengal","West Bengal","commerce","Government","Co-Education",4.2,60,"8000",66,"mid",true,"A++",1857,"Commerce programs at Calcutta University.",["B.Com","BBA","M.Com"],"Top commerce programs in WB","University of Calcutta Commerce Kolkata"),
-  makeCollege("IIM Calcutta","Kolkata, West Bengal","West Bengal","management","Government","Co-Education",4.9,85,"2400000",100,"top",true,"A++",1961,"One of the top 3 IIMs.",["MBA","PGP","Executive MBA","PhD Management"],"One of top 3 IIMs in India","IIM Calcutta West Bengal"),
-  makeCollege("Bidhan Chandra Krishi Viswavidyalaya","Nadia, West Bengal","West Bengal","agriculture","Government","Co-Education",4.2,63,"16000",72,"mid",true,"A",1974,"Premier agricultural university in West Bengal.",["B.Sc Agriculture","B.Sc Horticulture","B.V.Sc"],"Top agricultural university in WB","Bidhan Chandra Krishi Viswavidyalaya Nadia West Bengal"),
-  makeCollege("Jadavpur University Pharmacy","Kolkata, West Bengal","West Bengal","pharmacy","Government","Co-Education",4.4,67,"20000",80,"mid",true,"A+",1906,"Pharmacy at Jadavpur University.",["B.Pharm","M.Pharm","Pharm.D"],"Best pharmacy college in West Bengal","Jadavpur University Pharmacy Kolkata"),
-  makeCollege("Jadavpur University Architecture","Kolkata, West Bengal","West Bengal","architecture","Government","Co-Education",4.4,78,"20000",80,"mid",true,"A+",1906,"Architecture at Jadavpur University.",["B.Arch","M.Arch","Urban Design"],"Best architecture college in West Bengal","Jadavpur University Architecture Kolkata"),
-  makeCollege("Calcutta University Education","Kolkata, West Bengal","West Bengal","education","Government","Co-Education",4.1,57,"8000",66,"mid",true,"A++",1857,"B.Ed programs at Calcutta University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training at oldest Asian university","University of Calcutta Education Kolkata"),
-
-  // ===== DELHI =====
-  makeCollege("IIT Delhi","New Delhi, Delhi","Delhi","engineering","Government","Co-Education",4.9,99,"100000",96,"top",true,"A++",1961,"One of India top IITs.",["B.Tech CSE","B.Tech EE","B.Tech Mech","B.Tech Chemical"],"India #2 Engineering Institution","IIT Delhi New Delhi"),
-  makeCollege("Delhi Technological University","New Delhi, Delhi","Delhi","engineering","Government","Co-Education",4.5,88,"80000",88,"top",true,"A+",1941,"Premier state engineering university in Delhi.",["B.Tech CSE","B.Tech ECE","B.Tech Mech","B.Tech IT"],"Top government engineering college in Delhi","Delhi Technological University New Delhi"),
-  makeCollege("IIIT Delhi","New Delhi, Delhi","Delhi","engineering","Government","Co-Education",4.5,90,"350000",92,"top",true,"A+",2008,"Research-focused IIIT with strong CS programs.",["B.Tech CSE","B.Tech ECE","B.Tech IT"],"Top IIIT in India for research","IIIT Delhi New Delhi"),
-  makeCollege("AIIMS New Delhi","New Delhi, Delhi","Delhi","medical","Government","Co-Education",5.0,99,"7000",100,"top",true,"A++",1956,"India most prestigious medical institution.",["MBBS","BDS","B.Sc Nursing"],"India #1 Medical College","AIIMS New Delhi"),
-  makeCollege("Lady Hardinge Medical College","New Delhi, Delhi","Delhi","medical","Government","Girls Only",4.6,90,"10000",95,"mid",true,"A",1916,"Premier women medical college in India.",["MBBS","BDS","Nursing"],"Top women medical college in India","Lady Hardinge Medical College New Delhi"),
-  makeCollege("NLU Delhi","New Delhi, Delhi","Delhi","law","Government","Co-Education",4.8,83,"200000",96,"top",true,"A++",2008,"National Law University in the capital.",["LLB","BA LLB","BBA LLB","LLM"],"Top 3 NLU in India","National Law University Delhi"),
-  makeCollege("FMS Delhi","New Delhi, Delhi","Delhi","management","Government","Co-Education",4.8,85,"50000",100,"top",false,"A++",1954,"Faculty of Management Studies - best value MBA.",["MBA","Executive MBA"],"Best ROI MBA - Lowest fees top packages","Faculty of Management Studies Delhi"),
-  makeCollege("IARI New Delhi","New Delhi, Delhi","Delhi","agriculture","Government","Co-Education",4.7,80,"20000",87,"mid",true,"A++",1905,"India premier agricultural research institute.",["B.Sc Agriculture","B.Sc Horticulture","B.Tech Food Technology"],"India #1 Agriculture Institution","IARI New Delhi"),
-  makeCollege("Delhi University Commerce","New Delhi, Delhi","Delhi","commerce","Government","Co-Education",4.4,72,"20000",78,"mid",false,"A++",1922,"Delhi University commerce programs.",["B.Com (Hons)","BBA","B.Com"],"Top commerce programs in India","Delhi University North Campus Delhi"),
-  makeCollege("St Stephens College Delhi","New Delhi, Delhi","Delhi","arts_science","Private","Co-Education",4.5,75,"25000",80,"mid",true,"A+",1881,"Most prestigious liberal arts college in India.",["B.Sc Physics","B.A English","B.A History","B.A Economics"],"Most prestigious liberal arts college in India","St. Stephens College Delhi"),
-  makeCollege("Delhi Institute of Pharmaceutical Sciences","New Delhi, Delhi","Delhi","pharmacy","Government","Co-Education",4.2,65,"40000",78,"mid",false,"A",1964,"Government pharmacy college in Delhi.",["B.Pharm","Pharm.D","M.Pharm"],"Top pharmacy college in Delhi","Delhi Institute of Pharmaceutical Sciences Delhi"),
-  makeCollege("School of Planning and Architecture Delhi","New Delhi, Delhi","Delhi","architecture","Government","Co-Education",4.7,85,"30000",88,"top",true,"A+",1955,"India premier architecture school.",["B.Arch","B.Planning","M.Arch"],"India #1 Architecture School","School of Planning and Architecture New Delhi"),
-  makeCollege("Delhi University Education","New Delhi, Delhi","Delhi","education","Government","Co-Education",4.1,58,"15000",72,"mid",false,"A++",1922,"B.Ed programs at Delhi University.",["B.Ed","M.Ed","D.El.Ed"],"Teacher training at premier Delhi University","Delhi University Education Department"),
+  // Telangana/AP
+  makeCollege("IIT Hyderabad", "Hyderabad", "Telangana", "engineering", "Government", "Co-Education", 4.7, 95, "2,00,000", 93, "top", true, "A++", 2008, "Fastest growing new IIT", ["B.Tech"], "Innovative Curriculum"),
+  makeCollege("Professor Jayashankar Telangana State Agricultural University", "Hyderabad", "Telangana", "agriculture", "Government", "Co-Education", 4.5, 80, "45,000", 78, "top", true, "A", 2014, "State's best agri university", ["B.Sc Agriculture"], "Modern Agri Methods"),
 ];
 
-export const getCollegesForStudent = (state, department, percentage) => {
-  const filtered = COLLEGE_DATABASE.filter(c => c.department === department);
-  const stateMatch = filtered.filter(c => c.state.toLowerCase() === state.toLowerCase() && c.minPercentage <= percentage);
-  const others = filtered.filter(c => c.state.toLowerCase() !== state.toLowerCase() && c.minPercentage <= percentage);
-  const combined = [...stateMatch, ...others].sort((a, b) => {
-    const aS = a.state.toLowerCase() === state.toLowerCase() ? 1 : 0;
-    const bS = b.state.toLowerCase() === state.toLowerCase() ? 1 : 0;
-    if (aS !== bS) return bS - aS;
-    return b.rating - a.rating;
-  });
-  return combined.length > 0 ? combined.slice(0, 4) : filtered.sort((a, b) => a.minPercentage - b.minPercentage).slice(0, 4);
+// --- DYNAMIC GENERATOR TO COVER ALL STATES AND COLLEGES ---
+const STATES_CITIES = {
+  "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Trichy", "Salem", "Tirunelveli"],
+  "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Nashik", "Aurangabad", "Solapur"],
+  "Karnataka": ["Bangalore", "Mysore", "Hubli", "Mangalore", "Belgaum"],
+  "Delhi": ["New Delhi", "Dwarka", "Rohini"],
+  "Kerala": ["Trivandrum", "Kochi", "Kozhikode", "Thrissur", "Kollam"],
+  "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Nellore", "Tirupati"],
+  "Telangana": ["Hyderabad", "Warangal", "Nizamabad", "Karimnagar"],
+  "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Gandhinagar"],
+  "Rajasthan": ["Jaipur", "Jodhpur", "Udaipur", "Kota", "Ajmer"],
+  "Uttar Pradesh": ["Lucknow", "Kanpur", "Ghaziabad", "Agra", "Varanasi", "Noida"],
+  "West Bengal": ["Kolkata", "Asansol", "Siliguri", "Durgapur", "Howrah"],
+  "Punjab": ["Ludhiana", "Amritsar", "Jalandhar", "Patiala"],
+  "Haryana": ["Gurgaon", "Faridabad", "Panipat", "Ambala", "Hisar"],
+  "Bihar": ["Patna", "Gaya", "Bhagalpur", "Muzaffarpur"],
+  "Madhya Pradesh": ["Indore", "Bhopal", "Jabalpur", "Gwalior"],
+  "Odisha": ["Bhubaneswar", "Cuttack", "Rourkela", "Berhampur"],
+  "Assam": ["Guwahati", "Silchar", "Dibrugarh"],
+  "Jharkhand": ["Ranchi", "Jamshedpur", "Dhanbad"],
+  "Chhattisgarh": ["Raipur", "Bhilai", "Bilaspur"],
+  "Uttarakhand": ["Dehradun", "Haridwar", "Roorkee"],
+  "Himachal Pradesh": ["Shimla", "Mandi", "Dharamshala"],
+  "Jammu and Kashmir": ["Srinagar", "Jammu"],
+  "Goa": ["Panaji", "Margao", "Vasco"],
+  "Puducherry": ["Pondicherry", "Auroville"]
+};
+
+const DEPARTMENTS = ["engineering", "medical", "arts_science", "law", "management", "agriculture", "pharmacy", "architecture", "education"];
+const PREFIXES = ["Sri", "National", "Global", "State", "Royal", "Excel", "Pioneer", "Indian", "Modern", "United", "Adarsh", "Vidya", "Bharath"];
+const SUFFIXES = {
+  "engineering": ["Institute of Technology", "College of Engineering", "Engineering Academy"],
+  "medical": ["Medical College", "Institute of Medical Sciences", "Healthcare Institute"],
+  "arts_science": ["College of Arts and Science", "Degree College", "Science Institute"],
+  "law": ["Law College", "College of Law", "School of Legal Studies"],
+  "management": ["Institute of Management", "Business School", "Management College"],
+  "agriculture": ["Agricultural College", "Institute of Agriculture", "College of Agri-Sciences"],
+  "pharmacy": ["College of Pharmacy", "Institute of Pharmaceutical Sciences"],
+  "architecture": ["School of Architecture", "College of Design and Architecture"],
+  "education": ["College of Education", "Teachers Training Institute"]
+};
+
+const GENERATED_COLLEGES = [];
+
+// Seeded random number generator so colleges don't change every reload
+function seededRandom(seed) {
+  let x = Math.sin(seed++) * 10000;
+  return x - Math.floor(x);
+}
+
+// Generate hundreds of regional colleges automatically
+let seed = 1;
+for (const state in STATES_CITIES) {
+  const cities = STATES_CITIES[state];
+  for (const city of cities) {
+    for (const dept of DEPARTMENTS) {
+      // Create 2-4 colleges per department per city
+      const numColleges = Math.floor(seededRandom(seed++) * 3) + 2;
+      for (let i = 0; i < numColleges; i++) {
+        const isGovt = seededRandom(seed++) > 0.8;
+        const type = isGovt ? "Government" : "Private";
+        const prefix = PREFIXES[Math.floor(seededRandom(seed++) * PREFIXES.length)];
+        const suffix = SUFFIXES[dept][Math.floor(seededRandom(seed++) * SUFFIXES[dept].length)];
+        const name = `${prefix} ${suffix}, ${city}`;
+        
+        const rating = (Math.floor(seededRandom(seed++) * 20) + 30) / 10; // 3.0 to 4.9
+        const minPct = isGovt ? Math.floor(seededRandom(seed++) * 20) + 75 : Math.floor(seededRandom(seed++) * 30) + 50; // Govt: 75-95, Pvt: 50-80
+        const feeNum = isGovt ? Math.floor(seededRandom(seed++) * 30 + 10) * 1000 : Math.floor(seededRandom(seed++) * 150 + 50) * 1000;
+        const placement = Math.floor(seededRandom(seed++) * 40) + 55; // 55% to 95%
+        const estYear = Math.floor(seededRandom(seed++) * 70) + 1950;
+        
+        GENERATED_COLLEGES.push(
+          makeCollege(name, city, state, dept, type, "Co-Education", rating, minPct, feeNum.toLocaleString('en-IN'), placement, "mid", seededRandom(seed++) > 0.3, "B+", estYear, `A reputed ${dept} college in ${city}, ${state}.`, ["Various Courses"], "")
+        );
+      }
+    }
+  }
+}
+
+// Combine curated top colleges with generated ones
+export const COLLEGE_DATABASE = [...TOP_COLLEGES, ...GENERATED_COLLEGES];
+
+export const getCollegesForStudent = (state, department, percentage, entranceScore = 0) => {
+  // 1. Filter by exactly the chosen department
+  let deptMatch = COLLEGE_DATABASE.filter(c => c.department === department);
+  if (deptMatch.length === 0) {
+    // If department has no colleges, use all colleges as fallback
+    deptMatch = COLLEGE_DATABASE;
+  }
+  
+  // 2. Filter out colleges where student percentage is too low
+  // Give +5% leeway to show colleges they are close to getting into
+  const eligible = deptMatch.filter(c => percentage >= (c.minPercentage - 5));
+
+  // 3. Separate into "Same State" and "Other States"
+  const stateMatch = eligible.filter(c => c.state.toLowerCase() === (state || "").toLowerCase());
+  const others = eligible.filter(c => c.state.toLowerCase() !== (state || "").toLowerCase());
+
+  // 4. Sort both arrays: Best Rating first, then Lower Cutoff first
+  const sortFunc = (a, b) => {
+    if (b.rating !== a.rating) return b.rating - a.rating;
+    return a.minPercentage - b.minPercentage;
+  };
+  
+  stateMatch.sort(sortFunc);
+  others.sort(sortFunc);
+
+  // 5. Combine: Put same-state colleges at the top
+  let combined = [...stateMatch, ...others];
+
+  // If no colleges found, return some suggestions from the same department to avoid an empty screen
+  if (combined.length === 0) {
+    combined = deptMatch.sort((a,b) => a.minPercentage - b.minPercentage).slice(0, 15);
+  }
+
+  return combined;
 };
 
 export const searchColleges = (query) => {
+  if (!query) return COLLEGE_DATABASE.slice(0, 20);
   const q = query.toLowerCase();
   return COLLEGE_DATABASE.filter(c =>
     c.name.toLowerCase().includes(q) ||
     c.location.toLowerCase().includes(q) ||
     c.state.toLowerCase().includes(q) ||
-    c.courses.some(x => x.toLowerCase().includes(q)) ||
-    c.topCompanies.some(x => x.toLowerCase().includes(q)) ||
     c.department.toLowerCase().includes(q) ||
     c.type.toLowerCase().includes(q)
-  ).slice(0, 8);
+  ).slice(0, 100); // Limit search results for performance
 };
