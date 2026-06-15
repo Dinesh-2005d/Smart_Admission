@@ -333,19 +333,13 @@ jobs:
       pages: write
       id-token: write
 
+
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: gh-pages
-          fetch-depth: 0
-        continue-on-error: true
-
-      - name: 📥 Checkout main branch
-        uses: actions/checkout@v4
-        with:
           ref: ${{ github.ref }}
-          path: source
+          fetch-depth: 0
 
       - name: 📥 Download test results
         uses: actions/download-artifact@v4
@@ -420,6 +414,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+          # Save reports to a temp location
+          cp -r reports /tmp/reports
+
           # Get or create gh-pages branch
           git fetch origin gh-pages 2>/dev/null || true
 
@@ -430,10 +427,10 @@ jobs:
             git rm -rf . 2>/dev/null || true
           fi
 
-          # Copy report files
-          cp -r source/dist/* . 2>/dev/null || true
-          cp -r reports .
+          # Restore reports
+          cp -r /tmp/reports .
 
-          git add reports/ index.html 2>/dev/null || git add reports/
+          git add reports/
           git commit -m "📊 Update test reports — Build #${{ github.run_number }}" || echo "Nothing to commit"
           git push origin gh-pages --force
+
