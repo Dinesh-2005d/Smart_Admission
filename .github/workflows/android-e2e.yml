@@ -13,9 +13,9 @@ permissions:
   id-token: write
 
 env:
-  GITHUB_USERNAME: bonamrakesh
-  REPOSITORY_NAME: Smart-Admission
-  REPORT_BASE_URL: https://bonamrakesh.github.io/Smart-Admission/reports/latest/execution-report.html
+  GITHUB_USERNAME: Dinesh-2005d
+  REPOSITORY_NAME: Smart_Admission
+  REPORT_BASE_URL: https://dinesh-2005d.github.io/Smart_Admission/reports/latest/execution-report.html
   PYTHON_VERSION: '3.11'
   JAVA_VERSION: '17'
   NODE_VERSION: '20'
