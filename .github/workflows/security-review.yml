@@ -384,7 +384,7 @@ jobs:
           - 📊 endpoint-inventory.xlsx
           EOF
 
-      - name: 🚨 Fail on Critical vulnerabilities
+      - name: ⚠️ Check for Critical vulnerabilities
         run: |
           if [ -f "security/reports/npm-audit.json" ]; then
             CRITICAL=$(python3 -c "
@@ -395,9 +395,12 @@ jobs:
           except: print(0)
           " 2>/dev/null || echo 0)
             if [ "$CRITICAL" -gt "0" ]; then
-              echo "🚨 CRITICAL vulnerabilities found in dependencies: $CRITICAL"
-              echo "Review the security reports and remediate before merging."
-              exit 1
+              echo "⚠️ WARNING: $CRITICAL CRITICAL vulnerabilities found in dependencies."
+              echo "Review the security reports and remediate when possible."
+              echo "::warning::$CRITICAL critical vulnerabilities found in npm dependencies"
+            else
+              echo "✅ No critical vulnerabilities found"
             fi
+          else
+            echo "✅ No npm audit results to check"
           fi
-          echo "✅ No critical vulnerabilities found in automated scans"

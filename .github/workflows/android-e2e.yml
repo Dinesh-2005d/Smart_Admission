@@ -325,7 +325,7 @@ jobs:
     name: 📡 Publish Reports to GitHub Pages
     needs: appium-tests
     runs-on: ubuntu-latest
-    if: always() && github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    if: always() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     permissions:
       contents: write
       pages: write
