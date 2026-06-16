@@ -68,7 +68,7 @@ app.post('/claude', (req, res) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
+      'Authorization': `Bearer ${apiKey}`, // nosemgrep: generic.secrets.security.detected-authorization-bearer-token
       'Content-Length': Buffer.byteLength(body)
     }
   };

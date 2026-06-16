@@ -25,3 +25,8 @@ webpack.config.js
 
 # Scripts directory (utility scripts, not app code)
 scripts/
+
+# Security tooling scripts (contain regex patterns that resemble secrets)
+security/scan_secrets.py
+security/generate_security_report.py
+reports/
