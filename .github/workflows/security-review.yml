@@ -337,91 +337,53 @@ jobs:
         if: always()
         run: |
           REVIEW_FILE="Vulnerability Test Results/security-review.md"
+          SCORE=100; CRITICAL=0; HIGH=0; MEDIUM=0; LOW=0; TOTAL=0; STATUS="ALL CLEAR"
 
-          # Use Python to reliably parse the generated security report
-          SUMMARY=$(python3 - <<'PYEOF'
-import os, re, sys
+          if [ -f "$REVIEW_FILE" ]; then
+            SCORE=$(grep -oP 'Security Score: \*\*\K[0-9]+' "$REVIEW_FILE" 2>/dev/null || echo 100)
+            CRITICAL=$(grep -cP '^### Finding #[0-9]+ .* Critical:' "$REVIEW_FILE" 2>/dev/null || echo 0)
+            HIGH=$(grep -cP '^### Finding #[0-9]+ .* High:' "$REVIEW_FILE" 2>/dev/null || echo 0)
+            MEDIUM=$(grep -cP '^### Finding #[0-9]+ .* Medium:' "$REVIEW_FILE" 2>/dev/null || echo 0)
+            LOW=$(grep -cP '^### Finding #[0-9]+ .* Low:' "$REVIEW_FILE" 2>/dev/null || echo 0)
+            TOTAL=$((CRITICAL + HIGH + MEDIUM + LOW))
+          fi
 
-review_file = "Vulnerability Test Results/security-review.md"
-score = 100
-critical = high = medium = low = 0
+          if [ "$CRITICAL" -gt "0" ]; then STATUS="CRITICAL ISSUES FOUND"
+          elif [ "$HIGH" -gt "0" ]; then STATUS="HIGH ISSUES FOUND"
+          elif [ "$TOTAL" -eq "0" ]; then STATUS="ALL CLEAR"
+          else STATUS="PASSED"; fi
 
-if os.path.exists(review_file):
-    content = open(review_file, encoding="utf-8").read()
+          echo "Score: $SCORE | Critical: $CRITICAL | High: $HIGH | Medium: $MEDIUM | Low: $LOW"
 
-    # Extract score
-    m = re.search(r'Security Score: \*\*(\d+) / 100\*\*', content)
-    if m:
-        score = int(m.group(1))
-
-    # Count direct findings only (Finding # lines in Direct Findings section)
-    # They look like: ### Finding #N — 🔴 High: ...
-    for line in content.split("\n"):
-        if re.match(r'^### Finding #\d+', line):
-            if "Critical:" in line:
-                critical += 1
-            elif "High:" in line:
-                high += 1
-            elif "Medium:" in line:
-                medium += 1
-            elif "Low:" in line:
-                low += 1
-
-total = critical + high + medium + low
-
-if critical > 0:
-    status = "CRITICAL ISSUES FOUND"
-elif high > 0:
-    status = "HIGH ISSUES FOUND"
-elif total == 0:
-    status = "ALL CLEAR"
-else:
-    status = "PASSED"
-
-print(f"SCORE={score}")
-print(f"CRITICAL={critical}")
-print(f"HIGH={high}")
-print(f"MEDIUM={medium}")
-print(f"LOW={low}")
-print(f"TOTAL={total}")
-print(f"STATUS={status}")
-PYEOF
-)
-
-          eval "$SUMMARY"
-          echo "Score: $SCORE | Critical: $CRITICAL | High: $HIGH | Medium: $MEDIUM | Low: $LOW | Status: $STATUS"
-
-          cat >> $GITHUB_STEP_SUMMARY << EOF
-# 🔐 Security Review Summary — ✅ $STATUS
-
-> Build #${{ github.run_number }} | Branch: \`${{ github.ref_name }}\`
-
-## 📊 Findings Overview
-| Severity | Count |
-|----------|-------|
-| 🚨 Critical | $CRITICAL |
-| 🔴 High | $HIGH |
-| 🟡 Medium | $MEDIUM |
-| 🟢 Low | $LOW |
-| **Total** | $TOTAL |
-
-## 🎯 Security Score: $SCORE / 100
-
-> ℹ️ Score is based on direct (actionable) findings only. Transitive dependency
-> vulnerabilities inside the Expo/React Native framework that require breaking upgrades
-> are acknowledged separately and do not affect the score.
-
-## 🔍 Scans Performed
-- ✅ Semgrep SAST (Auto + Secrets)
-- ✅ Gitleaks Secret Detection
-- ✅ npm audit Dependency Scan (production deps)
-- ✅ Trivy Filesystem Scan
-
-## 📎 Reports Available
-- 📄 security-review.md
-- 📊 findings.xlsx
-- 📊 endpoint-inventory.xlsx
-EOF
+          {
+            echo "# Security Review Summary - $STATUS"
+            echo ""
+            echo "Build ${{ github.run_number }} | Branch: ${{ github.ref_name }}"
+            echo ""
+            echo "## Findings Overview"
+            echo "| Severity | Count |"
+            echo "|----------|-------|"
+            echo "| Critical | $CRITICAL |"
+            echo "| High | $HIGH |"
+            echo "| Medium | $MEDIUM |"
+            echo "| Low | $LOW |"
+            echo "| **Total** | $TOTAL |"
+            echo ""
+            echo "## Security Score: $SCORE / 100"
+            echo ""
+            echo "Score based on direct findings only. Transitive framework deps acknowledged separately."
+            echo ""
+            echo "## Scans Performed"
+            echo "- Semgrep SAST (Auto + Secrets)"
+            echo "- Gitleaks Secret Detection"
+            echo "- npm audit Dependency Scan (production deps)"
+            echo "- Trivy Filesystem Scan"
+            echo ""
+            echo "## Reports Available"
+            echo "- security-review.md"
+            echo "- findings.xlsx"
+            echo "- endpoint-inventory.xlsx"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: ⚠️ Check for Critical vulnerabilities
         run: |
