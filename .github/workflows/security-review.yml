@@ -343,13 +343,15 @@ jobs:
           CRITICAL=0; HIGH=0; MEDIUM=0; LOW=0; SCORE=100
 
           # Read the security score from the generated report (single source of truth)
+          # The report now scores only direct (actionable) findings, not transitive deps
           if [ -f "$REVIEW_FILE" ]; then
             # Extract score from "Overall Security Score: **X / 100**"
             SCORE=$(grep -oP 'Security Score: \*\*\K[0-9]+' "$REVIEW_FILE" 2>/dev/null || echo 100)
-            CRITICAL=$(grep -c "| Critical |" "$REVIEW_FILE" 2>/dev/null || echo 0)
-            HIGH=$(grep -c "| High |" "$REVIEW_FILE" 2>/dev/null || echo 0)
-            MEDIUM=$(grep -c "| Medium |" "$REVIEW_FILE" 2>/dev/null || echo 0)
-            LOW=$(grep -c "| Low |" "$REVIEW_FILE" 2>/dev/null || echo 0)
+            # Extract direct finding counts from "## Direct Findings" section
+            CRITICAL=$(grep -c "🚨 Critical:" "$REVIEW_FILE" 2>/dev/null || echo 0)
+            HIGH=$(grep -c "🔴 High:" "$REVIEW_FILE" 2>/dev/null || echo 0)
+            MEDIUM=$(grep -c "🟡 Medium:" "$REVIEW_FILE" 2>/dev/null || echo 0)
+            LOW=$(grep -c "🟢 Low:" "$REVIEW_FILE" 2>/dev/null || echo 0)
           fi
 
           TOTAL=$((CRITICAL + HIGH + MEDIUM + LOW))
