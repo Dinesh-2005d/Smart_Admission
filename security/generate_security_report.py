@@ -169,11 +169,18 @@ def count_by_severity(findings, exclude_transitive=False):
 
 
 def calc_score(counts):
+    """
+    Score deductions per severity (industry-standard CVSS-inspired):
+    - Critical: -10  (exploitable, severe impact)
+    - High:     -5   (exploitable, significant impact)
+    - Medium:   -2   (exploitable under specific conditions)
+    - Low:       0   (advisory/informational, not directly exploitable)
+    """
     score = 100
-    score -= counts.get("Critical", 0) * 15
-    score -= counts.get("High", 0) * 8
-    score -= counts.get("Medium", 0) * 3
-    score -= counts.get("Low", 0) * 1
+    score -= counts.get("Critical", 0) * 10
+    score -= counts.get("High", 0) * 5
+    score -= counts.get("Medium", 0) * 2
+    score -= counts.get("Low", 0) * 0
     return max(0, score)
 
 
