@@ -1,8 +1,14 @@
 import React, { createContext, useContext, useState } from 'react';
+import Constants from 'expo-constants';
 
 // ─── Backend Auth Server URL ──────────────────────────────────────────────────
-// Run: node auth-server.js   (starts on port 3002)
-const AUTH_BASE = 'http://localhost:3002';
+// LOCAL DEV : http://localhost:3002
+// PRODUCTION: Set authServerUrl in app.json → expo.extra.authServerUrl
+//             OR replace the fallback URL below with your Railway/Render URL
+const AUTH_BASE =
+  Constants.expoConfig?.extra?.authServerUrl ||
+  'http://localhost:3002';
+
 
 const AuthContext = createContext(null);
 
