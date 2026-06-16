@@ -139,12 +139,23 @@ export const getCollegesForStudent = (state, department, percentage, entranceSco
 
 export const searchColleges = (query) => {
   if (!query) return COLLEGE_DATABASE.slice(0, 20);
-  const q = query.toLowerCase();
-  return COLLEGE_DATABASE.filter(c =>
-    c.name.toLowerCase().includes(q) ||
-    c.location.toLowerCase().includes(q) ||
-    c.state.toLowerCase().includes(q) ||
-    c.department.toLowerCase().includes(q) ||
-    c.type.toLowerCase().includes(q)
-  ).slice(0, 100); // Limit search results for performance
+
+  // Split query into individual words, ignore common stop words like "colleges"
+  const STOP_WORDS = new Set(['colleges', 'college', 'the', 'of', 'in', 'and', 'for', 'a', 'an']);
+  const words = query
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(w => w.length > 1 && !STOP_WORDS.has(w));
+
+  // If all words were stop words, fall back to original full query
+  const terms = words.length > 0 ? words : [query.toLowerCase()];
+
+  return COLLEGE_DATABASE.filter(c => {
+    const haystack = [
+      c.name, c.location, c.state, c.department, c.type,
+    ].join(' ').toLowerCase();
+
+    // Match if ANY search term is found in the college data
+    return terms.some(term => haystack.includes(term));
+  }).slice(0, 100);
 };
