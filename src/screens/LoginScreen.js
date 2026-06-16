@@ -82,29 +82,29 @@ export default function LoginScreen({ navigation }) {
           )}
 
           {/* Title */}
-          <Text style={styles.cardTitle}>
-            {adminMode        ? '🛡️ Admin Sign In'    :
-             step === 'name'  ? '👋 What's your name?' :
-             '✉️ Continue with Gmail'}
-          </Text>
-          <Text style={styles.cardSub}>
-            {adminMode        ? 'Enter your admin credentials'         :
-             step === 'name'  ? `Signing in as ${email}`               :
-             'Enter your Gmail to access the app — no password needed'}
-          </Text>
+        <Text style={styles.cardTitle}>
+          {adminMode        ? '🛡️ Admin Sign In'       :
+           step === 'name'  ? '👋 What’s your name?' :
+           '✉️ Continue with Email'}
+        </Text>
+        <Text style={styles.cardSub}>
+          {adminMode        ? 'Enter your admin credentials'              :
+           step === 'name'  ? `Signing in as ${email}`                   :
+           'Enter your email to access the app — no password needed'}
+        </Text>
 
           {/* ── Step 1: Email ── */}
           {step === 'email' && (
             <>
               <View style={styles.fieldLabel}>
                 <Ionicons name="mail-outline" size={15} color="#2563eb" />
-                <Text style={styles.labelText}>Gmail Address</Text>
+                <Text style={styles.labelText}>Email Address</Text>
               </View>
               <View style={styles.inputWrap}>
                 <Ionicons name="at-outline" size={18} color="#64748b" style={{ marginRight: 8 }} />
                 <TextInput
                   style={styles.input}
-                  placeholder="you@gmail.com"
+                  placeholder="your@email.com"
                   placeholderTextColor="#94a3b8"
                   value={email}
                   onChangeText={setEmail}
