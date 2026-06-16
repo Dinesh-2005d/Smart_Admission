@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TouchableOpacity, Text, Alert } from 'react-native';
+import { TouchableOpacity, Text, View, ActivityIndicator, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -23,11 +23,17 @@ const Tab   = createBottomTabNavigator();
 // ── Logout header button ──────────────────────────────────────────────────────
 function LogoutButton() {
   const { logout, user } = useAuth();
-  const handleLogout = () =>
-    Alert.alert('Sign Out', `Sign out as ${user?.name}?`, [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Sign Out', style: 'destructive', onPress: logout },
-    ]);
+  const handleLogout = () => {
+    if (Platform.OS === 'web') {
+      if (window.confirm(`Sign out as ${user?.name}?`)) logout();
+    } else {
+      const { Alert } = require('react-native');
+      Alert.alert('Sign Out', `Sign out as ${user?.name}?`, [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Sign Out', style: 'destructive', onPress: logout },
+      ]);
+    }
+  };
   return (
     <TouchableOpacity onPress={handleLogout} style={{ marginRight: 14, flexDirection: 'row', alignItems: 'center', gap: 4 }}>
       <Ionicons name="log-out-outline" size={22} color="#2563eb" />
@@ -89,7 +95,17 @@ function MainTabs() {
 
 // ── Auth-aware navigator ──────────────────────────────────────────────────────
 function AppNavigator() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  // Show spinner while Firebase checks auth state
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f0f4ff' }}>
+        <ActivityIndicator size="large" color="#2563eb" />
+        <Text style={{ marginTop: 12, color: '#64748b', fontSize: 14 }}>Loading…</Text>
+      </View>
+    );
+  }
 
   return (
     <NavigationContainer>

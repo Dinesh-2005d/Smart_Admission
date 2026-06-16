@@ -1,53 +1,79 @@
-import React, { createContext, useContext, useState } from 'react';
-import Constants from 'expo-constants';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+} from 'firebase/auth';
+import {
+  doc, setDoc, getDoc, getDocs,
+  collection, updateDoc, deleteDoc, serverTimestamp,
+} from 'firebase/firestore';
+import { auth, db } from '../config/firebase';
 
-// ─── Backend Auth Server URL ──────────────────────────────────────────────────
-// LOCAL DEV : http://localhost:3002
-// PRODUCTION: Set authServerUrl in app.json → expo.extra.authServerUrl
-//             OR replace the fallback URL below with your Railway/Render URL
-const AUTH_BASE =
-  Constants.expoConfig?.extra?.authServerUrl ||
-  'http://localhost:3002';
-
+// ─── Admin email (always gets Admin role) ─────────────────────────────────────
+const ADMIN_EMAIL = 'dineshr2209.sse@saveetha.com';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user,    setUser]    = useState(null);
-  const [token,   setToken]   = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState(null);
 
-  // ── Helper ────────────────────────────────────────────────────────────────
-  const authFetch = async (endpoint, options = {}) => {
-    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-    const res  = await fetch(`${AUTH_BASE}${endpoint}`, { ...options, headers });
-    const data = await res.json();
-    return { ok: res.ok, status: res.status, data };
-  };
+  // ── Listen for Firebase auth state changes ────────────────────────────────
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        // Load profile from Firestore
+        try {
+          const snap = await getDoc(doc(db, 'users', firebaseUser.uid));
+          if (snap.exists()) {
+            const profile = snap.data();
+            if (profile.blocked) {
+              // Blocked user — sign them out immediately
+              await signOut(auth);
+              setUser(null);
+              setError('Account suspended. Contact admin.');
+            } else {
+              setUser({ uid: firebaseUser.uid, ...profile });
+            }
+          }
+        } catch {
+          setUser(null);
+        }
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    });
+    return unsub;
+  }, []);
 
   // ── Register ──────────────────────────────────────────────────────────────
   const register = async (email, password, name) => {
     setLoading(true); setError(null);
     try {
-      const { ok, data } = await authFetch('/auth/register', {
-        method: 'POST',
-        body: JSON.stringify({ email, password, name }),
-      });
-      if (ok && data.success) {
-        setToken(data.token);
-        setUser(data.user);
-        setLoading(false);
-        return { success: true };
-      }
-      setError(data.message || 'Registration failed');
+      const cred = await createUserWithEmailAndPassword(auth, email.trim(), password);
+      const role = email.trim().toLowerCase() === ADMIN_EMAIL ? 'Admin' : 'Student';
+      const profile = {
+        uid:       cred.user.uid,
+        name:      name || email.split('@')[0],
+        email:     email.trim().toLowerCase(),
+        role,
+        blocked:   false,
+        provider:  'email',
+        createdAt: serverTimestamp(),
+      };
+      await setDoc(doc(db, 'users', cred.user.uid), profile);
+      setUser(profile);
       setLoading(false);
-      return { success: false, message: data.message };
-    } catch {
-      setError('Cannot connect to server. Check your connection.');
+      return { success: true };
+    } catch (e) {
+      const msg = firebaseError(e.code);
+      setError(msg);
       setLoading(false);
-      return { success: false };
+      return { success: false, message: msg };
     }
   };
 
@@ -55,173 +81,84 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     setLoading(true); setError(null);
     try {
-      const { ok, data } = await authFetch('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ email: email.trim(), password }),
-      });
-      if (ok && data.success) {
-        setToken(data.token);
-        setUser(data.user);
+      const cred = await signInWithEmailAndPassword(auth, email.trim(), password);
+      // Check blocked status in Firestore
+      const snap = await getDoc(doc(db, 'users', cred.user.uid));
+      if (snap.exists() && snap.data().blocked) {
+        await signOut(auth);
         setLoading(false);
-        return { success: true };
+        setError('Account suspended. Contact admin.');
+        return { success: false, message: 'Account suspended. Contact admin.' };
       }
-      setError(data.message || 'Invalid email or password');
       setLoading(false);
-      return { success: false, message: data.message };
-    } catch {
-      setError('Cannot connect to server. Make sure auth-server.js is running.');
+      return { success: true };
+    } catch (e) {
+      const msg = firebaseError(e.code);
+      setError(msg);
       setLoading(false);
-      return { success: false };
-    }
-  };
-
-  // ── Gmail Auto Login (no password — open access) ─────────────────────────
-  const gmailAutoLogin = async (email, name) => {
-    setLoading(true); setError(null);
-    try {
-      const { ok, data } = await authFetch('/auth/gmail-auto', {
-        method: 'POST',
-        body: JSON.stringify({ email: email.trim(), name: name || '' }),
-      });
-      if (ok && data.success) {
-        setToken(data.token);
-        setUser(data.user);
-        setLoading(false);
-        return { success: true, isNew: data.isNew };
-      }
-      setError(data.message || 'Login failed. Please try again.');
-      setLoading(false);
-      return { success: false, message: data.message };
-    } catch {
-      setError('Cannot connect to server. Make sure auth-server.js is running.');
-      setLoading(false);
-      return { success: false };
-    }
-  };
-
-  // ── Google Login ──────────────────────────────────────────────────────────
-  const googleLogin = async (idToken) => {
-    setLoading(true); setError(null);
-    try {
-      const { ok, data } = await authFetch('/auth/google', {
-        method: 'POST',
-        body: JSON.stringify({ idToken }),
-      });
-      if (ok && data.success) {
-        setToken(data.token);
-        setUser(data.user);
-        setLoading(false);
-        return { success: true };
-      }
-      setError(data.message || 'Google sign-in failed');
-      setLoading(false);
-      return { success: false, message: data.message };
-    } catch {
-      setError('Cannot connect to server.');
-      setLoading(false);
-      return { success: false };
-    }
-  };
-
-  // ── Forgot Password — send OTP ────────────────────────────────────────────
-  const forgotPassword = async (email) => {
-    try {
-      const { ok, data } = await authFetch('/auth/forgot-password', {
-        method: 'POST',
-        body: JSON.stringify({ email: email.trim() }),
-      });
-      return { success: ok, message: data.message };
-    } catch {
-      return { success: false, message: 'Server error. Try again.' };
-    }
-  };
-
-  // ── Verify OTP ────────────────────────────────────────────────────────────
-  const verifyOtp = async (email, otp) => {
-    try {
-      const { ok, data } = await authFetch('/auth/verify-otp', {
-        method: 'POST',
-        body: JSON.stringify({ email: email.trim(), otp }),
-      });
-      return { success: ok, message: data.message };
-    } catch {
-      return { success: false, message: 'Server error. Try again.' };
-    }
-  };
-
-  // ── Reset Password ────────────────────────────────────────────────────────
-  const resetPassword = async (email, otp, newPassword) => {
-    try {
-      const { ok, data } = await authFetch('/auth/reset-password', {
-        method: 'POST',
-        body: JSON.stringify({ email: email.trim(), otp, newPassword }),
-      });
-      return { success: ok, message: data.message };
-    } catch {
-      return { success: false, message: 'Server error. Try again.' };
-    }
-  };
-
-  // ── Change Password (logged in) ───────────────────────────────────────────
-  const changePassword = async (currentPassword, newPassword) => {
-    try {
-      const { ok, data } = await authFetch('/auth/change-password', {
-        method: 'POST',
-        body: JSON.stringify({ currentPassword, newPassword }),
-      });
-      return { success: ok, message: data.message };
-    } catch {
-      return { success: false, message: 'Server error. Try again.' };
+      return { success: false, message: msg };
     }
   };
 
   // ── Logout ────────────────────────────────────────────────────────────────
   const logout = async () => {
-    try {
-      await authFetch('/auth/logout', { method: 'POST' });
-    } catch { /* silent */ }
+    await signOut(auth);
     setUser(null);
-    setToken(null);
     setError(null);
   };
 
   // ── Admin: get all users ──────────────────────────────────────────────────
   const adminGetUsers = async () => {
-    const { ok, data } = await authFetch('/admin/users');
-    return ok ? data.users : [];
+    try {
+      const snap = await getDocs(collection(db, 'users'));
+      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch {
+      return [];
+    }
   };
 
   // ── Admin: block user ─────────────────────────────────────────────────────
   const adminBlockUser = async (userId) => {
-    const { ok, data } = await authFetch('/admin/block', {
-      method: 'POST',
-      body: JSON.stringify({ userId }),
-    });
-    return { success: ok, message: data.message };
+    try {
+      await updateDoc(doc(db, 'users', userId), { blocked: true });
+      return { success: true, message: 'User blocked successfully' };
+    } catch (e) {
+      return { success: false, message: e.message };
+    }
   };
 
   // ── Admin: unblock user ───────────────────────────────────────────────────
   const adminUnblockUser = async (userId) => {
-    const { ok, data } = await authFetch('/admin/unblock', {
-      method: 'POST',
-      body: JSON.stringify({ userId }),
-    });
-    return { success: ok, message: data.message };
+    try {
+      await updateDoc(doc(db, 'users', userId), { blocked: false });
+      return { success: true, message: 'User unblocked successfully' };
+    } catch (e) {
+      return { success: false, message: e.message };
+    }
   };
 
   // ── Admin: delete user ────────────────────────────────────────────────────
   const adminDeleteUser = async (userId) => {
-    const { ok, data } = await authFetch(`/admin/user/${userId}`, { method: 'DELETE' });
-    return { success: ok, message: data.message };
+    try {
+      await deleteDoc(doc(db, 'users', userId));
+      return { success: true, message: 'User removed successfully' };
+    } catch (e) {
+      return { success: false, message: e.message };
+    }
   };
 
   return (
     <AuthContext.Provider value={{
-      user, token, loading, error,
-      register, login, gmailAutoLogin, googleLogin,
-      forgotPassword, verifyOtp, resetPassword, changePassword,
+      user,
+      loading,
+      error,
+      register,
+      login,
       logout,
-      adminGetUsers, adminBlockUser, adminUnblockUser, adminDeleteUser,
+      adminGetUsers,
+      adminBlockUser,
+      adminUnblockUser,
+      adminDeleteUser,
     }}>
       {children}
     </AuthContext.Provider>
@@ -232,4 +169,19 @@ export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error('useAuth must be used inside AuthProvider');
   return ctx;
+}
+
+// ── Firebase error → friendly message ─────────────────────────────────────────
+function firebaseError(code) {
+  switch (code) {
+    case 'auth/email-already-in-use':    return 'This email is already registered.';
+    case 'auth/invalid-email':           return 'Invalid email address.';
+    case 'auth/weak-password':           return 'Password must be at least 6 characters.';
+    case 'auth/user-not-found':          return 'No account found with this email.';
+    case 'auth/wrong-password':          return 'Incorrect password.';
+    case 'auth/invalid-credential':      return 'Invalid email or password.';
+    case 'auth/too-many-requests':       return 'Too many attempts. Try again later.';
+    case 'auth/network-request-failed':  return 'Network error. Check your connection.';
+    default:                             return 'Something went wrong. Try again.';
+  }
 }
