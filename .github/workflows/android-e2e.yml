@@ -272,53 +272,71 @@ jobs:
         run: |
           RESULTS_FILE="Test Results/test-results.json"
           BUILD_NUMBER="${{ github.run_number }}"
-          EXEC_DATE=$(date '+%Y-%m-%d %H:%M:%S UTC')
+          EXEC_DATE=$(date '+%Y-%m-%d %H:%M UTC')
+
+          TOTAL=0; PASSED=0; FAILED=0; PASS_RATE="N/A"
 
           if [ -f "$RESULTS_FILE" ]; then
-            TOTAL=$(python3 -c "import json; d=json.load(open('$RESULTS_FILE')); print(d.get('summary',{}).get('total',0))" 2>/dev/null || echo "0")
-            PASSED=$(python3 -c "import json; d=json.load(open('$RESULTS_FILE')); print(d.get('summary',{}).get('passed',0))" 2>/dev/null || echo "0")
-            FAILED=$(python3 -c "import json; d=json.load(open('$RESULTS_FILE')); print(d.get('summary',{}).get('failed',0))" 2>/dev/null || echo "0")
-          else
-            TOTAL=0; PASSED=0; FAILED=0
+            TOTAL=$(python3 -c "import json; d=json.load(open('$RESULTS_FILE')); print(d.get('summary',{}).get('total',0))" 2>/dev/null || echo 0)
+            PASSED=$(python3 -c "import json; d=json.load(open('$RESULTS_FILE')); print(d.get('summary',{}).get('passed',0))" 2>/dev/null || echo 0)
+            FAILED=$(python3 -c "import json; d=json.load(open('$RESULTS_FILE')); print(d.get('summary',{}).get('failed',0))" 2>/dev/null || echo 0)
           fi
 
           if [ "$TOTAL" -gt "0" ]; then
-            PASS_RATE=$(python3 -c "print(f'{($PASSED/$TOTAL)*100:.1f}%')" 2>/dev/null || echo "N/A")
-          else
-            PASS_RATE="N/A"
+            PASS_RATE=$(python3 -c "print(f'{int($PASSED/$TOTAL*100)}%')" 2>/dev/null || echo "N/A")
           fi
 
-          STATUS="✅ PASSED"
-          [ "$FAILED" -gt "0" ] && STATUS="❌ FAILED"
+          if [ "$FAILED" -gt "0" ]; then STATUS_ICON="FAILED"
+          elif [ "$TOTAL" -eq "0" ]; then STATUS_ICON="NO TESTS RUN"
+          else STATUS_ICON="PASSED"; fi
 
-          cat >> $GITHUB_STEP_SUMMARY << EOF
-          # 🤖 Android Appium E2E Test Summary — $STATUS
+          FAILED_LIST=$(python3 -c "import json,sys; d=json.load(open('Test Results/test-results.json')); [print('| '+t.get('nodeid','?').split('::')[-1]+' | '+str(t.get('call',{}).get('longrepr',''))[:80].replace('\n',' ')+'|') for t in d.get('tests',[]) if t.get('outcome')=='failed']" 2>/dev/null || echo "| - | No details available |")
 
-          | | |
-          |---|---|
-          | **Build Number** | #${BUILD_NUMBER} |
-          | **Execution Date** | ${EXEC_DATE} |
-          | **Branch** | \`${{ github.ref_name }}\` |
-          | **Commit** | \`${{ github.sha }}\` |
+          {
+            echo "# Android Appium E2E Test Summary - $STATUS_ICON"
+            echo ""
+            echo "| Field | Value |"
+            echo "|-------|-------|"
+            echo "| Build | #${BUILD_NUMBER} |"
+            echo "| Date | ${EXEC_DATE} |"
+            echo "| Branch | ${{ github.ref_name }} |"
+            echo "| Commit | ${{ github.sha }} |"
+            echo "| Platform | Android (Emulator API 30) |"
+            echo "| Report URL | ${{ env.REPORT_BASE_URL }} |"
+            echo ""
+            echo "## Test Results"
+            echo ""
+            echo "| Metric | Count |"
+            echo "|--------|-------|"
+            echo "| Total Tests | $TOTAL |"
+            echo "| Passed | $PASSED |"
+            echo "| Failed | $FAILED |"
+            echo "| Pass Rate | $PASS_RATE |"
+            echo ""
+            if [ "$FAILED" -gt "0" ]; then
+              echo "## Failed Tests"
+              echo ""
+              echo "| Test Name | Error |"
+              echo "|-----------|-------|"
+              echo "$FAILED_LIST"
+              echo ""
+            fi
+            echo "## Test Breakdown"
+            echo ""
+            echo "| Suite | Tests |"
+            echo "|-------|-------|"
+            echo "| test_home_flow.py | 9 |"
+            echo "| test_search.py | 5 |"
+            echo "| test_splash.py | 4 |"
+            echo "| **Total** | **18** |"
+            echo ""
+            echo "## Artifacts"
+            echo "- Automation_Test_Report.xlsx"
+            echo "- execution-report.html"
+            echo "- Screenshots"
+            echo "- Logs"
+          } >> "$GITHUB_STEP_SUMMARY"
 
-          ## 📊 Test Results
-          | Metric | Value |
-          |--------|-------|
-          | **Total Tests** | $TOTAL |
-          | ✅ Passed | $PASSED |
-          | ❌ Failed | $FAILED |
-          | **Pass Rate** | $PASS_RATE |
-
-          ## 📊 Report URL
-          [${{ env.REPORT_BASE_URL }}](${{ env.REPORT_BASE_URL }})
-
-          ## 📎 Artifacts
-          - 📊 Automation_Test_Report.xlsx
-          - 🌐 execution-report.html
-          - 📸 Screenshots directory
-          - 📋 Logs directory
-          - 📝 summary.md
-          EOF
 
   # ─────────────────────────────────────────────
   # JOB 3: Publish Reports to GitHub Pages
