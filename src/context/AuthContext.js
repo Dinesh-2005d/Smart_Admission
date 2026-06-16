@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
-// ─── Backend URL ──────────────────────────────────────────────────────────────
-// Points to our Express proxy server running on localhost
-const API_BASE = 'http://localhost:3001';
+// ─── Backend Auth Server URL ──────────────────────────────────────────────────
+// Run: node auth-server.js   (starts on port 3002)
+const AUTH_BASE = 'http://localhost:3002';
 
 const AuthContext = createContext(null);
 
@@ -11,97 +11,188 @@ export function AuthProvider({ children }) {
   const [token,   setToken]   = useState(null);
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState(null);
-  const [checking, setChecking] = useState(false); // session restore in progress
 
-  // ── Login ─────────────────────────────────────────────────────────────────
-  const login = async (email, password) => {
-    setLoading(true);
-    setError(null);
+  // ── Helper ────────────────────────────────────────────────────────────────
+  const authFetch = async (endpoint, options = {}) => {
+    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const res  = await fetch(`${AUTH_BASE}${endpoint}`, { ...options, headers });
+    const data = await res.json();
+    return { ok: res.ok, status: res.status, data };
+  };
+
+  // ── Register ──────────────────────────────────────────────────────────────
+  const register = async (email, password, name) => {
+    setLoading(true); setError(null);
     try {
-      const res = await fetch(`${API_BASE}/auth/login`, {
+      const { ok, data } = await authFetch('/auth/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), password }),
+        body: JSON.stringify({ email, password, name }),
       });
-
-      const data = await res.json();
-
-      if (res.ok && data.success) {
+      if (ok && data.success) {
         setToken(data.token);
         setUser(data.user);
         setLoading(false);
         return { success: true };
-      } else {
-        setError(data.message || 'Login failed. Please try again.');
-        setLoading(false);
-        return { success: false };
       }
-    } catch (err) {
-      // Backend not reachable — fall back to demo credentials
-      return loginDemo(email, password);
+      setError(data.message || 'Registration failed');
+      setLoading(false);
+      return { success: false, message: data.message };
+    } catch {
+      setError('Cannot connect to server. Check your connection.');
+      setLoading(false);
+      return { success: false };
     }
   };
 
-  // ── Demo fallback (when backend is offline) ───────────────────────────────
-  const DEMO_USERS = [
-    { id: 1, email: 'admin@smartcampus.ai',   password: 'Smart@2024',  name: 'Admin User',   role: 'Admin'   },
-    { id: 2, email: 'student@smartcampus.ai', password: 'Student@123', name: 'Demo Student', role: 'Student' },
-  ];
-
-  const loginDemo = async (email, password) => {
-    await new Promise(r => setTimeout(r, 800));
-    const found = DEMO_USERS.find(
-      u => u.email.toLowerCase() === email.trim().toLowerCase() && u.password === password
-    );
-    if (found) {
-      setUser({ id: found.id, email: found.email, name: found.name, role: found.role });
-      setToken('demo-token');
+  // ── Login ─────────────────────────────────────────────────────────────────
+  const login = async (email, password) => {
+    setLoading(true); setError(null);
+    try {
+      const { ok, data } = await authFetch('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email: email.trim(), password }),
+      });
+      if (ok && data.success) {
+        setToken(data.token);
+        setUser(data.user);
+        setLoading(false);
+        return { success: true };
+      }
+      setError(data.message || 'Invalid email or password');
       setLoading(false);
-      return { success: true };
+      return { success: false, message: data.message };
+    } catch {
+      setError('Cannot connect to server. Make sure auth-server.js is running.');
+      setLoading(false);
+      return { success: false };
     }
-    setError('Invalid email or password.\nTry: admin@smartcampus.ai / Smart@2024');
-    setLoading(false);
-    return { success: false };
+  };
+
+  // ── Google Login ──────────────────────────────────────────────────────────
+  const googleLogin = async (idToken) => {
+    setLoading(true); setError(null);
+    try {
+      const { ok, data } = await authFetch('/auth/google', {
+        method: 'POST',
+        body: JSON.stringify({ idToken }),
+      });
+      if (ok && data.success) {
+        setToken(data.token);
+        setUser(data.user);
+        setLoading(false);
+        return { success: true };
+      }
+      setError(data.message || 'Google sign-in failed');
+      setLoading(false);
+      return { success: false, message: data.message };
+    } catch {
+      setError('Cannot connect to server.');
+      setLoading(false);
+      return { success: false };
+    }
+  };
+
+  // ── Forgot Password — send OTP ────────────────────────────────────────────
+  const forgotPassword = async (email) => {
+    try {
+      const { ok, data } = await authFetch('/auth/forgot-password', {
+        method: 'POST',
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      return { success: ok, message: data.message };
+    } catch {
+      return { success: false, message: 'Server error. Try again.' };
+    }
+  };
+
+  // ── Verify OTP ────────────────────────────────────────────────────────────
+  const verifyOtp = async (email, otp) => {
+    try {
+      const { ok, data } = await authFetch('/auth/verify-otp', {
+        method: 'POST',
+        body: JSON.stringify({ email: email.trim(), otp }),
+      });
+      return { success: ok, message: data.message };
+    } catch {
+      return { success: false, message: 'Server error. Try again.' };
+    }
+  };
+
+  // ── Reset Password ────────────────────────────────────────────────────────
+  const resetPassword = async (email, otp, newPassword) => {
+    try {
+      const { ok, data } = await authFetch('/auth/reset-password', {
+        method: 'POST',
+        body: JSON.stringify({ email: email.trim(), otp, newPassword }),
+      });
+      return { success: ok, message: data.message };
+    } catch {
+      return { success: false, message: 'Server error. Try again.' };
+    }
+  };
+
+  // ── Change Password (logged in) ───────────────────────────────────────────
+  const changePassword = async (currentPassword, newPassword) => {
+    try {
+      const { ok, data } = await authFetch('/auth/change-password', {
+        method: 'POST',
+        body: JSON.stringify({ currentPassword, newPassword }),
+      });
+      return { success: ok, message: data.message };
+    } catch {
+      return { success: false, message: 'Server error. Try again.' };
+    }
   };
 
   // ── Logout ────────────────────────────────────────────────────────────────
   const logout = async () => {
-    if (token && token !== 'demo-token') {
-      try {
-        await fetch(`${API_BASE}/auth/logout`, {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      } catch (_) {
-        // silent — network error on logout is OK
-      }
-    }
+    try {
+      await authFetch('/auth/logout', { method: 'POST' });
+    } catch { /* silent */ }
     setUser(null);
     setToken(null);
     setError(null);
   };
 
-  // ── Verify session (called on app resume) ─────────────────────────────────
-  const verifySession = async (currentToken) => {
-    if (!currentToken || currentToken === 'demo-token') return;
-    setChecking(true);
-    try {
-      const res = await fetch(`${API_BASE}/auth/me`, {
-        headers: { Authorization: `Bearer ${currentToken}` },
-      });
-      if (!res.ok) {
-        setUser(null);
-        setToken(null);
-      }
-    } catch (_) {
-      // backend offline — keep current user state
-    } finally {
-      setChecking(false);
-    }
+  // ── Admin: get all users ──────────────────────────────────────────────────
+  const adminGetUsers = async () => {
+    const { ok, data } = await authFetch('/admin/users');
+    return ok ? data.users : [];
+  };
+
+  // ── Admin: block user ─────────────────────────────────────────────────────
+  const adminBlockUser = async (userId) => {
+    const { ok, data } = await authFetch('/admin/block', {
+      method: 'POST',
+      body: JSON.stringify({ userId }),
+    });
+    return { success: ok, message: data.message };
+  };
+
+  // ── Admin: unblock user ───────────────────────────────────────────────────
+  const adminUnblockUser = async (userId) => {
+    const { ok, data } = await authFetch('/admin/unblock', {
+      method: 'POST',
+      body: JSON.stringify({ userId }),
+    });
+    return { success: ok, message: data.message };
+  };
+
+  // ── Admin: delete user ────────────────────────────────────────────────────
+  const adminDeleteUser = async (userId) => {
+    const { ok, data } = await authFetch(`/admin/user/${userId}`, { method: 'DELETE' });
+    return { success: ok, message: data.message };
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, error, checking, login, logout, verifySession }}>
+    <AuthContext.Provider value={{
+      user, token, loading, error,
+      register, login, googleLogin,
+      forgotPassword, verifyOtp, resetPassword, changePassword,
+      logout,
+      adminGetUsers, adminBlockUser, adminUnblockUser, adminDeleteUser,
+    }}>
       {children}
     </AuthContext.Provider>
   );
