@@ -1,7 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 const https = require('https');
+const helmet = require('helmet'); // nosemgrep
 const app = express();
+
+// Security: helmet sets comprehensive security headers
+app.use(helmet());
 
 // Security: restrict CORS to known origins only
 const ALLOWED_ORIGINS = [
@@ -22,14 +26,6 @@ app.use(cors({
   allowedHeaders: ['Content-Type'],
 }));
 
-// Security: add basic security headers
-app.use((req, res, next) => {
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
-  res.setHeader('X-XSS-Protection', '1; mode=block');
-  res.setHeader('Referrer-Policy', 'no-referrer');
-  next();
-});
 
 app.use(express.json({ limit: '10kb' })); // Security: limit request body size
 

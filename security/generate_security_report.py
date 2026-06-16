@@ -150,6 +150,9 @@ def parse_trivy(data):
                     "fix": f"Update {vuln.get('PkgName','package')} from "
                     f"{vuln.get('InstalledVersion','?')} to "
                     f"{vuln.get('FixedVersion','latest')}",
+                    # Trivy scans package manifests — same CVEs as npm audit.
+                    # Marked transitive so they are acknowledged but not double-scored.
+                    "transitive": True,
                 }
             )
     return findings
