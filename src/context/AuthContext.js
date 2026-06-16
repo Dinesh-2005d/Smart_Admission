@@ -69,6 +69,30 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // ── Gmail Auto Login (no password — open access) ─────────────────────────
+  const gmailAutoLogin = async (email, name) => {
+    setLoading(true); setError(null);
+    try {
+      const { ok, data } = await authFetch('/auth/gmail-auto', {
+        method: 'POST',
+        body: JSON.stringify({ email: email.trim(), name: name || '' }),
+      });
+      if (ok && data.success) {
+        setToken(data.token);
+        setUser(data.user);
+        setLoading(false);
+        return { success: true, isNew: data.isNew };
+      }
+      setError(data.message || 'Login failed. Please try again.');
+      setLoading(false);
+      return { success: false, message: data.message };
+    } catch {
+      setError('Cannot connect to server. Make sure auth-server.js is running.');
+      setLoading(false);
+      return { success: false };
+    }
+  };
+
   // ── Google Login ──────────────────────────────────────────────────────────
   const googleLogin = async (idToken) => {
     setLoading(true); setError(null);
@@ -188,7 +212,7 @@ export function AuthProvider({ children }) {
   return (
     <AuthContext.Provider value={{
       user, token, loading, error,
-      register, login, googleLogin,
+      register, login, gmailAutoLogin, googleLogin,
       forgotPassword, verifyOtp, resetPassword, changePassword,
       logout,
       adminGetUsers, adminBlockUser, adminUnblockUser, adminDeleteUser,

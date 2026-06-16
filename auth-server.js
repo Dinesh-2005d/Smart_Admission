@@ -301,7 +301,51 @@ app.post('/auth/google', async (req, res) => {
   }
 });
 
-// POST /auth/forgot-password
+// POST /auth/gmail-auto  — Open Gmail login (no password, no prior registration)
+// Any user with a Gmail address can log in — account auto-created on first visit.
+// Admin can block or delete these accounts.
+app.post('/auth/gmail-auto', async (req, res) => {
+  try {
+    const { email, name } = req.body || {};
+    if (!email || typeof email !== 'string' || !email.includes('@')) {
+      return res.status(400).json({ success: false, message: 'A valid Gmail address is required' });
+    }
+    const normalEmail = email.trim().toLowerCase();
+
+    const db = getDB();
+    let user = db.users.find(u => u.email === normalEmail);
+
+    if (user) {
+      // Existing user — check block status
+      if (user.blocked) {
+        return res.status(403).json({ success: false, message: 'Your account has been suspended. Contact admin.' });
+      }
+    } else {
+      // First time — auto-create account (no password)
+      user = {
+        id:        generateId(),
+        email:     normalEmail,
+        name:      (name || email.split('@')[0]).trim(),
+        password:  null,
+        role:      normalEmail === ADMIN_EMAIL ? 'Admin' : 'Student',
+        blocked:   false,
+        provider:  'gmail-auto',
+        createdAt: new Date().toISOString(),
+      };
+      db.users.push(user);
+      saveDB(db);
+      console.log(`[AUTH] Gmail Auto-Register: ${user.email}`);
+    }
+
+    const token = generateToken(user);
+    console.log(`[AUTH] Gmail Auto-Login: ${user.email} (${user.role})`);
+    res.json({ success: true, token, user: sanitizeUser(user), isNew: !db.users.find(u => u.id === user.id && u.createdAt !== user.createdAt) });
+  } catch (err) {
+    console.error('[AUTH] Gmail-auto error:', err.message);
+    res.status(500).json({ success: false, message: 'Login failed. Try again.' });
+  }
+});
+
 app.post('/auth/forgot-password', async (req, res) => {
   try {
     const { email } = req.body || {};
