@@ -83,14 +83,33 @@ export default function ForgotPasswordScreen({ navigation }) {
             /* ── Success state ── */
             <View style={styles.successBox}>
               <Ionicons name="checkmark-circle" size={56} color="#16a34a" />
-              <Text style={styles.successTitle}>Email Sent!</Text>
+              <Text style={styles.successTitle}>Reset Email Sent!</Text>
               <Text style={styles.successText}>
-                We've sent a password reset link to{'\n'}
+                We've sent a reset link to:{'\n'}
                 <Text style={styles.successEmail}>{email}</Text>
               </Text>
-              <Text style={styles.successHint}>
-                Click the link in the email to set a new password. Check your spam folder if you don't see it.
-              </Text>
+
+              {/* Step-by-step guide */}
+              <View style={styles.stepsBox}>
+                {[
+                  { icon: '📬', text: 'Open your Gmail / email app' },
+                  { icon: '🔍', text: 'Look for email from:\nnoreply@smartadmission.firebaseapp.com' },
+                  { icon: '🗑️', text: 'Also check your Spam / Junk folder' },
+                  { icon: '🔗', text: 'Click "Reset Password" in the email' },
+                ].map((step, i) => (
+                  <View key={i} style={styles.stepRow}>
+                    <Text style={styles.stepIcon}>{step.icon}</Text>
+                    <Text style={styles.stepText}>{step.text}</Text>
+                  </View>
+                ))}
+              </View>
+
+              <View style={styles.warnBox}>
+                <Ionicons name="warning-outline" size={14} color="#92400e" />
+                <Text style={styles.warnText}>
+                  Didn't get it? Make sure <Text style={{ fontWeight: '700' }}>{email}</Text> is registered in this app.
+                </Text>
+              </View>
             </View>
           )}
 
@@ -183,11 +202,25 @@ const styles = StyleSheet.create({
   input: { flex: 1, fontSize: 15, color: '#0f172a' },
 
   // Success state
-  successBox:   { alignItems: 'center', paddingVertical: 12 },
+  successBox:   { alignItems: 'center', paddingVertical: 8 },
   successTitle: { fontSize: 20, fontWeight: '800', color: '#15803d', marginTop: 12, marginBottom: 8 },
-  successText:  { fontSize: 14, color: '#374151', textAlign: 'center', lineHeight: 22 },
+  successText:  { fontSize: 14, color: '#374151', textAlign: 'center', lineHeight: 22, marginBottom: 14 },
   successEmail: { fontWeight: '700', color: '#2563eb' },
-  successHint:  { fontSize: 12, color: '#64748b', textAlign: 'center', marginTop: 10, lineHeight: 18 },
+
+  stepsBox: {
+    width: '100%', backgroundColor: '#f0fdf4', borderRadius: 12,
+    padding: 14, borderWidth: 1, borderColor: '#bbf7d0', gap: 10, marginBottom: 12,
+  },
+  stepRow:  { flexDirection: 'row', alignItems: 'flex-start', gap: 10 },
+  stepIcon: { fontSize: 16, width: 24, textAlign: 'center' },
+  stepText: { flex: 1, fontSize: 13, color: '#166534', lineHeight: 20 },
+
+  warnBox: {
+    flexDirection: 'row', alignItems: 'flex-start', gap: 8,
+    backgroundColor: '#fffbeb', borderRadius: 10, padding: 12,
+    borderWidth: 1, borderColor: '#fde68a', width: '100%',
+  },
+  warnText: { flex: 1, fontSize: 12, color: '#92400e', lineHeight: 18 },
 
   msgBox:    { flexDirection: 'row', alignItems: 'flex-start', gap: 8, borderRadius: 10, padding: 12, marginTop: 12 },
   msgError:  { backgroundColor: '#fef2f2', borderWidth: 1, borderColor: '#fecaca' },

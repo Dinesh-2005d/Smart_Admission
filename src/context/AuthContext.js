@@ -111,10 +111,16 @@ export function AuthProvider({ children }) {
   // ── Forgot Password (Firebase reset email) ────────────────────────────────
   const forgotPassword = async (email) => {
     try {
-      await sendPasswordResetEmail(auth, email.trim());
+      const actionCodeSettings = {
+        // After the user clicks the reset link, redirect them back to the app.
+        // Must be added to Firebase Console → Authentication → Authorized domains.
+        url: 'https://dinesh-2005d.github.io/Smart_Admission/',
+        handleCodeInApp: false,
+      };
+      await sendPasswordResetEmail(auth, email.trim(), actionCodeSettings);
       return {
         success: true,
-        message: 'Password reset email sent! Check your inbox and follow the link to reset your password.',
+        message: 'Password reset email sent! Check your inbox (and Spam/Junk folder) for an email from noreply@smartadmission.firebaseapp.com',
       };
     } catch (e) {
       const msg = firebaseError(e.code);
