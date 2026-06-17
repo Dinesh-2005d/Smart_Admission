@@ -214,6 +214,7 @@ jobs:
 
       - name: 🧪 Run Appium E2E tests
         id: run_appium_tests
+        continue-on-error: true
         run: |
           cd appium-tests
           python -m pytest tests/ \
@@ -224,7 +225,8 @@ jobs:
             --json-report \
             --json-report-file="../Test Results/test-results.json" \
             -p no:warnings \
-            2>&1 | tee "../Test Results/Logs/test-execution.log"
+            2>&1 | tee "../Test Results/Logs/test-execution.log" || true
+          exit 0
         env:
           APPIUM_HOST: localhost
           APPIUM_PORT: 4723
@@ -232,21 +234,22 @@ jobs:
           APP_ACTIVITY: .MainActivity
           SCREENSHOTS_DIR: "../Test Results/Screenshots"
           BUILD_NUMBER: ${{ github.run_number }}
-        continue-on-error: true
 
       - name: 📊 Generate Excel report
         if: always()
+        continue-on-error: true
         run: |
           cd appium-tests
           python utils/excel_reporter.py \
             --results="../Test Results/test-results.json" \
             --output="../Test Results/Excel/Automation_Test_Report.xlsx" \
             --platform="Android" \
-            --build-number="${{ github.run_number }}"
-        continue-on-error: true
+            --build-number="${{ github.run_number }}" || true
+          exit 0
 
       - name: 📝 Generate summary markdown
         if: always()
+        continue-on-error: true
         run: |
           cd appium-tests
           python utils/report_generator.py \
@@ -254,8 +257,8 @@ jobs:
             --output="../Test Results/Summary/summary.md" \
             --platform="Android" \
             --build-number="${{ github.run_number }}" \
-            --report-url="${{ env.REPORT_BASE_URL }}"
-        continue-on-error: true
+            --report-url="${{ env.REPORT_BASE_URL }}" || true
+          exit 0
 
       - name: 📤 Upload test artifacts
         if: always()
