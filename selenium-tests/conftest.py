@@ -27,10 +27,14 @@ def get_chrome_options():
     opts = Options()
     if HEADLESS:
         opts.add_argument("--headless=new")
+        opts.add_argument("--window-size=1366,768")
+    else:
+        # Visual mode for screen recording — match Xvfb display (1920×1080)
+        opts.add_argument("--window-size=1920,1080")
+        opts.add_argument("--start-maximized")
     opts.add_argument("--no-sandbox")
     opts.add_argument("--disable-dev-shm-usage")
     opts.add_argument("--disable-gpu")
-    opts.add_argument("--window-size=1366,768")
     opts.add_argument("--disable-extensions")
     opts.add_argument("--disable-infobars")
     opts.add_argument("--disable-notifications")

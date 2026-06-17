@@ -162,10 +162,10 @@ jobs:
           echo "url=$BASE_URL" >> $GITHUB_OUTPUT
 
   # ─────────────────────────────────────────────
-  # JOB 4: Selenium E2E Tests
+  # JOB 4: 🎥 Selenium E2E Tests (Visual + Recorded)
   # ─────────────────────────────────────────────
   selenium-tests:
-    name: 🧪 Selenium E2E Tests
+    name: 🎥 Selenium E2E Tests (Live Visual Recording)
     needs: verify-deployment
     runs-on: ubuntu-latest
     if: always() && needs.verify-deployment.outputs.deployment_live == 'true'
@@ -189,10 +189,11 @@ jobs:
         with:
           chrome-version: stable
 
-      - name: 🔍 Verify Chrome installation
+      - name: 🔍 Verify Chrome & ffmpeg
         run: |
           google-chrome --version
-          chromedriver --version || true
+          ffmpeg -version | head -1
+          echo "✅ All tools ready"
 
       - name: 📁 Create test result directories
         run: |
@@ -201,8 +202,38 @@ jobs:
           mkdir -p "Test Results/Screenshots"
           mkdir -p "Test Results/Logs"
           mkdir -p "Test Results/Summary"
+          mkdir -p "Test Results/Video"
 
-      - name: 🧪 Run Selenium E2E tests
+      - name: 🖥️ Start Xvfb virtual display (1920×1080)
+        run: |
+          sudo apt-get install -y xvfb x11-utils 2>/dev/null | tail -1
+          Xvfb :99 -screen 0 1920x1080x24 -ac &
+          XVFB_PID=$!
+          echo "XVFB_PID=$XVFB_PID" >> $GITHUB_ENV
+          export DISPLAY=:99
+          echo "DISPLAY=:99" >> $GITHUB_ENV
+          sleep 2
+          echo "✅ Xvfb started on DISPLAY=:99 (PID $XVFB_PID)"
+
+      - name: 🎥 Start screen recording with ffmpeg
+        run: |
+          ffmpeg \
+            -f x11grab \
+            -video_size 1920x1080 \
+            -framerate 24 \
+            -i :99 \
+            -vcodec libx264 \
+            -preset ultrafast \
+            -pix_fmt yuv420p \
+            -crf 28 \
+            "Test Results/Video/selenium_test_recording_build_${{ github.run_number }}.mp4" \
+            > "Test Results/Logs/ffmpeg.log" 2>&1 &
+          FFMPEG_PID=$!
+          echo "FFMPEG_PID=$FFMPEG_PID" >> $GITHUB_ENV
+          sleep 2
+          echo "✅ Screen recording started (PID $FFMPEG_PID)"
+
+      - name: 🧪 Run Selenium E2E tests (VISIBLE Chrome on virtual display)
         id: run_tests
         run: |
           cd selenium-tests
@@ -218,9 +249,34 @@ jobs:
             2>&1 | tee "../Test Results/Logs/test-execution.log"
         env:
           BASE_URL: ${{ env.BASE_URL }}
-          HEADLESS: "true"
+          HEADLESS: "false"
+          DISPLAY: ":99"
           SCREENSHOTS_DIR: "../Test Results/Screenshots"
         continue-on-error: true
+
+      - name: 🛑 Stop screen recording
+        if: always()
+        run: |
+          if [ -n "$FFMPEG_PID" ]; then
+            kill -SIGINT "$FFMPEG_PID" 2>/dev/null || true
+            sleep 5
+            kill "$FFMPEG_PID" 2>/dev/null || true
+            echo "✅ Recording stopped"
+          fi
+          if [ -n "$XVFB_PID" ]; then
+            kill "$XVFB_PID" 2>/dev/null || true
+          fi
+          # Confirm video file exists and show size
+          VIDEO="Test Results/Video/selenium_test_recording_build_${{ github.run_number }}.mp4"
+          if [ -f "$VIDEO" ]; then
+            SIZE=$(du -sh "$VIDEO" | cut -f1)
+            DURATION=$(ffprobe -v quiet -show_entries format=duration -of csv=p=0 "$VIDEO" 2>/dev/null || echo "unknown")
+            echo "🎥 Video: $VIDEO"
+            echo "📦 Size:  $SIZE"
+            echo "⏱️  Duration: ${DURATION}s"
+          else
+            echo "⚠️ Video file not found"
+          fi
 
       - name: 📊 Generate Excel report
         if: always()
@@ -243,7 +299,7 @@ jobs:
             --run-number="${{ github.run_number }}"
         continue-on-error: true
 
-      - name: 📤 Upload Test Results artifacts
+      - name: 📤 Upload Test Results + 🎥 Video artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -259,9 +315,10 @@ jobs:
           BASE_URL="${{ env.BASE_URL }}"
           RUN_NUMBER="${{ github.run_number }}"
           EXEC_DATE=$(date '+%Y-%m-%d %H:%M UTC')
+          VIDEO_NAME="selenium_test_recording_build_${RUN_NUMBER}.mp4"
 
           {
-            echo "# Selenium E2E Test Summary - ✅ PASSED"
+            echo "# 🎥 Selenium E2E Test Summary — Visual Recording"
             echo ""
             echo "| Field | Value |"
             echo "|-------|-------|"
@@ -270,6 +327,17 @@ jobs:
             echo "| Branch | ${{ github.ref_name }} |"
             echo "| Commit | ${{ github.sha }} |"
             echo "| Deployment URL | ${BASE_URL} |"
+            echo "| Recording Mode | 🎥 Visual (Xvfb + ffmpeg) |"
+            echo ""
+            echo "---"
+            echo ""
+            echo "## 🎥 Download Test Recording"
+            echo ""
+            echo "> **Download the video from the Artifacts section** (below the job list)"
+            echo "> File: \`$VIDEO_NAME\`"
+            echo "> Watch Chrome automatically navigate and test all your pages!"
+            echo ""
+            echo "---"
             echo ""
             echo "## Test Results"
             echo ""
@@ -290,15 +358,16 @@ jobs:
             echo "| **Total** | **47** | **✅ ALL PASSED** |"
             echo ""
             echo "## Artifacts"
+            echo "- 🎥 \`$VIDEO_NAME\` — Full screen recording of Chrome testing"
             echo "- Automation_Test_Report.xlsx"
             echo "- execution-report.html"
-            echo "- Screenshots"
+            echo "- Screenshots (on failure)"
             echo "- Logs"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: ✅ Tests completed
         if: always()
-        run: echo "✅ Selenium E2E tests completed successfully."
+        run: echo "✅ Selenium E2E tests completed. Download the 🎥 video from Artifacts!"
 
   # ─────────────────────────────────────────────
   # JOB 5: 🌐 Open Smart Admission Website
