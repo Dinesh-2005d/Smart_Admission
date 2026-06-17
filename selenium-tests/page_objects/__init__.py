@@ -6,6 +6,7 @@ from .compare_page import ComparePage
 from .saved_page import SavedPage
 from .marks_entry_page import MarksEntryPage
 from .login_page import LoginPage
+from .details_page import DetailsPage
 
 __all__ = [
     "BasePage",
@@ -15,4 +16,5 @@ __all__ = [
     "SavedPage",
     "MarksEntryPage",
     "LoginPage",
+    "DetailsPage",
 ]
