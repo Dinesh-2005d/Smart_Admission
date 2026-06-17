@@ -1,5 +1,6 @@
 // src/constants/collegeDatabase.js
 import collegesData from './colleges_compressed.json';
+import { EXTRA_COLLEGES } from './extraColleges';
 
 const getCompanies = (dept, tier) => {
   const top = {
@@ -310,8 +311,8 @@ const PARSED_COLLEGES = collegesData
     };
   });
 
-// Combine curated top colleges with parsed ones
-export const COLLEGE_DATABASE = [...TOP_COLLEGES, ...PARSED_COLLEGES];
+// Combine ALL sources: curated top colleges + gap-filling extras + all parsed colleges
+export const COLLEGE_DATABASE = [...TOP_COLLEGES, ...EXTRA_COLLEGES, ...PARSED_COLLEGES];
 
 /**
  * Returns colleges for a student.
