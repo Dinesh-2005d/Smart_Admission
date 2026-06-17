@@ -15,16 +15,28 @@ const COLORS = {
   sub: '#334155', dim: '#475569',
 };
 
+const PAGE_SIZE = 10;
+
 export default function CollegeListScreen({ navigation, route }) {
-  const { state, board, department, departmentLabel, percentage, entranceScore } = route.params;
-  const { issaved, toggleSave, savedColleges } = useSavedColleges();
-  const [colleges, setColleges] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    homeState,    // student's actual home state (from Step 1)
+    targetState,  // null = All India, string = specific state chosen in modal
+    board, department, departmentLabel, percentage, entranceScore,
+    // backward compat: older nav may pass 'state' directly
+    state: legacyState,
+  } = route.params;
+
+  const effectiveHomeState  = homeState  || legacyState || '';
+  const effectiveTargetState = targetState !== undefined ? targetState : (legacyState || null);
+
+  const { issaved, toggleSave } = useSavedColleges();
+  const [colleges, setColleges]   = useState([]);
+  const [loading, setLoading]     = useState(true);
   const [aiMessage, setAiMessage] = useState('');
-  const [preferGovt, setPreferGovt] = useState(false);
-  const [needHostel, setNeedHostel] = useState(false);
+  const [preferGovt, setPreferGovt]   = useState(false);
+  const [needHostel, setNeedHostel]   = useState(false);
   const [showFilters, setShowFilters] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page, setPage]           = useState(1);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => { loadColleges(); }, [preferGovt, needHostel]);
@@ -32,37 +44,51 @@ export default function CollegeListScreen({ navigation, route }) {
   const loadColleges = () => {
     setLoading(true);
     setTimeout(() => {
-      let results = getCollegesForStudent(state, department, percentage, entranceScore);
-      
+      let results = getCollegesForStudent(
+        effectiveTargetState,
+        department,
+        percentage,
+        entranceScore,
+        effectiveHomeState,
+      );
+
       if (preferGovt) {
-        const govtOnly = results.filter(c => c.type === "Government");
+        const govtOnly = results.filter(c => c.type === 'Government');
         if (govtOnly.length > 0) {
-          results = govtOnly.concat(results.filter(c => c.type !== "Government"));
+          results = govtOnly.concat(results.filter(c => c.type !== 'Government'));
         }
       }
-      
+
       if (needHostel) {
-        const hostelOnly = results.filter(c => c.hostelAvailable);
-        if (hostelOnly.length > 0) {
-          results = hostelOnly;
-        }
+        const hostelOnly = results.filter(c => c.hostelAvailable === true);
+        if (hostelOnly.length > 0) results = hostelOnly;
       }
-      
+
       if (results.length === 0) {
-        results = getCollegesForStudent(state, department, percentage, entranceScore);
+        results = getCollegesForStudent(effectiveTargetState, department, percentage, entranceScore, effectiveHomeState);
       }
-      
+
       setColleges(results);
-      setAiMessage(getAIMessage(results, percentage, departmentLabel, state));
+      setAiMessage(getAIMessage(results, percentage, departmentLabel, effectiveTargetState || 'All India'));
       setPage(1);
       setLoading(false);
       Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }).start();
     }, 1200);
   };
 
+  /* ──────────────── Derived stats ──────────────── */
+  const totalCount   = colleges.length;
+  const govtCount    = colleges.filter(c => c.type === 'Government').length;
+  const hostelCount  = colleges.filter(c => c.hostelAvailable === true).length;
+  const pdsCount     = colleges.filter(c =>
+    c.state && effectiveHomeState &&
+    c.state.toLowerCase() === effectiveHomeState.toLowerCase()
+  ).length;
+
+  /* ──────────────── Helpers ──────────────── */
   const getTypeColor = (type) => {
     if (type === 'Government') return COLORS.green;
-    if (type === 'Private') return COLORS.gold;
+    if (type === 'Private')    return COLORS.gold;
     return COLORS.purple;
   };
 
@@ -72,6 +98,11 @@ export default function CollegeListScreen({ navigation, route }) {
     return '#ea580c';
   };
 
+  const targetLabel = !effectiveTargetState || effectiveTargetState === 'All India'
+    ? '🇮🇳 All India'
+    : `📍 ${effectiveTargetState}`;
+
+  /* ──────────────── Loading screen ──────────────── */
   if (loading) {
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -80,7 +111,7 @@ export default function CollegeListScreen({ navigation, route }) {
             <ActivityIndicator size="large" color={COLORS.purple} />
             <Text style={styles.loadingTitle}>🤖 AI Analyzing Your Profile...</Text>
             <Text style={styles.loadingSubtitle}>{percentage}% in {departmentLabel?.split('(')[0]}</Text>
-            <Text style={styles.loadingState}>📍 {state}</Text>
+            <Text style={styles.loadingState}>{targetLabel}</Text>
             <View style={styles.loadingSteps}>
               {["Checking eligibility...", "Matching colleges...", "Ranking by fit...", "Preparing results..."].map((step, i) => (
                 <Text key={i} style={styles.loadingStep}>✓ {step}</Text>
@@ -91,6 +122,9 @@ export default function CollegeListScreen({ navigation, route }) {
       </SafeAreaView>
     );
   }
+
+  const displayedColleges = colleges.slice(0, page * PAGE_SIZE);
+  const hasMore = colleges.length > page * PAGE_SIZE;
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -103,15 +137,39 @@ export default function CollegeListScreen({ navigation, route }) {
           <Text style={styles.aiMessage}>{aiMessage}</Text>
         </View>
 
-        {/* Summary */}
+        {/* Summary header */}
         <View style={styles.summaryBox}>
           <Text style={styles.summaryTitle}>🎯 Top Colleges for You</Text>
           <View style={styles.summaryChips}>
-            <View style={styles.chip}><Text style={styles.chipText}>📍 {state}</Text></View>
+            <View style={styles.chip}><Text style={styles.chipText}>{targetLabel}</Text></View>
             <View style={styles.chip}><Text style={styles.chipText}>📊 {percentage}%</Text></View>
             <View style={styles.chip}><Text style={styles.chipText}>🎓 {departmentLabel?.split('(')[0].trim()}</Text></View>
           </View>
         </View>
+
+        {/* ─── Stats Banner ─────────────────────────────────────── */}
+        <View style={styles.statsBanner}>
+          <View style={styles.statsBannerItem}>
+            <Text style={styles.statsBannerNum}>{totalCount}</Text>
+            <Text style={styles.statsBannerLabel}>Total</Text>
+          </View>
+          <View style={styles.statsBannerDivider} />
+          <View style={styles.statsBannerItem}>
+            <Text style={[styles.statsBannerNum, { color: COLORS.green }]}>{govtCount}</Text>
+            <Text style={styles.statsBannerLabel}>Govt</Text>
+          </View>
+          <View style={styles.statsBannerDivider} />
+          <View style={styles.statsBannerItem}>
+            <Text style={[styles.statsBannerNum, { color: COLORS.blue }]}>{hostelCount}</Text>
+            <Text style={styles.statsBannerLabel}>Hostel ✅</Text>
+          </View>
+          <View style={styles.statsBannerDivider} />
+          <View style={styles.statsBannerItem}>
+            <Text style={[styles.statsBannerNum, { color: COLORS.purple }]}>{pdsCount}</Text>
+            <Text style={styles.statsBannerLabel}>Your State</Text>
+          </View>
+        </View>
+        {/* ────────────────────────────────────────────────────────── */}
 
         {/* Filters */}
         <TouchableOpacity style={styles.filterToggle} onPress={() => setShowFilters(!showFilters)}>
@@ -133,15 +191,19 @@ export default function CollegeListScreen({ navigation, route }) {
           </View>
         )}
 
-        <Text style={styles.foundText}>✅ Found {colleges.length} best colleges matching your profile</Text>
+        <Text style={styles.foundText}>
+          ✅ Showing {displayedColleges.length} of {totalCount} colleges · {govtCount} Govt · {hostelCount} with Hostel
+        </Text>
 
         {/* College Cards */}
         <Animated.View style={{ opacity: fadeAnim }}>
-          {colleges.slice(0, page * 10).map((college, index) => {
+          {displayedColleges.map((college, index) => {
             const admission = predictAdmissionChance(college, percentage, entranceScore);
+            const isHomeState = effectiveHomeState &&
+              college.state?.toLowerCase() === effectiveHomeState.toLowerCase();
             return (
               <TouchableOpacity
-                key={index}
+                key={`${college.name}-${index}`}
                 style={[styles.collegeCard, { borderColor: index === 0 ? COLORS.purple + '88' : COLORS.border }]}
                 onPress={() => navigation.navigate('Details', { college, departmentLabel })}
                 activeOpacity={0.85}
@@ -151,9 +213,15 @@ export default function CollegeListScreen({ navigation, route }) {
                     <Text style={styles.bestMatchText}>⭐ Best Match</Text>
                   </View>
                 )}
-                <View style={styles.rankBadge}><Text style={styles.rankText}>#{index + 1}</Text></View>
 
-                {/* Removed absolute bookmark - now shown in footer row below */}
+                {/* PDS / Home-state badge */}
+                {isHomeState && index !== 0 && (
+                  <View style={styles.pdsBadge}>
+                    <Text style={styles.pdsBadgeText}>🏠 Your State</Text>
+                  </View>
+                )}
+
+                <View style={styles.rankBadge}><Text style={styles.rankText}>#{index + 1}</Text></View>
 
                 <View style={styles.collegeHeader}>
                   <View style={[styles.collegeIconCircle, { borderColor: getTypeColor(college.type) + '88' }]}>
@@ -161,7 +229,7 @@ export default function CollegeListScreen({ navigation, route }) {
                   </View>
                   <View style={styles.collegeHeaderInfo}>
                     <Text style={styles.collegeName}>{college.name}</Text>
-                    <Text style={styles.collegeLocation}>📍 {college.location}</Text>
+                    <Text style={styles.collegeLocation}>📍 {college.location}, {college.state}</Text>
                   </View>
                 </View>
 
@@ -191,17 +259,24 @@ export default function CollegeListScreen({ navigation, route }) {
                   </View>
                   <View style={styles.statDivider} />
                   <View style={styles.statItem}>
-                    <Text style={styles.statValue}>{college.hostelAvailable ? '✅' : '❌'}</Text>
+                    <Text style={[styles.statValue, { color: college.hostelAvailable ? COLORS.green : COLORS.pink }]}>
+                      {college.hostelAvailable ? '✅' : '❌'}
+                    </Text>
                     <Text style={styles.statLabel}>Hostel</Text>
+                  </View>
+                  <View style={styles.statDivider} />
+                  <View style={styles.statItem}>
+                    <Text style={styles.statValue}>₹{college.annualFee?.toLocaleString?.() ?? college.annualFee}</Text>
+                    <Text style={styles.statLabel}>Fee/yr</Text>
                   </View>
                 </View>
 
-                {college.highlight && (
+                {college.highlight ? (
                   <View style={styles.highlightBox}>
                     <Ionicons name="star" size={13} color={COLORS.gold} />
                     <Text style={styles.highlightText}>{college.highlight}</Text>
                   </View>
-                )}
+                ) : null}
 
                 {college.topCompanies?.length > 0 && (
                   <View style={styles.companiesRow}>
@@ -232,15 +307,30 @@ export default function CollegeListScreen({ navigation, route }) {
           })}
         </Animated.View>
 
-        {colleges.length > page * 10 && (
-          <TouchableOpacity style={styles.loadMoreBtn} onPress={() => setPage(page + 1)}>
-            <Text style={styles.loadMoreText}>Show Next 10 Colleges ⬇️</Text>
-          </TouchableOpacity>
+        {/* Load More */}
+        {hasMore && (
+          <View style={styles.loadMoreContainer}>
+            <Text style={styles.loadMoreInfo}>
+              Showing {displayedColleges.length} of {totalCount} colleges
+            </Text>
+            <TouchableOpacity style={styles.loadMoreBtn} onPress={() => setPage(page + 1)}>
+              <Text style={styles.loadMoreText}>Show Next {Math.min(PAGE_SIZE, totalCount - page * PAGE_SIZE)} Colleges ⬇️</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {!hasMore && totalCount > 0 && (
+          <View style={styles.endBanner}>
+            <Text style={styles.endBannerText}>
+              🎉 You've seen all {totalCount} colleges{'\n'}
+              {govtCount} Government  ·  {hostelCount} with Hostel  ·  {pdsCount} from {effectiveHomeState || 'your state'}
+            </Text>
+          </View>
         )}
 
         <TouchableOpacity style={styles.refreshBtn} onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={18} color={COLORS.purple} />
-          <Text style={styles.refreshBtnText}>Change Filters</Text>
+          <Text style={styles.refreshBtnText}>Change Filters / State</Text>
         </TouchableOpacity>
 
       </ScrollView>
@@ -267,18 +357,27 @@ const styles = StyleSheet.create({
   summaryChips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   chip: { backgroundColor: COLORS.purple + '22', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5, borderWidth: 1, borderColor: COLORS.purple + '44' },
   chipText: { color: COLORS.purple, fontSize: 12, fontWeight: '600' },
+  // Stats Banner
+  statsBanner: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#0f172a', borderRadius: 16, padding: 14, marginBottom: 12, borderWidth: 1, borderColor: '#1e293b' },
+  statsBannerItem: { flex: 1, alignItems: 'center' },
+  statsBannerNum: { color: '#ffffff', fontSize: 22, fontWeight: '900', lineHeight: 26 },
+  statsBannerLabel: { color: '#94a3b8', fontSize: 10, fontWeight: '600', marginTop: 2 },
+  statsBannerDivider: { width: 1, height: 36, backgroundColor: '#334155' },
+  // Filters
   filterToggle: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: COLORS.card, borderRadius: 12, padding: 12, marginBottom: 10, borderWidth: 1, borderColor: COLORS.border },
   filterToggleText: { color: COLORS.purple, fontSize: 14, fontWeight: '600', flex: 1 },
   filtersCard: { backgroundColor: COLORS.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: COLORS.border, gap: 14 },
   filterRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   filterLabel: { color: COLORS.sub, fontSize: 14 },
-  foundText: { color: COLORS.dim, fontSize: 13, marginBottom: 14, textAlign: 'center' },
+  foundText: { color: COLORS.dim, fontSize: 12, marginBottom: 14, textAlign: 'center' },
+  // College Card
   collegeCard: { backgroundColor: COLORS.card, borderRadius: 20, padding: 16, marginBottom: 16, borderWidth: 1, elevation: 6, position: 'relative' },
   bestMatchBadge: { position: 'absolute', top: -10, left: 16, backgroundColor: COLORS.purple, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 4 },
   bestMatchText: { color: '#ffffff', fontWeight: '800', fontSize: 11 },
+  pdsBadge: { position: 'absolute', top: -10, left: 16, backgroundColor: COLORS.green, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 4 },
+  pdsBadgeText: { color: '#ffffff', fontWeight: '800', fontSize: 11 },
   rankBadge: { position: 'absolute', top: 14, right: 14, backgroundColor: '#0f172a', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4, borderWidth: 1, borderColor: COLORS.purple },
   rankText: { color: COLORS.purple, fontWeight: '800', fontSize: 13 },
-  bookmarkBtn: { position: 'absolute', top: 14, right: 52, zIndex: 10, padding: 4 },
   collegeHeader: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 12, marginTop: 8 },
   collegeIconCircle: { width: 48, height: 48, borderRadius: 24, backgroundColor: '#0f172a', alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
   collegeIconText: { fontSize: 24 },
@@ -288,10 +387,10 @@ const styles = StyleSheet.create({
   tagsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 14 },
   tag: { borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4, borderWidth: 1 },
   tagText: { fontSize: 11, fontWeight: '600' },
-  statsRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#ffffff', borderRadius: 12, padding: 12, marginBottom: 12 },
+  statsRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#ffffff', borderRadius: 12, padding: 10, marginBottom: 12 },
   statItem: { flex: 1, alignItems: 'center' },
-  statValue: { color: COLORS.text, fontSize: 12, fontWeight: '700', marginBottom: 2 },
-  statLabel: { color: COLORS.dim, fontSize: 10 },
+  statValue: { color: COLORS.text, fontSize: 11, fontWeight: '700', marginBottom: 2 },
+  statLabel: { color: COLORS.dim, fontSize: 9 },
   statDivider: { width: 1, height: 30, backgroundColor: COLORS.border },
   highlightBox: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: COLORS.gold + '15', borderRadius: 8, padding: 10, marginBottom: 10, borderWidth: 1, borderColor: COLORS.gold + '44' },
   highlightText: { color: COLORS.gold, fontSize: 12, flex: 1 },
@@ -303,8 +402,13 @@ const styles = StyleSheet.create({
   saveCardBtn: { flexDirection: 'row', alignItems: 'center', gap: 5, borderWidth: 1, borderColor: COLORS.purple, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 6, backgroundColor: COLORS.purple + '15' },
   saveCardBtnActive: { backgroundColor: COLORS.purple, borderColor: COLORS.purple },
   saveCardBtnText: { color: COLORS.purple, fontSize: 12, fontWeight: '700' },
+  // Load more / End
+  loadMoreContainer: { marginBottom: 12 },
+  loadMoreInfo: { color: COLORS.dim, fontSize: 12, textAlign: 'center', marginBottom: 8 },
+  loadMoreBtn: { backgroundColor: '#e2e8f0', borderRadius: 12, paddingVertical: 14, alignItems: 'center' },
+  loadMoreText: { color: '#0f172a', fontSize: 13, fontWeight: '700' },
+  endBanner: { backgroundColor: COLORS.green + '15', borderRadius: 16, padding: 18, marginBottom: 12, borderWidth: 1, borderColor: COLORS.green + '44', alignItems: 'center' },
+  endBannerText: { color: COLORS.green, fontSize: 14, fontWeight: '700', textAlign: 'center', lineHeight: 22 },
   refreshBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: COLORS.card, borderRadius: 14, paddingVertical: 14, borderWidth: 1, borderColor: COLORS.border, marginTop: 4, marginBottom: 20 },
   refreshBtnText: { color: COLORS.purple, fontSize: 14, fontWeight: '700' },
-  loadMoreBtn: { backgroundColor: '#e2e8f0', borderRadius: 12, paddingVertical: 14, alignItems: 'center', marginTop: 8, marginBottom: 12 },
-  loadMoreText: { color: '#0f172a', fontSize: 13, fontWeight: '700' },
 });
