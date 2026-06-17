@@ -18,11 +18,10 @@ env:
   REPORT_BASE_URL: https://dinesh-2005d.github.io/Smart_Admission/reports/latest/execution-report.html
   PYTHON_VERSION: '3.11'
   JAVA_VERSION: '17'
-  NODE_VERSION: '20'
+  NODE_VERSION: '24'
   API_LEVEL: '30'
   TARGET: 'google_apis'
   ARCH: 'x86_64'
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   CI: 'true'
 
 jobs:
