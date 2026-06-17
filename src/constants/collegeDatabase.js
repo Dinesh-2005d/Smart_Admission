@@ -193,26 +193,123 @@ const TOP_COLLEGES = [
 
 import collegesData from './colleges_compressed.json';
 
-const PARSED_COLLEGES = collegesData.map(c => ({
-  name: c[0],
-  location: c[1],
-  state: c[2],
-  department: c[3],
-  type: c[4],
-  gender: "Co-Education",
-  rating: c[5],
-  placementRate: c[6],
-  minPercentage: c[7],
-  annualFee: "Contact College",
-  topCompanies: getCompanies(c[3], "mid"),
-  hostelAvailable: c[8] === 1,
-  naacGrade: "B+",
-  established: 2000,
-  description: `A ${c[4].toLowerCase()} college located in ${c[1]}, ${c[2]}.`,
-  courses: ["Various Courses"],
-  highlight: "",
-  mapQuery: `${c[0]} ${c[1]} ${c[2]}`
-}));
+// ── State name normalization map ──────────────────────────────────────────────
+// The compressed JSON has truncated/corrupted state names. This maps them back.
+const STATE_ALIAS = {
+  'andhra':          'Andhra Pradesh',
+  'andhra pradesh':  'Andhra Pradesh',
+  'arunachal':       'Arunachal Pradesh',
+  'assam':           'Assam',
+  'bihar':           'Bihar',
+  'chhattis':        'Chhattisgarh',
+  'chhattisgarh':    'Chhattisgarh',
+  'goa':             'Goa',
+  'gujarat':         'Gujarat',
+  'haryana':         'Haryana',
+  'himachal':        'Himachal Pradesh',
+  'himachal pradesh':'Himachal Pradesh',
+  'jharkhand':       'Jharkhand',
+  'karnataka':       'Karnataka',
+  'karnata':         'Karnataka',
+  'kerala':          'Kerala',
+  'madhya':          'Madhya Pradesh',
+  'madhya pradesh':  'Madhya Pradesh',
+  'maharashtra':     'Maharashtra',
+  'mahara':          'Maharashtra',
+  'manipur':         'Manipur',
+  'meghalaya':       'Meghalaya',
+  'mizoram':         'Mizoram',
+  'nagaland':        'Nagaland',
+  'odisha':          'Odisha',
+  'punjab':          'Punjab',
+  'rajasthan':       'Rajasthan',
+  'rajasth':         'Rajasthan',
+  'sikkim':          'Sikkim',
+  'tamil':           'Tamil Nadu',
+  'tamil nadu':      'Tamil Nadu',
+  'telangana':       'Telangana',
+  'telanga':         'Telangana',
+  'tripura':         'Tripura',
+  'uttar':           'Uttar Pradesh',
+  'uttar pradesh':   'Uttar Pradesh',
+  'uttarakhand':     'Uttarakhand',
+  'west':            'West Bengal',
+  'west bengal':     'West Bengal',
+  'delhi':           'Delhi',
+  'jammu':           'Jammu & Kashmir',
+  'ladakh':          'Ladakh',
+  'puducherry':      'Puducherry',
+  'chandigarh':      'Chandigarh',
+};
+
+const normalizeState = (raw) => {
+  if (!raw) return 'Unknown';
+  const key = raw.trim().toLowerCase();
+  return STATE_ALIAS[key] || raw.trim();
+};
+
+// Department keyword guessing from college name (to fix miscoded rows)
+const guessDeptFromName = (name, rawDept) => {
+  if (!name) return rawDept;
+  const n = name.toLowerCase();
+  if (n.includes('engineer') || n.includes('technology') || n.includes('technical') ||
+      n.includes(' tech') || n.includes('polytechnic') && rawDept !== 'polytechnic') {
+    if (n.includes('polytechnic')) return 'polytechnic';
+    return 'engineering';
+  }
+  if (n.includes('medical') || n.includes('mbbs') || n.includes('medicine') ||
+      n.includes('dental') || n.includes('bds')) return 'medical';
+  if (n.includes('nursing')) return 'nursing';
+  if (n.includes('pharmacy') || n.includes('pharma')) return 'pharmacy';
+  if (n.includes('law') || n.includes('legal')) return 'law';
+  if (n.includes('agriculture') || n.includes('agri') || n.includes('horticult')) return 'agriculture';
+  if (n.includes('architecture') || n.includes('planning')) return 'architecture';
+  if (n.includes('management') || n.includes('business') || n.includes('commerce') ||
+      n.includes('mba') || n.includes('bba') || n.includes('b.com')) return 'management';
+  if (n.includes('hotel') || n.includes('hospitality') || n.includes('catering')) return 'hotel_management';
+  if (n.includes('education') || n.includes('b.ed') || n.includes('bed') ||
+      n.includes('teacher') || n.includes('training')) return 'teacher_training';
+  if (n.includes('paramedical') || n.includes('physiotherapy') || n.includes('optometry')) return 'paramedical';
+  return rawDept;
+};
+
+const PARSED_COLLEGES = collegesData
+  .filter(c => {
+    // Skip completely junk rows: name must be a real string, state must be somewhat valid
+    if (!c[0] || typeof c[0] !== 'string' || c[0].length < 3) return false;
+    if (!c[2] || typeof c[2] !== 'string') return false;
+    // Skip rows where the state looks like a number/year/URL
+    const raw = c[2].trim();
+    if (/^\d{4}$/.test(raw)) return false;       // year like "2008"
+    if (raw === '-' || raw === 'Unknown' || raw.length < 2) return false;
+    if (raw.startsWith('http') || raw.startsWith('www')) return false;
+    return true;
+  })
+  .map(c => {
+    const normState = normalizeState(c[2]);
+    const rawDept   = c[3] || 'arts_science';
+    const dept      = guessDeptFromName(c[0], rawDept);
+    return {
+      name:           c[0],
+      location:       c[1] || normState,
+      state:          normState,
+      department:     dept,
+      type:           c[4] === 'Government' ? 'Government' : 'Private',
+      gender:         'Co-Education',
+      rating:         typeof c[5] === 'number' ? c[5] : 4.0,
+      placementRate:  typeof c[6] === 'number' ? c[6] : 70,
+      minPercentage:  typeof c[7] === 'number' ? c[7] : 50,
+      annualFee:      'Contact College',
+      topCompanies:   getCompanies(dept, 'mid'),
+      hostelAvailable: c[8] === 1,
+      naacGrade:      'B+',
+      established:    2000,
+      description:    `A ${(c[4] || 'private').toLowerCase()} college located in ${c[1] || normState}, ${normState}.`,
+      courses:        ['Various Courses'],
+      highlight:      '',
+      mapQuery:       `${c[0]} ${c[1] || ''} ${normState}`,
+    };
+  });
 
 // Combine curated top colleges with parsed ones
 export const COLLEGE_DATABASE = [...TOP_COLLEGES, ...PARSED_COLLEGES];
@@ -225,32 +322,34 @@ export const COLLEGE_DATABASE = [...TOP_COLLEGES, ...PARSED_COLLEGES];
  * @param {number}      entranceScore
  * @param {string}      homeState   - student's home state (for PDS ordering)
  */
+// Helper: check if a college's state matches a target state (handles aliases)
+const stateMatches = (collegeState, targetState) => {
+  if (!collegeState || !targetState) return false;
+  const cs = normalizeState(collegeState).toLowerCase();
+  const ts = targetState.toLowerCase();
+  return cs === ts || cs.startsWith(ts) || ts.startsWith(cs);
+};
+
 export const getCollegesForStudent = (targetState, department, percentage, entranceScore = 0, homeState = null) => {
   const isStateSpecific = !!(targetState && targetState !== 'All India');
 
-  // Sort function: highest rating first, then lower cutoff (most accessible)
+  // Sort: top colleges (TOP_COLLEGES) first by rating, then by accessibility
   const sortFunc = (a, b) => {
     if (b.rating !== a.rating) return b.rating - a.rating;
     return a.minPercentage - b.minPercentage;
   };
 
   if (isStateSpecific) {
-    // STATE SELECTED:
-    // Show colleges matching BOTH the state AND the department from all 70,000+ colleges.
-    // No eligibility/percentage filter — show everything.
-    const stateDeptMatches = COLLEGE_DATABASE.filter(c =>
-      c.state.toLowerCase() === targetState.toLowerCase() &&
+    // STATE SELECTED: show ALL colleges matching state + department — no cutoff filter
+    const matches = COLLEGE_DATABASE.filter(c =>
+      stateMatches(c.state, targetState) &&
       c.department === department
     );
-
-    // If the selected state has 0 entries for that dept, return empty
-    // (CollegeListScreen will show a "No colleges found" message)
-    stateDeptMatches.sort(sortFunc);
-    return stateDeptMatches;
+    matches.sort(sortFunc);
+    return matches;
 
   } else {
-    // ALL INDIA:
-    // Filter by department, apply generous 10% leeway, pin home-state at top
+    // ALL INDIA: filter by department with 10% leeway, home-state pinned at top
     let deptMatch = COLLEGE_DATABASE.filter(c => c.department === department);
     if (deptMatch.length === 0) deptMatch = COLLEGE_DATABASE;
 
@@ -258,10 +357,10 @@ export const getCollegesForStudent = (targetState, department, percentage, entra
     if (pool.length === 0) pool = deptMatch;
 
     const homeColleges = homeState
-      ? pool.filter(c => c.state.toLowerCase() === homeState.toLowerCase())
+      ? pool.filter(c => stateMatches(c.state, homeState))
       : [];
     const others = homeState
-      ? pool.filter(c => c.state.toLowerCase() !== homeState.toLowerCase())
+      ? pool.filter(c => !stateMatches(c.state, homeState))
       : pool;
 
     homeColleges.sort(sortFunc);
@@ -283,7 +382,7 @@ export const searchColleges = (query) => {
 
   return COLLEGE_DATABASE.filter(c => {
     const haystack = [
-      c.name, c.location, c.state, c.department, c.type,
+      c.name, c.location, normalizeState(c.state), c.department, c.type,
     ].join(' ').toLowerCase();
     return terms.some(term => haystack.includes(term));
   }).slice(0, 100);
