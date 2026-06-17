@@ -266,11 +266,6 @@ export default function CollegeListScreen({ navigation, route }) {
                     </Text>
                     <Text style={styles.statLabel}>Hostel</Text>
                   </View>
-                  <View style={styles.statDivider} />
-                  <View style={styles.statItem}>
-                    <Text style={styles.statValue}>₹{college.annualFee?.toLocaleString?.() ?? college.annualFee}</Text>
-                    <Text style={styles.statLabel}>Fee/yr</Text>
-                  </View>
                 </View>
 
                 {college.highlight ? (

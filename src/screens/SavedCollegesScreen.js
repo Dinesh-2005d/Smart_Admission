@@ -155,11 +155,6 @@ export default function SavedCollegesScreen({ navigation }) {
                 </View>
                 <View style={styles.statDivider} />
                 <View style={styles.statItem}>
-                  <Text style={styles.statValue}>₹{(college.annualFee / 1000).toFixed(0)}K</Text>
-                  <Text style={styles.statLabel}>Annual Fee</Text>
-                </View>
-                <View style={styles.statDivider} />
-                <View style={styles.statItem}>
                   <Text style={styles.statValue}>{college.hostelAvailable ? '✅' : '❌'}</Text>
                   <Text style={styles.statLabel}>Hostel</Text>
                 </View>
