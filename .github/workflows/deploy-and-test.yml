@@ -162,10 +162,10 @@ jobs:
           echo "url=$BASE_URL" >> $GITHUB_OUTPUT
 
   # ─────────────────────────────────────────────
-  # JOB 4: 🎥 Selenium E2E Tests (Visual + Recorded)
+  # JOB 4: Selenium E2E Tests
   # ─────────────────────────────────────────────
   selenium-tests:
-    name: 🎥 Selenium E2E Tests (Live Visual Recording)
+    name: 🧪 Selenium E2E Tests
     needs: verify-deployment
     runs-on: ubuntu-latest
     if: always() && needs.verify-deployment.outputs.deployment_live == 'true'
