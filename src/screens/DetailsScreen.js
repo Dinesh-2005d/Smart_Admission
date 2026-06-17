@@ -4,6 +4,7 @@ import {
   StatusBar, SafeAreaView, Linking, Animated, Dimensions, Share, Image, Modal
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSavedColleges } from '../context/SavedCollegesContext';
 
 const { width } = Dimensions.get('window');
 
@@ -28,6 +29,8 @@ export default function DetailsScreen({ route, navigation }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedFacility, setSelectedFacility] = useState(null);
+  const { issaved, toggleSave } = useSavedColleges();
+  const saved = issaved(college);
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }).start();
@@ -143,6 +146,12 @@ export default function DetailsScreen({ route, navigation }) {
               </TouchableOpacity>
               <TouchableOpacity style={[styles.actionBtn, { borderColor: COLORS.teal + '55' }]} onPress={() => setActiveTab('map')}>
                 <Ionicons name="map" size={18} color={COLORS.teal} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.actionBtn, { borderColor: saved ? COLORS.purple + '88' : COLORS.border, backgroundColor: saved ? COLORS.purple + '18' : '#0f172a' }]}
+                onPress={() => toggleSave(college)}
+              >
+                <Ionicons name={saved ? 'bookmark' : 'bookmark-outline'} size={18} color={saved ? COLORS.purple : '#94a3b8'} />
               </TouchableOpacity>
             </View>
           </View>
@@ -385,7 +394,7 @@ export default function DetailsScreen({ route, navigation }) {
         <View style={styles.bottomActions}>
           <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: COLORS.green }]} onPress={openMapsExternal}>
             <Ionicons name="map" size={18} color="#fff" />
-            <Text style={[styles.bottomBtnText, { color: '#fff' }]}>Google Maps</Text>
+            <Text style={[styles.bottomBtnText, { color: '#fff' }]}>Maps</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: COLORS.blue + '22', borderWidth: 1, borderColor: COLORS.blue }]} onPress={openWebsite}>
             <Ionicons name="globe" size={18} color={COLORS.blue} />
@@ -394,6 +403,20 @@ export default function DetailsScreen({ route, navigation }) {
           <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: COLORS.gold + '22', borderWidth: 1, borderColor: COLORS.gold }]} onPress={handleShare}>
             <Ionicons name="share-social" size={18} color={COLORS.gold} />
             <Text style={[styles.bottomBtnText, { color: COLORS.gold }]}>Share</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.bottomBtn, {
+              backgroundColor: saved ? COLORS.purple : COLORS.purple + '22',
+              borderWidth: 1,
+              borderColor: COLORS.purple,
+            }]}
+            onPress={() => toggleSave(college)}
+            activeOpacity={0.85}
+          >
+            <Ionicons name={saved ? 'bookmark' : 'bookmark-outline'} size={18} color={saved ? '#fff' : COLORS.purple} />
+            <Text style={[styles.bottomBtnText, { color: saved ? '#fff' : COLORS.purple }]}>
+              {saved ? 'Saved' : 'Save'}
+            </Text>
           </TouchableOpacity>
         </View>
 

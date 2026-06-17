@@ -5,12 +5,14 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { searchColleges } from '../constants/collegeDatabase';
+import { useSavedColleges } from '../context/SavedCollegesContext';
 
 export default function SearchScreen({ navigation }) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [searched, setSearched] = useState(false);
   const [page, setPage] = useState(1);
+  const { issaved, toggleSave } = useSavedColleges();
 
   const handleSearch = (text) => {
     setQuery(text);
@@ -99,22 +101,45 @@ export default function SearchScreen({ navigation }) {
             onPress={() => navigation.navigate('Details', { college })}
             activeOpacity={0.85}
           >
+            {/* Top row: icon + name/location + type badge */}
             <View style={styles.cardHeader}>
               <View style={styles.iconCircle}><Text style={styles.iconText}>🏛️</Text></View>
               <View style={styles.cardInfo}>
                 <Text style={styles.collegeName}>{college.name}</Text>
                 <Text style={styles.collegeLocation}>📍 {college.location}</Text>
               </View>
-              <View style={[styles.typeTag, { borderColor: getTypeColor(college.type) }]}>
+              <View style={[styles.typeTag, { borderColor: getTypeColor(college.type), backgroundColor: getTypeColor(college.type) + '15' }]}>
                 <Text style={[styles.typeText, { color: getTypeColor(college.type) }]}>{college.type}</Text>
               </View>
             </View>
+
+            {/* Stats row */}
             <View style={styles.statsRow}>
               <Text style={styles.stat}>⭐ {college.rating}</Text>
               <Text style={styles.stat}>📈 {college.placementRate}%</Text>
               <Text style={styles.stat}>NAAC {college.naacGrade}</Text>
             </View>
+
             <Text style={styles.deptBadge}>🎓 {college.department.replace('_', ' & ').toUpperCase()}</Text>
+
+            {/* Save button row — always visible at the bottom */}
+            <View style={styles.cardFooter}>
+              <Text style={styles.viewDetailText}>View Details →</Text>
+              <TouchableOpacity
+                style={[styles.saveBtn, issaved(college) && styles.saveBtnActive]}
+                onPress={(e) => { e.stopPropagation?.(); toggleSave(college); }}
+                activeOpacity={0.8}
+              >
+                <Ionicons
+                  name={issaved(college) ? 'bookmark' : 'bookmark-outline'}
+                  size={15}
+                  color={issaved(college) ? '#ffffff' : '#2563eb'}
+                />
+                <Text style={[styles.saveBtnText, issaved(college) && { color: '#ffffff' }]}>
+                  {issaved(college) ? 'Saved' : 'Save'}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </TouchableOpacity>
         ))}
 
@@ -161,7 +186,13 @@ const styles = StyleSheet.create({
   typeText: { fontSize: 11, fontWeight: '600' },
   statsRow: { flexDirection: 'row', gap: 12, marginBottom: 8 },
   stat: { color: '#334155', fontSize: 12 },
-  deptBadge: { color: '#2563eb', fontSize: 11, fontWeight: '600' },
+  deptBadge: { color: '#2563eb', fontSize: 11, fontWeight: '600', marginBottom: 10 },
+  // Footer row with Save button
+  cardFooter: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderTopWidth: 1, borderTopColor: '#e2e8f0', paddingTop: 10, marginTop: 2 },
+  viewDetailText: { color: '#475569', fontSize: 12, fontWeight: '600' },
+  saveBtn: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#eff6ff', borderWidth: 1, borderColor: '#2563eb', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 6 },
+  saveBtnActive: { backgroundColor: '#2563eb', borderColor: '#2563eb' },
+  saveBtnText: { color: '#2563eb', fontSize: 12, fontWeight: '700' },
   loadMoreBtn: { backgroundColor: '#e2e8f0', borderRadius: 12, paddingVertical: 14, alignItems: 'center', marginTop: 8, marginBottom: 20 },
   loadMoreText: { color: '#0f172a', fontSize: 13, fontWeight: '700' },
 });

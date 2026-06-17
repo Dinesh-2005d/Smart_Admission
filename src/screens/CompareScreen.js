@@ -3,7 +3,9 @@ import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
   TextInput, SafeAreaView, StatusBar, KeyboardAvoidingView, Platform
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { searchColleges } from '../constants/collegeDatabase';
+import { useSavedColleges } from '../context/SavedCollegesContext';
 
 export default function CompareScreen({ navigation }) {
   const [college1Query, setCollege1Query] = useState('');
@@ -13,6 +15,7 @@ export default function CompareScreen({ navigation }) {
   const [college1, setCollege1] = useState(null);
   const [college2, setCollege2] = useState(null);
   const [showResult, setShowResult] = useState(false);
+  const { issaved, toggleSave } = useSavedColleges();
 
   const handleC1Search = (t) => {
     setCollege1Query(t);
@@ -124,10 +127,48 @@ export default function CompareScreen({ navigation }) {
 
         {showResult && college1 && college2 && (
           <View style={styles.resultCard}>
+
+            {/* College headers with Save buttons */}
             <View style={styles.resultHeader}>
-              <Text style={styles.resultCollegeName} numberOfLines={2}>{college1.name}</Text>
+              {/* College 1 */}
+              <View style={styles.collegeHeaderCol}>
+                <Text style={styles.resultCollegeName} numberOfLines={2}>{college1.name}</Text>
+                <TouchableOpacity
+                  style={[styles.saveBtn, issaved(college1) && styles.saveBtnActive]}
+                  onPress={() => toggleSave(college1)}
+                  activeOpacity={0.8}
+                >
+                  <Ionicons
+                    name={issaved(college1) ? 'bookmark' : 'bookmark-outline'}
+                    size={13}
+                    color={issaved(college1) ? '#ffffff' : '#38bdf8'}
+                  />
+                  <Text style={[styles.saveBtnText, issaved(college1) && { color: '#ffffff' }]}>
+                    {issaved(college1) ? 'Saved ✓' : 'Save'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
               <Text style={styles.resultVs}>VS</Text>
-              <Text style={styles.resultCollegeName} numberOfLines={2}>{college2.name}</Text>
+
+              {/* College 2 */}
+              <View style={styles.collegeHeaderCol}>
+                <Text style={styles.resultCollegeName} numberOfLines={2}>{college2.name}</Text>
+                <TouchableOpacity
+                  style={[styles.saveBtn, issaved(college2) && styles.saveBtnActive]}
+                  onPress={() => toggleSave(college2)}
+                  activeOpacity={0.8}
+                >
+                  <Ionicons
+                    name={issaved(college2) ? 'bookmark' : 'bookmark-outline'}
+                    size={13}
+                    color={issaved(college2) ? '#ffffff' : '#38bdf8'}
+                  />
+                  <Text style={[styles.saveBtnText, issaved(college2) && { color: '#ffffff' }]}>
+                    {issaved(college2) ? 'Saved ✓' : 'Save'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
             <CompareRow label="⭐ Rating" val1={String(college1.rating)} val2={String(college2.rating)} higher="higher" />
@@ -172,9 +213,20 @@ const styles = StyleSheet.create({
   compareBtn: { backgroundColor: '#0284c7', borderRadius: 12, paddingVertical: 14, alignItems: 'center', marginBottom: 20 },
   compareBtnText: { color: '#ffffff', fontWeight: '800', fontSize: 16 },
   resultCard: { backgroundColor: '#111827', borderRadius: 20, padding: 16, borderWidth: 1, borderColor: '#1e293b', zIndex: 1 },
+  // College header with Save buttons
   resultHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 16, gap: 8 },
-  resultCollegeName: { flex: 1, color: '#ffffff', fontSize: 13, fontWeight: '700', textAlign: 'center' },
+  collegeHeaderCol: { flex: 1, alignItems: 'center', gap: 8 },
+  resultCollegeName: { color: '#ffffff', fontSize: 13, fontWeight: '700', textAlign: 'center' },
   resultVs: { color: '#0284c7', fontWeight: '800', fontSize: 14 },
+  // Save button
+  saveBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 5,
+    borderWidth: 1, borderColor: '#38bdf8', borderRadius: 10,
+    paddingHorizontal: 10, paddingVertical: 6,
+    backgroundColor: 'transparent',
+  },
+  saveBtnActive: { backgroundColor: '#0284c7', borderColor: '#0284c7' },
+  saveBtnText: { color: '#38bdf8', fontSize: 11, fontWeight: '700' },
   compareRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#1e293b' },
   compareVal: { flex: 1, color: '#e2e8f0', fontSize: 13, fontWeight: '600', textAlign: 'center' },
   compareLabel: { flex: 1, color: '#94a3b8', fontSize: 11, textAlign: 'center' },

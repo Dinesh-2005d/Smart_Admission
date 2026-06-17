@@ -153,18 +153,7 @@ export default function CollegeListScreen({ navigation, route }) {
                 )}
                 <View style={styles.rankBadge}><Text style={styles.rankText}>#{index + 1}</Text></View>
 
-                {/* Bookmark button */}
-                <TouchableOpacity
-                  style={styles.bookmarkBtn}
-                  onPress={() => toggleSave(college)}
-                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                >
-                  <Ionicons
-                    name={issaved(college) ? 'bookmark' : 'bookmark-outline'}
-                    size={20}
-                    color={issaved(college) ? COLORS.purple : COLORS.dim}
-                  />
-                </TouchableOpacity>
+                {/* Removed absolute bookmark - now shown in footer row below */}
 
                 <View style={styles.collegeHeader}>
                   <View style={[styles.collegeIconCircle, { borderColor: getTypeColor(college.type) + '88' }]}>
@@ -223,7 +212,20 @@ export default function CollegeListScreen({ navigation, route }) {
 
                 <View style={styles.viewDetailRow}>
                   <Text style={styles.viewDetailText}>View Full Details & Map</Text>
-                  <Ionicons name="arrow-forward-circle" size={20} color={COLORS.purple} />
+                  <TouchableOpacity
+                    style={[styles.saveCardBtn, issaved(college) && styles.saveCardBtnActive]}
+                    onPress={() => toggleSave(college)}
+                    activeOpacity={0.8}
+                  >
+                    <Ionicons
+                      name={issaved(college) ? 'bookmark' : 'bookmark-outline'}
+                      size={14}
+                      color={issaved(college) ? '#ffffff' : COLORS.purple}
+                    />
+                    <Text style={[styles.saveCardBtnText, issaved(college) && { color: '#ffffff' }]}>
+                      {issaved(college) ? 'Saved' : 'Save'}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               </TouchableOpacity>
             );
@@ -296,8 +298,11 @@ const styles = StyleSheet.create({
   companiesRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
   companiesLabel: { color: COLORS.dim, fontSize: 12 },
   companiesText: { color: COLORS.sub, fontSize: 12, fontWeight: '600', flex: 1 },
-  viewDetailRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 6, borderTopWidth: 1, borderTopColor: COLORS.border, paddingTop: 12, marginTop: 4 },
+  viewDetailRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 6, borderTopWidth: 1, borderTopColor: COLORS.border, paddingTop: 12, marginTop: 4 },
   viewDetailText: { color: COLORS.purple, fontSize: 13, fontWeight: '700' },
+  saveCardBtn: { flexDirection: 'row', alignItems: 'center', gap: 5, borderWidth: 1, borderColor: COLORS.purple, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 6, backgroundColor: COLORS.purple + '15' },
+  saveCardBtnActive: { backgroundColor: COLORS.purple, borderColor: COLORS.purple },
+  saveCardBtnText: { color: COLORS.purple, fontSize: 12, fontWeight: '700' },
   refreshBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: COLORS.card, borderRadius: 14, paddingVertical: 14, borderWidth: 1, borderColor: COLORS.border, marginTop: 4, marginBottom: 20 },
   refreshBtnText: { color: COLORS.purple, fontSize: 14, fontWeight: '700' },
   loadMoreBtn: { backgroundColor: '#e2e8f0', borderRadius: 12, paddingVertical: 14, alignItems: 'center', marginTop: 8, marginBottom: 12 },
