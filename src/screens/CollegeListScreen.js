@@ -18,7 +18,7 @@ const C = {
   sub: '#334155', dim: '#475569', navy: '#0f172a',
 };
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 20; // show 20 colleges per page
 
 // State list for modal (same structure as MarksEntryScreen)
 const STATE_OPTIONS = [
@@ -440,9 +440,10 @@ export default function CollegeListScreen({ navigation, route }) {
         </View>
 
         <Text style={styles.foundText}>
-          ✅ Showing {displayedColleges.length} of {totalCount} colleges
+          📋 Showing {displayedColleges.length} of {totalCount} colleges
           {typeFilter !== 'All' ? ` · ${typeFilter} only` : ''}
           {needHostel ? ' · With Hostel' : ''}
+          {` · sorted Top → Low`}
         </Text>
 
         {/* ── College Cards ── */}
@@ -570,13 +571,21 @@ export default function CollegeListScreen({ navigation, route }) {
         {hasMore && (
           <View style={styles.loadMoreContainer}>
             <Text style={styles.loadMoreInfo}>
-              Showing {displayedColleges.length} of {totalCount} colleges
+              Showing {displayedColleges.length} of {totalCount} colleges · {totalCount - displayedColleges.length} remaining
             </Text>
-            <TouchableOpacity style={styles.loadMoreBtn} onPress={() => setPage(p => p + 1)}>
-              <Text style={styles.loadMoreText}>
-                Show Next {Math.min(PAGE_SIZE, totalCount - displayedColleges.length)} Colleges ⬇️
-              </Text>
-            </TouchableOpacity>
+            <View style={styles.loadMoreBtnRow}>
+              <TouchableOpacity style={styles.loadMoreBtn} onPress={() => setPage(p => p + 1)}>
+                <Text style={styles.loadMoreText}>
+                  ⬇️ Next {Math.min(PAGE_SIZE, totalCount - displayedColleges.length)}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.loadAllBtn}
+                onPress={() => setPage(Math.ceil(totalCount / PAGE_SIZE))}
+              >
+                <Text style={styles.loadAllText}>📋 Load All {totalCount}</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
 
@@ -773,8 +782,11 @@ const styles = StyleSheet.create({
   // Load more / End
   loadMoreContainer: { marginBottom: 12 },
   loadMoreInfo: { color: C.dim, fontSize: 12, textAlign: 'center', marginBottom: 8 },
-  loadMoreBtn: { backgroundColor: '#e2e8f0', borderRadius: 12, paddingVertical: 14, alignItems: 'center' },
+  loadMoreBtnRow: { flexDirection: 'row', gap: 8 },
+  loadMoreBtn: { flex: 1, backgroundColor: '#e2e8f0', borderRadius: 12, paddingVertical: 14, alignItems: 'center' },
   loadMoreText: { color: '#0f172a', fontSize: 13, fontWeight: '700' },
+  loadAllBtn: { flex: 1, backgroundColor: C.purple, borderRadius: 12, paddingVertical: 14, alignItems: 'center' },
+  loadAllText: { color: '#ffffff', fontSize: 13, fontWeight: '700' },
   endBanner: {
     backgroundColor: C.green + '15', borderRadius: 16, padding: 18,
     marginBottom: 12, borderWidth: 1, borderColor: C.green + '44', alignItems: 'center',

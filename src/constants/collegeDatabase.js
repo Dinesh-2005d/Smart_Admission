@@ -333,14 +333,14 @@ const stateMatches = (collegeState, targetState) => {
 export const getCollegesForStudent = (targetState, department, percentage, entranceScore = 0, homeState = null) => {
   const isStateSpecific = !!(targetState && targetState !== 'All India');
 
-  // Sort: top colleges (TOP_COLLEGES) first by rating, then by accessibility
+  // Sort: highest rating first, then lowest cutoff (most accessible) at bottom
   const sortFunc = (a, b) => {
     if (b.rating !== a.rating) return b.rating - a.rating;
     return a.minPercentage - b.minPercentage;
   };
 
   if (isStateSpecific) {
-    // STATE SELECTED: show ALL colleges matching state + department — no cutoff filter
+    // STATE SELECTED: show ALL colleges matching state + department — no cutoff filter at all
     const matches = COLLEGE_DATABASE.filter(c =>
       stateMatches(c.state, targetState) &&
       c.department === department
@@ -349,19 +349,17 @@ export const getCollegesForStudent = (targetState, department, percentage, entra
     return matches;
 
   } else {
-    // ALL INDIA: filter by department with 10% leeway, home-state pinned at top
+    // ALL INDIA: show ALL colleges for the department — no percentage filter at all
+    // Home-state colleges pinned at the top, rest sorted by rating
     let deptMatch = COLLEGE_DATABASE.filter(c => c.department === department);
-    if (deptMatch.length === 0) deptMatch = COLLEGE_DATABASE;
-
-    let pool = deptMatch.filter(c => percentage >= (c.minPercentage - 10));
-    if (pool.length === 0) pool = deptMatch;
+    if (deptMatch.length === 0) deptMatch = [...COLLEGE_DATABASE];
 
     const homeColleges = homeState
-      ? pool.filter(c => stateMatches(c.state, homeState))
+      ? deptMatch.filter(c => stateMatches(c.state, homeState))
       : [];
     const others = homeState
-      ? pool.filter(c => !stateMatches(c.state, homeState))
-      : pool;
+      ? deptMatch.filter(c => !stateMatches(c.state, homeState))
+      : deptMatch;
 
     homeColleges.sort(sortFunc);
     others.sort(sortFunc);
