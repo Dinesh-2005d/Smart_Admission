@@ -23,6 +23,8 @@ export default function MarksEntryScreen({ navigation, route }) {
   const [targetState, setTargetState] = useState(homeState); // default = home state
   const [stateSearch, setStateSearch] = useState('');
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scrollRef = useRef(null);
+  const marksCardY = useRef(0);
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, { toValue: 1, duration: 700, useNativeDriver: true }).start();
@@ -41,6 +43,10 @@ export default function MarksEntryScreen({ navigation, route }) {
     setSelectedDept(id);
     setEntranceScore('');
     setShowEntrance(['engineering', 'medical', 'law', 'architecture', 'management'].includes(id));
+    // Auto-scroll to marks section after a short delay (let state update render first)
+    setTimeout(() => {
+      scrollRef.current?.scrollTo({ y: marksCardY.current - 20, animated: true });
+    }, 120);
   };
 
   const isValid = () => {
@@ -92,7 +98,7 @@ export default function MarksEntryScreen({ navigation, route }) {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'padding'} style={{ flex: 1 }}>
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+        <ScrollView ref={scrollRef} style={styles.container} contentContainerStyle={styles.contentContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
 
           <View style={styles.headerRow}>
             <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.backBtn}>
@@ -139,7 +145,10 @@ export default function MarksEntryScreen({ navigation, route }) {
           </View>
 
           {selectedDept && (
-            <Animated.View style={[styles.card, { opacity: fadeAnim }]}>
+            <Animated.View
+              style={[styles.card, { opacity: fadeAnim }]}
+              onLayout={(e) => { marksCardY.current = e.nativeEvent.layout.y; }}
+            >
               <Text style={styles.sectionTitle}>📊 Enter Your Marks</Text>
 
               <Text style={styles.label}>12th / HSC Percentage *</Text>
