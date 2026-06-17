@@ -7,6 +7,7 @@ from .saved_page import SavedPage
 from .marks_entry_page import MarksEntryPage
 from .login_page import LoginPage
 from .details_page import DetailsPage
+from .ai_chat_page import AIChatPage
 
 __all__ = [
     "BasePage",
@@ -17,4 +18,5 @@ __all__ = [
     "MarksEntryPage",
     "LoginPage",
     "DetailsPage",
+    "AIChatPage",
 ]
