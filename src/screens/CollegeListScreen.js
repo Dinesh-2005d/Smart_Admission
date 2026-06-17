@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  Animated, StatusBar, SafeAreaView, ActivityIndicator, Switch,
+  Animated, StatusBar, SafeAreaView, ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { getCollegesForStudent } from '../constants/collegeDatabase';
@@ -33,13 +33,13 @@ export default function CollegeListScreen({ navigation, route }) {
   const [colleges, setColleges]   = useState([]);
   const [loading, setLoading]     = useState(true);
   const [aiMessage, setAiMessage] = useState('');
-  const [preferGovt, setPreferGovt]   = useState(false);
+  const [typeFilter, setTypeFilter]   = useState('All'); // 'All' | 'Government' | 'Private'
   const [needHostel, setNeedHostel]   = useState(false);
-  const [showFilters, setShowFilters] = useState(false);
   const [page, setPage]           = useState(1);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scrollRef = useRef(null);
 
-  useEffect(() => { loadColleges(); }, [preferGovt, needHostel]);
+  useEffect(() => { loadColleges(); }, [typeFilter, needHostel]);
 
   const loadColleges = () => {
     setLoading(true);
@@ -52,20 +52,19 @@ export default function CollegeListScreen({ navigation, route }) {
         effectiveHomeState,
       );
 
-      if (preferGovt) {
+      // Type filter: Government / Private
+      if (typeFilter === 'Government') {
         const govtOnly = results.filter(c => c.type === 'Government');
-        if (govtOnly.length > 0) {
-          results = govtOnly.concat(results.filter(c => c.type !== 'Government'));
-        }
+        if (govtOnly.length > 0) results = govtOnly;
+      } else if (typeFilter === 'Private') {
+        const pvtOnly = results.filter(c => c.type !== 'Government');
+        if (pvtOnly.length > 0) results = pvtOnly;
       }
 
+      // Hostel filter
       if (needHostel) {
         const hostelOnly = results.filter(c => c.hostelAvailable === true);
         if (hostelOnly.length > 0) results = hostelOnly;
-      }
-
-      if (results.length === 0) {
-        results = getCollegesForStudent(effectiveTargetState, department, percentage, entranceScore, effectiveHomeState);
       }
 
       setColleges(results);
@@ -73,7 +72,7 @@ export default function CollegeListScreen({ navigation, route }) {
       setPage(1);
       setLoading(false);
       Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }).start();
-    }, 1200);
+    }, 800);
   };
 
   /* ──────────────── Derived stats ──────────────── */
@@ -171,25 +170,28 @@ export default function CollegeListScreen({ navigation, route }) {
         </View>
         {/* ────────────────────────────────────────────────────────── */}
 
-        {/* Filters */}
-        <TouchableOpacity style={styles.filterToggle} onPress={() => setShowFilters(!showFilters)}>
-          <Ionicons name="options" size={16} color={COLORS.purple} />
-          <Text style={styles.filterToggleText}>Smart Filters</Text>
-          <Ionicons name={showFilters ? "chevron-up" : "chevron-down"} size={16} color={COLORS.purple} />
-        </TouchableOpacity>
-
-        {showFilters && (
-          <View style={styles.filtersCard}>
-            <View style={styles.filterRow}>
-              <Text style={styles.filterLabel}>🏫 Prefer Government Colleges</Text>
-              <Switch value={preferGovt} onValueChange={setPreferGovt} trackColor={{ false: COLORS.border, true: COLORS.purple }} thumbColor={preferGovt ? COLORS.gold : COLORS.dim} />
-            </View>
-            <View style={styles.filterRow}>
-              <Text style={styles.filterLabel}>🏠 Hostel Required</Text>
-              <Switch value={needHostel} onValueChange={setNeedHostel} trackColor={{ false: COLORS.border, true: COLORS.purple }} thumbColor={needHostel ? COLORS.gold : COLORS.dim} />
-            </View>
-          </View>
-        )}
+        {/* Filters - Quick Chip Row */}
+        <View style={styles.filterChipRow}>
+          {['All', 'Government', 'Private'].map(f => (
+            <TouchableOpacity
+              key={f}
+              style={[styles.filterChip, typeFilter === f && styles.filterChipActive]}
+              onPress={() => setTypeFilter(f)}
+            >
+              <Text style={[styles.filterChipText, typeFilter === f && styles.filterChipTextActive]}>
+                {f === 'All' ? '🏛️ All' : f === 'Government' ? '🏫 Govt' : '🏢 Private'}
+              </Text>
+            </TouchableOpacity>
+          ))}
+          <TouchableOpacity
+            style={[styles.filterChip, needHostel && styles.filterChipHostelActive]}
+            onPress={() => setNeedHostel(!needHostel)}
+          >
+            <Text style={[styles.filterChipText, needHostel && styles.filterChipTextHostel]}>
+              🏠 Hostel {needHostel ? '✅' : ''}
+            </Text>
+          </TouchableOpacity>
+        </View>
 
         <Text style={styles.foundText}>
           ✅ Showing {displayedColleges.length} of {totalCount} colleges · {govtCount} Govt · {hostelCount} with Hostel
@@ -308,13 +310,15 @@ export default function CollegeListScreen({ navigation, route }) {
         </Animated.View>
 
         {/* Load More */}
-        {hasMore && (
+        {displayedColleges.length < totalCount && (
           <View style={styles.loadMoreContainer}>
             <Text style={styles.loadMoreInfo}>
               Showing {displayedColleges.length} of {totalCount} colleges
             </Text>
-            <TouchableOpacity style={styles.loadMoreBtn} onPress={() => setPage(page + 1)}>
-              <Text style={styles.loadMoreText}>Show Next {Math.min(PAGE_SIZE, totalCount - page * PAGE_SIZE)} Colleges ⬇️</Text>
+            <TouchableOpacity style={styles.loadMoreBtn} onPress={() => setPage(p => p + 1)}>
+              <Text style={styles.loadMoreText}>
+                Show Next {Math.min(PAGE_SIZE, totalCount - displayedColleges.length)} Colleges ⬇️
+              </Text>
             </TouchableOpacity>
           </View>
         )}
@@ -363,12 +367,14 @@ const styles = StyleSheet.create({
   statsBannerNum: { color: '#ffffff', fontSize: 22, fontWeight: '900', lineHeight: 26 },
   statsBannerLabel: { color: '#94a3b8', fontSize: 10, fontWeight: '600', marginTop: 2 },
   statsBannerDivider: { width: 1, height: 36, backgroundColor: '#334155' },
-  // Filters
-  filterToggle: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: COLORS.card, borderRadius: 12, padding: 12, marginBottom: 10, borderWidth: 1, borderColor: COLORS.border },
-  filterToggleText: { color: COLORS.purple, fontSize: 14, fontWeight: '600', flex: 1 },
-  filtersCard: { backgroundColor: COLORS.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: COLORS.border, gap: 14 },
-  filterRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  filterLabel: { color: COLORS.sub, fontSize: 14 },
+  // Filter Chips
+  filterChipRow: { flexDirection: 'row', gap: 8, marginBottom: 12, flexWrap: 'wrap' },
+  filterChip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, borderWidth: 1.5, borderColor: COLORS.border, backgroundColor: COLORS.card },
+  filterChipActive: { borderColor: COLORS.purple, backgroundColor: COLORS.purple + '18' },
+  filterChipHostelActive: { borderColor: COLORS.green, backgroundColor: COLORS.green + '18' },
+  filterChipText: { color: COLORS.sub, fontSize: 12, fontWeight: '600' },
+  filterChipTextActive: { color: COLORS.purple, fontWeight: '700' },
+  filterChipTextHostel: { color: COLORS.green, fontWeight: '700' },
   foundText: { color: COLORS.dim, fontSize: 12, marginBottom: 14, textAlign: 'center' },
   // College Card
   collegeCard: { backgroundColor: COLORS.card, borderRadius: 20, padding: 16, marginBottom: 16, borderWidth: 1, elevation: 6, position: 'relative' },
