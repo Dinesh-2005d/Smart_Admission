@@ -44,6 +44,7 @@ export default function CollegeListScreen({ navigation, route }) {
   const loadColleges = () => {
     setLoading(true);
     setTimeout(() => {
+      // Get ALL colleges for state + department (no eligibility filter for state-specific)
       let results = getCollegesForStudent(
         effectiveTargetState,
         department,
@@ -52,19 +53,16 @@ export default function CollegeListScreen({ navigation, route }) {
         effectiveHomeState,
       );
 
-      // Type filter: Government / Private
+      // ── Type filter (strict — always apply, empty = show empty state) ──
       if (typeFilter === 'Government') {
-        const govtOnly = results.filter(c => c.type === 'Government');
-        if (govtOnly.length > 0) results = govtOnly;
+        results = results.filter(c => c.type === 'Government');
       } else if (typeFilter === 'Private') {
-        const pvtOnly = results.filter(c => c.type !== 'Government');
-        if (pvtOnly.length > 0) results = pvtOnly;
+        results = results.filter(c => c.type !== 'Government');
       }
 
-      // Hostel filter
+      // ── Hostel filter (strict) ──
       if (needHostel) {
-        const hostelOnly = results.filter(c => c.hostelAvailable === true);
-        if (hostelOnly.length > 0) results = hostelOnly;
+        results = results.filter(c => c.hostelAvailable === true);
       }
 
       setColleges(results);
