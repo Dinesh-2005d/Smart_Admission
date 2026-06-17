@@ -57,6 +57,7 @@ jobs:
         run: npx expo export --platform web
         env:
           NODE_ENV: production
+          EXPO_PUBLIC_GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
 
       - name: 📄 Create 404.html for SPA routing
         run: |
