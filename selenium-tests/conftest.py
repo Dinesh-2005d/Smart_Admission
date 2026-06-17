@@ -18,8 +18,10 @@ BASE_URL = os.environ.get(
 
 HEADLESS = os.environ.get("HEADLESS", "true").lower() == "true"
 SCREENSHOTS_DIR = os.environ.get("SCREENSHOTS_DIR", "../Test Results/Screenshots")
-IMPLICIT_WAIT = int(os.environ.get("IMPLICIT_WAIT", "10"))
+IMPLICIT_WAIT    = int(os.environ.get("IMPLICIT_WAIT", "10"))
 PAGE_LOAD_TIMEOUT = int(os.environ.get("PAGE_LOAD_TIMEOUT", "30"))
+# How many extra seconds to wait for slow React Native Web hydration
+HYDRATION_WAIT = int(os.environ.get("HYDRATION_WAIT", "5"))
 
 
 # ─── Chrome Options ───────────────────────────────────────────────────────────
@@ -49,6 +51,20 @@ def get_chrome_options():
     return opts
 
 
+# ─── Driver factory ───────────────────────────────────────────────────────────
+def _create_driver():
+    opts = get_chrome_options()
+    try:
+        from webdriver_manager.chrome import ChromeDriverManager
+        service = Service(ChromeDriverManager().install())
+        drv = webdriver.Chrome(service=service, options=opts)
+    except Exception:
+        drv = webdriver.Chrome(options=opts)
+    drv.implicitly_wait(IMPLICIT_WAIT)
+    drv.set_page_load_timeout(PAGE_LOAD_TIMEOUT)
+    return drv
+
+
 # ─── Fixtures ─────────────────────────────────────────────────────────────────
 @pytest.fixture(scope="session")
 def base_url():
@@ -57,25 +73,48 @@ def base_url():
 
 @pytest.fixture(scope="function")
 def driver(request):
-    """Create a Chrome WebDriver instance for each test."""
+    """
+    Chrome WebDriver – per test function.
+    Takes a screenshot on failure and prints a page-source excerpt for debugging.
+    """
     os.makedirs(SCREENSHOTS_DIR, exist_ok=True)
-
-    opts = get_chrome_options()
-    try:
-        from webdriver_manager.chrome import ChromeDriverManager
-        service = Service(ChromeDriverManager().install())
-        drv = webdriver.Chrome(service=service, options=opts)
-    except Exception:
-        # Fallback: let Selenium manage chromedriver automatically
-        drv = webdriver.Chrome(options=opts)
-
-    drv.implicitly_wait(IMPLICIT_WAIT)
-    drv.set_page_load_timeout(PAGE_LOAD_TIMEOUT)
+    drv = _create_driver()
 
     yield drv
 
-    # Take screenshot on failure
-    if request.node.rep_call.failed if hasattr(request.node, "rep_call") else False:
+    # ── Teardown ──────────────────────────────────────────────────────────────
+    failed = (
+        hasattr(request.node, "rep_call")
+        and request.node.rep_call.failed
+    )
+    if failed:
+        _capture_failure_screenshot(drv, request.node.name)
+        # Print first 800 chars of source to help debug CI failures
+        try:
+            src = drv.page_source[:800]
+            print(f"\n🔍 Page source on failure:\n{src}\n")
+        except Exception:
+            pass
+
+    drv.quit()
+
+
+@pytest.fixture(scope="function")
+def slow_driver(request):
+    """
+    Chrome WebDriver with extra hydration wait — for tests that
+    need more time for React Native Web to fully render.
+    """
+    os.makedirs(SCREENSHOTS_DIR, exist_ok=True)
+    drv = _create_driver()
+
+    yield drv
+
+    failed = (
+        hasattr(request.node, "rep_call")
+        and request.node.rep_call.failed
+    )
+    if failed:
         _capture_failure_screenshot(drv, request.node.name)
 
     drv.quit()
@@ -88,10 +127,18 @@ def wait(driver):
 
 @pytest.fixture(scope="function")
 def app(driver, base_url):
-    """Navigate to the app and wait for it to load."""
+    """Navigate to the app and wait for React Native Web to hydrate."""
     driver.get(base_url)
-    time.sleep(5)  # Allow React Native Web to hydrate (needs more time on CI)
+    time.sleep(HYDRATION_WAIT)
     return driver
+
+
+@pytest.fixture(scope="function")
+def app_slow(slow_driver, base_url):
+    """Navigate with extended hydration wait (10s) for slower CI environments."""
+    slow_driver.get(base_url)
+    time.sleep(10)
+    return slow_driver
 
 
 # ─── Hooks ────────────────────────────────────────────────────────────────────
@@ -102,7 +149,7 @@ def pytest_runtest_makereport(item, call):
     setattr(item, f"rep_{rep.when}", rep)
 
     if rep.when == "call" and rep.failed:
-        driver_fixture = item.funcargs.get("driver")
+        driver_fixture = item.funcargs.get("driver") or item.funcargs.get("slow_driver")
         if driver_fixture:
             _capture_failure_screenshot(driver_fixture, item.name)
 
@@ -119,7 +166,7 @@ def _capture_failure_screenshot(driver, test_name):
         print(f"\n⚠️  Could not save screenshot: {e}")
 
 
-# ─── CLI option for base_url ──────────────────────────────────────────────────
+# ─── CLI options ──────────────────────────────────────────────────────────────
 def pytest_addoption(parser):
     parser.addoption(
         "--base-url",
@@ -127,13 +174,28 @@ def pytest_addoption(parser):
         default=BASE_URL,
         help="Base URL of the deployed app",
     )
+    parser.addoption(
+        "--hydration-wait",
+        action="store",
+        default=str(HYDRATION_WAIT),
+        type=int,
+        help="Extra seconds to wait for React Native Web hydration (default: 5)",
+    )
 
 
 def pytest_configure(config):
-    global BASE_URL
+    global BASE_URL, HYDRATION_WAIT
     try:
         url = config.getoption("--base-url")
         if url:
             BASE_URL = url.rstrip("/") + "/"
     except (ValueError, AttributeError):
         pass
+    try:
+        hw = config.getoption("--hydration-wait")
+        if hw is not None:
+            HYDRATION_WAIT = int(hw)
+    except (ValueError, AttributeError):
+        pass
+
+
