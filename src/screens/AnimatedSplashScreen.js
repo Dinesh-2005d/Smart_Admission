@@ -50,7 +50,7 @@ export default function AnimatedSplashScreen({ onFinish }) {
         <View style={styles.iconCircle}>
           <Text style={styles.icon}>🎓</Text>
         </View>
-        <Text style={styles.title}>SmartCampus AI</Text>
+        <Text style={styles.title}>Smart Admission</Text>
         <Text style={styles.subtitle}>Your AI Admission Counselor</Text>
       </Animated.View>
     </View>

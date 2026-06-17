@@ -69,7 +69,7 @@ export default function LoginScreen({ navigation }) {
           <View style={styles.logoCircle}>
             <Ionicons name="school" size={44} color="#fff" />
           </View>
-          <Text style={styles.appName}>SmartCampus AI</Text>
+          <Text style={styles.appName}>Smart Admission</Text>
           <Text style={styles.tagline}>India's Smartest College Finder</Text>
         </View>
 
