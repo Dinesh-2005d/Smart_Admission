@@ -1,4 +1,5 @@
 // src/constants/collegeDatabase.js
+import collegesData from './colleges_compressed.json';
 
 const getCompanies = (dept, tier) => {
   const top = {
@@ -190,8 +191,6 @@ const TOP_COLLEGES = [
   makeCollege("NIT Patna", "Patna", "Bihar", "engineering", "Government", "Co-Education", 4.4, 88, "1,40,000", 85, "top", true, "A",  1886, "Top NIT in Bihar", ["B.Tech"], "Bihar's Top NIT"),
   makeCollege("AIIMS Patna", "Patna", "Bihar", "medical", "Government", "Co-Education", 4.6, 94, "5,000", 95, "top", true, "A++", 2012, "AIIMS in Bihar", ["MBBS"], "Bihar AIIMS"),
 ];
-
-import collegesData from './colleges_compressed.json';
 
 // ── State name normalization map ──────────────────────────────────────────────
 // The compressed JSON has truncated/corrupted state names. This maps them back.
