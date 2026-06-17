@@ -226,37 +226,39 @@ export const COLLEGE_DATABASE = [...TOP_COLLEGES, ...PARSED_COLLEGES];
  * @param {string}      homeState   - student's home state (for PDS ordering)
  */
 export const getCollegesForStudent = (targetState, department, percentage, entranceScore = 0, homeState = null) => {
-  // 1. Filter by department
-  let deptMatch = COLLEGE_DATABASE.filter(c => c.department === department);
-  if (deptMatch.length === 0) deptMatch = COLLEGE_DATABASE;
-
-  // 2. State filter
   const isStateSpecific = !!(targetState && targetState !== 'All India');
-  let stateFiltered = deptMatch;
-  if (isStateSpecific) {
-    stateFiltered = deptMatch.filter(c => c.state.toLowerCase() === targetState.toLowerCase());
-    if (stateFiltered.length === 0) stateFiltered = deptMatch; // fallback
-  }
 
-  // 3. Eligibility:
-  //    State-specific → show ALL colleges in that state (no filter by %).
-  //    Eligibility badge (High/Medium/Low) still appears on each card.
-  //    All India → generous 10% leeway to limit the huge result set.
+  // 1. Pool selection:
+  //    State-specific → ALL colleges in that state (NO department filter, NO % filter)
+  //    All India      → filter by department + generous 10% leeway
   let pool;
+
   if (isStateSpecific) {
-    pool = stateFiltered;
+    // Show EVERY college in the selected state — no department restriction, no eligibility filter
+    pool = COLLEGE_DATABASE.filter(c =>
+      c.state.toLowerCase() === targetState.toLowerCase()
+    );
+    // Fallback: if state has 0 entries in DB, show All India for that dept
+    if (pool.length === 0) {
+      pool = COLLEGE_DATABASE.filter(c => c.department === department);
+    }
   } else {
-    pool = stateFiltered.filter(c => percentage >= (c.minPercentage - 10));
-    if (pool.length === 0) pool = stateFiltered;
+    // All India: filter by department first
+    let deptMatch = COLLEGE_DATABASE.filter(c => c.department === department);
+    if (deptMatch.length === 0) deptMatch = COLLEGE_DATABASE;
+
+    // Apply eligibility leeway
+    pool = deptMatch.filter(c => percentage >= (c.minPercentage - 10));
+    if (pool.length === 0) pool = deptMatch;
   }
 
-  // 4. Sort: highest rating first, then lower cutoff (more accessible)
+  // 2. Sort: highest rating first, then lower cutoff (most accessible)
   const sortFunc = (a, b) => {
     if (b.rating !== a.rating) return b.rating - a.rating;
     return a.minPercentage - b.minPercentage;
   };
 
-  // 5. All India: pin home-state colleges at the top
+  // 3. All India: pin home-state colleges at the top
   let combined = [];
   if (!isStateSpecific) {
     const homeColleges = homeState
@@ -274,7 +276,7 @@ export const getCollegesForStudent = (targetState, department, percentage, entra
   }
 
   if (combined.length === 0) {
-    combined = deptMatch.sort((a, b) => a.minPercentage - b.minPercentage).slice(0, 15);
+    combined = COLLEGE_DATABASE.sort((a, b) => a.minPercentage - b.minPercentage).slice(0, 15);
   }
 
   return combined;
