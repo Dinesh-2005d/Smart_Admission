@@ -431,3 +431,88 @@ jobs:
           git commit -m "📊 Update test reports — Build #${{ github.run_number }}" || echo "Nothing to commit"
           git push origin gh-pages --force
 
+
+  # ─────────────────────────────────────────────
+  # JOB 4: Open Smart Admission Site
+  # ─────────────────────────────────────────────
+  open-site:
+    name: 🌐 Open Smart Admission Website
+    needs: publish-reports
+    runs-on: ubuntu-latest
+    if: always() && needs.publish-reports.result != 'cancelled'
+
+    steps:
+      - name: ⏳ Wait for GitHub Pages to propagate
+        run: sleep 15
+
+      - name: 🔍 Ping Smart Admission website
+        id: ping_site
+        run: |
+          SITE_URL="https://dinesh-2005d.github.io/Smart_Admission/"
+          HTTP_CODE=$(curl -o /dev/null -s -w "%{http_code}" --max-time 30 "$SITE_URL" || echo "000")
+          echo "http_code=$HTTP_CODE" >> $GITHUB_OUTPUT
+          echo "site_url=$SITE_URL" >> $GITHUB_OUTPUT
+          if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "301" ] || [ "$HTTP_CODE" = "302" ]; then
+            echo "status=online" >> $GITHUB_OUTPUT
+            echo "✅ Site is LIVE — HTTP $HTTP_CODE"
+          else
+            echo "status=pending" >> $GITHUB_OUTPUT
+            echo "⚠️ Site returned HTTP $HTTP_CODE (may still be deploying)"
+          fi
+
+      - name: 🚀 Publish Smart Admission Launch Summary
+        if: always()
+        run: |
+          SITE_URL="https://dinesh-2005d.github.io/Smart_Admission/"
+          REPORT_URL="${{ env.REPORT_BASE_URL }}"
+          BUILD_NUMBER="${{ github.run_number }}"
+          EXEC_DATE=$(date '+%Y-%m-%d %H:%M UTC')
+          HTTP_CODE="${{ steps.ping_site.outputs.http_code }}"
+          STATUS="${{ steps.ping_site.outputs.status }}"
+
+          if [ "$STATUS" = "online" ]; then
+            SITE_BADGE="✅ LIVE (HTTP $HTTP_CODE)"
+          else
+            SITE_BADGE="⏳ DEPLOYING (HTTP $HTTP_CODE)"
+          fi
+
+          {
+            echo "---"
+            echo ""
+            echo "# 🎓 Smart Admission — Workflow Complete!"
+            echo ""
+            echo "> **Build #${BUILD_NUMBER}** finished on ${EXEC_DATE}"
+            echo ""
+            echo "---"
+            echo ""
+            echo "## 🌐 Open Smart Admission"
+            echo ""
+            echo "| | Link | Status |"
+            echo "|---|---|---|"
+            echo "| 🏠 | [**Smart Admission App**]($SITE_URL) | $SITE_BADGE |"
+            echo "| 📊 | [**Latest Test Report**]($REPORT_URL) | View HTML Report |"
+            echo ""
+            echo "---"
+            echo ""
+            echo "### 👇 Click to Open the App"
+            echo ""
+            echo "## [![Open Smart Admission](https://img.shields.io/badge/🎓%20Open%20Smart%20Admission-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white)]($SITE_URL)"
+            echo ""
+            echo "---"
+            echo ""
+            echo "| Detail | Value |"
+            echo "|--------|-------|"
+            echo "| 🔗 App URL | $SITE_URL |"
+            echo "| 📋 Report URL | $REPORT_URL |"
+            echo "| 🏗️ Build | #${BUILD_NUMBER} |"
+            echo "| 📅 Date | ${EXEC_DATE} |"
+            echo "| 🌿 Branch | ${{ github.ref_name }} |"
+            echo "| 🔑 Commit | \`${{ github.sha }}\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          echo ""
+          echo "════════════════════════════════════════"
+          echo "  🎓 SMART ADMISSION IS READY!"
+          echo "  🌐 $SITE_URL"
+          echo "════════════════════════════════════════"
+
