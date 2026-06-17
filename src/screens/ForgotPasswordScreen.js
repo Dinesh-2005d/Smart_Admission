@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
   KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator,
@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 
 const STEPS = ['Email', 'OTP', 'NewPassword'];
+const OTP_EXPIRY_SECONDS = 60;
 
 export default function ForgotPasswordScreen({ navigation }) {
   const { forgotPassword, verifyOtp, resetPassword } = useAuth();
@@ -16,8 +17,39 @@ export default function ForgotPasswordScreen({ navigation }) {
   const [newPass,      setNewPass]      = useState('');
   const [confirmPass,  setConfirmPass]  = useState('');
   const [showPass,     setShowPass]     = useState(false);
+  const [showConfirm,  setShowConfirm]  = useState(false);
   const [loading,      setLoading]      = useState(false);
   const [message,      setMessage]      = useState(null); // { type:'error'|'success', text }
+
+  // ── OTP Timer ──────────────────────────────────────────────────────────────
+  const [timer,        setTimer]        = useState(0);
+  const [canResend,    setCanResend]    = useState(false);
+  const timerRef = useRef(null);
+
+  const startTimer = () => {
+    setTimer(OTP_EXPIRY_SECONDS);
+    setCanResend(false);
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setTimer(prev => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current);
+          setCanResend(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  useEffect(() => {
+    if (step === 1) startTimer();
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [step]);
+
+  const formatTime = (s) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
 
   const showMsg = (type, text) => setMessage({ type, text });
 
@@ -34,6 +66,21 @@ export default function ForgotPasswordScreen({ navigation }) {
       setTimeout(() => { setMessage(null); setStep(1); }, 1200);
     } else {
       showMsg('error', res.message || 'Failed to send OTP. Try again.');
+    }
+  };
+
+  // ── Resend OTP ─────────────────────────────────────────────────────────────
+  const handleResendOtp = async () => {
+    if (!canResend) return;
+    setLoading(true); setMessage(null); setOtp('');
+    const res = await forgotPassword(email);
+    setLoading(false);
+    if (res.success) {
+      showMsg('success', 'New OTP sent! Check your Gmail inbox.');
+      startTimer();
+    } else {
+      showMsg('error', res.message || 'Failed to resend OTP. Try again.');
+      setCanResend(true);
     }
   };
 
@@ -143,9 +190,38 @@ export default function ForgotPasswordScreen({ navigation }) {
                 keyboardType="numeric"
                 maxLength={6}
               />
-              <TouchableOpacity onPress={() => { setStep(0); showMsg(null, ''); }}>
-                <Text style={styles.resendLink}>Resend OTP →</Text>
-              </TouchableOpacity>
+
+              {/* ── OTP Timer Row ── */}
+              <View style={styles.timerRow}>
+                <View style={styles.timerBadge}>
+                  <Ionicons name="time-outline" size={14} color={timer > 10 ? '#2563eb' : '#dc2626'} />
+                  <Text style={[styles.timerText, timer > 0 && timer <= 10 && styles.timerTextUrgent]}>
+                    {timer > 0 ? `OTP expires in ${formatTime(timer)}` : 'OTP expired'}
+                  </Text>
+                </View>
+
+                <TouchableOpacity
+                  onPress={handleResendOtp}
+                  disabled={!canResend || loading}
+                  style={[styles.resendBtn, !canResend && styles.resendBtnDisabled]}
+                >
+                  {loading
+                    ? <ActivityIndicator size="small" color="#2563eb" />
+                    : <Text style={[styles.resendLink, !canResend && styles.resendLinkDisabled]}>
+                        Resend OTP →
+                      </Text>
+                  }
+                </TouchableOpacity>
+              </View>
+
+              {/* Progress bar */}
+              <View style={styles.progressBar}>
+                <View style={[
+                  styles.progressFill,
+                  { width: `${(timer / OTP_EXPIRY_SECONDS) * 100}%` },
+                  timer <= 10 && styles.progressFillUrgent,
+                ]} />
+              </View>
             </>
           )}
 
@@ -174,8 +250,11 @@ export default function ForgotPasswordScreen({ navigation }) {
                   placeholderTextColor="#94a3b8"
                   value={confirmPass}
                   onChangeText={setConfirmPass}
-                  secureTextEntry={!showPass}
+                  secureTextEntry={!showConfirm}
                 />
+                <TouchableOpacity onPress={() => setShowConfirm(v => !v)}>
+                  <Ionicons name={showConfirm ? 'eye-outline' : 'eye-off-outline'} size={20} color="#64748b" />
+                </TouchableOpacity>
               </View>
             </>
           )}
@@ -249,7 +328,33 @@ const styles = StyleSheet.create({
     textAlign: 'center', fontSize: 28, fontWeight: '800', letterSpacing: 12,
     color: '#2563eb', borderColor: '#2563eb',
   },
-  resendLink: { color: '#2563eb', fontSize: 13, fontWeight: '600', marginTop: 10, textAlign: 'right' },
+
+  // ── Timer styles ────────────────────────────────────────────────────────────
+  timerRow: {
+    flexDirection: 'row', alignItems: 'center',
+    justifyContent: 'space-between', marginTop: 10, marginBottom: 6,
+  },
+  timerBadge: {
+    flexDirection: 'row', alignItems: 'center', gap: 4,
+    backgroundColor: '#eff6ff', paddingHorizontal: 10, paddingVertical: 4,
+    borderRadius: 20, borderWidth: 1, borderColor: '#bfdbfe',
+  },
+  timerText: { fontSize: 12, fontWeight: '600', color: '#2563eb' },
+  timerTextUrgent: { color: '#dc2626' },
+
+  progressBar: {
+    height: 4, borderRadius: 4, backgroundColor: '#e2e8f0',
+    marginTop: 4, marginBottom: 6, overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%', backgroundColor: '#2563eb', borderRadius: 4,
+  },
+  progressFillUrgent: { backgroundColor: '#dc2626' },
+
+  resendBtn:         { paddingHorizontal: 4, paddingVertical: 4 },
+  resendBtnDisabled: { opacity: 0.4 },
+  resendLink:        { color: '#2563eb', fontSize: 13, fontWeight: '600' },
+  resendLinkDisabled:{ color: '#94a3b8' },
 
   msgBox:   { flexDirection: 'row', alignItems: 'center', gap: 8, borderRadius: 10, padding: 12, marginTop: 12 },
   msgError: { backgroundColor: '#fef2f2', borderWidth: 1, borderColor: '#fecaca' },
