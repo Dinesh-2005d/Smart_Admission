@@ -26,7 +26,7 @@ env:
   GITHUB_USERNAME: Dinesh-2005d
   REPOSITORY_NAME: Smart_Admission
   BASE_URL: https://dinesh-2005d.github.io/Smart_Admission/
-  NODE_VERSION: '24'
+  NODE_VERSION: '20'
   PYTHON_VERSION: '3.11'
 
 jobs:
@@ -204,15 +204,19 @@ jobs:
           mkdir -p "Test Results/Summary"
           mkdir -p "Test Results/Video"
 
+      - name: 🖥️ Install Xvfb + x11-utils
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb x11-utils 2>/dev/null | tail -2
+          echo "✅ Xvfb installed"
+
       - name: 🖥️ Start Xvfb virtual display (1920×1080)
         run: |
-          sudo apt-get install -y xvfb x11-utils 2>/dev/null | tail -1
           Xvfb :99 -screen 0 1920x1080x24 -ac &
           XVFB_PID=$!
           echo "XVFB_PID=$XVFB_PID" >> $GITHUB_ENV
-          export DISPLAY=:99
           echo "DISPLAY=:99" >> $GITHUB_ENV
-          sleep 2
+          sleep 3
           echo "✅ Xvfb started on DISPLAY=:99 (PID $XVFB_PID)"
 
       - name: 🎥 Start screen recording with ffmpeg
@@ -221,7 +225,7 @@ jobs:
             -f x11grab \
             -video_size 1920x1080 \
             -framerate 24 \
-            -i :99 \
+            -i :99.0 \
             -vcodec libx264 \
             -preset ultrafast \
             -pix_fmt yuv420p \
