@@ -6,6 +6,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { getCollegesForStudent } from '../constants/collegeDatabase';
 import { getAIMessage, predictAdmissionChance } from '../constants/offlineAI';
+import { useSavedColleges } from '../context/SavedCollegesContext';
 
 const COLORS = {
   bg: '#ffffff', card: '#f8f9fa', border: '#e2e8f0',
@@ -16,6 +17,7 @@ const COLORS = {
 
 export default function CollegeListScreen({ navigation, route }) {
   const { state, board, department, departmentLabel, percentage, entranceScore } = route.params;
+  const { issaved, toggleSave, savedColleges } = useSavedColleges();
   const [colleges, setColleges] = useState([]);
   const [loading, setLoading] = useState(true);
   const [aiMessage, setAiMessage] = useState('');
@@ -151,6 +153,19 @@ export default function CollegeListScreen({ navigation, route }) {
                 )}
                 <View style={styles.rankBadge}><Text style={styles.rankText}>#{index + 1}</Text></View>
 
+                {/* Bookmark button */}
+                <TouchableOpacity
+                  style={styles.bookmarkBtn}
+                  onPress={() => toggleSave(college)}
+                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                >
+                  <Ionicons
+                    name={issaved(college) ? 'bookmark' : 'bookmark-outline'}
+                    size={20}
+                    color={issaved(college) ? COLORS.purple : COLORS.dim}
+                  />
+                </TouchableOpacity>
+
                 <View style={styles.collegeHeader}>
                   <View style={[styles.collegeIconCircle, { borderColor: getTypeColor(college.type) + '88' }]}>
                     <Text style={styles.collegeIconText}>🏛️</Text>
@@ -261,6 +276,7 @@ const styles = StyleSheet.create({
   bestMatchText: { color: '#ffffff', fontWeight: '800', fontSize: 11 },
   rankBadge: { position: 'absolute', top: 14, right: 14, backgroundColor: '#0f172a', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4, borderWidth: 1, borderColor: COLORS.purple },
   rankText: { color: COLORS.purple, fontWeight: '800', fontSize: 13 },
+  bookmarkBtn: { position: 'absolute', top: 14, right: 52, zIndex: 10, padding: 4 },
   collegeHeader: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 12, marginTop: 8 },
   collegeIconCircle: { width: 48, height: 48, borderRadius: 24, backgroundColor: '#0f172a', alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
   collegeIconText: { fontSize: 24 },

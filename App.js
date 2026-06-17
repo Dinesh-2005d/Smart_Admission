@@ -13,10 +13,12 @@ import MarksEntryScreen    from './src/screens/MarksEntryScreen';
 import CollegeListScreen   from './src/screens/CollegeListScreen';
 import CollegeChatScreen   from './src/screens/CollegeChatScreen';
 import AnimatedSplashScreen from './src/screens/AnimatedSplashScreen';
-import LoginScreen         from './src/screens/LoginScreen';
-import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen';
-import AdminPanelScreen    from './src/screens/AdminPanelScreen';
+import LoginScreen          from './src/screens/LoginScreen';
+import ForgotPasswordScreen  from './src/screens/ForgotPasswordScreen';
+import AdminPanelScreen     from './src/screens/AdminPanelScreen';
+import SavedCollegesScreen  from './src/screens/SavedCollegesScreen';
 import { AuthProvider, useAuth } from './src/context/AuthContext';
+import { SavedCollegesProvider, useSavedColleges } from './src/context/SavedCollegesContext';
 
 const Stack = createNativeStackNavigator();
 const Tab   = createBottomTabNavigator();
@@ -48,6 +50,7 @@ function LogoutButton() {
 // ── Bottom tab navigator ──────────────────────────────────────────────────────
 function MainTabs() {
   const { user } = useAuth();
+  const { savedColleges } = useSavedColleges();
   const isAdmin  = user?.role === 'Admin';
 
   return (
@@ -71,6 +74,7 @@ function MainTabs() {
             Home:    focused ? 'home'             : 'home-outline',
             Search:  focused ? 'search'           : 'search-outline',
             Compare: focused ? 'git-compare'      : 'git-compare-outline',
+            Saved:   focused ? 'bookmark'         : 'bookmark-outline',
             Admin:   focused ? 'shield-checkmark' : 'shield-checkmark-outline',
           };
           return <Ionicons name={icons[route.name] || 'home-outline'} size={size} color={color} />;
@@ -80,6 +84,15 @@ function MainTabs() {
       <Tab.Screen name="Home"    component={HomeScreen}    options={{ title: 'Smart Admission' }} />
       <Tab.Screen name="Search"  component={SearchScreen}  options={{ title: 'Search Colleges' }} />
       <Tab.Screen name="Compare" component={CompareScreen} options={{ title: 'Compare' }} />
+      <Tab.Screen
+        name="Saved"
+        component={SavedCollegesScreen}
+        options={{
+          title: 'Saved Colleges',
+          tabBarBadge: savedColleges.length > 0 ? savedColleges.length : undefined,
+          tabBarBadgeStyle: { backgroundColor: '#2563eb', color: '#fff', fontSize: 10 },
+        }}
+      />
       {isAdmin && (
         <Tab.Screen
           name="Admin"
@@ -147,8 +160,10 @@ export default function App() {
   }
 
   return (
-    <AuthProvider>
-      <AppNavigator />
-    </AuthProvider>
+    <SavedCollegesProvider>
+      <AuthProvider>
+        <AppNavigator />
+      </AuthProvider>
+    </SavedCollegesProvider>
   );
 }
