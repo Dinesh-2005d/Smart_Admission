@@ -4,6 +4,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 import {
   doc, setDoc, getDoc, getDocs,
@@ -107,6 +108,20 @@ export function AuthProvider({ children }) {
     setError(null);
   };
 
+  // ── Forgot Password (Firebase reset email) ────────────────────────────────
+  const forgotPassword = async (email) => {
+    try {
+      await sendPasswordResetEmail(auth, email.trim());
+      return {
+        success: true,
+        message: 'Password reset email sent! Check your inbox and follow the link to reset your password.',
+      };
+    } catch (e) {
+      const msg = firebaseError(e.code);
+      return { success: false, message: msg };
+    }
+  };
+
   // ── Admin: get all users ──────────────────────────────────────────────────
   const adminGetUsers = async () => {
     try {
@@ -155,6 +170,7 @@ export function AuthProvider({ children }) {
       register,
       login,
       logout,
+      forgotPassword,
       adminGetUsers,
       adminBlockUser,
       adminUnblockUser,
