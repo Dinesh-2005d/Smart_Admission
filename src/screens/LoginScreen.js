@@ -149,7 +149,15 @@ export default function LoginScreen({ navigation }) {
             </>
           )}
 
-
+          {/* Forgot Password — sign in only */}
+          {isSignIn && (
+            <TouchableOpacity
+              style={styles.forgotBtn}
+              onPress={() => navigation.navigate('ForgotPassword')}
+            >
+              <Text style={styles.forgotText}>Forgot Password?</Text>
+            </TouchableOpacity>
+          )}
 
           {/* Error message */}
           {displayError ? (

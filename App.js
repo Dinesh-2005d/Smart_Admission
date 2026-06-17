@@ -14,6 +14,7 @@ import CollegeListScreen   from './src/screens/CollegeListScreen';
 import CollegeChatScreen   from './src/screens/CollegeChatScreen';
 import AnimatedSplashScreen from './src/screens/AnimatedSplashScreen';
 import LoginScreen         from './src/screens/LoginScreen';
+import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen';
 import AdminPanelScreen    from './src/screens/AdminPanelScreen';
 import { AuthProvider, useAuth } from './src/context/AuthContext';
 
@@ -128,7 +129,8 @@ function AppNavigator() {
         ) : (
           // ── Unauthenticated screens ────────────────────────────────────────
           <>
-            <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Login"          component={LoginScreen}         options={{ headerShown: false }} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ headerShown: false }} />
           </>
         )}
       </Stack.Navigator>
