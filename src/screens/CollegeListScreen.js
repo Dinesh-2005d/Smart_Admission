@@ -122,6 +122,34 @@ export default function CollegeListScreen({ navigation, route }) {
     );
   }
 
+  /* ── No colleges found for this state+dept ── */
+  if (!loading && colleges.length === 0) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <StatusBar barStyle="dark-content" backgroundColor={COLORS.bg} />
+        <ScrollView contentContainerStyle={styles.emptyContainer}>
+          <Text style={styles.emptyIcon}>🏫</Text>
+          <Text style={styles.emptyTitle}>No Colleges Found</Text>
+          <Text style={styles.emptyDesc}>
+            No <Text style={{ fontWeight: '800', color: COLORS.purple }}>{departmentLabel?.split('(')[0].trim()}</Text> colleges found in{'\n'}
+            <Text style={{ fontWeight: '800', color: COLORS.purple }}>{effectiveTargetState}</Text>
+          </Text>
+          <Text style={styles.emptyHint}>
+            💡 This may be because the database doesn't have {departmentLabel?.split('(')[0].trim()} colleges for this state yet.{'\n\n'}
+            Try switching to a different state or department.
+          </Text>
+          <TouchableOpacity
+            style={styles.emptyBtn}
+            onPress={() => navigation.goBack()}
+          >
+            <Ionicons name="arrow-back-circle" size={20} color="#fff" />
+            <Text style={styles.emptyBtnText}>← Change Filters / State</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
   const displayedColleges = colleges.slice(0, page * PAGE_SIZE);
   const hasMore = colleges.length > page * PAGE_SIZE;
 
@@ -339,6 +367,14 @@ export default function CollegeListScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: COLORS.bg },
+  // Empty state
+  emptyContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 32 },
+  emptyIcon: { fontSize: 64, marginBottom: 16 },
+  emptyTitle: { color: COLORS.text, fontSize: 22, fontWeight: '800', marginBottom: 12, textAlign: 'center' },
+  emptyDesc: { color: COLORS.sub, fontSize: 16, textAlign: 'center', lineHeight: 26, marginBottom: 16 },
+  emptyHint: { color: COLORS.dim, fontSize: 13, textAlign: 'center', lineHeight: 22, marginBottom: 28, backgroundColor: COLORS.card, borderRadius: 12, padding: 16, borderWidth: 1, borderColor: COLORS.border },
+  emptyBtn: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: COLORS.purple, borderRadius: 16, paddingVertical: 14, paddingHorizontal: 28 },
+  emptyBtnText: { color: '#fff', fontSize: 15, fontWeight: '700' },
   container: { flex: 1, backgroundColor: COLORS.bg },
   contentContainer: { paddingHorizontal: 16, paddingBottom: 40, paddingTop: 12 },
   loadingContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 },

@@ -228,58 +228,46 @@ export const COLLEGE_DATABASE = [...TOP_COLLEGES, ...PARSED_COLLEGES];
 export const getCollegesForStudent = (targetState, department, percentage, entranceScore = 0, homeState = null) => {
   const isStateSpecific = !!(targetState && targetState !== 'All India');
 
-  // 1. Pool selection:
-  //    State-specific → ALL colleges in that state (NO department filter, NO % filter)
-  //    All India      → filter by department + generous 10% leeway
-  let pool;
-
-  if (isStateSpecific) {
-    // Show EVERY college in the selected state — no department restriction, no eligibility filter
-    pool = COLLEGE_DATABASE.filter(c =>
-      c.state.toLowerCase() === targetState.toLowerCase()
-    );
-    // Fallback: if state has 0 entries in DB, show All India for that dept
-    if (pool.length === 0) {
-      pool = COLLEGE_DATABASE.filter(c => c.department === department);
-    }
-  } else {
-    // All India: filter by department first
-    let deptMatch = COLLEGE_DATABASE.filter(c => c.department === department);
-    if (deptMatch.length === 0) deptMatch = COLLEGE_DATABASE;
-
-    // Apply eligibility leeway
-    pool = deptMatch.filter(c => percentage >= (c.minPercentage - 10));
-    if (pool.length === 0) pool = deptMatch;
-  }
-
-  // 2. Sort: highest rating first, then lower cutoff (most accessible)
+  // Sort function: highest rating first, then lower cutoff (most accessible)
   const sortFunc = (a, b) => {
     if (b.rating !== a.rating) return b.rating - a.rating;
     return a.minPercentage - b.minPercentage;
   };
 
-  // 3. All India: pin home-state colleges at the top
-  let combined = [];
-  if (!isStateSpecific) {
+  if (isStateSpecific) {
+    // STATE SELECTED:
+    // Show colleges matching BOTH the state AND the department from all 70,000+ colleges.
+    // No eligibility/percentage filter — show everything.
+    const stateDeptMatches = COLLEGE_DATABASE.filter(c =>
+      c.state.toLowerCase() === targetState.toLowerCase() &&
+      c.department === department
+    );
+
+    // If the selected state has 0 entries for that dept, return empty
+    // (CollegeListScreen will show a "No colleges found" message)
+    stateDeptMatches.sort(sortFunc);
+    return stateDeptMatches;
+
+  } else {
+    // ALL INDIA:
+    // Filter by department, apply generous 10% leeway, pin home-state at top
+    let deptMatch = COLLEGE_DATABASE.filter(c => c.department === department);
+    if (deptMatch.length === 0) deptMatch = COLLEGE_DATABASE;
+
+    let pool = deptMatch.filter(c => percentage >= (c.minPercentage - 10));
+    if (pool.length === 0) pool = deptMatch;
+
     const homeColleges = homeState
       ? pool.filter(c => c.state.toLowerCase() === homeState.toLowerCase())
       : [];
     const others = homeState
       ? pool.filter(c => c.state.toLowerCase() !== homeState.toLowerCase())
       : pool;
+
     homeColleges.sort(sortFunc);
     others.sort(sortFunc);
-    combined = [...homeColleges, ...others];
-  } else {
-    pool.sort(sortFunc);
-    combined = pool;
+    return [...homeColleges, ...others];
   }
-
-  if (combined.length === 0) {
-    combined = COLLEGE_DATABASE.sort((a, b) => a.minPercentage - b.minPercentage).slice(0, 15);
-  }
-
-  return combined;
 };
 
 export const searchColleges = (query) => {
