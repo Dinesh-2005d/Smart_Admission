@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  Animated, SafeAreaView, StatusBar, Alert,
+  Animated, SafeAreaView, StatusBar, Alert, Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSavedColleges } from '../context/SavedCollegesContext';
@@ -18,14 +18,21 @@ export default function SavedCollegesScreen({ navigation }) {
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   const handleClearAll = () => {
-    Alert.alert(
-      'Clear All Saved Colleges',
-      'Are you sure you want to remove all saved colleges?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Clear All', style: 'destructive', onPress: clearAll },
-      ]
-    );
+    if (Platform.OS === 'web') {
+      // Alert.alert() is a no-op on web — use the native browser dialog instead
+      if (window.confirm('Are you sure you want to remove all saved colleges?')) {
+        clearAll();
+      }
+    } else {
+      Alert.alert(
+        'Clear All Saved Colleges',
+        'Are you sure you want to remove all saved colleges?',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Clear All', style: 'destructive', onPress: clearAll },
+        ]
+      );
+    }
   };
 
   const handleRemove = (college) => {
