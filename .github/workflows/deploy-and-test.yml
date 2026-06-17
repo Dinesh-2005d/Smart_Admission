@@ -299,3 +299,84 @@ jobs:
       - name: ✅ Tests completed
         if: always()
         run: echo "✅ Selenium E2E tests completed successfully."
+
+  # ─────────────────────────────────────────────
+  # JOB 5: 🌐 Open Smart Admission Website
+  # ─────────────────────────────────────────────
+  open-site:
+    name: 🌐 Open Smart Admission Website
+    needs: [deploy, selenium-tests]
+    runs-on: ubuntu-latest
+    if: always() && needs.deploy.result != 'cancelled'
+
+    steps:
+      - name: ⏳ Wait for GitHub Pages CDN
+        run: sleep 10
+
+      - name: 🔍 Ping Smart Admission website
+        id: ping
+        run: |
+          SITE_URL="${{ env.BASE_URL }}"
+          HTTP_CODE=$(curl -o /dev/null -s -w "%{http_code}" --max-time 30 "$SITE_URL" || echo "000")
+          echo "http_code=$HTTP_CODE" >> $GITHUB_OUTPUT
+          if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "301" ] || [ "$HTTP_CODE" = "302" ]; then
+            echo "status=online"  >> $GITHUB_OUTPUT
+            echo "✅ Site LIVE — HTTP $HTTP_CODE"
+          else
+            echo "status=pending" >> $GITHUB_OUTPUT
+            echo "⚠️ HTTP $HTTP_CODE — may still be deploying"
+          fi
+
+      - name: 🚀 Publish Smart Admission Launch Summary
+        if: always()
+        run: |
+          SITE_URL="${{ env.BASE_URL }}"
+          BUILD_NUMBER="${{ github.run_number }}"
+          EXEC_DATE=$(date '+%Y-%m-%d %H:%M UTC')
+          HTTP_CODE="${{ steps.ping.outputs.http_code }}"
+          STATUS="${{ steps.ping.outputs.status }}"
+          DEPLOY_URL="${{ needs.deploy.outputs.page_url }}"
+
+          if [ "$STATUS" = "online" ]; then
+            BADGE="✅ LIVE (HTTP $HTTP_CODE)"
+          else
+            BADGE="⏳ DEPLOYING (HTTP $HTTP_CODE)"
+          fi
+
+          {
+            echo "---"
+            echo ""
+            echo "# 🎓 Smart Admission — Workflow Complete!"
+            echo ""
+            echo "> **Build #${BUILD_NUMBER}** · ${EXEC_DATE} · Branch: \`${{ github.ref_name }}\`"
+            echo ""
+            echo "---"
+            echo ""
+            echo "## 🌐 Open Smart Admission"
+            echo ""
+            echo "| | Link | Status |"
+            echo "|---|---|---|"
+            echo "| 🏠 | [**Smart Admission App**]($SITE_URL) | $BADGE |"
+            echo ""
+            echo "---"
+            echo ""
+            echo "### 👇 Click to Open"
+            echo ""
+            echo "## [![Open Smart Admission](https://img.shields.io/badge/🎓%20Open%20Smart%20Admission-2563EB?style=for-the-badge&logo=google-chrome&logoColor=white)]($SITE_URL)"
+            echo ""
+            echo "---"
+            echo ""
+            echo "| Detail | Value |"
+            echo "|--------|-------|"
+            echo "| 🔗 App URL | $SITE_URL |"
+            echo "| 🏗️ Build | #${BUILD_NUMBER} |"
+            echo "| 📅 Date | ${EXEC_DATE} |"
+            echo "| 🌿 Branch | ${{ github.ref_name }} |"
+            echo "| 🔑 Commit | \`${{ github.sha }}\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          echo ""
+          echo "════════════════════════════════════════"
+          echo "  🎓 SMART ADMISSION IS READY!"
+          echo "  🌐 $SITE_URL"
+          echo "════════════════════════════════════════"
