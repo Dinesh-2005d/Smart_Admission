@@ -8,6 +8,7 @@ from .marks_entry_page import MarksEntryPage
 from .login_page import LoginPage
 from .details_page import DetailsPage
 from .ai_chat_page import AIChatPage
+from .splash_page import SplashPage
 
 __all__ = [
     "BasePage",
@@ -19,4 +20,5 @@ __all__ = [
     "LoginPage",
     "DetailsPage",
     "AIChatPage",
+    "SplashPage",
 ]
