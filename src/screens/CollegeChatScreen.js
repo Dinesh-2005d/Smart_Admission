@@ -11,7 +11,7 @@ const COLORS = {
   bg: '#ffffff', card: '#f8f9fa', border: '#e2e8f0',
   purple: '#2563eb', gold: '#eab308', green: '#16a34a',
   blue: '#0284c7', text: '#0f172a', sub: '#334155', dim: '#475569',
-  groq: '#6366f1',
+  groq: '#6366f1', teal: '#0d9488',
 };
 
 const QUICK_QUESTIONS = [
@@ -23,6 +23,13 @@ const QUICK_QUESTIONS = [
   "What companies visit for placement?",
   "What is the NAAC grade?",
   "How to apply for this college?",
+  "Show me top engineering colleges",
+  "Show me government medical colleges",
+  "Suggest colleges with hostel",
+  "What is JEE and how to prepare?",
+  "How does NEET counselling work?",
+  "What are education loan options?",
+  "Difference between IIT and NIT?",
 ];
 
 export default function CollegeChatScreen({ route, navigation }) {
@@ -80,6 +87,7 @@ export default function CollegeChatScreen({ route, navigation }) {
   const getMessageColor = (type) => {
     const colors = {
       groq: COLORS.groq,
+      suggestions: COLORS.teal,
       fees: COLORS.gold,
       hostel: COLORS.blue,
       placement: COLORS.green,
