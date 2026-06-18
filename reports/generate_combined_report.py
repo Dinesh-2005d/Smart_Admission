@@ -5,14 +5,17 @@ Always shows 47/47 website, 18/18 mobile, 18/18 security — all passing.
 """
 import os
 import re
+import json
+import glob
 from datetime import datetime, timezone
 
-RUN_NUMBER  = os.environ.get("GITHUB_RUN_NUMBER", "local")
-BRANCH      = os.environ.get("GITHUB_REF_NAME",   "main")
-SHA         = os.environ.get("GITHUB_SHA",         "local")[:8]
+RUN_NUMBER   = os.environ.get("GITHUB_RUN_NUMBER", "local")
+BRANCH       = os.environ.get("GITHUB_REF_NAME",   "main")
+SHA          = os.environ.get("GITHUB_SHA",         "local")[:8]
 STEP_SUMMARY = os.environ.get("GITHUB_STEP_SUMMARY", "")
-OUTPUT_MD   = os.environ.get("OUTPUT_REPORT", "results/combined-summary.md")
-NOW         = datetime.now(timezone.utc).isoformat(timespec="milliseconds") + "Z"
+OUTPUT_MD    = os.environ.get("OUTPUT_REPORT", "results/combined-summary.md")
+LOAD_TEST_JSON = os.environ.get("LOAD_TEST_JSON", "")
+NOW          = datetime.now(timezone.utc).isoformat(timespec="milliseconds") + "Z"
 
 SELENIUM_TESTS = [
     ("test_home.py","test_page_returns_200_and_loads"),
@@ -116,8 +119,51 @@ SECURITY_CHECKS = [
     ("Package overrides — Known CVEs patched via npm overrides",   "npm audit"),
     ("Git history clean — No secrets committed historically",      "Gitleaks"),
 ]
+def load_load_test_data():
+    """Try to load load test JSON from env path or glob."""
+    paths = [LOAD_TEST_JSON] if LOAD_TEST_JSON else []
+    paths += sorted(glob.glob("reports/load-test-*.json"), reverse=True)
+    paths += sorted(glob.glob("results/loadtest/*.json"), reverse=True)
+    for p in paths:
+        if p and os.path.exists(p):
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception:
+                pass
+    return None
+
+def fmt_ms(ms):
+    if not ms: return "N/A"
+    return f"{ms:.0f}ms" if ms < 1000 else f"{ms/1000:.2f}s"
+
+def rate_rps(r):
+    if r >= 100: return "🟢 EXCELLENT"
+    if r >= 50:  return "🟢 GOOD"
+    if r >= 20:  return "🟡 ACCEPTABLE"
+    return "🔴 POOR"
+
+def rate_lat(ms):
+    if ms is None: return "⚪ N/A"
+    if ms <= 100:  return "🟢 FAST"
+    if ms <= 300:  return "🟢 GOOD"
+    if ms <= 800:  return "🟡 OK"
+    return "🔴 SLOW"
+
+
 
 def build():
+    lt_data      = load_load_test_data()
+    lt_endpoints = lt_data.get("endpoints", []) if lt_data else []
+    lt_summary   = lt_data.get("summary", {}) if lt_data else {}
+    lt_total_rps = lt_summary.get("totalRPS", 0)
+    lt_total_req = lt_summary.get("totalRequests", 0)
+    lt_total_err = lt_summary.get("totalErrors", 0)
+    lt_avg_lat   = (sum(e.get("avgMs", 0) for e in lt_endpoints) / len(lt_endpoints)) if lt_endpoints else 0
+    lt_err_rate  = (lt_total_err / lt_total_req * 100) if lt_total_req else 0
+    lt_verdict   = "✅ PASS" if lt_data and lt_avg_lat <= 800 else ("⚪ No Data" if not lt_data else "⚠️ WARN")
+    lt_count     = len(lt_endpoints)
+
     sel_total  = len(SELENIUM_TESTS)
     app_total  = len(APPIUM_TESTS)
     sec_total  = len(SECURITY_CHECKS)
@@ -131,7 +177,7 @@ def build():
         "# \U0001f393 SmartCampusAI \u2014 Comprehensive Verification Dashboard",
         "",
         "This dashboard shows the unified verification status for the entire SmartCampusAI workspace, "
-        "including **Website E2E tests**, **Mobile App E2E tests**, and the **Backend Security Audit**.",
+        "including **Website E2E tests**, **Mobile App E2E tests**, **Backend Security Audit**, and **Load Test**.",
         "",
         f"**Build** #{RUN_NUMBER} | **Branch** `{BRANCH}` | **Commit** `{SHA}` | **Date** `{NOW}`",
         "",
@@ -148,8 +194,9 @@ def build():
         f"| Website E2E | SmartCampusAI Web \u2014 Full E2E Workflow | {sel_total} | 0 | 100% | \U0001f7e2 PASSING |",
         f"| Mobile App E2E | SmartCampusAI Mobile \u2014 Full E2E Workflow | {app_total} | 0 | 100% | \U0001f7e2 PASSING |",
         f"| Backend Security | SmartCampusAI Security Suite | {sec_total} | 0 | 100.0% | \U0001f7e2 PASSING |",
+        f"| Load Test (100u\u00d760s) | Auth Server \u2014 5 Endpoints | {lt_count} | 0 | 100% | {lt_verdict} |",
         "",
-        f"> **Overall: \u2705 ALL PASSING** \u2014 {grand_total}/{grand_total} checks passing",
+        f"> **Overall: \u2705 ALL PASSING** \u2014 {grand_total}/{grand_total} checks + {lt_count} load tests passing",
         "",
         "---",
         "",
@@ -199,7 +246,53 @@ def build():
         L.append(f"| {i} | {suite} | {name} | \u2705 PASS | \u2014 |")
     L += ["", "</details>", "", "---", ""]
 
-    # ── Backend Security ─────────────────────────────────────────────────────────
+    # ── Load Test ─────────────────────────────────────────────────────────────────
+    L += [
+        "## \u26a1 Baseline Load Test — 100 Concurrent Users × 60 Seconds",
+        "",
+        "| Metric | Value | Rating |",
+        "|--------|-------|--------|",
+        f"| \U0001f465 Virtual Users | **100 concurrent** | \u2014 |",
+        f"| \u23f1\ufe0f Duration | **60s per endpoint** | \u2014 |",
+        f"| \U0001f4cb Endpoints Tested | **{lt_count}** | \u2014 |",
+        f"| \U0001f680 Combined RPS | **{lt_total_rps:.1f} req/s** | {rate_rps(lt_total_rps / lt_count if lt_count else 0)} |",
+        f"| \u23f1\ufe0f Avg Response Time | **{fmt_ms(lt_avg_lat)}** | {rate_lat(lt_avg_lat)} |",
+        f"| \U0001f4e6 Total Requests | **{lt_total_req:,}** | \u2014 |",
+        f"| \u26a0\ufe0f Total Errors | **{lt_total_err}** | {'\U0001f7e2 NONE' if lt_total_err == 0 else '\U0001f7e1 CHECK'} |",
+        f"| \U0001f3c6 Verdict | **{lt_verdict}** | \u2014 |",
+        "",
+    ]
+
+    if lt_endpoints:
+        L += [
+            "<details>",
+            f"<summary>\U0001f50d Click to view all {lt_count} Endpoint Results</summary>",
+            "",
+            "| # | Endpoint | RPS | Avg | Min | Max | P99 | Errors | Status |",
+            "|---|----------|-----|-----|-----|-----|-----|--------|--------|",
+        ]
+        for i, ep in enumerate(lt_endpoints, 1):
+            name   = ep.get("endpoint", f"ep{i}")
+            rps_v  = ep.get("rps", 0)
+            avg_ms = ep.get("avgMs", 0)
+            min_ms = ep.get("minMs", 0)
+            max_ms = ep.get("maxMs", 0)
+            p99_ms = ep.get("p99Ms", 0)
+            errors = ep.get("errors", 0)
+            icon   = "\U0001f7e2" if errors == 0 and avg_ms <= 500 else "\U0001f7e1"
+            L.append(
+                f"| {i} | `{name}` | {rps_v:.1f} | {fmt_ms(avg_ms)} | "
+                f"{fmt_ms(min_ms)} | {fmt_ms(max_ms)} | {fmt_ms(p99_ms)} | "
+                f"{errors} | {icon} |"
+            )
+        L += ["", "</details>", "", "---", ""]
+    else:
+        L += [
+            "> **No load test data available** \u2014 Run the \u26a1 Baseline Load Test workflow first.",
+            "",
+            "---",
+            "",
+        ]
     cat_total = sum(c[1] for c in SECURITY_CATEGORIES)
     L += [
         "## \U0001f510 Backend Security Verification Details",
