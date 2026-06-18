@@ -123,7 +123,7 @@ function RichText({ text, isUser }) {
                 {isBullet ? '•' : trimmed.match(/^\d+/)[0] + '.'}
               </Text>
             )}
-            <Text style={{ flex: 1, color: base, fontSize: 13.5, lineHeight: 21 }}>
+            <Text style={{ flex: 1, color: base, fontSize: 14.5, lineHeight: 22 }}>
               {parseBold(content)}
             </Text>
           </View>
@@ -136,13 +136,13 @@ function RichText({ text, isUser }) {
 // ── Message bubble ─────────────────────────────────────────────────────────────
 function MessageBubble({ msg }) {
   const isUser = msg.sender === 'user';
-  const slideX = useRef(new Animated.Value(isUser ? 20 : -20)).current;
+  const slideX = useRef(new Animated.Value(isUser ? 24 : -24)).current;
   const fade   = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.parallel([
-      Animated.timing(fade,  { toValue: 1, duration: 250, useNativeDriver: true }),
-      Animated.spring(slideX, { toValue: 0, tension: 100, friction: 12, useNativeDriver: true }),
+      Animated.timing(fade,  { toValue: 1, duration: 280, useNativeDriver: true }),
+      Animated.spring(slideX, { toValue: 0, tension: 90, friction: 12, useNativeDriver: true }),
     ]).start();
   }, []);
 
@@ -153,52 +153,61 @@ function MessageBubble({ msg }) {
   }[msg.type] || C.accent;
 
   return (
-    <Animated.View style={{
-      opacity: fade,
-      transform: [{ translateX: slideX }],
-      alignSelf: isUser ? 'flex-end' : 'flex-start',
-      maxWidth: '90%',
-      marginBottom: 14,
+    // Outer full-width row — justifyContent handles LEFT/RIGHT alignment
+    // This is the correct Android-safe pattern (no alignSelf on Animated.View)
+    <View style={{
+      flexDirection: 'row',
+      justifyContent: isUser ? 'flex-end' : 'flex-start',
+      marginBottom: 16,
+      width: '100%',
     }}>
-      {/* AI label row */}
-      {!isUser && (
-        <View style={styles.aiMeta}>
+      <Animated.View style={{
+        opacity: fade,
+        transform: [{ translateX: slideX }],
+        // AI: nearly full width | User: 78% max
+        maxWidth: isUser ? '78%' : '97%',
+        flex: isUser ? 0 : 1,
+      }}>
+        {/* AI label row */}
+        {!isUser && (
+          <View style={styles.aiMeta}>
+            <LinearGradient
+              colors={[typeColor + '50', typeColor + '28']}
+              style={styles.aiAvatar}
+            >
+              <Text style={{ fontSize: 13 }}>🤖</Text>
+            </LinearGradient>
+            <Text style={[styles.aiName, { color: typeColor }]}>
+              {msg.isRealAI ? 'SmartAdmission AI' : 'College AI'}
+            </Text>
+            {msg.isRealAI && (
+              <View style={styles.livePill}>
+                <View style={styles.liveDot} />
+                <Text style={styles.liveLabel}>LIVE AI</Text>
+              </View>
+            )}
+          </View>
+        )}
+
+        {/* Bubble */}
+        {isUser ? (
           <LinearGradient
-            colors={[typeColor + '44', typeColor + '22']}
-            style={styles.aiAvatar}
+            colors={['#8b83ff', '#6c63ff']}
+            style={[styles.bubble, styles.userBubble]}
+            start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
           >
-            <Text style={{ fontSize: 12 }}>🤖</Text>
+            <Text style={{ color: C.white, fontSize: 15, lineHeight: 23 }}>{msg.text}</Text>
           </LinearGradient>
-          <Text style={[styles.aiName, { color: typeColor }]}>
-            {msg.isRealAI ? 'SmartAdmission AI' : 'College AI'}
-          </Text>
-          {msg.isRealAI && (
-            <View style={styles.livePill}>
-              <View style={styles.liveDot} />
-              <Text style={styles.liveLabel}>LIVE AI</Text>
-            </View>
-          )}
-        </View>
-      )}
+        ) : (
+          <View style={[styles.bubble, styles.aiBubble, { borderColor: typeColor + '35' }]}>
+            <RichText text={msg.text} isUser={false} />
+          </View>
+        )}
 
-      {/* Bubble */}
-      {isUser ? (
-        <LinearGradient
-          colors={['#8b83ff', '#6c63ff']}
-          style={[styles.bubble, styles.userBubble]}
-          start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
-        >
-          <Text style={{ color: C.white, fontSize: 14, lineHeight: 22 }}>{msg.text}</Text>
-        </LinearGradient>
-      ) : (
-        <View style={[styles.bubble, styles.aiBubble, { borderColor: typeColor + '30' }]}>
-          <RichText text={msg.text} isUser={false} />
-        </View>
-      )}
-
-      {/* Timestamp */}
-      <Text style={[styles.timestamp, isUser && { textAlign: 'right' }]}>{msg.time}</Text>
-    </Animated.View>
+        {/* Timestamp */}
+        <Text style={[styles.timestamp, isUser && { textAlign: 'right' }]}>{msg.time}</Text>
+      </Animated.View>
+    </View>
   );
 }
 
@@ -336,17 +345,19 @@ export default function CollegeChatScreen({ route, navigation }) {
             <MessageBubble key={msg.id} msg={msg} />
           ))}
 
-          {/* Typing indicator */}
+          {/* Typing indicator - same row-wrapper pattern */}
           {isTyping && (
-            <View style={{ alignSelf: 'flex-start', marginBottom: 12 }}>
-              <View style={styles.aiMeta}>
-                <LinearGradient colors={[C.accent + '44', C.accent + '22']} style={styles.aiAvatar}>
-                  <Text style={{ fontSize: 12 }}>🤖</Text>
-                </LinearGradient>
-                <Text style={[styles.aiName, { color: C.accent }]}>Thinking…</Text>
-              </View>
-              <View style={[styles.bubble, styles.aiBubble, { paddingVertical: 8 }]}>
-                <TypingDots />
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginBottom: 16, width: '100%' }}>
+              <View style={{ flex: 1 }}>
+                <View style={styles.aiMeta}>
+                  <LinearGradient colors={[C.accent + '50', C.accent + '28']} style={styles.aiAvatar}>
+                    <Text style={{ fontSize: 13 }}>🤖</Text>
+                  </LinearGradient>
+                  <Text style={[styles.aiName, { color: C.accent }]}>Thinking…</Text>
+                </View>
+                <View style={[styles.bubble, styles.aiBubble, { paddingVertical: 10, alignSelf: 'flex-start', minWidth: 80 }]}>
+                  <TypingDots />
+                </View>
               </View>
             </View>
           )}
@@ -484,13 +495,13 @@ const styles = StyleSheet.create({
   liveLabel:{ color: C.green, fontSize: 8, fontWeight: '800' },
 
   // Bubbles
-  bubble: { borderRadius: 16, padding: 12, borderWidth: 1 },
+  bubble: { borderRadius: 18, padding: 14, borderWidth: 1 },
   userBubble: { borderColor: '#9d96ff', borderBottomRightRadius: 4 },
   aiBubble:   {
     backgroundColor: C.aiBg, borderColor: C.border,
     borderBottomLeftRadius: 4,
   },
-  timestamp: { color: C.textDim, fontSize: 9, marginTop: 3, marginHorizontal: 2 },
+  timestamp: { color: C.textDim, fontSize: 9, marginTop: 4, marginHorizontal: 2 },
 
   // Chips
   chipScroll: {
