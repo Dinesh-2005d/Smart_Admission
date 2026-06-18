@@ -246,9 +246,12 @@ def build():
         L.append(f"| {i} | {suite} | {name} | \u2705 PASS | \u2014 |")
     L += ["", "</details>", "", "---", ""]
 
+    # Pre-compute to avoid backslash-in-f-string (Python < 3.12)
+    err_icon   = '\U0001f7e2 NONE'  if lt_total_err == 0 else '\U0001f7e1 CHECK'
+
     # ── Load Test ─────────────────────────────────────────────────────────────────
     L += [
-        "## \u26a1 Baseline Load Test — 100 Concurrent Users × 60 Seconds",
+        "## \u26a1 Performance Test — 100 Concurrent Users × 60 Seconds",
         "",
         "| Metric | Value | Rating |",
         "|--------|-------|--------|",
@@ -258,7 +261,7 @@ def build():
         f"| \U0001f680 Combined RPS | **{lt_total_rps:.1f} req/s** | {rate_rps(lt_total_rps / lt_count if lt_count else 0)} |",
         f"| \u23f1\ufe0f Avg Response Time | **{fmt_ms(lt_avg_lat)}** | {rate_lat(lt_avg_lat)} |",
         f"| \U0001f4e6 Total Requests | **{lt_total_req:,}** | \u2014 |",
-        f"| \u26a0\ufe0f Total Errors | **{lt_total_err}** | {'\U0001f7e2 NONE' if lt_total_err == 0 else '\U0001f7e1 CHECK'} |",
+        f"| \u26a0\ufe0f Total Errors | **{lt_total_err}** | {err_icon} |",
         f"| \U0001f3c6 Verdict | **{lt_verdict}** | \u2014 |",
         "",
     ]
@@ -279,11 +282,11 @@ def build():
             max_ms = ep.get("maxMs", 0)
             p99_ms = ep.get("p99Ms", 0)
             errors = ep.get("errors", 0)
-            icon   = "\U0001f7e2" if errors == 0 and avg_ms <= 500 else "\U0001f7e1"
+            ep_icon = '\U0001f7e2' if errors == 0 and avg_ms <= 500 else '\U0001f7e1'
             L.append(
                 f"| {i} | `{name}` | {rps_v:.1f} | {fmt_ms(avg_ms)} | "
                 f"{fmt_ms(min_ms)} | {fmt_ms(max_ms)} | {fmt_ms(p99_ms)} | "
-                f"{errors} | {icon} |"
+                f"{errors} | {ep_icon} |"
             )
         L += ["", "</details>", "", "---", ""]
     else:
