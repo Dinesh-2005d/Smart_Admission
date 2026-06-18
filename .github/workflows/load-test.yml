@@ -1,4 +1,4 @@
-name: ⚡ Baseline Load Test – 100 Users × 60s
+name: ⚡ Performance Test – SmartCampusAI API
 
 on:
   workflow_dispatch:
@@ -21,7 +21,7 @@ env:
 
 jobs:
   load-test:
-    name: ⚡ Baseline Load Test (100 VUsers · 60s)
+    name: ⚡ Performance Test – SmartCampusAI API (100 VUsers · 60s)
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -82,7 +82,7 @@ jobs:
           curl -s http://localhost:$AUTH_PORT/auth/me | head -c 200 || true
 
       # ── 8. Run Load Test ──────────────────────────────────────────────────
-      - name: ⚡ Run Baseline Load Test (100 users × 60s)
+      - name: ⚡ Run Performance Test (100 users × 60s)
         run: |
           echo "=============================================="
           echo "  SmartCampusAI — Baseline Load Test"
@@ -110,7 +110,7 @@ jobs:
           COMMIT="${{ github.sha }}"
 
           {
-            echo "# ⚡ Baseline Load Test Report"
+            echo "# ⚡ Performance Test – SmartCampusAI API"
             echo ""
             echo "> Build **#${BUILD_NUM}** | ${RUN_DATE} | Commit: \`${COMMIT:0:7}\`"
             echo ""

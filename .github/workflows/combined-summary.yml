@@ -6,7 +6,7 @@ on:
       - "🚀 Deploy to GitHub Pages + Selenium E2E Tests"
       - "🤖 Android Appium E2E Tests + Report Hosting"
       - "🔐 Security Review – SAST + Dependency Scan"
-      - "⚡ Baseline Load Test – 100 Users × 60s"
+      - "⚡ Performance Test – SmartCampusAI API"
     types: [completed]
   workflow_dispatch:
 
