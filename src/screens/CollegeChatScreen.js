@@ -158,7 +158,7 @@ function MessageBubble({ msg }) {
     <View style={{
       flexDirection: 'row',
       justifyContent: isUser ? 'flex-end' : 'flex-start',
-      marginBottom: 16,
+      marginBottom: 8,
       width: '100%',
     }}>
       <Animated.View style={{
@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
   // Header — compact to maximise chat space
   header: {
     flexDirection: 'row', alignItems: 'center',
-    paddingHorizontal: 8, paddingVertical: 2,
+    paddingHorizontal: 8, paddingVertical: 1,
     borderBottomWidth: 1, borderBottomColor: C.border, gap: 6,
   },
   headerBtn: {
@@ -476,7 +476,7 @@ const styles = StyleSheet.create({
 
   // Messages
   messageScroll:   { flex: 1, backgroundColor: C.bg },
-  messageContent:  { paddingHorizontal: 12, paddingTop: 8, paddingBottom: 6 },
+  messageContent:  { paddingHorizontal: 10, paddingTop: 4, paddingBottom: 3 },
 
   // AI meta
   aiMeta: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 5 },
@@ -495,7 +495,7 @@ const styles = StyleSheet.create({
   liveLabel:{ color: C.green, fontSize: 8, fontWeight: '800' },
 
   // Bubbles
-  bubble: { borderRadius: 18, padding: 14, borderWidth: 1 },
+  bubble: { borderRadius: 16, padding: 9, borderWidth: 1 },
   userBubble: { borderColor: '#9d96ff', borderBottomRightRadius: 4 },
   aiBubble:   {
     backgroundColor: C.aiBg, borderColor: C.border,
@@ -508,7 +508,7 @@ const styles = StyleSheet.create({
     backgroundColor: C.surface, borderTopWidth: 1,
     borderTopColor: C.border, maxHeight: 36,
   },
-  chipContent: { paddingHorizontal: 8, paddingVertical: 2, gap: 6, alignItems: 'center' },
+  chipContent: { paddingHorizontal: 6, paddingVertical: 1, gap: 5, alignItems: 'center' },
   chip: {
     flexDirection: 'row', alignItems: 'center', gap: 4,
     backgroundColor: C.chip, borderRadius: 12,
@@ -520,7 +520,7 @@ const styles = StyleSheet.create({
   // Input — compact to maximise chat space
   inputWrap: {
     backgroundColor: C.surface, borderTopWidth: 1,
-    borderTopColor: C.border, paddingTop: 3, paddingBottom: 3,
+    borderTopColor: C.border, paddingTop: 2, paddingBottom: 2,
   },
   inputRow: {
     flexDirection: 'row', alignItems: 'flex-end',
@@ -548,7 +548,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5, shadowRadius: 6, elevation: 6,
   },
   footer: {
-    color: C.textDim, fontSize: 9, textAlign: 'center',
-    marginTop: 1, paddingHorizontal: 10,
+    color: C.textDim, fontSize: 8, textAlign: 'center',
+    marginTop: 0, paddingHorizontal: 8,
   },
 });
