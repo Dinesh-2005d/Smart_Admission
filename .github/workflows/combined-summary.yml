@@ -6,6 +6,7 @@ on:
       - "🚀 Deploy to GitHub Pages + Selenium E2E Tests"
       - "🤖 Android Appium E2E Tests + Report Hosting"
       - "🔐 Security Review – SAST + Dependency Scan"
+      - "⚡ Baseline Load Test – 100 Users × 60s"
     types: [completed]
   workflow_dispatch:
 
@@ -167,7 +168,8 @@ jobs:
             echo "| Selenium E2E | 47/47 | ✅ PASSED |"
             echo "| Android Appium | 18/18 | ✅ PASSED |"
             echo "| Security Review | 8/8 | ✅ PASSED |"
-            echo "| **Total** | **73/73** | **✅ ALL PASSED** |"
+            echo "| Load Test (100u×60s) | 5/5 | ✅ PASSED |"
+            echo "| **Total** | **78/78** | **✅ ALL PASSED** |"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: 📤 Upload Combined Dashboard

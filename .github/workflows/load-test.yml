@@ -1,0 +1,168 @@
+name: ⚡ Baseline Load Test – 100 Users × 60s
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'auth-server.js'
+      - 'scripts/load-test.js'
+      - '.github/workflows/load-test.yml'
+  schedule:
+    - cron: '0 2 * * 1'   # Every Monday at 2:00 AM UTC
+
+permissions:
+  contents: read
+  actions:  write
+
+env:
+  NODE_VERSION: '20'
+  AUTH_PORT:    '3002'
+
+jobs:
+  load-test:
+    name: ⚡ Baseline Load Test (100 VUsers · 60s)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      # ── 1. Checkout ────────────────────────────────────────────────────────
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Node.js Setup ───────────────────────────────────────────────────
+      - name: 🟢 Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      # ── 3. Install dependencies ────────────────────────────────────────────
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      # ── 4. Create required data directory ─────────────────────────────────
+      - name: 📁 Create data & reports directories
+        run: |
+          mkdir -p data reports
+          echo '{"users":[],"otps":[]}' > data/users.db.json
+
+      # ── 5. Create minimal .env for the auth server ─────────────────────────
+      - name: 🔧 Setup environment
+        run: |
+          cat > .env << 'EOF'
+          JWT_SECRET=load-test-secret-ci-only
+          AUTH_PORT=3002
+          ADMIN_EMAIL=admin@test.com
+          GMAIL_USER=test@gmail.com
+          GMAIL_APP_PASSWORD=dummy
+          GOOGLE_CLIENT_ID=dummy
+          EOF
+
+      # ── 6. Start auth server in background ────────────────────────────────
+      - name: 🚀 Start Auth Server (background)
+        run: |
+          node auth-server.js &
+          echo "AUTH_PID=$!" >> $GITHUB_ENV
+          echo "Auth server starting on port $AUTH_PORT ..."
+
+      # ── 7. Wait for server to be ready ─────────────────────────────────────
+      - name: ⏳ Wait for server ready
+        run: |
+          for i in $(seq 1 15); do
+            if curl -sf http://localhost:$AUTH_PORT/auth/me > /dev/null 2>&1 || \
+               curl -sf http://localhost:$AUTH_PORT/auth/me 2>&1 | grep -q "401\|Authentication"; then
+              echo "✅ Auth server is ready (attempt $i)"
+              break
+            fi
+            echo "⏳ Waiting... attempt $i/15"
+            sleep 2
+          done
+          # Final check
+          curl -s http://localhost:$AUTH_PORT/auth/me | head -c 200 || true
+
+      # ── 8. Run Load Test ──────────────────────────────────────────────────
+      - name: ⚡ Run Baseline Load Test (100 users × 60s)
+        run: |
+          echo "=============================================="
+          echo "  SmartCampusAI — Baseline Load Test"
+          echo "  100 Virtual Users | 60 Seconds per Endpoint"
+          echo "=============================================="
+          node scripts/load-test.js 2>&1 | tee reports/load-test-output.txt
+        env:
+          AUTH_PORT: ${{ env.AUTH_PORT }}
+
+      # ── 9. Parse & Publish Results ────────────────────────────────────────
+      - name: 📊 Publish results to GitHub Step Summary
+        if: always()
+        run: |
+          RUN_DATE=$(date '+%Y-%m-%d %H:%M UTC')
+          BUILD_NUM="${{ github.run_number }}"
+          COMMIT="${{ github.sha }}"
+
+          # Extract metrics from output file
+          extract() {
+            grep -oP "$1" reports/load-test-output.txt 2>/dev/null | head -1 || echo "N/A"
+          }
+
+          {
+            echo "# ⚡ Baseline Load Test Report"
+            echo ""
+            echo "> Build **#${BUILD_NUM}** | ${RUN_DATE} | Commit: \`${COMMIT:0:7}\`"
+            echo ""
+            echo "## 🎯 Test Configuration"
+            echo ""
+            echo "| Parameter | Value |"
+            echo "|-----------|-------|"
+            echo "| Virtual Users | **100** concurrent |"
+            echo "| Duration | **60 seconds** per endpoint |"
+            echo "| Target | Auth Server — \`http://localhost:3002\` |"
+            echo "| Tool | autocannon (Node.js HTTP benchmarker) |"
+            echo ""
+            echo "## 📋 Endpoints Tested"
+            echo ""
+            echo "| # | Endpoint | Purpose |"
+            echo "|---|----------|---------|"
+            echo "| 1 | \`GET  /auth/me\`            | Health / unauthenticated check |"
+            echo "| 2 | \`POST /auth/login\`          | User login (bcrypt verify) |"
+            echo "| 3 | \`POST /auth/register\`       | New user registration |"
+            echo "| 4 | \`POST /auth/forgot-password\`| OTP trigger + rate limit |"
+            echo "| 5 | \`POST /auth/verify-otp\`     | OTP verification (fast path) |"
+            echo ""
+            echo "## 📊 Full Output"
+            echo ""
+            echo "\`\`\`"
+            cat reports/load-test-output.txt 2>/dev/null | head -200 || echo "Output not available"
+            echo "\`\`\`"
+            echo ""
+            echo "## ✅ What These Results Mean"
+            echo ""
+            echo "| Metric | Good | Acceptable | Poor |"
+            echo "|--------|------|------------|------|"
+            echo "| RPS | ≥ 50 req/s | 20–50 req/s | < 20 req/s |"
+            echo "| Avg Latency | ≤ 300ms | 300–800ms | > 800ms |"
+            echo "| Error Rate | 0% | < 5% | ≥ 5% |"
+            echo ""
+            echo "---"
+            echo "*Report auto-generated by SmartCampusAI CI/CD Pipeline*"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # ── 10. Upload JSON Report as Artifact ───────────────────────────────
+      - name: 📤 Upload load test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: load-test-results-${{ github.run_number }}
+          path: |
+            reports/load-test-*.json
+            reports/load-test-output.txt
+          retention-days: 30
+          if-no-files-found: warn
+
+      # ── 11. Stop auth server ──────────────────────────────────────────────
+      - name: 🛑 Stop Auth Server
+        if: always()
+        run: |
+          if [ -n "$AUTH_PID" ]; then
+            kill $AUTH_PID 2>/dev/null && echo "✅ Auth server stopped" || true
+          fi
