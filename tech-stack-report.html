@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartCampusAI – Tech Stack Report</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f0f4ff;
+      color: #0f172a;
+      padding: 32px 20px;
+    }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #7c3aed 100%);
+      color: white;
+      padding: 48px 40px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 260px; height: 260px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; left: -40px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+    }
+    .header-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .header h1 {
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .header p {
+      font-size: 15px;
+      opacity: 0.8;
+      margin-bottom: 24px;
+    }
+    .header-meta {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .header-meta span {
+      font-size: 13px;
+      opacity: 0.75;
+    }
+    .header-meta b { opacity: 1; color: #93c5fd; }
+
+    /* ── Section ── */
+    .section { padding: 32px 40px; border-bottom: 1px solid #f1f5f9; }
+    .section:last-child { border-bottom: none; }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #2563eb;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e2e8f0;
+    }
+
+    /* ── Grid cards ── */
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+
+    .card {
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      transition: all 0.2s;
+    }
+    .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+
+    .card-icon { font-size: 28px; margin-bottom: 10px; }
+    .card-name { font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
+    .card-version { font-size: 11px; color: #94a3b8; font-weight: 600; margin-bottom: 8px; }
+    .card-desc { font-size: 12px; color: #475569; line-height: 1.6; }
+
+    .tag {
+      display: inline-block;
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+    .tag-frontend { background: #dbeafe; color: #1d4ed8; }
+    .tag-backend  { background: #dcfce7; color: #166534; }
+    .tag-devops   { background: #fef3c7; color: #92400e; }
+    .tag-ai       { background: #ede9fe; color: #5b21b6; }
+    .tag-data     { background: #fce7f3; color: #9d174d; }
+
+    /* ── Summary bar ── */
+    .summary-bar {
+      background: linear-gradient(135deg, #eff6ff, #f5f3ff);
+      border: 1px solid #ddd6fe;
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .summary-item { text-align: center; }
+    .summary-num { font-size: 32px; font-weight: 900; color: #2563eb; }
+    .summary-label { font-size: 12px; color: #64748b; font-weight: 600; margin-top: 4px; }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th {
+      background: #f1f5f9;
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 700;
+      color: #334155;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #475569;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f8fafc; }
+    td:first-child { font-weight: 600; color: #0f172a; }
+
+    /* ── Footer ── */
+    .footer {
+      background: #0f172a;
+      color: #94a3b8;
+      padding: 24px 40px;
+      font-size: 12px;
+      text-align: center;
+    }
+    .footer b { color: #60a5fa; }
+
+    /* Print */
+    @media print {
+      body { background: white; padding: 0; }
+      .page { box-shadow: none; border-radius: 0; }
+      .card:hover { box-shadow: none; }
+      .print-btn { display: none; }
+    }
+
+    .print-btn {
+      display: block;
+      width: fit-content;
+      margin: 24px auto;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 32px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
+    }
+    .print-btn:hover { opacity: 0.92; }
+  </style>
+</head>
+<body>
+
+  <button class="print-btn" onclick="window.print()">⬇️ Download / Print as PDF</button>
+
+  <div class="page">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="header-badge">📄 Tech Stack Report</div>
+      <h1>🎓 SmartCampusAI</h1>
+      <p>Smart Admission – Full Project Technology Stack</p>
+      <div class="header-meta">
+        <span>📦 Project: <b>smartcampusai</b></span>
+        <span>🔖 Version: <b>1.0.0</b></span>
+        <span>📅 Report: <b>June 2026</b></span>
+        <span>🌐 Deployed: <b>GitHub Pages</b></span>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="section">
+      <div class="section-title">📊 Project Overview</div>
+      <div class="summary-bar">
+        <div class="summary-item"><div class="summary-num">19</div><div class="summary-label">Frontend Packages</div></div>
+        <div class="summary-item"><div class="summary-num">7</div><div class="summary-label">Backend Packages</div></div>
+        <div class="summary-item"><div class="summary-num">3</div><div class="summary-label">AI / Cloud Services</div></div>
+        <div class="summary-item"><div class="summary-num">70K+</div><div class="summary-label">Colleges in Database</div></div>
+        <div class="summary-item"><div class="summary-num">28+</div><div class="summary-label">Indian States</div></div>
+      </div>
+    </div>
+
+    <!-- Frontend -->
+    <div class="section">
+      <div class="section-title">🎨 Frontend Stack</div>
+      <div class="grid">
+
+        <div class="card">
+          <div class="card-icon">⚛️</div>
+          <div class="card-name">React Native</div>
+          <div class="card-version">v0.81.5</div>
+          <div class="card-desc">Core UI framework for building cross-platform mobile and web apps using JavaScript and JSX.</div>
+          <span class="tag tag-frontend">Frontend</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🌐</div>
+          <div class="card-name">React Native Web</div>
+          <div class="card-version">v0.21.0</div>
+          <div class="card-desc">Renders React Native components in the browser — powers the GitHub Pages deployment.</div>
+          <span class="tag tag-frontend">Frontend</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">⚛️</div>
+          <div class="card-name">React</div>
+          <div class="card-version">v19.1.0</div>
+          <div class="card-desc">The core React library for building component-based user interfaces.</div>
+          <span class="tag tag-frontend">Frontend</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">📱</div>
+          <div class="card-name">Expo SDK</div>
+          <div class="card-version">v54.0.34</div>
+          <div class="card-desc">Build toolchain for React Native. Manages build, testing, and deployment for iOS, Android, and Web.</div>
+          <span class="tag tag-frontend">Frontend</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🗺️</div>
+          <div class="card-name">React Navigation</div>
+          <div class="card-version">v7.x</div>
+          <div class="card-desc">Screen navigation: Native Stack, Bottom Tabs. Manages routing across Home, Search, Details, AI Chat screens.</div>
+          <span class="tag tag-frontend">Frontend</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">✋</div>
+          <div class="card-name">Gesture Handler</div>
+          <div class="card-version">v2.28.0</div>
+          <div class="card-desc">Touch gesture recognition (swipe, tap, scroll) for smooth mobile-like interactions.</div>
+          <span class="tag tag-frontend">Frontend</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🎬</div>
+          <div class="card-name">Reanimated</div>
+          <div class="card-version">v4.1.1</div>
+          <div class="card-desc">High-performance animations running on the UI thread — used for slide-up modals, card transitions.</div>
+          <span class="tag tag-frontend">Frontend</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🔡</div>
+          <div class="card-name">Expo Vector Icons</div>
+          <div class="card-version">v15.1.1</div>
+          <div class="card-desc">3,000+ icons including Ionicons, MaterialIcons. Used throughout all screens.</div>
+          <span class="tag tag-frontend">Frontend</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🖼️</div>
+          <div class="card-name">Expo Image</div>
+          <div class="card-version">v3.0.11</div>
+          <div class="card-desc">Optimized image loading with caching, blur-up placeholders.</div>
+          <span class="tag tag-frontend">Frontend</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">💫</div>
+          <div class="card-name">Expo Splash Screen</div>
+          <div class="card-version">v31.0.13</div>
+          <div class="card-desc">Custom animated splash screen shown while the app loads.</div>
+          <span class="tag tag-frontend">Frontend</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🔤</div>
+          <div class="card-name">Expo Font</div>
+          <div class="card-version">v14.0.11</div>
+          <div class="card-desc">Loads custom Google Fonts for premium typography.</div>
+          <span class="tag tag-frontend">Frontend</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">📳</div>
+          <div class="card-name">Expo Haptics</div>
+          <div class="card-version">v15.0.8</div>
+          <div class="card-desc">Tactile feedback on button taps for enhanced native feel on mobile.</div>
+          <span class="tag tag-frontend">Frontend</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">📐</div>
+          <div class="card-name">Safe Area Context</div>
+          <div class="card-version">v5.6.0</div>
+          <div class="card-desc">Handles iPhone notch, Android status bar, and bottom navigation bar insets safely.</div>
+          <span class="tag tag-frontend">Frontend</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🔒</div>
+          <div class="card-name">Expo Web Browser</div>
+          <div class="card-version">v15.0.11</div>
+          <div class="card-desc">Opens in-app browser for OAuth (Google Sign-In) and external links.</div>
+          <span class="tag tag-frontend">Frontend</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- AI / Intelligence -->
+    <div class="section">
+      <div class="section-title">🤖 AI / Intelligence Layer</div>
+      <div class="grid">
+
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <div class="card-name">Groq API</div>
+          <div class="card-version">REST API</div>
+          <div class="card-desc">Real AI chat powered by Llama 3 8B. Answers college-specific questions only. Free tier with 14,400 requests/day.</div>
+          <span class="tag tag-ai">AI Service</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🧠</div>
+          <div class="card-name">Llama 3 (8B)</div>
+          <div class="card-version">Meta AI Model</div>
+          <div class="card-desc">Large language model serving the AI college counsellor chat. System-prompted to only discuss college admissions and courses.</div>
+          <span class="tag tag-ai">AI Model</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🏫</div>
+          <div class="card-name">Local AI Engine</div>
+          <div class="card-version">Custom (localAI.js)</div>
+          <div class="card-desc">Rule-based offline AI fallback with keyword matching for college details when Groq is unavailable.</div>
+          <span class="tag tag-ai">AI</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Backend -->
+    <div class="section">
+      <div class="section-title">⚙️ Backend Stack</div>
+      <div class="grid">
+
+        <div class="card">
+          <div class="card-icon">🚀</div>
+          <div class="card-name">Express.js</div>
+          <div class="card-version">v5.2.1</div>
+          <div class="card-desc">Node.js web server for handling authentication APIs, Google OAuth, email OTP, and admin panel endpoints.</div>
+          <span class="tag tag-backend">Backend</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🔐</div>
+          <div class="card-name">JSON Web Token</div>
+          <div class="card-version">v9.0.3</div>
+          <div class="card-desc">Stateless authentication tokens. Issued on login, verified on protected API routes.</div>
+          <span class="tag tag-backend">Backend</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🔑</div>
+          <div class="card-name">Bcrypt.js</div>
+          <div class="card-version">v3.0.3</div>
+          <div class="card-desc">Password hashing using bcrypt algorithm. Securely stores user passwords — never stored as plaintext.</div>
+          <span class="tag tag-backend">Backend</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">📧</div>
+          <div class="card-name">Nodemailer</div>
+          <div class="card-version">v9.0.0</div>
+          <div class="card-desc">Sends OTP emails for password reset, and admission confirmation emails via Gmail SMTP.</div>
+          <span class="tag tag-backend">Backend</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🌍</div>
+          <div class="card-name">CORS</div>
+          <div class="card-version">v2.8.6</div>
+          <div class="card-desc">Enables secure cross-origin resource sharing between frontend (GitHub Pages) and backend API server.</div>
+          <span class="tag tag-backend">Backend</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🛡️</div>
+          <div class="card-name">Helmet.js</div>
+          <div class="card-version">v8.2.0</div>
+          <div class="card-desc">Sets secure HTTP headers to protect against XSS, clickjacking, and other common web vulnerabilities.</div>
+          <span class="tag tag-backend">Backend</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🔏</div>
+          <div class="card-name">Google Auth Library</div>
+          <div class="card-version">v10.7.0</div>
+          <div class="card-desc">Verifies Google OAuth2 ID tokens for "Sign in with Google" feature.</div>
+          <span class="tag tag-backend">Backend</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Database / Cloud -->
+    <div class="section">
+      <div class="section-title">🗄️ Database & Cloud</div>
+      <div class="grid">
+
+        <div class="card">
+          <div class="card-icon">🔥</div>
+          <div class="card-name">Firebase</div>
+          <div class="card-version">v12.14.0</div>
+          <div class="card-desc">Google's cloud platform for real-time database, user authentication, and cloud storage.</div>
+          <span class="tag tag-data">Cloud</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">📂</div>
+          <div class="card-name">College Database (JSON)</div>
+          <div class="card-version">70,000+ entries</div>
+          <div class="card-desc">Compressed JSON database of 70,000+ colleges across India. Covers Nursing, Arts, Polytechnic, Paramedical, Management departments.</div>
+          <span class="tag tag-data">Data</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🏆</div>
+          <div class="card-name">Curated Top Colleges</div>
+          <div class="card-version">91+ entries</div>
+          <div class="card-desc">Hand-curated college entries for IITs, NITs, AIIMS, IIMs, NLUs and other premier institutions with detailed data.</div>
+          <span class="tag tag-data">Data</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DevOps -->
+    <div class="section">
+      <div class="section-title">🚀 DevOps & Deployment</div>
+      <div class="grid">
+
+        <div class="card">
+          <div class="card-icon">📄</div>
+          <div class="card-name">GitHub Actions</div>
+          <div class="card-version">CI/CD Pipeline</div>
+          <div class="card-desc">Automated build and deploy pipeline. Every git push triggers build → deploy to GitHub Pages automatically.</div>
+          <span class="tag tag-devops">DevOps</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🌐</div>
+          <div class="card-name">GitHub Pages</div>
+          <div class="card-version">Static Hosting</div>
+          <div class="card-desc">Free hosting for the web app at dinesh-2005d.github.io/Smart_Admission. Serves the Expo Web build.</div>
+          <span class="tag tag-devops">Hosting</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🐍</div>
+          <div class="card-name">Selenium (Python)</div>
+          <div class="card-version">E2E Testing</div>
+          <div class="card-desc">Automated end-to-end browser testing to verify login, AI chat, college search after every deployment.</div>
+          <span class="tag tag-devops">Testing</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">📦</div>
+          <div class="card-name">Node.js / npm</div>
+          <div class="card-version">Node v20</div>
+          <div class="card-desc">JavaScript runtime and package manager for building the project and managing dependencies.</div>
+          <span class="tag tag-devops">Build</span>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🔍</div>
+          <div class="card-name">ESLint + TypeScript</div>
+          <div class="card-version">ESLint 9 / TS 5.9</div>
+          <div class="card-desc">Code quality tools. ESLint enforces code style; TypeScript provides type definitions for React Native.</div>
+          <span class="tag tag-devops">Quality</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Screens Table -->
+    <div class="section">
+      <div class="section-title">📱 App Screens</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Screen</th>
+            <th>Purpose</th>
+            <th>Key Features</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>🏠 HomeScreen</td><td>Main landing page</td><td>Quick access to search, AI chat, saved colleges</td></tr>
+          <tr><td>🔐 LoginScreen</td><td>User authentication</td><td>Email/password + Google OAuth</td></tr>
+          <tr><td>📝 MarksEntryScreen</td><td>Student profile setup</td><td>State selection, department picker, marks input, auto-scroll</td></tr>
+          <tr><td>📋 CollegeListScreen</td><td>College results</td><td>All-state filtering, chip filters (Govt/Private/Hostel), infinite scroll</td></tr>
+          <tr><td>🏛️ DetailsScreen</td><td>College detail page</td><td>Full info, map, placements, companies</td></tr>
+          <tr><td>🤖 CollegeChatScreen</td><td>AI counsellor chat</td><td>Groq Llama 3 AI, quick questions, offline fallback</td></tr>
+          <tr><td>🔖 SavedCollegesScreen</td><td>Bookmarked colleges</td><td>Save/remove, clear all, navigate to details</td></tr>
+          <tr><td>🔍 SearchScreen</td><td>Global search</td><td>Search all 70,000+ colleges by name/location</td></tr>
+          <tr><td>📊 CompareScreen</td><td>Compare colleges</td><td>Side-by-side comparison of 2 colleges</td></tr>
+          <tr><td>👨‍💼 AdminPanelScreen</td><td>Admin dashboard</td><td>Manage colleges, view analytics</td></tr>
+          <tr><td>✨ AnimatedSplashScreen</td><td>App launch</td><td>Animated logo on startup</td></tr>
+          <tr><td>🔑 ForgotPasswordScreen</td><td>Password reset</td><td>OTP email verification via Nodemailer</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Architecture -->
+    <div class="section">
+      <div class="section-title">🏗️ Architecture Summary</div>
+      <table>
+        <thead>
+          <tr><th>Layer</th><th>Technology</th><th>Role</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>UI Framework</td><td>React Native + Expo</td><td>Cross-platform screens (iOS/Android/Web)</td></tr>
+          <tr><td>Web Rendering</td><td>React Native Web</td><td>Browser compatibility for GitHub Pages</td></tr>
+          <tr><td>Navigation</td><td>React Navigation v7</td><td>Stack + Tab navigation</td></tr>
+          <tr><td>AI Intelligence</td><td>Groq API + Llama 3</td><td>Real AI college counsellor chat</td></tr>
+          <tr><td>Data Storage</td><td>Firebase + JSON DB</td><td>User data + 70K+ college database</td></tr>
+          <tr><td>Authentication</td><td>JWT + Google OAuth</td><td>Secure login system</td></tr>
+          <tr><td>Backend API</td><td>Express.js (Node)</td><td>Auth, OTP, admin endpoints</td></tr>
+          <tr><td>Security</td><td>Helmet + Bcrypt + CORS</td><td>API security hardening</td></tr>
+          <tr><td>Deployment</td><td>GitHub Actions → GitHub Pages</td><td>Auto-deploy on every push</td></tr>
+          <tr><td>Testing</td><td>Selenium (Python)</td><td>Automated E2E browser tests</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <b>SmartCampusAI – Smart Admission</b> · Built with React Native + Expo + Groq AI<br/>
+      GitHub: <b>github.com/Dinesh-2005d/Smart_Admission</b> · Live: <b>dinesh-2005d.github.io/Smart_Admission</b>
+    </div>
+
+  </div>
+
+  <button class="print-btn" onclick="window.print()">⬇️ Download / Print as PDF</button>
+
+</body>
+</html>
