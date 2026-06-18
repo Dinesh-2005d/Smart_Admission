@@ -81,7 +81,7 @@ function MainTabs() {
         },
       })}
     >
-      <Tab.Screen name="Home"    component={HomeScreen}    options={{ title: 'Smart Admission' }} />
+      <Tab.Screen name="Home"    component={HomeScreen}    options={{ title: 'Acadivo' }} />
       <Tab.Screen name="Search"  component={SearchScreen}  options={{ title: 'Search Colleges' }} />
       <Tab.Screen name="Compare" component={CompareScreen} options={{ title: 'Compare' }} />
       <Tab.Screen

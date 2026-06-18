@@ -178,7 +178,7 @@ function MessageBubble({ msg }) {
               <Text style={{ fontSize: 13 }}>🤖</Text>
             </LinearGradient>
             <Text style={[styles.aiName, { color: typeColor }]}>
-              {msg.isRealAI ? 'SmartAdmission AI' : 'College AI'}
+              {msg.isRealAI ? 'Acadivo AI' : 'College AI'}
             </Text>
             {msg.isRealAI && (
               <View style={styles.livePill}>

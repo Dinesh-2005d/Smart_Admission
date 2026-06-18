@@ -48,7 +48,7 @@ export default function DetailsScreen({ route, navigation }) {
   const handleShare = async () => {
     try {
       await Share.share({
-        message: `Check out ${college.name} in ${college.location}!\n⭐ Rating: ${college.rating}\n📈 Placement: ${college.placementRate}%\n\nFound via Smart Admission`,
+        message: `Check out ${college.name} in ${college.location}!\n⭐ Rating: ${college.rating}\n📈 Placement: ${college.placementRate}%\n\nFound via Acadivo`,
       });
     } catch (_e) {}
   };

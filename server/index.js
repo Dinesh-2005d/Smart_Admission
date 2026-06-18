@@ -1,5 +1,5 @@
 /**
- * Smart Admission — Auth Server
+ * Acadivo — Auth Server
  * Port 3002 | Express + JWT + Nodemailer + bcryptjs + Google OAuth
  *
  * Endpoints:
@@ -99,7 +99,7 @@ async function sendOtpEmail(email, otp, name) {
         <div style="width:64px;height:64px;background:#2563eb;border-radius:32px;margin:0 auto;display:flex;align-items:center;justify-content:center">
           <span style="font-size:32px">🎓</span>
         </div>
-        <h2 style="color:#1e3a8a;margin-top:12px">Smart Admission</h2>
+        <h2 style="color:#1e3a8a;margin-top:12px">Acadivo</h2>
       </div>
       <div style="background:#fff;border-radius:12px;padding:24px">
         <p style="color:#374151">Hi <strong>${name || email}</strong>,</p>
@@ -109,13 +109,13 @@ async function sendOtpEmail(email, otp, name) {
         </div>
         <p style="color:#6b7280;font-size:13px">This OTP expires in <strong>10 minutes</strong>. Do not share it with anyone.</p>
       </div>
-      <p style="color:#9ca3af;font-size:11px;text-align:center;margin-top:16px">Smart Admission · India's Smartest College Finder</p>
+      <p style="color:#9ca3af;font-size:11px;text-align:center;margin-top:16px">Acadivo · India's Smartest College Finder</p>
     </div>
   `;
   await transporter.sendMail({
-    from:    `"Smart Admission" <${process.env.GMAIL_USER}>`,
+    from:    `"Acadivo" <${process.env.GMAIL_USER}>`,
     to:      email,
-    subject: `Your OTP: ${otp} — Smart Admission`,
+    subject: `Your OTP: ${otp} — Acadivo`,
     html,
   });
 }
@@ -547,7 +547,7 @@ app.use((req, res) => res.status(404).json({ error: 'Not found' }));
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 app.listen(PORT, '127.0.0.1', () => {
-  console.log(`\n🔐 Smart Admission Auth Server running at http://localhost:${PORT}`);
+  console.log(`\n🎓 Acadivo Auth Server running at http://localhost:${PORT}`);
   console.log('   POST /auth/register   POST /auth/login      POST /auth/google');
   console.log('   POST /auth/forgot-password                  POST /auth/reset-password');
   console.log('   POST /auth/change-password                  GET  /auth/me');
