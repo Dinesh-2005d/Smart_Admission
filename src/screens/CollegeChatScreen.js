@@ -157,8 +157,8 @@ function MessageBubble({ msg }) {
       opacity: fade,
       transform: [{ translateX: slideX }],
       alignSelf: isUser ? 'flex-end' : 'flex-start',
-      maxWidth: '85%',
-      marginBottom: 12,
+      maxWidth: '90%',
+      marginBottom: 14,
     }}>
       {/* AI label row */}
       {!isUser && (
@@ -175,7 +175,7 @@ function MessageBubble({ msg }) {
           {msg.isRealAI && (
             <View style={styles.livePill}>
               <View style={styles.liveDot} />
-              <Text style={styles.liveLabel}>LIVE</Text>
+              <Text style={styles.liveLabel}>LIVE AI</Text>
             </View>
           )}
         </View>
@@ -208,12 +208,12 @@ export default function CollegeChatScreen({ route, navigation }) {
   const groqActive = isGroqConfigured();
   const getTime = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-  // Short, clean welcome message
+  // Full welcome message — matches web version
   const buildWelcome = () => {
     if (college) {
-      return `👋 Hello! I'm **SmartAdmission AI**.\n\nLoaded with info about **${college.name}**, ${college.location}.\n${groqActive ? '\n🟢 **Real AI active** — Ask me anything!\n' : ''}\nTap a quick question below or ask your own. 😊`;
+      return `👋 Hello! I'm **SmartAdmission AI** — your personal college counsellor.\n\nI'm currently loaded with everything about **${college.name}** (${college.location}, ${college.state}).\n\n${groqActive ? '🟢 **Real AI is active** — I can answer anything about colleges, admissions, exams, and careers!\n\n' : ''}Ask me about:\n• 🏠 Hostel & Accommodation\n• 📊 Placements & Salary packages\n• 🎓 Courses & Eligibility\n• 📋 Admission & Counselling\n• 💰 Fees & Scholarships\n• 🏆 Rankings & NAAC Grade\n\nWhat would you like to know? 😊`;
     }
-    return `👋 Hello! I'm **SmartAdmission AI**.\n\n${groqActive ? '🟢 **Real AI active!**\n\n' : ''}Ask me about colleges, exams, careers, or scholarships. 🎓`;
+    return `👋 Hello! I'm **SmartAdmission AI** — your personal Indian college counsellor.\n\n${groqActive ? '🟢 **Real AI is active!**\n\n' : ''}I can help you with:\n• 🏛️ Finding the right college\n• 📝 JEE, NEET, CLAT, CAT preparation\n• 💼 Career paths after graduation\n• 💰 Scholarships & Education loans\n• 📊 Comparing colleges\n\nAsk me anything about Indian college admissions! 🎓`;
   };
 
   const [messages, setMessages] = useState([{
@@ -320,8 +320,9 @@ export default function CollegeChatScreen({ route, navigation }) {
       </Animated.View>
 
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
         style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === 'android' ? 0 : 0}
       >
         {/* ── Messages ── */}
         <ScrollView
@@ -464,7 +465,7 @@ const styles = StyleSheet.create({
 
   // Messages
   messageScroll:   { flex: 1, backgroundColor: C.bg },
-  messageContent:  { paddingHorizontal: 14, paddingTop: 14, paddingBottom: 10 },
+  messageContent:  { paddingHorizontal: 14, paddingTop: 14, paddingBottom: 20 },
 
   // AI meta
   aiMeta: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 5 },
