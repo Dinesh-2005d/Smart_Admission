@@ -210,7 +210,7 @@ export default function MarksEntryScreen({ navigation, route }) {
 
               <TouchableOpacity
                 style={[styles.findBtn, !isValid() && styles.findBtnDisabled]}
-                onPress={() => { if (isValid()) setShowStateModal(true); }}
+                onPress={() => { if (isValid()) navigateToColleges(); }}
                 disabled={!isValid()}
                 activeOpacity={0.85}
               >

@@ -25,7 +25,7 @@ const COLORS = {
 };
 
 export default function DetailsScreen({ route, navigation }) {
-  const { college, departmentLabel } = route.params;
+  const { college, departmentLabel = '' } = route.params;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedFacility, setSelectedFacility] = useState(null);

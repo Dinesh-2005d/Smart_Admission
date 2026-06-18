@@ -180,10 +180,10 @@ export default function CompareScreen({ navigation }) {
             <CompareRow label="📅 Est." val1={String(college1.established)} val2={String(college2.established)} />
 
             <View style={styles.viewBtns}>
-              <TouchableOpacity style={styles.viewBtn} onPress={() => navigation.navigate('Details', { college: college1 })}>
+              <TouchableOpacity style={styles.viewBtn} onPress={() => navigation.navigate('Details', { college: college1, departmentLabel: college1.department || '' })}>
                 <Text style={styles.viewBtnText}>View {college1.name.split(' ')[0]}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.viewBtn} onPress={() => navigation.navigate('Details', { college: college2 })}>
+              <TouchableOpacity style={styles.viewBtn} onPress={() => navigation.navigate('Details', { college: college2, departmentLabel: college2.department || '' })}>
                 <Text style={styles.viewBtnText}>View {college2.name.split(' ')[0]}</Text>
               </TouchableOpacity>
             </View>

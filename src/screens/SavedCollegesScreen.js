@@ -105,7 +105,7 @@ export default function SavedCollegesScreen({ navigation }) {
             <TouchableOpacity
               key={college.name + index}
               style={styles.collegeCard}
-              onPress={() => navigation.navigate('Details', { college })}
+              onPress={() => navigation.navigate('Details', { college, departmentLabel: college.department || '' })}
               activeOpacity={0.85}
             >
               {/* Remove button */}
