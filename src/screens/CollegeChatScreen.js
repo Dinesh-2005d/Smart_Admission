@@ -291,13 +291,13 @@ export default function CollegeChatScreen({ route, navigation }) {
         <LinearGradient colors={['#12121c', '#191926']} style={StyleSheet.absoluteFill} />
 
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerBtn}>
-          <Ionicons name="arrow-back" size={20} color={C.accent} />
+          <Ionicons name="arrow-back" size={17} color={C.accent} />
         </TouchableOpacity>
 
         <View style={styles.headerCenter}>
           <View style={styles.headerAvatarWrap}>
             <LinearGradient colors={['#7c6fff', '#a855f7']} style={styles.headerAvatar}>
-              <Text style={{ fontSize: 16 }}>🤖</Text>
+              <Text style={{ fontSize: 14 }}>🤖</Text>
             </LinearGradient>
             <View style={[styles.onlineDot, { backgroundColor: groqActive ? C.green : C.amber }]} />
           </View>
@@ -324,7 +324,7 @@ export default function CollegeChatScreen({ route, navigation }) {
         </View>
 
         <TouchableOpacity onPress={clearChat} style={styles.headerBtn}>
-          <Ionicons name="refresh-outline" size={19} color={C.textSec} />
+          <Ionicons name="refresh-outline" size={16} color={C.textSec} />
         </TouchableOpacity>
       </Animated.View>
 
@@ -436,43 +436,43 @@ export default function CollegeChatScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: C.bg },
 
-  // Header
+  // Header — compact to maximise chat space
   header: {
     flexDirection: 'row', alignItems: 'center',
-    paddingHorizontal: 10, paddingVertical: 8,
-    borderBottomWidth: 1, borderBottomColor: C.border, gap: 8,
+    paddingHorizontal: 8, paddingVertical: 4,
+    borderBottomWidth: 1, borderBottomColor: C.border, gap: 6,
   },
   headerBtn: {
-    width: 34, height: 34, borderRadius: 17,
+    width: 30, height: 30, borderRadius: 15,
     backgroundColor: C.surface,
     alignItems: 'center', justifyContent: 'center',
   },
-  headerCenter: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 9 },
+  headerCenter: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 7 },
   headerAvatarWrap: { position: 'relative' },
   headerAvatar: {
-    width: 36, height: 36, borderRadius: 18,
+    width: 30, height: 30, borderRadius: 15,
     alignItems: 'center', justifyContent: 'center',
   },
   onlineDot: {
     position: 'absolute', bottom: 0, right: 0,
-    width: 9, height: 9, borderRadius: 5, borderWidth: 2, borderColor: C.bg,
+    width: 8, height: 8, borderRadius: 4, borderWidth: 2, borderColor: C.bg,
   },
-  headerTitle: { color: C.textPri, fontSize: 14, fontWeight: '800', flexShrink: 1 },
-  headerSub:   { color: C.textSec, fontSize: 10, marginTop: 1 },
+  headerTitle: { color: C.textPri, fontSize: 13, fontWeight: '800', flexShrink: 1 },
+  headerSub:   { color: C.textSec, fontSize: 9, marginTop: 0 },
   badge70B: {
-    backgroundColor: C.accent + '28', borderRadius: 5,
-    paddingHorizontal: 5, paddingVertical: 1,
+    backgroundColor: C.accent + '28', borderRadius: 4,
+    paddingHorizontal: 4, paddingVertical: 1,
     borderWidth: 1, borderColor: C.accent + '60',
   },
   badge70BText: { color: C.accent, fontSize: 8, fontWeight: '900' },
   liveHeaderPill: {
     flexDirection: 'row', alignItems: 'center', gap: 3,
-    backgroundColor: C.green + '20', borderRadius: 6,
-    paddingHorizontal: 5, paddingVertical: 2,
+    backgroundColor: C.green + '20', borderRadius: 5,
+    paddingHorizontal: 4, paddingVertical: 1,
     borderWidth: 1, borderColor: C.green + '40',
   },
   liveHeaderDot:   { width: 4, height: 4, borderRadius: 2, backgroundColor: C.green },
-  liveHeaderLabel: { color: C.green, fontSize: 8, fontWeight: '800', letterSpacing: 0.4 },
+  liveHeaderLabel: { color: C.green, fontSize: 8, fontWeight: '800', letterSpacing: 0.3 },
 
   // Messages
   messageScroll:   { flex: 1, backgroundColor: C.bg },
@@ -503,52 +503,52 @@ const styles = StyleSheet.create({
   },
   timestamp: { color: C.textDim, fontSize: 9, marginTop: 4, marginHorizontal: 2 },
 
-  // Chips
+  // Chips — compact
   chipScroll: {
     backgroundColor: C.surface, borderTopWidth: 1,
-    borderTopColor: C.border, maxHeight: 42,
+    borderTopColor: C.border, maxHeight: 36,
   },
-  chipContent: { paddingHorizontal: 10, paddingVertical: 6, gap: 7, alignItems: 'center' },
+  chipContent: { paddingHorizontal: 8, paddingVertical: 4, gap: 6, alignItems: 'center' },
   chip: {
     flexDirection: 'row', alignItems: 'center', gap: 4,
-    backgroundColor: C.chip, borderRadius: 14,
-    paddingHorizontal: 10, paddingVertical: 5,
+    backgroundColor: C.chip, borderRadius: 12,
+    paddingHorizontal: 9, paddingVertical: 4,
     borderWidth: 1, borderColor: C.chipBorder,
   },
-  chipText: { color: C.accent, fontSize: 11, fontWeight: '600' },
+  chipText: { color: C.accent, fontSize: 10.5, fontWeight: '600' },
 
-  // Input
+  // Input — compact to maximise chat space
   inputWrap: {
     backgroundColor: C.surface, borderTopWidth: 1,
-    borderTopColor: C.border, paddingTop: 8, paddingBottom: 8,
+    borderTopColor: C.border, paddingTop: 5, paddingBottom: 5,
   },
   inputRow: {
     flexDirection: 'row', alignItems: 'flex-end',
-    paddingHorizontal: 10, gap: 7,
+    paddingHorizontal: 8, gap: 6,
   },
   iconBtn: {
-    width: 34, height: 34, borderRadius: 17,
+    width: 30, height: 30, borderRadius: 15,
     backgroundColor: C.chip, alignItems: 'center', justifyContent: 'center',
     borderWidth: 1, borderColor: C.chipBorder,
   },
   input: {
     flex: 1, backgroundColor: C.card,
-    borderRadius: 18, paddingHorizontal: 14, paddingVertical: 9,
+    borderRadius: 16, paddingHorizontal: 12, paddingVertical: 7,
     color: C.textPri, fontSize: 13.5, lineHeight: 19,
-    borderWidth: 1, borderColor: C.border, maxHeight: 100,
+    borderWidth: 1, borderColor: C.border, maxHeight: 90,
   },
   sendBtn: {
-    width: 34, height: 34, borderRadius: 17,
+    width: 30, height: 30, borderRadius: 15,
     backgroundColor: C.chip, alignItems: 'center', justifyContent: 'center',
     borderWidth: 1, borderColor: C.chipBorder,
   },
   sendBtnActive: {
     backgroundColor: C.accent, borderColor: C.accent,
-    shadowColor: C.accent, shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.5, shadowRadius: 8, elevation: 8,
+    shadowColor: C.accent, shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5, shadowRadius: 6, elevation: 6,
   },
   footer: {
     color: C.textDim, fontSize: 9, textAlign: 'center',
-    marginTop: 5, paddingHorizontal: 12,
+    marginTop: 2, paddingHorizontal: 10,
   },
 });
