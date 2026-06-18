@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
   // Header — compact to maximise chat space
   header: {
     flexDirection: 'row', alignItems: 'center',
-    paddingHorizontal: 8, paddingVertical: 4,
+    paddingHorizontal: 8, paddingVertical: 2,
     borderBottomWidth: 1, borderBottomColor: C.border, gap: 6,
   },
   headerBtn: {
@@ -476,7 +476,7 @@ const styles = StyleSheet.create({
 
   // Messages
   messageScroll:   { flex: 1, backgroundColor: C.bg },
-  messageContent:  { paddingHorizontal: 14, paddingTop: 14, paddingBottom: 20 },
+  messageContent:  { paddingHorizontal: 12, paddingTop: 8, paddingBottom: 6 },
 
   // AI meta
   aiMeta: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 5 },
@@ -508,7 +508,7 @@ const styles = StyleSheet.create({
     backgroundColor: C.surface, borderTopWidth: 1,
     borderTopColor: C.border, maxHeight: 36,
   },
-  chipContent: { paddingHorizontal: 8, paddingVertical: 4, gap: 6, alignItems: 'center' },
+  chipContent: { paddingHorizontal: 8, paddingVertical: 2, gap: 6, alignItems: 'center' },
   chip: {
     flexDirection: 'row', alignItems: 'center', gap: 4,
     backgroundColor: C.chip, borderRadius: 12,
@@ -520,7 +520,7 @@ const styles = StyleSheet.create({
   // Input — compact to maximise chat space
   inputWrap: {
     backgroundColor: C.surface, borderTopWidth: 1,
-    borderTopColor: C.border, paddingTop: 5, paddingBottom: 5,
+    borderTopColor: C.border, paddingTop: 3, paddingBottom: 3,
   },
   inputRow: {
     flexDirection: 'row', alignItems: 'flex-end',
@@ -549,6 +549,6 @@ const styles = StyleSheet.create({
   },
   footer: {
     color: C.textDim, fontSize: 9, textAlign: 'center',
-    marginTop: 2, paddingHorizontal: 10,
+    marginTop: 1, paddingHorizontal: 10,
   },
 });
