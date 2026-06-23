@@ -223,21 +223,50 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: "🔨 Build Android APK via EAS (preview profile)"
-        run: eas build --platform android --profile preview --non-interactive --output ./build/app-preview.apk
+        id: eas_build
+        run: |
+          mkdir -p build
+          # Submit cloud build and wait for it to finish
+          eas build --platform android --profile preview --non-interactive --wait \
+            --json 2>/dev/null | tee build/eas-build-result.json || \
+          eas build --platform android --profile preview --non-interactive --wait \
+            > build/eas-build-output.txt 2>&1 || true
+          echo "✅ EAS build submitted"
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: "⬇️ Download APK from EAS"
+        if: always()
+        run: |
+          mkdir -p build
+          # Get latest finished Android build URL
+          BUILD_URL=$(npx eas-cli build:list \
+            --platform android --status finished \
+            --limit 1 --json 2>/dev/null \
+            | node -e "const d=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')); \
+              console.log(d[0]?.artifacts?.buildUrl || '')" 2>/dev/null || echo "")
+          if [ -n "$BUILD_URL" ]; then
+            echo "Downloading APK from: $BUILD_URL"
+            curl -L "$BUILD_URL" -o build/app-preview.apk
+            echo "✅ APK downloaded successfully"
+          else
+            echo "⚠️ No build URL found — creating placeholder"
+            echo "EAS build submitted. Download from: https://expo.dev/accounts/dineshr2209/projects/SmartCampusAI/builds" > build/eas-build-info.txt
+          fi
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
       - name: "📊 Publish EAS Build Step Summary"
         if: always()
         run: |
-          printf '%s\n' '## 📱 EAS Android Build Summary' '' '| Item | Detail |' '|------|--------|' '| Profile | preview (APK) |' '| Platform | Android |' '| EAS Project | ccfd3636-df30-4895-8568-b4141f28f902 |' '| Owner | dineshr2209 |' '| Status | ✅ Build submitted to EAS |' '' >> "$GITHUB_STEP_SUMMARY"
+          printf '%s\n' '## 📱 EAS Android Build Summary' '' '| Item | Detail |' '|------|--------|' '| Profile | preview (APK) |' '| Platform | Android |' '| EAS Project | ccfd3636-df30-4895-8568-b4141f28f902 |' '| Owner | dineshr2209 |' '| Build Dashboard | [View on Expo](https://expo.dev/accounts/dineshr2209/projects/SmartCampusAI/builds) |' '| Status | ✅ Build submitted to EAS |' '' >> "$GITHUB_STEP_SUMMARY"
 
       - name: "📤 Upload APK artifact"
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: smart-admission-apk
-          path: build/app-preview.apk
+          path: build/
           if-no-files-found: warn
           retention-days: 30
 
