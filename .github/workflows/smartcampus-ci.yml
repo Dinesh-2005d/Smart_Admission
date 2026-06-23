@@ -522,12 +522,7 @@ jobs:
             sleep 10
             if [ -d "appium-tests" ]; then
               cd appium-tests
-              python -m pytest tests/ \
-                --html="../Test Results/HTML/execution-report.html" \
-                --self-contained-html \
-                --json-report \
-                --json-report-file="../Test Results/test-results.json" \
-                -v || true
+              python -m pytest tests/ --html="../Test Results/HTML/execution-report.html" --self-contained-html --json-report --json-report-file="../Test Results/test-results.json" -v || true
             fi
             exit 0
         continue-on-error: true
