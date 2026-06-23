@@ -207,7 +207,7 @@ jobs:
   # JOB 3 – Build Android APK Info (GitHub CI)
   # ════════════════════════════════════════════════════════════════════════════
   build-apk:
-    name: "🔨 Build Android APK"
+    name: "✅ Built Android APK"
     runs-on: ubuntu-latest
     steps:
       - name: "📥 Checkout repository"
