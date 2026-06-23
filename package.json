@@ -9,7 +9,11 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "build": "expo export --platform web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "test:e2e": "mocha selenium-tests/tests/*.test.cjs --timeout 90000 --reporter spec --exit",
+    "test:e2e:ci": "mocha selenium-tests/tests/*.test.cjs --timeout 90000 --reporter json --reporter-option output=\"Test Results/mocha-results.json\" --exit",
+    "test:login": "mocha selenium-tests/tests/login.test.cjs --timeout 90000 --exit",
+    "generate:report": "node selenium-tests/scripts/generate-reports.cjs"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.1.1",
@@ -55,7 +59,10 @@
     "autocannon": "^8.0.0",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "mocha": "^11.7.6",
+    "exceljs": "^4.4.0",
+    "selenium-webdriver": "^4.45.0"
   },
   "private": true,
   "overrides": {

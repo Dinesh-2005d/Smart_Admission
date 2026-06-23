@@ -1,4 +1,4 @@
-name: 📊 Consolidated CI/CD Pipeline & Unified Summary
+name: "📱 Consolidated CI/CD Pipeline & Unified Summary"
 
 on:
   push:
@@ -36,7 +36,7 @@ jobs:
   # JOB 1: Security Review
   # ─────────────────────────────────────────────
   security-review:
-    name: 🔐 Security Review
+    name: "🔒 Security Review"
     runs-on: ubuntu-latest
     if: always()
     steps:
@@ -130,29 +130,6 @@ jobs:
           retention-days: 30
 
   # ─────────────────────────────────────────────
-  # JOB 4: Backend Service Tests
-  # ─────────────────────────────────────────────
-  backend-tests:
-    name: ⚙️ Backend Service Tests
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-      - name: 📥 Bypass Backend service tests
-        run: |
-          mkdir -p reports results
-          echo "Backend tests complete" > reports/load-test-output.txt
-
-      - name: 📤 Upload backend test reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: load-test-results
-          path: |
-            reports/
-            results/
-          if-no-files-found: warn
-
-  # ─────────────────────────────────────────────
   # JOB 5: Verify Live Web Deployment
   # ─────────────────────────────────────────────
   verify-web:
@@ -169,7 +146,7 @@ jobs:
   # JOB 6: Android Appium E2E
   # ─────────────────────────────────────────────
   android-e2e:
-    name: 📱 Android Appium E2E
+    name: "🧪 Android Appium E2E"
     needs: build-apk
     runs-on: ubuntu-latest
     if: always()
@@ -236,7 +213,7 @@ jobs:
   # ─────────────────────────────────────────────
   unified-summary:
     name: 📊 Unified Summary & Report Deployment
-    needs: [security-review, backend-tests, android-e2e, web-e2e]
+    needs: [security-review, android-e2e, web-e2e]
     runs-on: ubuntu-latest
     if: always()
     steps:
@@ -271,14 +248,7 @@ jobs:
           path: results/appium
         continue-on-error: true
 
-      - name: ⬇️ Download load test reports
-        uses: actions/download-artifact@v4
-        with:
-          name: load-test-results
-          path: results/loadtest
-        continue-on-error: true
-
-      - name: ⬇️ Download backend test reports
+      - name: ⬇️ Download artifacts summary
         run: echo "✅ All artifacts downloaded"
 
       - name: 📦 Install report dependencies
@@ -298,7 +268,6 @@ jobs:
             echo "| 📱 Android Mobile E2E | 300 | 300 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](${{ env.BASE_URL }}reports/android-e2e-report.html) |"
             echo "| 🛡️ Backend Security Scan | 300 (Rules Checked) | — | — | — | 11/100 | ✅ SECURE | [Vulnerability MD](${{ env.BASE_URL }}reports/security-review.html) |"
             echo "| 🔐 Security E2E Tests | 6 | 6 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](${{ env.BASE_URL }}reports/security-review.html) |"
-            echo "| ⚡ Performance Load Test | 5824 (Reqs) | — | — | — | 99.85% Success | ✅ OPTIMAL | [HTML Report](${{ env.BASE_URL }}reports/performance-load-report.html) |"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: 🔄 Fetch existing gh-pages history
