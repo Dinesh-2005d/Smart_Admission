@@ -1,0 +1,2402 @@
+[
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #0)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #1)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #2)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #3)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #4)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #5)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #6)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #7)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #8)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #9)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #10)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #11)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #12)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #13)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #14)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #15)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #16)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #17)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #18)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #19)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #20)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #21)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #22)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #23)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #24)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #25)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #26)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #27)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #28)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #29)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #30)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #31)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #32)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #33)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #34)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #35)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #36)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #37)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #38)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #39)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #40)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #41)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #42)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #43)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #44)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #45)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #46)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #47)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #48)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #49)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #50)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #51)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #52)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #53)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #54)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #55)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #56)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #57)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #58)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #59)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #60)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #61)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #62)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #63)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #64)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #65)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #66)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #67)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #68)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #69)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #70)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #71)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #72)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #73)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #74)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #75)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #76)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #77)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #78)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #79)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #80)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #81)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #82)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #83)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #84)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #85)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #86)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #87)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #88)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #89)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #90)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #91)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #92)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #93)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #94)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #95)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #96)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #97)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #98)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #99)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #100)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #101)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #102)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #103)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #104)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #105)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #106)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #107)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #108)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #109)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #110)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #111)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #112)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #113)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #114)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #115)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #116)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #117)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #118)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #119)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #120)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #121)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #122)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #123)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #124)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #125)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #126)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #127)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #128)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #129)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #130)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #131)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #132)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #133)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #134)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #135)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #136)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #137)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #138)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #139)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #140)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #141)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #142)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #143)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #144)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #145)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #146)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #147)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #148)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #149)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #150)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #151)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #152)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #153)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #154)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #155)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #156)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #157)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #158)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #159)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #160)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #161)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #162)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #163)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #164)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #165)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #166)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #167)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #168)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #169)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #170)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #171)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #172)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #173)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #174)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #175)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #176)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #177)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #178)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #179)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #180)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #181)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #182)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #183)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #184)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #185)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #186)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #187)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #188)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #189)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #190)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #191)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #192)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #193)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #194)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #195)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #196)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #197)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #198)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #199)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #200)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #201)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #202)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #203)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #204)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #205)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #206)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #207)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #208)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #209)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #210)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #211)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #212)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #213)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #214)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #215)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #216)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #217)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #218)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #219)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #220)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #221)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #222)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #223)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #224)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #225)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #226)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #227)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #228)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #229)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #230)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #231)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #232)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #233)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #234)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #235)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #236)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #237)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #238)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #239)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #240)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #241)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #242)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #243)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #244)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #245)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #246)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #247)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #248)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #249)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #250)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #251)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #252)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #253)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #254)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #255)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #256)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #257)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #258)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #259)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #260)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #261)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #262)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #263)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #264)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #265)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #266)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #267)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #268)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #269)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #270)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #271)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #272)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #273)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #274)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #275)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #276)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #277)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #278)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #279)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #280)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #281)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #282)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #283)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #284)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #285)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #286)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #287)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #288)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #289)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #290)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #291)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #292)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #293)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #294)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #295)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #296)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #297)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #298)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #299)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #300)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #301)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #302)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #303)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #304)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #305)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #306)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #307)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #308)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #309)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #310)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #311)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #312)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #313)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #314)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #315)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #316)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #317)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #318)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #319)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #320)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #321)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #322)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #323)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #324)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #325)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #326)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #327)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #328)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #329)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #330)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #331)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #332)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #333)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #334)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #335)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #336)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #337)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #338)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #339)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #340)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #341)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #342)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #343)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #344)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #345)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #346)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #347)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #348)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #349)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #350)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #351)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #352)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #353)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #354)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #355)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #356)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #357)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #358)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #359)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #360)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #361)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #362)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #363)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #364)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #365)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #366)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #367)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #368)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #369)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #370)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #371)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #372)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #373)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #374)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #375)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #376)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #377)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #378)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #379)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #380)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #381)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #382)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #383)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #384)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #385)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #386)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #387)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #388)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #389)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #390)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #391)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #392)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #393)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #394)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #395)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #396)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #397)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #398)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  },
+  {
+    "name": "Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #399)",
+    "status": "skipped",
+    "duration": 0,
+    "error": null
+  }
+]

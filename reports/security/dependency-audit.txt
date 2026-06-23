@@ -1,0 +1,31 @@
+## 📦 Smart Admission Dependency Audit
+        expo-constants  <=0.0.1-canary-20240418-8d74597 || 10.1.2 - 55.0.14 || 56.0.0-canary-20260212-4f61309 - 56.0.0-canary-20260506-964f25d
+        Depends on vulnerable versions of @expo/config
+        node_modules/expo-constants
+          expo-asset  <=0.0.1-canary-20240418-8d74597 || 8.6.1 - 55.0.0-canary-20260223-05214f1 || 55.0.3-canary-20260128-67ce8d5 || 55.0.8-canary-20260424-7bedc9d - 55.0.8-canary-20260429-a5e59cf || 55.0.11-canary-20260327-0789fbc - 55.0.11-canary-20260402-9da566b || 56.0.0-canary-20260212-4f61309 - 56.0.0-canary-20260506-964f25d
+          Depends on vulnerable versions of expo-constants
+          node_modules/expo-asset
+          expo-linking  <=0.0.1-canary-20240418-8d74597 || 2.2.2 - 55.0.0-canary-20260223-05214f1 || 55.0.4-canary-20260128-67ce8d5 || 55.0.8-canary-20260424-7bedc9d - 55.0.8-canary-20260429-a5e59cf || 55.0.10-canary-20260327-0789fbc - 55.0.10-canary-20260402-9da566b || 56.0.0-canary-20260212-4f61309 - 56.0.0-canary-20260506-964f25d
+          Depends on vulnerable versions of expo-constants
+          node_modules/expo-linking
+        expo-manifests  <=0.0.1-canary-20240418-8d74597 || 0.9.0 - 55.0.15 || 56.0.0-canary-20260212-4f61309 - 56.0.0-canary-20260506-964f25d
+        Depends on vulnerable versions of @expo/config
+        node_modules/expo-manifests
+          expo-updates  <=0.0.1-canary-20240418-8d74597 || 0.20.0 - 55.0.0-canary-20260223-05214f1 || 55.0.6-canary-20260128-67ce8d5 || 55.0.17-canary-20260327-0789fbc - 55.0.17-canary-20260402-9da566b || 56.0.0-canary-20260212-4f61309 - 56.0.0-canary-20260506-964f25d
+          Depends on vulnerable versions of expo-manifests
+          node_modules/expo-updates
+      @expo/prebuild-config  *
+      Depends on vulnerable versions of @expo/config
+      Depends on vulnerable versions of @expo/config-plugins
+      node_modules/@expo/prebuild-config
+        expo-splash-screen  <=0.0.1-canary-20240418-8d74597 || 0.11.0 - 56.0.0-canary-20260506-964f25d
+        Depends on vulnerable versions of @expo/prebuild-config
+        node_modules/expo-splash-screen
+
+22 vulnerabilities (1 low, 18 moderate, 3 high)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force

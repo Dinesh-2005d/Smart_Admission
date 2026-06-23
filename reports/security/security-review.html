@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Admission – Security Review Report – Build #10</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;padding:2rem;}
+    .header{background:linear-gradient(135deg,#7c3aed,#2563eb);border-radius:1rem;padding:2rem;margin-bottom:2rem;text-align:center;}
+    .header h1{font-size:1.8rem;font-weight:700;color:#fff;margin-bottom:.5rem;}
+    .header p{color:rgba(255,255,255,.8);font-size:.9rem;}
+    .score-ring{display:inline-flex;flex-direction:column;align-items:center;background:rgba(0,0,0,.25);border-radius:1rem;padding:1.5rem 2.5rem;margin-top:1rem;}
+    .score-val{font-size:3.5rem;font-weight:700;color:#22c55e;}
+    .score-lbl{font-size:.8rem;color:rgba(255,255,255,.7);letter-spacing:.05em;}
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:2rem;}
+    .stat{background:#1e293b;border-radius:.75rem;padding:1.5rem;text-align:center;border:1px solid #334155;}
+    .stat .val{font-size:2.2rem;font-weight:700;margin-bottom:.25rem;}
+    .stat .lbl{font-size:.75rem;color:#94a3b8;}
+    .val.green{color:#22c55e;} .val.red{color:#ef4444;} .val.yellow{color:#f59e0b;}
+    .table-wrap{background:#1e293b;border-radius:.75rem;overflow:hidden;border:1px solid #334155;}
+    table{width:100%;border-collapse:collapse;}
+    th{background:#0f172a;padding:1rem;font-size:.72rem;text-transform:uppercase;color:#64748b;text-align:left;}
+    td{padding:.8rem 1rem;border-top:1px solid #273445;font-size:.83rem;}
+    tr.pass td{border-left:3px solid #22c55e;}
+    tr.fail td{border-left:3px solid #ef4444;}
+    tr.warn td{border-left:3px solid #f59e0b;}
+    code{background:#334155;padding:.15rem .4rem;border-radius:.25rem;font-size:.8rem;}
+    .badge{display:inline-block;padding:.2rem .6rem;border-radius:.375rem;font-size:.75rem;font-weight:600;}
+    .badge-pass{background:rgba(34,197,94,.15);color:#22c55e;}
+    .badge-fail{background:rgba(239,68,68,.15);color:#ef4444;}
+    .badge-warn{background:rgba(245,158,11,.15);color:#f59e0b;}
+    .sev{display:inline-block;padding:.15rem .5rem;border-radius:.25rem;font-size:.72rem;font-weight:600;}
+    .sev-critical{background:rgba(239,68,68,.2);color:#fca5a5;}
+    .sev-high{background:rgba(249,115,22,.2);color:#fdba74;}
+    .sev-medium{background:rgba(234,179,8,.2);color:#fde047;}
+    .sev-low{background:rgba(34,197,94,.15);color:#86efac;}
+    .sev-info{background:rgba(148,163,184,.1);color:#94a3b8;}
+    .vuln-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+    .vuln-card{background:#1e293b;border-radius:.75rem;padding:1.25rem;text-align:center;border:1px solid #334155;}
+    .vuln-card .num{font-size:2.5rem;font-weight:700;} .vuln-card .lbl{font-size:.75rem;color:#94a3b8;}
+    .sec1{color:#ef4444;} .sec2{color:#f97316;} .sec3{color:#eab308;} .sec4{color:#22c55e;}
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🔒 Smart Admission – Security Review Report</h1>
+    <p>Build #10 &nbsp;•&nbsp; 2026-06-23 11:22:32 UTC &nbsp;•&nbsp; Branch: main &nbsp;•&nbsp; Commit: edcce0c</p>
+    <div class="score-ring">
+      <div class="score-val">4/100</div>
+      <div class="score-lbl">RISK SCORE (LOWER IS BETTER)</div>
+    </div>
+  </div>
+
+  <div class="vuln-grid">
+    <div class="vuln-card"><div class="num sec1">0</div><div class="lbl">🔴 Critical</div></div>
+    <div class="vuln-card"><div class="num sec2">0</div><div class="lbl">🟠 High</div></div>
+    <div class="vuln-card"><div class="num sec3">0</div><div class="lbl">🟡 Medium</div></div>
+    <div class="vuln-card"><div class="num sec4">4</div><div class="lbl">🟢 Low</div></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="val">30</div><div class="lbl">Total Checks</div></div>
+    <div class="stat"><div class="val green">30</div><div class="lbl">Passed</div></div>
+    <div class="stat"><div class="val red">0</div><div class="lbl">Failed</div></div>
+    <div class="stat"><div class="val yellow">0</div><div class="lbl">Warnings</div></div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>ID</th><th>Category</th><th>Security Check</th><th>Severity</th><th>Status</th></tr></thead>
+      <tbody>
+  <tr class="pass">
+    <td>1</td>
+    <td><code>SC-001</code></td>
+    <td>Authentication</td>
+    <td>Firebase Authentication enforced on all protected routes</td>
+    <td><span class="sev sev-high">High</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>2</td>
+    <td><code>SC-002</code></td>
+    <td>Authentication</td>
+    <td>Password hashing delegated to Firebase Auth (bcrypt)</td>
+    <td><span class="sev sev-high">High</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>3</td>
+    <td><code>SC-003</code></td>
+    <td>Authentication</td>
+    <td>Email verification required before dashboard access</td>
+    <td><span class="sev sev-high">High</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>4</td>
+    <td><code>SC-004</code></td>
+    <td>Session Management</td>
+    <td>Session token stored in Firebase Auth (not localStorage)</td>
+    <td><span class="sev sev-medium">Medium</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>5</td>
+    <td><code>SC-005</code></td>
+    <td>Session Management</td>
+    <td>Session cleared on explicit logout action</td>
+    <td><span class="sev sev-medium">Medium</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>6</td>
+    <td><code>SC-006</code></td>
+    <td>Session Management</td>
+    <td>Token refresh handled by Firebase SDK automatically</td>
+    <td><span class="sev sev-medium">Medium</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>7</td>
+    <td><code>SC-007</code></td>
+    <td>Data Validation</td>
+    <td>Input sanitization on college search query field</td>
+    <td><span class="sev sev-high">High</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>8</td>
+    <td><code>SC-008</code></td>
+    <td>Data Validation</td>
+    <td>Email format validation on registration form</td>
+    <td><span class="sev sev-medium">Medium</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>9</td>
+    <td><code>SC-009</code></td>
+    <td>Data Validation</td>
+    <td>XSS prevention via React JSX encoding</td>
+    <td><span class="sev sev-high">High</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>10</td>
+    <td><code>SC-010</code></td>
+    <td>Data Validation</td>
+    <td>SQL injection: N/A (Firestore NoSQL used)</td>
+    <td><span class="sev sev-info">Info</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>11</td>
+    <td><code>SC-011</code></td>
+    <td>API Security</td>
+    <td>Groq API key stored as GitHub Secret (GROQ_API_KEY)</td>
+    <td><span class="sev sev-critical">Critical</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>12</td>
+    <td><code>SC-012</code></td>
+    <td>API Security</td>
+    <td>Firebase API key restricted to authorized domains</td>
+    <td><span class="sev sev-high">High</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>13</td>
+    <td><code>SC-013</code></td>
+    <td>API Security</td>
+    <td>No API keys exposed in frontend bundle (env vars used)</td>
+    <td><span class="sev sev-high">High</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>14</td>
+    <td><code>SC-014</code></td>
+    <td>Firebase Rules</td>
+    <td>Firestore read rules restrict to authenticated users only</td>
+    <td><span class="sev sev-critical">Critical</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>15</td>
+    <td><code>SC-015</code></td>
+    <td>Firebase Rules</td>
+    <td>Firestore write rules restrict to owner (uid match)</td>
+    <td><span class="sev sev-critical">Critical</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>16</td>
+    <td><code>SC-016</code></td>
+    <td>Firebase Rules</td>
+    <td>Firestore rules reject unauthenticated writes</td>
+    <td><span class="sev sev-critical">Critical</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>17</td>
+    <td><code>SC-017</code></td>
+    <td>Firebase Rules</td>
+    <td>Firebase Auth access limited to app domain</td>
+    <td><span class="sev sev-high">High</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>18</td>
+    <td><code>SC-018</code></td>
+    <td>Transport Security</td>
+    <td>All traffic served over HTTPS (GitHub Pages)</td>
+    <td><span class="sev sev-high">High</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>19</td>
+    <td><code>SC-019</code></td>
+    <td>Transport Security</td>
+    <td>HSTS header present on GitHub Pages domain</td>
+    <td><span class="sev sev-medium">Medium</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>20</td>
+    <td><code>SC-020</code></td>
+    <td>Transport Security</td>
+    <td>Firebase SDK uses TLS 1.2+ for all communications</td>
+    <td><span class="sev sev-high">High</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>21</td>
+    <td><code>SC-021</code></td>
+    <td>Dependency Security</td>
+    <td>No critical vulnerabilities in npm dependency tree</td>
+    <td><span class="sev sev-critical">Critical</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>22</td>
+    <td><code>SC-022</code></td>
+    <td>Dependency Security</td>
+    <td>High-severity dependencies reviewed and mitigated</td>
+    <td><span class="sev sev-high">High</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>23</td>
+    <td><code>SC-023</code></td>
+    <td>Dependency Security</td>
+    <td>Expo SDK on latest stable release</td>
+    <td><span class="sev sev-medium">Medium</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>24</td>
+    <td><code>SC-024</code></td>
+    <td>Dependency Security</td>
+    <td>Firebase SDK on latest stable release</td>
+    <td><span class="sev sev-medium">Medium</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>25</td>
+    <td><code>SC-025</code></td>
+    <td>SAST</td>
+    <td>No hardcoded secrets detected by Gitleaks</td>
+    <td><span class="sev sev-critical">Critical</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>26</td>
+    <td><code>SC-026</code></td>
+    <td>SAST</td>
+    <td>Semgrep OWASP Top-10 scan: no blocking findings</td>
+    <td><span class="sev sev-high">High</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>27</td>
+    <td><code>SC-027</code></td>
+    <td>SAST</td>
+    <td>Semgrep React security rules: no blocking findings</td>
+    <td><span class="sev sev-high">High</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>28</td>
+    <td><code>SC-028</code></td>
+    <td>SAST</td>
+    <td>Semgrep Firebase rules: no misconfigurations detected</td>
+    <td><span class="sev sev-high">High</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>29</td>
+    <td><code>SC-029</code></td>
+    <td>Privacy</td>
+    <td>User PII stored only in authenticated Firestore collections</td>
+    <td><span class="sev sev-high">High</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr>
+  <tr class="pass">
+    <td>30</td>
+    <td><code>SC-030</code></td>
+    <td>Privacy</td>
+    <td>No analytics tracking without user consent</td>
+    <td><span class="sev sev-medium">Medium</span></td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+  </tr></tbody>
+    </table>
+  </div>
+</body>
+</html>

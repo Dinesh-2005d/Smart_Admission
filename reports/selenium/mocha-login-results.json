@@ -1,0 +1,148 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 5,
+    "passes": 0,
+    "pending": 0,
+    "failures": 5,
+    "start": "2026-06-23T11:23:54.084Z",
+    "end": "2026-06-23T11:25:43.242Z",
+    "duration": 109158
+  },
+  "tests": [
+    {
+      "title": "should load the Smart Admission landing page",
+      "fullTitle": "Smart Admission — Login E2E Tests should load the Smart Admission landing page",
+      "file": "/home/runner/work/Smart_Admission/Smart_Admission/selenium-tests/tests/login.test.cjs",
+      "duration": 20710,
+      "currentRetry": 0,
+      "err": {
+        "stack": "TimeoutError: Landing page did not load — Sign In button not found\nWait timed out after 20177ms\n    at /home/runner/work/Smart_Admission/Smart_Admission/node_modules/selenium-webdriver/lib/webdriver.js:929:22\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)",
+        "message": "Landing page did not load — Sign In button not found\nWait timed out after 20177ms",
+        "name": "TimeoutError",
+        "remoteStacktrace": ""
+      }
+    },
+    {
+      "title": "should navigate to the login form",
+      "fullTitle": "Smart Admission — Login E2E Tests should navigate to the login form",
+      "file": "/home/runner/work/Smart_Admission/Smart_Admission/selenium-tests/tests/login.test.cjs",
+      "duration": 20512,
+      "currentRetry": 0,
+      "err": {
+        "stack": "TimeoutError: Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20148ms\n    at /home/runner/work/Smart_Admission/Smart_Admission/node_modules/selenium-webdriver/lib/webdriver.js:929:22\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)",
+        "message": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20148ms",
+        "name": "TimeoutError",
+        "remoteStacktrace": ""
+      }
+    },
+    {
+      "title": "should login with valid credentials and reach the dashboard",
+      "fullTitle": "Smart Admission — Login E2E Tests should login with valid credentials and reach the dashboard",
+      "file": "/home/runner/work/Smart_Admission/Smart_Admission/selenium-tests/tests/login.test.cjs",
+      "duration": 20504,
+      "currentRetry": 0,
+      "err": {
+        "stack": "TimeoutError: Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20135ms\n    at /home/runner/work/Smart_Admission/Smart_Admission/node_modules/selenium-webdriver/lib/webdriver.js:929:22\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)",
+        "message": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20135ms",
+        "name": "TimeoutError",
+        "remoteStacktrace": ""
+      }
+    },
+    {
+      "title": "should reject invalid credentials with an error message",
+      "fullTitle": "Smart Admission — Login E2E Tests should reject invalid credentials with an error message",
+      "file": "/home/runner/work/Smart_Admission/Smart_Admission/selenium-tests/tests/login.test.cjs",
+      "duration": 20591,
+      "currentRetry": 0,
+      "err": {
+        "stack": "TimeoutError: Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20183ms\n    at /home/runner/work/Smart_Admission/Smart_Admission/node_modules/selenium-webdriver/lib/webdriver.js:929:22\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)",
+        "message": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20183ms",
+        "name": "TimeoutError",
+        "remoteStacktrace": ""
+      }
+    },
+    {
+      "title": "should open the sign-up form from landing",
+      "fullTitle": "Smart Admission — Login E2E Tests should open the sign-up form from landing",
+      "file": "/home/runner/work/Smart_Admission/Smart_Admission/selenium-tests/tests/login.test.cjs",
+      "duration": 20917,
+      "currentRetry": 0,
+      "err": {
+        "stack": "TimeoutError: Waiting for element to be located By(css selector, *[id=\"landing-signup-btn\"])\nWait timed out after 20163ms\n    at /home/runner/work/Smart_Admission/Smart_Admission/node_modules/selenium-webdriver/lib/webdriver.js:929:22\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)",
+        "message": "Waiting for element to be located By(css selector, *[id=\"landing-signup-btn\"])\nWait timed out after 20163ms",
+        "name": "TimeoutError",
+        "remoteStacktrace": ""
+      }
+    }
+  ],
+  "pending": [],
+  "failures": [
+    {
+      "title": "should load the Smart Admission landing page",
+      "fullTitle": "Smart Admission — Login E2E Tests should load the Smart Admission landing page",
+      "file": "/home/runner/work/Smart_Admission/Smart_Admission/selenium-tests/tests/login.test.cjs",
+      "duration": 20710,
+      "currentRetry": 0,
+      "err": {
+        "stack": "TimeoutError: Landing page did not load — Sign In button not found\nWait timed out after 20177ms\n    at /home/runner/work/Smart_Admission/Smart_Admission/node_modules/selenium-webdriver/lib/webdriver.js:929:22\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)",
+        "message": "Landing page did not load — Sign In button not found\nWait timed out after 20177ms",
+        "name": "TimeoutError",
+        "remoteStacktrace": ""
+      }
+    },
+    {
+      "title": "should navigate to the login form",
+      "fullTitle": "Smart Admission — Login E2E Tests should navigate to the login form",
+      "file": "/home/runner/work/Smart_Admission/Smart_Admission/selenium-tests/tests/login.test.cjs",
+      "duration": 20512,
+      "currentRetry": 0,
+      "err": {
+        "stack": "TimeoutError: Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20148ms\n    at /home/runner/work/Smart_Admission/Smart_Admission/node_modules/selenium-webdriver/lib/webdriver.js:929:22\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)",
+        "message": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20148ms",
+        "name": "TimeoutError",
+        "remoteStacktrace": ""
+      }
+    },
+    {
+      "title": "should login with valid credentials and reach the dashboard",
+      "fullTitle": "Smart Admission — Login E2E Tests should login with valid credentials and reach the dashboard",
+      "file": "/home/runner/work/Smart_Admission/Smart_Admission/selenium-tests/tests/login.test.cjs",
+      "duration": 20504,
+      "currentRetry": 0,
+      "err": {
+        "stack": "TimeoutError: Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20135ms\n    at /home/runner/work/Smart_Admission/Smart_Admission/node_modules/selenium-webdriver/lib/webdriver.js:929:22\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)",
+        "message": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20135ms",
+        "name": "TimeoutError",
+        "remoteStacktrace": ""
+      }
+    },
+    {
+      "title": "should reject invalid credentials with an error message",
+      "fullTitle": "Smart Admission — Login E2E Tests should reject invalid credentials with an error message",
+      "file": "/home/runner/work/Smart_Admission/Smart_Admission/selenium-tests/tests/login.test.cjs",
+      "duration": 20591,
+      "currentRetry": 0,
+      "err": {
+        "stack": "TimeoutError: Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20183ms\n    at /home/runner/work/Smart_Admission/Smart_Admission/node_modules/selenium-webdriver/lib/webdriver.js:929:22\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)",
+        "message": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20183ms",
+        "name": "TimeoutError",
+        "remoteStacktrace": ""
+      }
+    },
+    {
+      "title": "should open the sign-up form from landing",
+      "fullTitle": "Smart Admission — Login E2E Tests should open the sign-up form from landing",
+      "file": "/home/runner/work/Smart_Admission/Smart_Admission/selenium-tests/tests/login.test.cjs",
+      "duration": 20917,
+      "currentRetry": 0,
+      "err": {
+        "stack": "TimeoutError: Waiting for element to be located By(css selector, *[id=\"landing-signup-btn\"])\nWait timed out after 20163ms\n    at /home/runner/work/Smart_Admission/Smart_Admission/node_modules/selenium-webdriver/lib/webdriver.js:929:22\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)",
+        "message": "Waiting for element to be located By(css selector, *[id=\"landing-signup-btn\"])\nWait timed out after 20163ms",
+        "name": "TimeoutError",
+        "remoteStacktrace": ""
+      }
+    }
+  ],
+  "passes": []
+}

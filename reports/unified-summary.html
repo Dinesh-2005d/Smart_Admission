@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Admission – Unified CI/CD Summary – Build #10</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;padding:2rem;}
+    a{color:#818cf8;text-decoration:none;}
+    a:hover{text-decoration:underline;}
+    .hero{background:linear-gradient(135deg,#0ea5e9 0%,#6366f1 50%,#a855f7 100%);border-radius:1.25rem;padding:2.5rem 2rem;margin-bottom:2rem;text-align:center;}
+    .hero h1{font-size:2.2rem;font-weight:800;color:#fff;margin-bottom:.5rem;}
+    .hero p{color:rgba(255,255,255,.85);font-size:.95rem;}
+    .hero .meta{display:flex;justify-content:center;gap:2rem;margin-top:1.25rem;flex-wrap:wrap;}
+    .hero .meta span{background:rgba(255,255,255,.15);border-radius:2rem;padding:.35rem 1rem;font-size:.82rem;color:#fff;}
+    .grand{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem;}
+    .gcard{background:#1e293b;border-radius:.875rem;padding:1.75rem;text-align:center;border:1px solid #334155;}
+    .gcard .num{font-size:2.8rem;font-weight:800;margin-bottom:.3rem;}
+    .gcard .lbl{font-size:.78rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em;}
+    .green{color:#22c55e;} .red{color:#ef4444;} .yellow{color:#f59e0b;} .blue{color:#38bdf8;}
+    h2{font-size:1.2rem;font-weight:700;color:#f1f5f9;margin:2rem 0 1rem;}
+    .table-wrap{background:#1e293b;border-radius:.875rem;overflow:hidden;border:1px solid #334155;margin-bottom:2rem;}
+    table{width:100%;border-collapse:collapse;}
+    th{background:#0f172a;padding:.875rem 1rem;font-size:.72rem;text-transform:uppercase;color:#64748b;text-align:left;letter-spacing:.04em;}
+    td{padding:.875rem 1rem;border-top:1px solid #273445;font-size:.85rem;}
+    .badge{display:inline-block;padding:.25rem .65rem;border-radius:.375rem;font-size:.78rem;font-weight:600;}
+    .badge-pass{background:rgba(34,197,94,.15);color:#22c55e;}
+    .badge-fail{background:rgba(239,68,68,.15);color:#ef4444;}
+    .vuln-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+    .vuln-card{background:#1e293b;border-radius:.75rem;padding:1.25rem;text-align:center;border:1px solid #334155;}
+    .vuln-card .vnum{font-size:2.5rem;font-weight:800;}
+    .vuln-card .vlbl{font-size:.75rem;color:#94a3b8;}
+    .footer{text-align:center;color:#475569;font-size:.8rem;margin-top:3rem;padding-top:1.5rem;border-top:1px solid #1e293b;}
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <h1>🎓 Smart Admission – Unified CI/CD Summary</h1>
+    <p>Comprehensive Quality Gate Dashboard</p>
+    <div class="meta">
+      <span>🔢 Build #10</span>
+      <span>📅 2026-06-23 11:28:17 UTC</span>
+      <span>🌿 main</span>
+      <span>🔑 edcce0c</span>
+    </div>
+  </div>
+
+  <div class="grand">
+    <div class="gcard"><div class="num blue">836</div><div class="lbl">Total Tests</div></div>
+    <div class="gcard"><div class="num green">438</div><div class="lbl">Passed</div></div>
+    <div class="gcard"><div class="num red">9</div><div class="lbl">Failed</div></div>
+    <div class="gcard"><div class="num">52.4%</div><div class="lbl">Pass Rate</div></div>
+  </div>
+
+  <h2>📊 Executive Testing Status Board</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Testing Tier</th>
+          <th>Total</th>
+          <th>Passed</th>
+          <th>Failed</th>
+          <th>Skipped</th>
+          <th>Pass Rate / Score</th>
+          <th>Status</th>
+          <th>Report</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+  <tr>
+    <td>🌐 Web Application E2E</td>
+    <td>400</td>
+    <td class="green">2</td>
+    <td class="red">9</td>
+    <td>0</td>
+    <td>0.5%</td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+    <td><a href="https://dinesh-2005d.github.io/Smart_Admission/reports/web-e2e-report.html" target="_blank">📄 View Report</a></td>
+  </tr>
+        
+  <tr>
+    <td>📱 Android Mobile E2E</td>
+    <td>400</td>
+    <td class="green">400</td>
+    <td class="green">0</td>
+    <td>0</td>
+    <td>100.0%</td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+    <td><a href="https://dinesh-2005d.github.io/Smart_Admission/reports/android-e2e-report.html" target="_blank">📄 View Report</a></td>
+  </tr>
+        <tr>
+          <td>🛡️ Backend Security Scan</td>
+          <td>30 (Rules Checked)</td>
+          <td class="green">—</td>
+          <td class="green">—</td>
+          <td>—</td>
+          <td>4/100 Risk Score</td>
+          <td><span class="badge badge-pass">✅ SECURE</span></td>
+          <td><a href="https://dinesh-2005d.github.io/Smart_Admission/reports/security-review.html" target="_blank">📄 View Report</a></td>
+        </tr>
+        
+  <tr>
+    <td>🔐 Security E2E Tests</td>
+    <td>6</td>
+    <td class="green">6</td>
+    <td class="green">0</td>
+    <td>0</td>
+    <td>100.0%</td>
+    <td><span class="badge badge-pass">✅ PASS</span></td>
+    <td><a href="https://dinesh-2005d.github.io/Smart_Admission/reports/security-review.html" target="_blank">📄 View Report</a></td>
+  </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>🛡️ Vulnerability Breakdown</h2>
+  <div class="vuln-grid">
+    <div class="vuln-card"><div class="vnum red">0</div><div class="vlbl">🔴 Critical</div></div>
+    <div class="vuln-card"><div class="vnum" style="color:#f97316">3</div><div class="vlbl">🟠 High</div></div>
+    <div class="vuln-card"><div class="vnum yellow">5</div><div class="vlbl">🟡 Medium</div></div>
+    <div class="vuln-card"><div class="vnum green">4</div><div class="vlbl">🟢 Low</div></div>
+  </div>
+
+  <div class="footer">
+    <p>Generated automatically by Smart Admission CI/CD Pipeline &nbsp;•&nbsp; Build #10 &nbsp;•&nbsp; 2026-06-23 11:28:17 UTC</p>
+    <p style="margin-top:.5rem;">🔗 <a href="https://dinesh-2005d.github.io/Smart_Admission/">Live App</a> &nbsp;|&nbsp; <a href="https://github.com/Dinesh-2005d/Smart_Admission">GitHub Repository</a></p>
+  </div>
+</body>
+</html>
