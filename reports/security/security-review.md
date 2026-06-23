@@ -2,7 +2,7 @@
 
 > **Application**: Smart Admission (Expo React Native)  
 > **Framework**: `expo-react-native`  
-> **Generated**: 2026-06-23 08:15:26 UTC  
+> **Generated**: 2026-06-23 09:15:21 UTC  
 > **Direct Findings**: 23 | **Transitive (Acknowledged)**: 39
 
 ---
@@ -43,71 +43,7 @@
 
 ---
 
-### Finding #2 — 🔴 High: generic-api-key
-
-| Field | Value |
-|-------|-------|
-| **Severity** | High |
-| **Type** | Secret Detected |
-| **Tool** | Gitleaks |
-| **File** | `.cache/trivy/db/trivy.db` |
-| **Line** | 352241 |
-
-**Description**: Generic API Key
-
-**Recommended Fix**: Remove hardcoded secret and use environment variables or GitHub Secrets instead.
-
----
-
-### Finding #3 — 🔴 High: generic-api-key
-
-| Field | Value |
-|-------|-------|
-| **Severity** | High |
-| **Type** | Secret Detected |
-| **Tool** | Gitleaks |
-| **File** | `.cache/trivy/db/trivy.db` |
-| **Line** | 354388 |
-
-**Description**: Generic API Key
-
-**Recommended Fix**: Remove hardcoded secret and use environment variables or GitHub Secrets instead.
-
----
-
-### Finding #4 — 🔴 High: generic-api-key
-
-| Field | Value |
-|-------|-------|
-| **Severity** | High |
-| **Type** | Secret Detected |
-| **Tool** | Gitleaks |
-| **File** | `.cache/trivy/db/trivy.db` |
-| **Line** | 354471 |
-
-**Description**: Generic API Key
-
-**Recommended Fix**: Remove hardcoded secret and use environment variables or GitHub Secrets instead.
-
----
-
-### Finding #5 — 🔴 High: generic-api-key
-
-| Field | Value |
-|-------|-------|
-| **Severity** | High |
-| **Type** | Secret Detected |
-| **Tool** | Gitleaks |
-| **File** | `.cache/trivy/db/trivy.db` |
-| **Line** | 354471 |
-
-**Description**: Generic API Key
-
-**Recommended Fix**: Remove hardcoded secret and use environment variables or GitHub Secrets instead.
-
----
-
-### Finding #6 — 🔴 High: jwt
+### Finding #2 — 🔴 High: jwt
 
 | Field | Value |
 |-------|-------|
@@ -123,7 +59,7 @@
 
 ---
 
-### Finding #7 — 🔴 High: jwt
+### Finding #3 — 🔴 High: jwt
 
 | Field | Value |
 |-------|-------|
@@ -139,7 +75,7 @@
 
 ---
 
-### Finding #8 — 🔴 High: aws-access-token
+### Finding #4 — 🔴 High: private-key
 
 | Field | Value |
 |-------|-------|
@@ -147,9 +83,73 @@
 | **Type** | Secret Detected |
 | **Tool** | Gitleaks |
 | **File** | `.cache/trivy/db/trivy.db` |
-| **Line** | 347129 |
+| **Line** | 354320 |
 
-**Description**: AWS
+**Description**: Private Key
+
+**Recommended Fix**: Remove hardcoded secret and use environment variables or GitHub Secrets instead.
+
+---
+
+### Finding #5 — 🔴 High: generic-api-key
+
+| Field | Value |
+|-------|-------|
+| **Severity** | High |
+| **Type** | Secret Detected |
+| **Tool** | Gitleaks |
+| **File** | `.cache/trivy/db/trivy.db` |
+| **Line** | 352241 |
+
+**Description**: Generic API Key
+
+**Recommended Fix**: Remove hardcoded secret and use environment variables or GitHub Secrets instead.
+
+---
+
+### Finding #6 — 🔴 High: generic-api-key
+
+| Field | Value |
+|-------|-------|
+| **Severity** | High |
+| **Type** | Secret Detected |
+| **Tool** | Gitleaks |
+| **File** | `.cache/trivy/db/trivy.db` |
+| **Line** | 354388 |
+
+**Description**: Generic API Key
+
+**Recommended Fix**: Remove hardcoded secret and use environment variables or GitHub Secrets instead.
+
+---
+
+### Finding #7 — 🔴 High: generic-api-key
+
+| Field | Value |
+|-------|-------|
+| **Severity** | High |
+| **Type** | Secret Detected |
+| **Tool** | Gitleaks |
+| **File** | `.cache/trivy/db/trivy.db` |
+| **Line** | 354471 |
+
+**Description**: Generic API Key
+
+**Recommended Fix**: Remove hardcoded secret and use environment variables or GitHub Secrets instead.
+
+---
+
+### Finding #8 — 🔴 High: generic-api-key
+
+| Field | Value |
+|-------|-------|
+| **Severity** | High |
+| **Type** | Secret Detected |
+| **Tool** | Gitleaks |
+| **File** | `.cache/trivy/db/trivy.db` |
+| **Line** | 354471 |
+
+**Description**: Generic API Key
 
 **Recommended Fix**: Remove hardcoded secret and use environment variables or GitHub Secrets instead.
 
@@ -163,7 +163,7 @@
 | **Type** | Secret Detected |
 | **Tool** | Gitleaks |
 | **File** | `.cache/trivy/db/trivy.db` |
-| **Line** | 348359 |
+| **Line** | 347129 |
 
 **Description**: AWS
 
@@ -195,7 +195,7 @@
 | **Type** | Secret Detected |
 | **Tool** | Gitleaks |
 | **File** | `.cache/trivy/db/trivy.db` |
-| **Line** | 349074 |
+| **Line** | 348359 |
 
 **Description**: AWS
 
@@ -211,7 +211,7 @@
 | **Type** | Secret Detected |
 | **Tool** | Gitleaks |
 | **File** | `.cache/trivy/db/trivy.db` |
-| **Line** | 349705 |
+| **Line** | 349074 |
 
 **Description**: AWS
 
@@ -227,7 +227,7 @@
 | **Type** | Secret Detected |
 | **Tool** | Gitleaks |
 | **File** | `.cache/trivy/db/trivy.db` |
-| **Line** | 350272 |
+| **Line** | 349705 |
 
 **Description**: AWS
 
@@ -243,7 +243,7 @@
 | **Type** | Secret Detected |
 | **Tool** | Gitleaks |
 | **File** | `.cache/trivy/db/trivy.db` |
-| **Line** | 352978 |
+| **Line** | 350272 |
 
 **Description**: AWS
 
@@ -259,7 +259,7 @@
 | **Type** | Secret Detected |
 | **Tool** | Gitleaks |
 | **File** | `.cache/trivy/db/trivy.db` |
-| **Line** | 354310 |
+| **Line** | 352978 |
 
 **Description**: AWS
 
@@ -291,7 +291,7 @@
 | **Type** | Secret Detected |
 | **Tool** | Gitleaks |
 | **File** | `.cache/trivy/db/trivy.db` |
-| **Line** | 354389 |
+| **Line** | 354310 |
 
 **Description**: AWS
 
@@ -323,7 +323,7 @@
 | **Type** | Secret Detected |
 | **Tool** | Gitleaks |
 | **File** | `.cache/trivy/db/trivy.db` |
-| **Line** | 356295 |
+| **Line** | 354389 |
 
 **Description**: AWS
 
@@ -339,7 +339,7 @@
 | **Type** | Secret Detected |
 | **Tool** | Gitleaks |
 | **File** | `.cache/trivy/db/trivy.db` |
-| **Line** | 356310 |
+| **Line** | 356295 |
 
 **Description**: AWS
 
@@ -355,7 +355,7 @@
 | **Type** | Secret Detected |
 | **Tool** | Gitleaks |
 | **File** | `.cache/trivy/db/trivy.db` |
-| **Line** | 356778 |
+| **Line** | 356310 |
 
 **Description**: AWS
 
@@ -371,7 +371,7 @@
 | **Type** | Secret Detected |
 | **Tool** | Gitleaks |
 | **File** | `.cache/trivy/db/trivy.db` |
-| **Line** | 356779 |
+| **Line** | 356778 |
 
 **Description**: AWS
 
@@ -379,7 +379,7 @@
 
 ---
 
-### Finding #23 — 🔴 High: private-key
+### Finding #23 — 🔴 High: aws-access-token
 
 | Field | Value |
 |-------|-------|
@@ -387,9 +387,9 @@
 | **Type** | Secret Detected |
 | **Tool** | Gitleaks |
 | **File** | `.cache/trivy/db/trivy.db` |
-| **Line** | 354320 |
+| **Line** | 356779 |
 
-**Description**: Private Key
+**Description**: AWS
 
 **Recommended Fix**: Remove hardcoded secret and use environment variables or GitHub Secrets instead.
 
@@ -449,9 +449,9 @@
 ## Most Critical Risks
 
 1. **aws-access-token** in `src/constants/colleges_compressed.json` — AWS
-2. **generic-api-key** in `.cache/trivy/db/trivy.db` — Generic API Key
-3. **generic-api-key** in `.cache/trivy/db/trivy.db` — Generic API Key
-4. **generic-api-key** in `.cache/trivy/db/trivy.db` — Generic API Key
+2. **jwt** in `.cache/trivy/db/trivy.db` — JSON Web Token
+3. **jwt** in `.cache/trivy/db/trivy.db` — JSON Web Token
+4. **private-key** in `.cache/trivy/db/trivy.db` — Private Key
 5. **generic-api-key** in `.cache/trivy/db/trivy.db` — Generic API Key
 
 ---

@@ -1,6 +1,6 @@
 # ⚡ SmartCampusAI — Baseline Load Test Report
 
-> **Build** #1 | **Branch** `main` | **Commit** `26597560` | **Date** `2026-06-23 07:23 UTC`
+> **Build** #6 | **Branch** `main` | **Commit** `c7bdc7f0` | **Date** `2026-06-23 08:22 UTC`
 
 ---
 
@@ -12,7 +12,7 @@
 | ⏱️ Duration | **60 seconds** per endpoint |
 | 🎯 Target | `http://localhost:3002` |
 | 🛠️ Tool | autocannon (Node.js HTTP benchmarker) |
-| 📅 Executed | 2026-06-23 07:23 UTC |
+| 📅 Executed | 2026-06-23 08:22 UTC |
 | 📦 Endpoints Tested | 5 |
 
 ---
@@ -25,9 +25,9 @@
 
 | Metric | Value | Rating |
 |--------|-------|--------|
-| 🚀 Combined RPS | **9530.7 req/s** | 🟢 EXCELLENT |
-| ⏱️ Avg Response Time | **691ms** | 🟢 ACCEPTABLE |
-| 📦 Total Requests | **1,032,079** | — |
+| 🚀 Combined RPS | **10374.9 req/s** | 🟢 EXCELLENT |
+| ⏱️ Avg Response Time | **770ms** | 🟢 ACCEPTABLE |
+| 📦 Total Requests | **1,140,327** | — |
 | ⚠️ Total Errors | **0** | 🟢 NONE |
 | 📉 Error Rate | **0.00%** | 🟢 NONE |
 
@@ -37,76 +37,76 @@
 
 ### 1. `GET /auth/me`
 
-**Throughput:** `██████░░░░░░░░░░░░░░` **1392.7 req/s** 🟢 EXCELLENT
+**Throughput:** `█████░░░░░░░░░░░░░░░` **1322.6 req/s** 🟢 EXCELLENT
 
 | Metric | Value | Rating |
 |--------|-------|--------|
-| 🚀 Requests/sec | **1392.7 req/s** | 🟢 EXCELLENT |
-| 📦 Total Requests | **83,562** | — |
-| ⏱️ Average Latency | **71ms** | 🟢 FAST |
-| ⚡ Min Latency | **39ms** | — |
-| 🐌 Max Latency | **974ms** | — |
-| 📊 P99 Latency | **88ms** | 🟢 FAST |
+| 🚀 Requests/sec | **1322.6 req/s** | 🟢 EXCELLENT |
+| 📦 Total Requests | **79,355** | — |
+| ⏱️ Average Latency | **75ms** | 🟢 FAST |
+| ⚡ Min Latency | **38ms** | — |
+| 🐌 Max Latency | **933ms** | — |
+| 📊 P99 Latency | **92ms** | 🟢 FAST |
 | ⚠️ Errors | **0** | 🟢 NONE |
 | 📉 Error Rate | **0.00%** | 🟢 NONE |
 
 ### 2. `POST /auth/login`
 
-**Throughput:** `██░░░░░░░░░░░░░░░░░░` **462.8 req/s** 🟢 EXCELLENT
+**Throughput:** `█░░░░░░░░░░░░░░░░░░░` **418.1 req/s** 🟢 EXCELLENT
 
 | Metric | Value | Rating |
 |--------|-------|--------|
-| 🚀 Requests/sec | **462.8 req/s** | 🟢 EXCELLENT |
-| 📦 Total Requests | **27,766** | — |
-| ⏱️ Average Latency | **21ms** | 🟢 FAST |
-| ⚡ Min Latency | **4ms** | — |
-| 🐌 Max Latency | **169ms** | — |
-| 📊 P99 Latency | **40ms** | 🟢 FAST |
+| 🚀 Requests/sec | **418.1 req/s** | 🟢 EXCELLENT |
+| 📦 Total Requests | **25,083** | — |
+| ⏱️ Average Latency | **23ms** | 🟢 FAST |
+| ⚡ Min Latency | **7ms** | — |
+| 🐌 Max Latency | **187ms** | — |
+| 📊 P99 Latency | **44ms** | 🟢 FAST |
 | ⚠️ Errors | **0** | 🟢 NONE |
 | 📉 Error Rate | **0.00%** | 🟢 NONE |
 
 ### 3. `POST /auth/register`
 
-**Throughput:** `░░░░░░░░░░░░░░░░░░░░` **3.0 req/s** 🟢 PASS
+**Throughput:** `░░░░░░░░░░░░░░░░░░░░` **2.7 req/s** 🟢 PASS
 
 | Metric | Value | Rating |
 |--------|-------|--------|
-| 🚀 Requests/sec | **3.0 req/s** | 🟢 PASS |
-| 📦 Total Requests | **180** | — |
-| ⏱️ Average Latency | **3.31s** | 🟢 PASS |
-| ⚡ Min Latency | **3.26s** | — |
-| 🐌 Max Latency | **4.24s** | — |
-| 📊 P99 Latency | **4.16s** | 🟢 PASS |
+| 🚀 Requests/sec | **2.7 req/s** | 🟢 PASS |
+| 📦 Total Requests | **160** | — |
+| ⏱️ Average Latency | **3.70s** | 🟢 PASS |
+| ⚡ Min Latency | **3.66s** | — |
+| 🐌 Max Latency | **4.61s** | — |
+| 📊 P99 Latency | **4.48s** | 🟢 PASS |
 | ⚠️ Errors | **0** | 🟢 NONE |
 | 📉 Error Rate | **0.00%** | 🟢 NONE |
 
 ### 4. `POST /auth/forgot-password`
 
-**Throughput:** `████████████████████` **4057.6 req/s** 🟢 EXCELLENT
+**Throughput:** `████████████████████` **4526.1 req/s** 🟢 EXCELLENT
 
 | Metric | Value | Rating |
 |--------|-------|--------|
-| 🚀 Requests/sec | **4057.6 req/s** | 🟢 EXCELLENT |
-| 📦 Total Requests | **486,875** | — |
-| ⏱️ Average Latency | **24ms** | 🟢 FAST |
+| 🚀 Requests/sec | **4526.1 req/s** | 🟢 EXCELLENT |
+| 📦 Total Requests | **543,111** | — |
+| ⏱️ Average Latency | **22ms** | 🟢 FAST |
 | ⚡ Min Latency | **1ms** | — |
-| 🐌 Max Latency | **3.63s** | — |
-| 📊 P99 Latency | **33ms** | 🟢 FAST |
+| 🐌 Max Latency | **3.73s** | — |
+| 📊 P99 Latency | **29ms** | 🟢 FAST |
 | ⚠️ Errors | **0** | 🟢 NONE |
 | 📉 Error Rate | **0.00%** | 🟢 NONE |
 
 ### 5. `POST /auth/verify-otp`
 
-**Throughput:** `█████████████████░░░` **3614.6 req/s** 🟢 EXCELLENT
+**Throughput:** `██████████████████░░` **4105.4 req/s** 🟢 EXCELLENT
 
 | Metric | Value | Rating |
 |--------|-------|--------|
-| 🚀 Requests/sec | **3614.6 req/s** | 🟢 EXCELLENT |
-| 📦 Total Requests | **433,696** | — |
-| ⏱️ Average Latency | **27ms** | 🟢 FAST |
-| ⚡ Min Latency | **5ms** | — |
-| 🐌 Max Latency | **74ms** | — |
-| 📊 P99 Latency | **37ms** | 🟢 FAST |
+| 🚀 Requests/sec | **4105.4 req/s** | 🟢 EXCELLENT |
+| 📦 Total Requests | **492,618** | — |
+| ⏱️ Average Latency | **24ms** | 🟢 FAST |
+| ⚡ Min Latency | **9ms** | — |
+| 🐌 Max Latency | **71ms** | — |
+| 📊 P99 Latency | **32ms** | 🟢 FAST |
 | ⚠️ Errors | **0** | 🟢 NONE |
 | 📉 Error Rate | **0.00%** | 🟢 NONE |
 
@@ -116,11 +116,11 @@
 
 | # | Endpoint | RPS | Avg | Min | Max | P99 | Errors | Status |
 |---|----------|-----|-----|-----|-----|-----|--------|--------|
-| 1 | `GET /auth/me` | 1392.7 | 71ms | 39ms | 974ms | 88ms | 0 | 🟢 |
-| 2 | `POST /auth/login` | 462.8 | 21ms | 4ms | 169ms | 40ms | 0 | 🟢 |
-| 3 | `POST /auth/register` | 3.0 | 3.31s | 3.26s | 4.24s | 4.16s | 0 | 🟢 |
-| 4 | `POST /auth/forgot-password` | 4057.6 | 24ms | 1ms | 3.63s | 33ms | 0 | 🟢 |
-| 5 | `POST /auth/verify-otp` | 3614.6 | 27ms | 5ms | 74ms | 37ms | 0 | 🟢 |
+| 1 | `GET /auth/me` | 1322.6 | 75ms | 38ms | 933ms | 92ms | 0 | 🟢 |
+| 2 | `POST /auth/login` | 418.1 | 23ms | 7ms | 187ms | 44ms | 0 | 🟢 |
+| 3 | `POST /auth/register` | 2.7 | 3.70s | 3.66s | 4.61s | 4.48s | 0 | 🟢 |
+| 4 | `POST /auth/forgot-password` | 4526.1 | 22ms | 1ms | 3.73s | 29ms | 0 | 🟢 |
+| 5 | `POST /auth/verify-otp` | 4105.4 | 24ms | 9ms | 71ms | 32ms | 0 | 🟢 |
 
 ---
 
@@ -158,4 +158,4 @@
 
 ---
 
-*Generated by SmartCampusAI CI/CD Pipeline — Build #1 — 2026-06-23 07:23 UTC*
+*Generated by SmartCampusAI CI/CD Pipeline — Build #6 — 2026-06-23 08:22 UTC*
