@@ -197,25 +197,50 @@ jobs:
         uses: actions/deploy-pages@v4
 
   # ════════════════════════════════════════════════════════════════════════════
-  # JOB 3 – Build Android APK (bypass — too heavy for CI)
+  # JOB 3 – Build Android APK via EAS
   # ════════════════════════════════════════════════════════════════════════════
   build-apk:
-    name: "🔨 Build Android APK"
+    name: "🔨 Build Android APK (EAS)"
     runs-on: ubuntu-latest
     steps:
-      - name: "📥 Bypass APK Build"
+      - name: "📥 Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "🟢 Setup Node.js"
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: "📦 Install dependencies"
+        run: npm ci --legacy-peer-deps
+
+      - name: "⚙️ Setup Expo & EAS CLI"
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          expo-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: "🔨 Build Android APK via EAS (preview profile)"
+        run: eas build --platform android --profile preview --non-interactive --output ./build/app-preview.apk
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: "📊 Publish EAS Build Step Summary"
+        if: always()
         run: |
-          mkdir -p build/outputs/apk/debug
-          echo "dummy-apk" > build/outputs/apk/debug/app-debug.apk
-          echo "✅ APK build step bypassed (build runs in dedicated build pipeline)"
+          printf '%s\n' '## 📱 EAS Android Build Summary' '' '| Item | Detail |' '|------|--------|' '| Profile | preview (APK) |' '| Platform | Android |' '| EAS Project | ccfd3636-df30-4895-8568-b4141f28f902 |' '| Owner | dineshr2209 |' '| Status | ✅ Build submitted to EAS |' '' >> "$GITHUB_STEP_SUMMARY"
 
       - name: "📤 Upload APK artifact"
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: smart-admission-apk
-          path: build/outputs/apk/debug/app-debug.apk
+          path: build/app-preview.apk
           if-no-files-found: warn
           retention-days: 30
+
 
   # ════════════════════════════════════════════════════════════════════════════
   # JOB 4 – Verify Live Web Deployment
