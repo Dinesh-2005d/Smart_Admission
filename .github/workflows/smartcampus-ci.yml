@@ -230,6 +230,13 @@ jobs:
       - name: 📄 Create 404.html for SPA routing
         run: cp dist/index.html dist/404.html
 
+      - name: 📁 Copy HTML reports to dist
+        run: |
+          mkdir -p dist/reports
+          cp -r reports/*.html dist/reports/ 2>/dev/null || true
+          cp -r reports/*.md dist/reports/ 2>/dev/null || true
+
+
       - name: 🔍 Verify build output
         run: |
           if [ -d "dist" ] && [ -f "dist/index.html" ]; then
@@ -772,12 +779,12 @@ jobs:
             echo ""
             echo "| Testing Tier | Total Test Cases | Passed | Failed | Skipped | Pass Rate / Score | Status | Report URL |"
             echo "|--------------|------------------|--------|--------|---------|-------------------|--------|------------|"
-            echo "| 🌐 Web Application E2E | 400 | 400 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](${{ env.REPORT_BASE_URL }}) |"
-            echo "| 📱 Android Mobile E2E | 400 | 400 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](${{ env.REPORT_BASE_URL }}) |"
-            echo "| ⚙️ Backend Service Tests | 325 | 325 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](${{ env.REPORT_BASE_URL }}) |"
-            echo "| 🛡️ Backend Security Scan | 400 (Rules Checked) | — | — | — | 11/100 | ✅ SECURE | [Vulnerability MD](${{ env.BASE_URL }}) |"
-            echo "| 🔐 Security E2E Tests | 6 | 6 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](${{ env.REPORT_BASE_URL }}) |"
-            echo "| ⚡ Performance Load Test | 5824 (Reqs) | — | — | — | 99.85% Success | ✅ OPTIMAL | [HTML Report](${{ env.REPORT_BASE_URL }}) |"
+            echo "| 🌐 Web Application E2E | 400 | 400 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](${{ env.BASE_URL }}reports/web-e2e-report.html) |"
+            echo "| 📱 Android Mobile E2E | 400 | 400 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](${{ env.BASE_URL }}reports/android-e2e-report.html) |"
+            echo "| ⚙️ Backend Service Tests | 325 | 325 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](${{ env.BASE_URL }}reports/backend-service-report.html) |"
+            echo "| 🛡️ Backend Security Scan | 400 (Rules Checked) | — | — | — | 11/100 | ✅ SECURE | [Vulnerability MD](${{ env.BASE_URL }}reports/security-review.html) |"
+            echo "| 🔐 Security E2E Tests | 6 | 6 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](${{ env.BASE_URL }}reports/security-review.html) |"
+            echo "| ⚡ Performance Load Test | 5824 (Reqs) | — | — | — | 99.85% Success | ✅ OPTIMAL | [HTML Report](${{ env.BASE_URL }}reports/performance-load-report.html) |"
             echo ""
             echo "---"
             echo "## 🔐 Security Findings Summary"
