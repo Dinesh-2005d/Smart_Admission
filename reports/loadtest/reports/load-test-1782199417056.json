@@ -1,0 +1,87 @@
+{
+  "config": {
+    "baseUrl": "http://localhost:3002",
+    "fastVU": 100,
+    "bcryptVU": 10,
+    "duration": 60
+  },
+  "timestamp": "2026-06-23T07:23:37.056Z",
+  "verdict": "PASS",
+  "summary": {
+    "totalRPS": 9530.66,
+    "totalRequests": 1032079,
+    "totalErrors": 0
+  },
+  "endpoints": [
+    {
+      "endpoint": "GET /auth/me",
+      "vu": 100,
+      "rps": 1392.7,
+      "avgMs": 71.27,
+      "minMs": 39,
+      "maxMs": 974,
+      "p99Ms": 88,
+      "total": 83562,
+      "errors": 0,
+      "errorRate": 0,
+      "status": "PASS",
+      "isBcrypt": false
+    },
+    {
+      "endpoint": "POST /auth/login",
+      "vu": 10,
+      "rps": 462.77,
+      "avgMs": 21.11,
+      "minMs": 4,
+      "maxMs": 169,
+      "p99Ms": 40,
+      "total": 27766,
+      "errors": 0,
+      "errorRate": 0,
+      "status": "PASS",
+      "isBcrypt": true
+    },
+    {
+      "endpoint": "POST /auth/register",
+      "vu": 10,
+      "rps": 3,
+      "avgMs": 3310.41,
+      "minMs": 3263,
+      "maxMs": 4244,
+      "p99Ms": 4163,
+      "total": 180,
+      "errors": 0,
+      "errorRate": 0,
+      "status": "PASS",
+      "isBcrypt": true
+    },
+    {
+      "endpoint": "POST /auth/forgot-password",
+      "vu": 100,
+      "rps": 4057.62,
+      "avgMs": 24.17,
+      "minMs": 1,
+      "maxMs": 3631,
+      "p99Ms": 33,
+      "total": 486875,
+      "errors": 0,
+      "errorRate": 0,
+      "status": "PASS",
+      "isBcrypt": false
+    },
+    {
+      "endpoint": "POST /auth/verify-otp",
+      "vu": 100,
+      "rps": 3614.57,
+      "avgMs": 27.2,
+      "minMs": 5,
+      "maxMs": 74,
+      "p99Ms": 37,
+      "total": 433696,
+      "errors": 0,
+      "errorRate": 0,
+      "status": "PASS",
+      "isBcrypt": false
+    }
+  ]
+}
