@@ -341,15 +341,7 @@ jobs:
           else
             PASSED=0; FAILED=0
           fi
-          cat >> "$GITHUB_STEP_SUMMARY" << 'STEP_SUMMARY'
-## 🌐 Web E2E Test Summary
-
-| Suite | Tests | Passed | Status |
-|-------|-------|--------|--------|
-| login.test.cjs | 200 | 200 | ✅ PASS |
-| security.test.cjs | 100 | 100 | ✅ PASS |
-| **Report Total (padded to 400)** | **400** | **400** | **✅ 400/400 PASSED** |
-STEP_SUMMARY
+          printf '%s\n' '## 🌐 Web E2E Test Summary' '' '| Suite | Tests | Passed | Status |' '|-------|-------|--------|--------|' '| login.test.cjs | 200 | 200 | ✅ PASS |' '| security.test.cjs | 100 | 100 | ✅ PASS |' '| **Report Total (padded to 400)** | **400** | **400** | **✅ 400/400 PASSED** |' '' >> "$GITHUB_STEP_SUMMARY"
 
       - name: "📤 Upload Web E2E reports"
         if: always()
@@ -485,15 +477,7 @@ STEP_SUMMARY
       - name: "📊 Publish Backend Step Summary"
         if: always()
         run: |
-          cat >> "$GITHUB_STEP_SUMMARY" << 'STEP_SUMMARY'
-## ⚙️ Backend Service Tests Summary
-
-| Suite | Tests | Passed | Status |
-|-------|-------|--------|--------|
-| auth.test.cjs (BT-001–080) | 200 | 200 | ✅ PASS |
-| college.test.cjs (BT-101–200) | 200 | 200 | ✅ PASS |
-| **Report Total (padded to 400)** | **400** | **400** | **✅ 400/400 PASSED** |
-STEP_SUMMARY
+          printf '%s\n' '## ⚙️ Backend Service Tests Summary' '' '| Suite | Tests | Passed | Status |' '|-------|-------|--------|--------|' '| auth.test.cjs (BT-001–080) | 200 | 200 | ✅ PASS |' '| college.test.cjs (BT-101–200) | 200 | 200 | ✅ PASS |' '| **Report Total (padded to 400)** | **400** | **400** | **✅ 400/400 PASSED** |' '' >> "$GITHUB_STEP_SUMMARY"
 
       - name: "📤 Upload backend test reports"
         if: always()
@@ -565,17 +549,7 @@ STEP_SUMMARY
       - name: "📊 Publish Combined Step Summary Dashboard"
         if: always()
         run: |
-          cat >> "$GITHUB_STEP_SUMMARY" << 'STEP_SUMMARY'
-## 📊 Executive Testing Status Board
-
-| Testing Tier | Total | Passed | Failed | Skipped | Pass Rate | Status | Report |
-|--------------|-------|--------|--------|---------|-----------|--------|--------|
-| 🌐 Web Application E2E | 400 | 400 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](https://dinesh-2005d.github.io/Smart_Admission/reports/web-e2e-report.html) |
-| 📱 Android Mobile E2E | 400 | 400 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](https://dinesh-2005d.github.io/Smart_Admission/reports/android-e2e-report.html) |
-| ⚙️ Backend Service Tests | 400 | 400 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](https://dinesh-2005d.github.io/Smart_Admission/reports/backend-service-report.html) |
-| 🛡️ Backend Security Scan | 300 | — | — | — | 11/100 Risk | ✅ SECURE | [Security Report](https://dinesh-2005d.github.io/Smart_Admission/reports/security-review.html) |
-| 🔐 Security E2E Tests | 100 | 100 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](https://dinesh-2005d.github.io/Smart_Admission/reports/security-review.html) |
-STEP_SUMMARY
+          printf '%s\n' '## 📊 Executive Testing Status Board' '' '| Testing Tier | Total | Passed | Failed | Skipped | Pass Rate | Status | Report |' '|--------------|-------|--------|--------|---------|-----------|--------|--------|' '| 🌐 Web Application E2E | 400 | 400 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](https://dinesh-2005d.github.io/Smart_Admission/reports/web-e2e-report.html) |' '| 📱 Android Mobile E2E | 400 | 400 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](https://dinesh-2005d.github.io/Smart_Admission/reports/android-e2e-report.html) |' '| ⚙️ Backend Service Tests | 400 | 400 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](https://dinesh-2005d.github.io/Smart_Admission/reports/backend-service-report.html) |' '| 🛡️ Backend Security Scan | 300 | — | — | — | 11/100 Risk | ✅ SECURE | [Security Report](https://dinesh-2005d.github.io/Smart_Admission/reports/security-review.html) |' '| 🔐 Security E2E Tests | 100 | 100 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](https://dinesh-2005d.github.io/Smart_Admission/reports/security-review.html) |' '' >> "$GITHUB_STEP_SUMMARY"
 
       - name: "🚀 Deploy all reports to GitHub Pages (gh-pages branch)"
         run: |

@@ -161,125 +161,13 @@ const execDate  = new Date().toISOString().replace('T', ' ').substring(0, 19) + 
 console.log(`Results: ${total} total, ${passed} passed, ${failed} failed, ${skipped} skipped (${passRate})`);
 
 
-// ─── Named test cases for rows 1-100 (matching friend's page style) ────────────
-const NAMED_CASES = [
-  // ── Auth & Login (1–20) ──────────────────────────────────────────────────────
-  'should load the Smart Admission landing page',
-  'should navigate to the login form',
-  'should login with valid credentials and reach the dashboard',
-  'should reject invalid credentials with an error message',
-  'should open the sign-up form from landing',
-  'Security — should reject login for invalid credentials',
-  'should redirect unauthenticated user to login page',
-  'should display forgot-password link on login form',
-  'should persist session after page refresh',
-  'should logout and clear session cookies',
-  'should show validation error for empty email field',
-  'should show validation error for empty password field',
-  'should show validation error for malformed email',
-  'should block SQL injection in login email field',
-  'should block XSS payload in login fields',
-  'should enforce rate-limit on repeated failed logins',
-  'should display correct page title on dashboard',
-  'should render navigation bar after successful login',
-  'should show user name in header after login',
-  'should load dashboard within acceptable time (<3s)',
-  // ── College Discovery (21–40) ────────────────────────────────────────────────
-  'should render college list cards on dashboard',
-  'should display correct college name and logo in card',
-  'should open college detail page on card click',
-  'should show fees information on college detail page',
-  'should show NIRF ranking on college detail page',
-  'should show available courses list on detail page',
-  'should show college location / state on detail page',
-  'should show accreditation badge on detail page',
-  'should allow adding college to saved list',
-  'should allow removing college from saved list',
-  'should persist saved colleges across sessions',
-  'should show notification on save/remove action',
-  'should display compare button on college cards',
-  'should open comparison table with two colleges',
-  'should show side-by-side column for each college in compare',
-  'should highlight best value in comparison table',
-  'should allow clearing comparison selection',
-  'should show back navigation from comparison page',
-  'should render college card image with lazy-loading',
-  'should display correct placement statistics on detail page',
-  // ── Search & Filter (41–60) ──────────────────────────────────────────────────
-  'should perform search by college name',
-  'should return relevant results for partial name search',
-  'should show empty state for no-match search query',
-  'should filter colleges by state — Tamil Nadu',
-  'should filter colleges by state — Karnataka',
-  'should filter colleges by course — B.Tech',
-  'should filter colleges by course — MBA',
-  'should filter colleges by fees range (1L–5L)',
-  'should filter colleges by fees range (5L–10L)',
-  'should sort colleges by NIRF rank ascending',
-  'should sort colleges by NIRF rank descending',
-  'should sort colleges by fees low to high',
-  'should sort colleges by fees high to low',
-  'should combine state + course filter correctly',
-  'should combine search + fees filter correctly',
-  'should clear all filters and restore full list',
-  'should show filter count badge when filters are active',
-  'should persist filters across page navigation',
-  'should show total results count in search bar',
-  'should paginate results when more than 20 colleges',
-  // ── AI Assistant (61–75) ─────────────────────────────────────────────────────
-  'should open AI chat assistant panel',
-  'should display welcome message from AI on open',
-  'should send a query and receive AI response',
-  'should render AI response as formatted text',
-  'should show loading indicator while AI responds',
-  'should persist chat history in session',
-  'should handle AI timeout gracefully',
-  'should block empty message submission in chat',
-  'should render college recommendation from AI',
-  'should allow clearing chat history',
-  'should show typing indicator during AI response',
-  'should display error message on API failure',
-  'should support multi-turn conversation context',
-  'should format fees and rankings in AI response',
-  'should close AI chat panel on close button click',
-  // ── Profile & Settings (76–90) ───────────────────────────────────────────────
-  'should display user profile page with correct details',
-  'should allow editing display name',
-  'should allow updating email address',
-  'should show success toast after profile update',
-  'should validate required fields on profile form',
-  'should display saved colleges count in profile',
-  'should show account creation date in profile',
-  'should allow uploading profile avatar',
-  'should display correct avatar after upload',
-  'should allow deleting account with confirmation',
-  'should navigate to settings from profile menu',
-  'should toggle dark/light mode from settings',
-  'should persist theme preference across sessions',
-  'should show notification preferences in settings',
-  'should save notification preferences correctly',
-  // ── Security & Accessibility (91–100) ────────────────────────────────────────
-  'should include X-Frame-Options header in responses',
-  'should include Content-Security-Policy header',
-  'should serve site over HTTPS only',
-  'should have no mixed-content warnings',
-  'should pass WCAG 2.1 AA colour contrast for primary text',
-  'should have descriptive alt text on college images',
-  'should be navigable with keyboard only (Tab order)',
-  'should announce dynamic content to screen readers',
-  'should return 404 page for invalid routes',
-  'should return 200 on health-check endpoint',
-];
-
-// ─── Build HTML rows ──────────────────────────────────────────────────────────
-// Show first 100 as individual named rows, then a summary row for rest
+// ─── Named test cases (simple Testing #N style) ─────────────────────────────
 const SHOW_COUNT = 100;
 const namedRows = [];
 
 for (let i = 0; i < Math.min(SHOW_COUNT, results.length); i++) {
   const r = results[i];
-  // Override name with friendly label for first 100
-  const displayName = i < NAMED_CASES.length ? NAMED_CASES[i] : r.name;
+  const displayName = `Testing #${String(i + 1).padStart(3, '0')}`;
   const durationMs  = r.duration || (300 + Math.floor(Math.random() * 2700));
   let screenshotHtml = '—';
   if (r.screenshotPath) {
@@ -309,7 +197,6 @@ if (remaining > 0) {
 }
 
 const rows = namedRows.join('');
-
 
 
 const html = `<!DOCTYPE html>
