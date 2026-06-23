@@ -149,6 +149,13 @@ jobs:
   build-web:
     name: "🔨 Build & Deploy Web App"
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     outputs:
       page_url: ${{ steps.deployment.outputs.page_url }}
     steps:
@@ -202,6 +209,7 @@ jobs:
   build-apk:
     name: "🔨 Build Android APK (EAS)"
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: "📥 Checkout repository"
         uses: actions/checkout@v4
@@ -222,39 +230,27 @@ jobs:
           expo-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: "🔨 Build Android APK via EAS (preview profile)"
+      - name: "🔨 Submit Android APK build to EAS"
         id: eas_build
         run: |
           mkdir -p build
-          # Submit cloud build and wait for it to finish
-          eas build --platform android --profile preview --non-interactive --wait \
-            --json 2>/dev/null | tee build/eas-build-result.json || \
-          eas build --platform android --profile preview --non-interactive --wait \
-            > build/eas-build-output.txt 2>&1 || true
-          echo "✅ EAS build submitted"
+          # Submit cloud build WITHOUT --wait (just queue it on EAS)
+          eas build --platform android --profile preview --non-interactive \
+            2>&1 | tee build/eas-build-output.txt || true
+          echo "✅ EAS build submitted to cloud queue"
+          # Extract build URL from output
+          BUILD_PAGE=$(grep -o 'https://expo.dev[^ ]*' build/eas-build-output.txt | head -1 || echo 'https://expo.dev/accounts/dineshr2209/projects/SmartCampusAI/builds')
+          echo "BUILD_PAGE=$BUILD_PAGE" >> $GITHUB_ENV
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
-      - name: "⬇️ Download APK from EAS"
+      - name: "📝 Create EAS build info artifact"
         if: always()
         run: |
           mkdir -p build
-          # Get latest finished Android build URL
-          BUILD_URL=$(npx eas-cli build:list \
-            --platform android --status finished \
-            --limit 1 --json 2>/dev/null \
-            | node -e "const d=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')); \
-              console.log(d[0]?.artifacts?.buildUrl || '')" 2>/dev/null || echo "")
-          if [ -n "$BUILD_URL" ]; then
-            echo "Downloading APK from: $BUILD_URL"
-            curl -L "$BUILD_URL" -o build/app-preview.apk
-            echo "✅ APK downloaded successfully"
-          else
-            echo "⚠️ No build URL found — creating placeholder"
-            echo "EAS build submitted. Download from: https://expo.dev/accounts/dineshr2209/projects/SmartCampusAI/builds" > build/eas-build-info.txt
-          fi
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          echo "EAS Build submitted to cloud." > build/eas-build-info.txt
+          echo "Track build at: ${BUILD_PAGE:-https://expo.dev/accounts/dineshr2209/projects/SmartCampusAI/builds}" >> build/eas-build-info.txt
+          cat build/eas-build-output.txt >> build/eas-build-info.txt 2>/dev/null || true
 
       - name: "📊 Publish EAS Build Step Summary"
         if: always()
