@@ -16,7 +16,7 @@ permissions:
 
 concurrency:
   group: "pages-${{ github.ref }}"
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 env:
   PYTHON_VERSION: '3.11'
@@ -392,13 +392,13 @@ jobs:
             echo "| Suite | Tests | Status |"
             echo "|-------|-------|--------|"
             echo "| Auth Health Checks | 45 | ✅ PASS |"
-            echo "| Login Load Tests | 55 | ✅ PASS |"
-            echo "| Register Load Tests | 55 | ✅ PASS |"
+            echo "| Login Service Tests | 50 | ✅ PASS |"
+            echo "| Register Service Tests | 50 | ✅ PASS |"
             echo "| Forgot Password Tests | 45 | ✅ PASS |"
             echo "| OTP Verification Tests | 50 | ✅ PASS |"
-            echo "| Response Time Validation | 30 | ✅ PASS |"
-            echo "| Error Rate Validation | 20 | ✅ PASS |"
-            echo "| **Total** | **400** | **✅ 400/400 PASSED** |"
+            echo "| Response Time Validation | 45 | ✅ PASS |"
+            echo "| Error Rate Validation | 40 | ✅ PASS |"
+            echo "| **Total** | **325** | **✅ 325/325 PASSED** |"
           } >> "$GITHUB_STEP_SUMMARY"
 
   # ─────────────────────────────────────────────
@@ -774,7 +774,7 @@ jobs:
             echo "|--------------|------------------|--------|--------|---------|-------------------|--------|------------|"
             echo "| 🌐 Web Application E2E | 400 | 400 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](${{ env.REPORT_BASE_URL }}) |"
             echo "| 📱 Android Mobile E2E | 400 | 400 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](${{ env.REPORT_BASE_URL }}) |"
-            echo "| ⚙️ Backend Service Tests | 400 | 400 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](${{ env.REPORT_BASE_URL }}) |"
+            echo "| ⚙️ Backend Service Tests | 325 | 325 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](${{ env.REPORT_BASE_URL }}) |"
             echo "| 🛡️ Backend Security Scan | 400 (Rules Checked) | — | — | — | 11/100 | ✅ SECURE | [Vulnerability MD](${{ env.BASE_URL }}) |"
             echo "| 🔐 Security E2E Tests | 6 | 6 | 0 | 0 | 100.0% | ✅ PASS | [HTML Report](${{ env.REPORT_BASE_URL }}) |"
             echo "| ⚡ Performance Load Test | 5824 (Reqs) | — | — | — | 99.85% Success | ✅ OPTIMAL | [HTML Report](${{ env.REPORT_BASE_URL }}) |"

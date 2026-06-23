@@ -20,7 +20,7 @@ permissions:
 
 concurrency:
   group: "pages-${{ github.ref }}"
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 env:
   GITHUB_USERNAME: Dinesh-2005d
