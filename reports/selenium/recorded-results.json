@@ -2,72 +2,72 @@
   {
     "name": "should load the Smart Admission landing page",
     "status": "failed",
-    "duration": 20972,
-    "error": "Landing page did not load — Sign In button not found\nWait timed out after 20187ms",
-    "screenshotPath": "Screenshots/FAIL_should_load_the_Smart_Admission_landing_page_1782224877149.png"
+    "duration": 20738,
+    "error": "Landing page did not load — Sign In button not found\nWait timed out after 20193ms",
+    "screenshotPath": "Screenshots/FAIL_should_load_the_Smart_Admission_landing_page_1782225652653.png"
   },
   {
     "name": "should navigate to the login form",
     "status": "failed",
-    "duration": 20511,
-    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20151ms",
-    "screenshotPath": "Screenshots/FAIL_should_navigate_to_the_login_form_1782224898097.png"
+    "duration": 20514,
+    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20146ms",
+    "screenshotPath": "Screenshots/FAIL_should_navigate_to_the_login_form_1782225673585.png"
   },
   {
     "name": "should login with valid credentials and reach the dashboard",
     "status": "failed",
-    "duration": 20803,
-    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20156ms",
-    "screenshotPath": "Screenshots/FAIL_should_login_with_valid_credentials_and_reach_the_dashboard_1782224919346.png"
+    "duration": 20500,
+    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20137ms",
+    "screenshotPath": "Screenshots/FAIL_should_login_with_valid_credentials_and_reach_the_dashboard_1782225694550.png"
   },
   {
     "name": "should reject invalid credentials with an error message",
     "status": "failed",
-    "duration": 20584,
-    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20143ms",
-    "screenshotPath": "Screenshots/FAIL_should_reject_invalid_credentials_with_an_error_message_1782224940678.png"
+    "duration": 20961,
+    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20188ms",
+    "screenshotPath": "Screenshots/FAIL_should_reject_invalid_credentials_with_an_error_message_1782225716322.png"
   },
   {
     "name": "should open the sign-up form from landing",
     "status": "failed",
-    "duration": 20786,
-    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signup-btn\"])\nWait timed out after 20148ms",
-    "screenshotPath": "Screenshots/FAIL_should_open_the_sign_up_form_from_landing_1782224961927.png"
+    "duration": 20869,
+    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signup-btn\"])\nWait timed out after 20173ms",
+    "screenshotPath": "Screenshots/FAIL_should_open_the_sign_up_form_from_landing_1782225737749.png"
   },
   {
     "name": "Security — should reject login for invalid credentials",
     "status": "failed",
-    "duration": 20775,
-    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20003ms"
+    "duration": 20755,
+    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20183ms"
   },
   {
     "name": "Security — should prevent access to protected routes/dashboard for unauthenticated users",
     "status": "passed",
-    "duration": 3243,
+    "duration": 3640,
     "error": null
   },
   {
     "name": "Security — should not execute XSS script payloads submitted in login fields",
     "status": "failed",
-    "duration": 20493,
-    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20153ms"
+    "duration": 20827,
+    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20175ms"
   },
   {
     "name": "Security — should enforce session termination and clean storage upon logout",
     "status": "failed",
-    "duration": 20873,
-    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20165ms"
+    "duration": 20870,
+    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20173ms"
   },
   {
     "name": "Security — should confirm Firebase authentication rejects empty credentials",
     "status": "failed",
-    "duration": 20481,
-    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20129ms"
+    "duration": 20911,
+    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20157ms"
   },
   {
     "name": "Security — should not expose sensitive API keys or secrets in page HTML source",
     "status": "passed",
-    "duration": 415,
+    "duration": 369,
     "error": null
   }
 ]
