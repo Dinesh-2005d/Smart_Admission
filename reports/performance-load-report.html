@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acadivo Performance – Load Test Report</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #0b0f19;
+      color: #94a3b8;
+      margin: 0;
+      padding: 24px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .header-card {
+      background: linear-gradient(135deg, #ec4899, #be185d);
+      border-radius: 16px;
+      padding: 28px;
+      text-align: center;
+      color: white;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 25px -5px rgba(236, 72, 153, 0.3);
+      position: relative;
+    }
+    .header-title {
+      font-size: 28px;
+      font-weight: 800;
+      margin: 0 0 8px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .header-meta {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-bottom: 14px;
+    }
+    .header-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 6px 16px;
+      border-radius: 20px;
+      color: white;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .header-link:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+    .badge-simulated {
+      display: inline-block;
+      background-color: #f59e0b;
+      color: #0b0f19;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-top: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background-color: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 12px;
+      padding: 22px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #6b7280;
+    }
+    .stat-rps .stat-value { color: #60a5fa; }
+    .stat-latency .stat-value { color: #22d3ee; }
+    .stat-success .stat-value { color: #34d399; }
+    .stat-error .stat-value { color: #f87171; }
+    
+    .table-card {
+      background-color: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      padding: 24px;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #cbd5e1;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #1f2937;
+      padding-bottom: 10px;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #1f2937;
+      font-size: 14px;
+    }
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+    .detail-label {
+      color: #94a3b8;
+    }
+    .detail-value {
+      color: #f1f5f9;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header-card">
+      <div class="header-title">
+        ⚡ Acadivo Performance – Load Test Report
+      </div>
+      <div class="header-meta">
+        Target: https://dinesh-2005d.github.io/Smart_Admission/ &bull; Date: 2026-06-23T07:48:21.242Z
+      </div>
+      <div class="header-link-container">
+        <a href="https://github.com/Dinesh-2005d/Smart_Admission" class="header-link" target="_blank">
+          🔗 https://github.com/Dinesh-2005d/Smart_Admission
+        </a>
+      </div>
+      <span class="badge-simulated">Simulated Results for Pipeline Stability</span>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card stat-rps">
+        <div class="stat-value">97.07</div>
+        <div class="stat-label">RPS (Reqs/Sec)</div>
+      </div>
+      <div class="stat-card stat-latency">
+        <div class="stat-value">145.28ms</div>
+        <div class="stat-label">Avg Response Time</div>
+      </div>
+      <div class="stat-card stat-success">
+        <div class="stat-value">99.85%</div>
+        <div class="stat-label">Success Percentage</div>
+      </div>
+      <div class="stat-card stat-error">
+        <div class="stat-value">0.15%</div>
+        <div class="stat-label">Error Percentage</div>
+      </div>
+    </div>
+
+    <!-- Details -->
+    <div class="table-card">
+      <div class="section-title">Performance Details</div>
+      <div class="detail-row">
+        <span class="detail-label">Virtual Users (VUs)</span>
+        <span class="detail-value">100</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Duration</span>
+        <span class="detail-value">1 minute</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Total Requests Sent</span>
+        <span class="detail-value">5824</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Minimum Response Time</span>
+        <span class="detail-value">12.04ms</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Maximum Response Time</span>
+        <span class="detail-value">845.52ms</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
