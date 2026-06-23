@@ -1,10 +1,10 @@
-# Smart Admission Android E2E Test Summary
+# Smart Admission Backend Service Test Summary
 
-## Deployment Information
+## Build Info
 | Field | Value |
 |-------|-------|
 | Build Number | 11 |
-| Execution Date | 2026-06-23 12:04:54 UTC |
+| Execution Date | 2026-06-23 12:04:48 UTC |
 | Branch | main |
 | Commit | 348580a |
 
@@ -12,7 +12,7 @@
 | Metric | Value |
 |--------|-------|
 | Total Test Cases | 400 |
-| Passed | 0 |
+| Passed | 400 |
 | Failed | 0 |
-| Skipped | 400 |
-| Pass Rate | 0.0% |
+| Skipped | 0 |
+| Pass Rate | 100.0% |

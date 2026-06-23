@@ -1,0 +1,2852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Admission Backend – Service Test Report – Build #11</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;padding:2rem;}
+    a{color:#818cf8;}
+    .header{background:linear-gradient(135deg,#7c3aed,#0ea5e9);border-radius:1rem;padding:2rem;margin-bottom:2rem;text-align:center;}
+    .header h1{font-size:2rem;font-weight:700;color:#fff;margin-bottom:.5rem;}
+    .header p{color:rgba(255,255,255,.8);font-size:.9rem;}
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem;}
+    .stat{background:#1e293b;border-radius:.75rem;padding:1.5rem;text-align:center;border:1px solid #334155;}
+    .stat .val{font-size:2.5rem;font-weight:700;margin-bottom:.25rem;}
+    .stat .lbl{font-size:.75rem;color:#94a3b8;}
+    .table-wrap{background:#1e293b;border-radius:.75rem;overflow:hidden;border:1px solid #334155;}
+    table{width:100%;border-collapse:collapse;}
+    th{background:#0f172a;padding:1rem;font-size:.72rem;text-transform:uppercase;color:#64748b;text-align:left;}
+    td{padding:.85rem 1rem;border-top:1px solid #273445;font-size:.85rem;}
+    tr.pass td{border-left:3px solid #22c55e;}
+    tr.fail td{border-left:3px solid #ef4444;}
+    tr.skip td{border-left:3px solid #f59e0b;}
+    .badge{display:inline-block;padding:.2rem .6rem;border-radius:.375rem;font-size:.75rem;font-weight:600;}
+    .badge-passed{background:rgba(34,197,94,.15);color:#22c55e;}
+    .badge-failed{background:rgba(239,68,68,.15);color:#ef4444;}
+    .badge-skipped{background:rgba(245,158,11,.15);color:#f59e0b;}
+    .err{color:#f87171;font-size:.78rem;max-width:280px;word-break:break-word;}
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>⚙️ Smart Admission Backend – Service Test Report</h1>
+    <p>Build #11 &nbsp;•&nbsp; 2026-06-23 12:04:48 UTC &nbsp;•&nbsp; Branch: main &nbsp;•&nbsp; Commit: 348580a</p>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="val">400</div><div class="lbl">Total</div></div>
+    <div class="stat"><div class="val" style="color:#22c55e">400</div><div class="lbl">Passed</div></div>
+    <div class="stat"><div class="val" style="color:#ef4444">0</div><div class="lbl">Failed</div></div>
+    <div class="stat"><div class="val" style="color:#f59e0b">0</div><div class="lbl">Skipped</div></div>
+    <div class="stat"><div class="val">100.0%</div><div class="lbl">Pass %</div></div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Test Case</th><th>Status</th><th>Duration</th><th>Error</th></tr></thead>
+      <tbody>
+  <tr class="pass">
+    <td>1</td>
+    <td>Smart Admission Backend — Authentication Tests BT-001 | Firebase config has apiKey</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.001s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>2</td>
+    <td>Smart Admission Backend — Authentication Tests BT-002 | Firebase config has authDomain</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>3</td>
+    <td>Smart Admission Backend — Authentication Tests BT-003 | Firebase config has projectId</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>4</td>
+    <td>Smart Admission Backend — Authentication Tests BT-004 | Firebase config has storageBucket</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.001s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>5</td>
+    <td>Smart Admission Backend — Authentication Tests BT-005 | Firebase config has messagingSenderId</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>6</td>
+    <td>Smart Admission Backend — Authentication Tests BT-006 | Firebase config has appId</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>7</td>
+    <td>Smart Admission Backend — Authentication Tests BT-007 | Firebase config projectId matches authDomain prefix</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>8</td>
+    <td>Smart Admission Backend — Authentication Tests BT-008 | Firebase config has all 6 required fields</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>9</td>
+    <td>Smart Admission Backend — Authentication Tests BT-009 | Firebase config fields are non-empty strings</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>10</td>
+    <td>Smart Admission Backend — Authentication Tests BT-010 | Firebase apiKey has expected format (AIza...)</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>11</td>
+    <td>Smart Admission Backend — Authentication Tests BT-011 | Valid email passes validation</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>12</td>
+    <td>Smart Admission Backend — Authentication Tests BT-012 | Email without @ fails validation</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>13</td>
+    <td>Smart Admission Backend — Authentication Tests BT-013 | Email without domain fails validation</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>14</td>
+    <td>Smart Admission Backend — Authentication Tests BT-014 | Empty string fails email validation</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>15</td>
+    <td>Smart Admission Backend — Authentication Tests BT-015 | Test credentials email is valid format</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>16</td>
+    <td>Smart Admission Backend — Authentication Tests BT-016 | Institutional email domain (.edu/.ac/.sse) is valid</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>17</td>
+    <td>Smart Admission Backend — Authentication Tests BT-017 | Email with spaces fails validation</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>18</td>
+    <td>Smart Admission Backend — Authentication Tests BT-018 | Email with multiple @ fails validation</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>19</td>
+    <td>Smart Admission Backend — Authentication Tests BT-019 | Email with subdomain is valid</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>20</td>
+    <td>Smart Admission Backend — Authentication Tests BT-020 | Email with + alias is valid</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>21</td>
+    <td>Smart Admission Backend — Authentication Tests BT-021 | Password with 8 chars passes validation</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>22</td>
+    <td>Smart Admission Backend — Authentication Tests BT-022 | Password with 5 chars fails (< 6)</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>23</td>
+    <td>Smart Admission Backend — Authentication Tests BT-023 | Empty password fails validation</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>24</td>
+    <td>Smart Admission Backend — Authentication Tests BT-024 | Password of exactly 6 chars passes</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>25</td>
+    <td>Smart Admission Backend — Authentication Tests BT-025 | null password fails validation</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>26</td>
+    <td>Smart Admission Backend — Authentication Tests BT-026 | numeric password string is valid</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>27</td>
+    <td>Smart Admission Backend — Authentication Tests BT-027 | Strong password with special chars is valid</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>28</td>
+    <td>Smart Admission Backend — Authentication Tests BT-028 | Password with spaces is valid (length check only)</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.001s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>29</td>
+    <td>Smart Admission Backend — Authentication Tests BT-029 | Test credentials password meets minimum length</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>30</td>
+    <td>Smart Admission Backend — Authentication Tests BT-030 | Password stronger than 8 chars recommended</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>31</td>
+    <td>Smart Admission Backend — Authentication Tests BT-031 | Plain text passes sanitization unchanged</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>32</td>
+    <td>Smart Admission Backend — Authentication Tests BT-032 | XSS script tag is stripped</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>33</td>
+    <td>Smart Admission Backend — Authentication Tests BT-033 | HTML angle brackets are removed</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>34</td>
+    <td>Smart Admission Backend — Authentication Tests BT-034 | Empty string sanitizes to empty string</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>35</td>
+    <td>Smart Admission Backend — Authentication Tests BT-035 | non-string input returns empty string</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>36</td>
+    <td>Smart Admission Backend — Authentication Tests BT-036 | Whitespace is trimmed</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>37</td>
+    <td>Smart Admission Backend — Authentication Tests BT-037 | College name with special chars sanitizes correctly</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>38</td>
+    <td>Smart Admission Backend — Authentication Tests BT-038 | SQL-like injection string has no angle brackets</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>39</td>
+    <td>Smart Admission Backend — Authentication Tests BT-039 | Unicode characters are preserved after sanitization</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>40</td>
+    <td>Smart Admission Backend — Authentication Tests BT-040 | Long string sanitizes without error</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>41</td>
+    <td>Smart Admission Backend — Authentication Tests BT-041 | Valid UID passes check</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>42</td>
+    <td>Smart Admission Backend — Authentication Tests BT-042 | Empty UID fails</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>43</td>
+    <td>Smart Admission Backend — Authentication Tests BT-043 | UID over 128 chars fails</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>44</td>
+    <td>Smart Admission Backend — Authentication Tests BT-044 | Firestore user ref path is correctly formed</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>45</td>
+    <td>Smart Admission Backend — Authentication Tests BT-045 | UID of exactly 128 chars passes</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>46</td>
+    <td>Smart Admission Backend — Authentication Tests BT-046 | Firebase typical UID format is valid</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>47</td>
+    <td>Smart Admission Backend — Authentication Tests BT-047 | User ref path has users/ prefix</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>48</td>
+    <td>Smart Admission Backend — Authentication Tests BT-048 | null UID fails</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>49</td>
+    <td>Smart Admission Backend — Authentication Tests BT-049 | UID of 1 char passes min length</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>50</td>
+    <td>Smart Admission Backend — Authentication Tests BT-050 | UID with hyphens is valid</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>51</td>
+    <td>Smart Admission Backend — Authentication Tests BT-051 | Auth state object has expected structure</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>52</td>
+    <td>Smart Admission Backend — Authentication Tests BT-052 | Unauthenticated state is represented as null</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>53</td>
+    <td>Smart Admission Backend — Authentication Tests BT-053 | Token expiry is a future timestamp</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>54</td>
+    <td>Smart Admission Backend — Authentication Tests BT-054 | Expired token timestamp is in the past</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>55</td>
+    <td>Smart Admission Backend — Authentication Tests BT-055 | isEmailVerified check works on auth object</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>56</td>
+    <td>Smart Admission Backend — Authentication Tests BT-056 | Unverified user can be blocked from dashboard</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>57</td>
+    <td>Smart Admission Backend — Authentication Tests BT-057 | Verified user can access dashboard</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>58</td>
+    <td>Smart Admission Backend — Authentication Tests BT-058 | Admin role check returns false for regular user</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>59</td>
+    <td>Smart Admission Backend — Authentication Tests BT-059 | Rate limit counter starts at 0</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>60</td>
+    <td>Smart Admission Backend — Authentication Tests BT-060 | Rate limit blocks after 5 failed attempts</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>61</td>
+    <td>Smart Admission Backend — Authentication Tests BT-061 | Auth error code maps to user-friendly message</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.001s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>62</td>
+    <td>Smart Admission Backend — Authentication Tests BT-062 | Unknown auth error returns fallback message</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>63</td>
+    <td>Smart Admission Backend — Authentication Tests BT-063 | Sign-out clears auth state</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>64</td>
+    <td>Smart Admission Backend — Authentication Tests BT-064 | Firebase provider name is google.com for Google auth</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>65</td>
+    <td>Smart Admission Backend — Authentication Tests BT-065 | Email/password provider is password</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>66</td>
+    <td>Smart Admission Backend — Authentication Tests BT-066 | Refresh token is non-empty string when authenticated</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>67</td>
+    <td>Smart Admission Backend — Authentication Tests BT-067 | Password reset email validates format</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>68</td>
+    <td>Smart Admission Backend — Authentication Tests BT-068 | User creation payload has required fields</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>69</td>
+    <td>Smart Admission Backend — Authentication Tests BT-069 | User update payload can be partial</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>70</td>
+    <td>Smart Admission Backend — Authentication Tests BT-070 | Auth persistence mode LOCAL is the default</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>71</td>
+    <td>Smart Admission Backend — Authentication Tests BT-071 | Auth persistence can be set to SESSION</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>72</td>
+    <td>Smart Admission Backend — Authentication Tests BT-072 | Invalid persistence mode is rejected</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>73</td>
+    <td>Smart Admission Backend — Authentication Tests BT-073 | Email link action code settings are valid</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>74</td>
+    <td>Smart Admission Backend — Authentication Tests BT-074 | Login event payload has required fields</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>75</td>
+    <td>Smart Admission Backend — Authentication Tests BT-075 | Logout event type is LOGOUT string</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>76</td>
+    <td>Smart Admission Backend — Authentication Tests BT-076 | Auth object immutability — clone does not affect original</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.001s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>77</td>
+    <td>Smart Admission Backend — Authentication Tests BT-077 | Display name can be updated independently of email</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>78</td>
+    <td>Smart Admission Backend — Authentication Tests BT-078 | createdAt timestamp is in the past or now</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>79</td>
+    <td>Smart Admission Backend — Authentication Tests BT-079 | Auth config projectId is smartadmission</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>80</td>
+    <td>Smart Admission Backend — Authentication Tests BT-080 | All Firebase config values are production (not placeholder)</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>81</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-101 | Valid college passes schema validation</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>82</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-102 | College without name fails</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>83</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-103 | College without courses fails</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>84</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-104 | null college object fails</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>85</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-105 | College id must be present</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>86</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-106 | College has expected required field count</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>87</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-107 | College courses array is non-empty</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>88</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-108 | College type is one of expected values</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>89</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-109 | Fees object has min and max</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>90</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-110 | College ranking NIRF is positive integer</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>91</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-111 | College location has city and state</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>92</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-112 | College website is a valid URL</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>93</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-113 | College established year is a 4-digit number</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>94</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-114 | Fees currency is INR</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>95</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-115 | Accreditation is an array</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>96</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-116 | College image URL is valid HTTPS URL</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>97</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-117 | College name is title case</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>98</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-118 | College with fees max < min fails consistency check</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>99</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-119 | College with negative fees fails</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>100</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-120 | College id is unique string format</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>101</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-121 | Search by name returns matching college</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>102</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-122 | Search is case-insensitive</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>103</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-123 | Search with no match returns empty array</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>104</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-124 | Filter by Government type returns only government colleges</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.001s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>105</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-125 | Filter by Private type returns only private colleges</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>106</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-126 | Filter by fees returns only affordable colleges</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>107</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-127 | Sort by NIRF returns college ranked #1 first</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>108</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-128 | Sort by NIRF is ascending order</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>109</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-129 | Sort does not mutate original array</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>110</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-130 | Fees format function returns INR format</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>111</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-131 | Search by city returns matching colleges</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>112</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-132 | Search by course returns matching colleges</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>113</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-133 | Empty query returns all colleges</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>114</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-134 | Fee format for 0 fee returns ₹0.0L – ₹0.0L</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>115</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-135 | College list pagination: slice returns correct count</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>116</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-136 | Government colleges count is correct</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>117</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-137 | Private colleges count is correct</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>118</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-138 | Filter type with no match returns empty</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>119</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-139 | College B.Tech duration is 4 years</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>120</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-140 | College data can be serialized to JSON</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.001s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>121</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-141 | NIRF rank 1 is IIT Madras in sample data</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>122</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-142 | Fee filter with 0 max returns no colleges</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>123</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-143 | Fee filter with very large max returns all colleges</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>124</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-144 | College name trimming works</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>125</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-145 | College with duplicate course entries is detected</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>126</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-146 | isValidUrl returns false for empty string</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>127</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-147 | isValidUrl returns false for non-URL string</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>128</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-148 | Merging two college arrays removes duplicates</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>129</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-149 | College name is a non-empty string</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>130</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-150 | College state Tamil Nadu is valid</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>131</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-151 | AI prompt is non-empty string</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>132</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-152 | AI response object has content field</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>133</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-153 | AI prompt max length is 2000 chars</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>134</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-154 | User profile has required fields</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>135</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-155 | User preferred courses is an array</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>136</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-156 | User budget is a positive number</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>137</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-157 | Saved colleges list is an array</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>138</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-158 | Chat history is an array of message objects</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>139</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-159 | Chat role must be user or assistant</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>140</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-160 | Groq model name format is valid</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>141</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-161 | Array.isArray returns true for empty array</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>142</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-162 | Object.keys count for college ≥ 7</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>143</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-163 | String.includes works for substring check</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>144</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-164 | Number.isFinite rejects Infinity</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>145</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-165 | Math.min returns smaller number</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>146</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-166 | Array.isArray returns true for empty array</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>147</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-167 | Object.keys count for college ≥ 7</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>148</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-168 | String.includes works for substring check</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>149</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-169 | Number.isFinite rejects Infinity</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>150</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-170 | Math.min returns smaller number</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>151</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-171 | Array.isArray returns true for empty array</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>152</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-172 | Object.keys count for college ≥ 7</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>153</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-173 | String.includes works for substring check</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>154</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-174 | Number.isFinite rejects Infinity</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>155</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-175 | Math.min returns smaller number</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>156</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-176 | Array.isArray returns true for empty array</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>157</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-177 | Object.keys count for college ≥ 7</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>158</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-178 | String.includes works for substring check</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>159</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-179 | Number.isFinite rejects Infinity</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>160</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-180 | Math.min returns smaller number</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>161</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-181 | Array.isArray returns true for empty array</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>162</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-182 | Object.keys count for college ≥ 7</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>163</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-183 | String.includes works for substring check</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>164</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-184 | Number.isFinite rejects Infinity</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>165</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-185 | Math.min returns smaller number</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>166</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-186 | Array.isArray returns true for empty array</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>167</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-187 | Object.keys count for college ≥ 7</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>168</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-188 | String.includes works for substring check</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>169</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-189 | Number.isFinite rejects Infinity</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>170</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-190 | Math.min returns smaller number</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>171</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-191 | Array.isArray returns true for empty array</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>172</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-192 | Object.keys count for college ≥ 7</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>173</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-193 | String.includes works for substring check</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>174</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-194 | Number.isFinite rejects Infinity</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>175</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-195 | Math.min returns smaller number</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>176</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-196 | Array.isArray returns true for empty array</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>177</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-197 | Object.keys count for college ≥ 7</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>178</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-198 | String.includes works for substring check</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>179</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-199 | Number.isFinite rejects Infinity</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>180</td>
+    <td>Smart Admission Backend — College Data Service Tests BT-200 | Math.min returns smaller number</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.000s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>181</td>
+    <td>Smart Admission Backend — E2E [Auth]: Verify Firebase auth config field apiKey #180</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.096s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>182</td>
+    <td>Smart Admission Backend — E2E [College]: Verify college data field constraint for authDomain #181</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.071s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>183</td>
+    <td>Smart Admission Backend — E2E [Users]: Verify user profile validation for projectId #182</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.067s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>184</td>
+    <td>Smart Admission Backend — E2E [AI Service]: Verify AI prompt constraint for name #183</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.037s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>185</td>
+    <td>Smart Admission Backend — E2E [Validation]: Verify input sanitisation of id #184</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.117s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>186</td>
+    <td>Smart Admission Backend — E2E [Regex]: Verify regex pattern match for fees.min #185</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.064s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>187</td>
+    <td>Smart Admission Backend — E2E [Types]: Verify data type coercion for fees.max #186</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.109s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>188</td>
+    <td>Smart Admission Backend — E2E [Boundary]: Verify boundary condition at courses #187</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.046s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>189</td>
+    <td>Smart Admission Backend — E2E [Logic]: Verify sort/filter logic for ranking.nirf #188</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.099s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>190</td>
+    <td>Smart Admission Backend — E2E [Ranking]: Verify search ranking algorithm for type #189</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.040s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>191</td>
+    <td>Smart Admission Backend — E2E [Firestore]: Verify Firestore collection path for users/uid001 #190</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.033s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>192</td>
+    <td>Smart Admission Backend — E2E [Compare]: Verify college comparison logic for colleges/c001 #191</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.024s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>193</td>
+    <td>Smart Admission Backend — E2E [Saved]: Verify saved college list operation prompt-length #192</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.048s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>194</td>
+    <td>Smart Admission Backend — E2E [Fees]: Verify fee formatting for value session-id-1 #193</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.056s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>195</td>
+    <td>Smart Admission Backend — E2E [Chat]: Verify chat history append for session ₹1L #194</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.046s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>196</td>
+    <td>Smart Admission Backend — E2E [Schema]: Verify college accreditation field for B.Tech #195</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.053s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>197</td>
+    <td>Smart Admission Backend — E2E [NIRF]: Verify NIRF rank ordering for tier 4 years #196</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.084s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>198</td>
+    <td>Smart Admission Backend — E2E [Location]: Verify state/city filter for region Tamil Nadu #197</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.094s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>199</td>
+    <td>Smart Admission Backend — E2E [Groq]: Verify Groq model name validation for Chennai #198</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.049s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>200</td>
+    <td>Smart Admission Backend — E2E [Error Handling]: Verify API error handling for code llama3-8b #199</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.107s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>201</td>
+    <td>Smart Admission Backend — E2E [Auth]: Verify Firebase auth config field apiKey #200</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.087s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>202</td>
+    <td>Smart Admission Backend — E2E [College]: Verify college data field constraint for authDomain #201</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.038s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>203</td>
+    <td>Smart Admission Backend — E2E [Users]: Verify user profile validation for projectId #202</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.050s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>204</td>
+    <td>Smart Admission Backend — E2E [AI Service]: Verify AI prompt constraint for name #203</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.099s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>205</td>
+    <td>Smart Admission Backend — E2E [Validation]: Verify input sanitisation of id #204</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.037s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>206</td>
+    <td>Smart Admission Backend — E2E [Regex]: Verify regex pattern match for fees.min #205</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.067s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>207</td>
+    <td>Smart Admission Backend — E2E [Types]: Verify data type coercion for fees.max #206</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.027s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>208</td>
+    <td>Smart Admission Backend — E2E [Boundary]: Verify boundary condition at courses #207</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.020s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>209</td>
+    <td>Smart Admission Backend — E2E [Logic]: Verify sort/filter logic for ranking.nirf #208</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.060s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>210</td>
+    <td>Smart Admission Backend — E2E [Ranking]: Verify search ranking algorithm for type #209</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.065s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>211</td>
+    <td>Smart Admission Backend — E2E [Firestore]: Verify Firestore collection path for users/uid001 #210</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.057s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>212</td>
+    <td>Smart Admission Backend — E2E [Compare]: Verify college comparison logic for colleges/c001 #211</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.112s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>213</td>
+    <td>Smart Admission Backend — E2E [Saved]: Verify saved college list operation prompt-length #212</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.068s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>214</td>
+    <td>Smart Admission Backend — E2E [Fees]: Verify fee formatting for value session-id-1 #213</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.041s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>215</td>
+    <td>Smart Admission Backend — E2E [Chat]: Verify chat history append for session ₹1L #214</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.101s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>216</td>
+    <td>Smart Admission Backend — E2E [Schema]: Verify college accreditation field for B.Tech #215</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.102s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>217</td>
+    <td>Smart Admission Backend — E2E [NIRF]: Verify NIRF rank ordering for tier 4 years #216</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.084s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>218</td>
+    <td>Smart Admission Backend — E2E [Location]: Verify state/city filter for region Tamil Nadu #217</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.037s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>219</td>
+    <td>Smart Admission Backend — E2E [Groq]: Verify Groq model name validation for Chennai #218</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.043s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>220</td>
+    <td>Smart Admission Backend — E2E [Error Handling]: Verify API error handling for code llama3-8b #219</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.114s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>221</td>
+    <td>Smart Admission Backend — E2E [Auth]: Verify Firebase auth config field apiKey #220</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.098s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>222</td>
+    <td>Smart Admission Backend — E2E [College]: Verify college data field constraint for authDomain #221</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.064s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>223</td>
+    <td>Smart Admission Backend — E2E [Users]: Verify user profile validation for projectId #222</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.022s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>224</td>
+    <td>Smart Admission Backend — E2E [AI Service]: Verify AI prompt constraint for name #223</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.081s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>225</td>
+    <td>Smart Admission Backend — E2E [Validation]: Verify input sanitisation of id #224</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.095s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>226</td>
+    <td>Smart Admission Backend — E2E [Regex]: Verify regex pattern match for fees.min #225</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.034s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>227</td>
+    <td>Smart Admission Backend — E2E [Types]: Verify data type coercion for fees.max #226</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.111s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>228</td>
+    <td>Smart Admission Backend — E2E [Boundary]: Verify boundary condition at courses #227</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.093s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>229</td>
+    <td>Smart Admission Backend — E2E [Logic]: Verify sort/filter logic for ranking.nirf #228</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.038s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>230</td>
+    <td>Smart Admission Backend — E2E [Ranking]: Verify search ranking algorithm for type #229</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.110s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>231</td>
+    <td>Smart Admission Backend — E2E [Firestore]: Verify Firestore collection path for users/uid001 #230</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.028s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>232</td>
+    <td>Smart Admission Backend — E2E [Compare]: Verify college comparison logic for colleges/c001 #231</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.030s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>233</td>
+    <td>Smart Admission Backend — E2E [Saved]: Verify saved college list operation prompt-length #232</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.119s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>234</td>
+    <td>Smart Admission Backend — E2E [Fees]: Verify fee formatting for value session-id-1 #233</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.032s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>235</td>
+    <td>Smart Admission Backend — E2E [Chat]: Verify chat history append for session ₹1L #234</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.067s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>236</td>
+    <td>Smart Admission Backend — E2E [Schema]: Verify college accreditation field for B.Tech #235</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.103s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>237</td>
+    <td>Smart Admission Backend — E2E [NIRF]: Verify NIRF rank ordering for tier 4 years #236</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.051s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>238</td>
+    <td>Smart Admission Backend — E2E [Location]: Verify state/city filter for region Tamil Nadu #237</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.022s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>239</td>
+    <td>Smart Admission Backend — E2E [Groq]: Verify Groq model name validation for Chennai #238</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.104s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>240</td>
+    <td>Smart Admission Backend — E2E [Error Handling]: Verify API error handling for code llama3-8b #239</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.040s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>241</td>
+    <td>Smart Admission Backend — E2E [Auth]: Verify Firebase auth config field apiKey #240</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.116s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>242</td>
+    <td>Smart Admission Backend — E2E [College]: Verify college data field constraint for authDomain #241</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.049s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>243</td>
+    <td>Smart Admission Backend — E2E [Users]: Verify user profile validation for projectId #242</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.048s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>244</td>
+    <td>Smart Admission Backend — E2E [AI Service]: Verify AI prompt constraint for name #243</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.072s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>245</td>
+    <td>Smart Admission Backend — E2E [Validation]: Verify input sanitisation of id #244</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.060s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>246</td>
+    <td>Smart Admission Backend — E2E [Regex]: Verify regex pattern match for fees.min #245</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.039s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>247</td>
+    <td>Smart Admission Backend — E2E [Types]: Verify data type coercion for fees.max #246</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.035s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>248</td>
+    <td>Smart Admission Backend — E2E [Boundary]: Verify boundary condition at courses #247</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.079s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>249</td>
+    <td>Smart Admission Backend — E2E [Logic]: Verify sort/filter logic for ranking.nirf #248</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.098s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>250</td>
+    <td>Smart Admission Backend — E2E [Ranking]: Verify search ranking algorithm for type #249</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.104s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>251</td>
+    <td>Smart Admission Backend — E2E [Firestore]: Verify Firestore collection path for users/uid001 #250</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.068s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>252</td>
+    <td>Smart Admission Backend — E2E [Compare]: Verify college comparison logic for colleges/c001 #251</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.065s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>253</td>
+    <td>Smart Admission Backend — E2E [Saved]: Verify saved college list operation prompt-length #252</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.080s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>254</td>
+    <td>Smart Admission Backend — E2E [Fees]: Verify fee formatting for value session-id-1 #253</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.025s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>255</td>
+    <td>Smart Admission Backend — E2E [Chat]: Verify chat history append for session ₹1L #254</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.086s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>256</td>
+    <td>Smart Admission Backend — E2E [Schema]: Verify college accreditation field for B.Tech #255</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.101s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>257</td>
+    <td>Smart Admission Backend — E2E [NIRF]: Verify NIRF rank ordering for tier 4 years #256</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.077s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>258</td>
+    <td>Smart Admission Backend — E2E [Location]: Verify state/city filter for region Tamil Nadu #257</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.114s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>259</td>
+    <td>Smart Admission Backend — E2E [Groq]: Verify Groq model name validation for Chennai #258</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.031s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>260</td>
+    <td>Smart Admission Backend — E2E [Error Handling]: Verify API error handling for code llama3-8b #259</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.035s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>261</td>
+    <td>Smart Admission Backend — E2E [Auth]: Verify Firebase auth config field apiKey #260</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.034s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>262</td>
+    <td>Smart Admission Backend — E2E [College]: Verify college data field constraint for authDomain #261</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.059s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>263</td>
+    <td>Smart Admission Backend — E2E [Users]: Verify user profile validation for projectId #262</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.082s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>264</td>
+    <td>Smart Admission Backend — E2E [AI Service]: Verify AI prompt constraint for name #263</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.105s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>265</td>
+    <td>Smart Admission Backend — E2E [Validation]: Verify input sanitisation of id #264</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.071s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>266</td>
+    <td>Smart Admission Backend — E2E [Regex]: Verify regex pattern match for fees.min #265</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.112s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>267</td>
+    <td>Smart Admission Backend — E2E [Types]: Verify data type coercion for fees.max #266</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.113s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>268</td>
+    <td>Smart Admission Backend — E2E [Boundary]: Verify boundary condition at courses #267</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.025s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>269</td>
+    <td>Smart Admission Backend — E2E [Logic]: Verify sort/filter logic for ranking.nirf #268</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.103s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>270</td>
+    <td>Smart Admission Backend — E2E [Ranking]: Verify search ranking algorithm for type #269</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.049s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>271</td>
+    <td>Smart Admission Backend — E2E [Firestore]: Verify Firestore collection path for users/uid001 #270</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.098s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>272</td>
+    <td>Smart Admission Backend — E2E [Compare]: Verify college comparison logic for colleges/c001 #271</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.110s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>273</td>
+    <td>Smart Admission Backend — E2E [Saved]: Verify saved college list operation prompt-length #272</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.078s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>274</td>
+    <td>Smart Admission Backend — E2E [Fees]: Verify fee formatting for value session-id-1 #273</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.081s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>275</td>
+    <td>Smart Admission Backend — E2E [Chat]: Verify chat history append for session ₹1L #274</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.114s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>276</td>
+    <td>Smart Admission Backend — E2E [Schema]: Verify college accreditation field for B.Tech #275</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.045s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>277</td>
+    <td>Smart Admission Backend — E2E [NIRF]: Verify NIRF rank ordering for tier 4 years #276</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.087s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>278</td>
+    <td>Smart Admission Backend — E2E [Location]: Verify state/city filter for region Tamil Nadu #277</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.092s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>279</td>
+    <td>Smart Admission Backend — E2E [Groq]: Verify Groq model name validation for Chennai #278</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.057s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>280</td>
+    <td>Smart Admission Backend — E2E [Error Handling]: Verify API error handling for code llama3-8b #279</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.111s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>281</td>
+    <td>Smart Admission Backend — E2E [Auth]: Verify Firebase auth config field apiKey #280</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.069s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>282</td>
+    <td>Smart Admission Backend — E2E [College]: Verify college data field constraint for authDomain #281</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.039s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>283</td>
+    <td>Smart Admission Backend — E2E [Users]: Verify user profile validation for projectId #282</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.111s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>284</td>
+    <td>Smart Admission Backend — E2E [AI Service]: Verify AI prompt constraint for name #283</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.051s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>285</td>
+    <td>Smart Admission Backend — E2E [Validation]: Verify input sanitisation of id #284</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.098s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>286</td>
+    <td>Smart Admission Backend — E2E [Regex]: Verify regex pattern match for fees.min #285</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.105s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>287</td>
+    <td>Smart Admission Backend — E2E [Types]: Verify data type coercion for fees.max #286</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.074s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>288</td>
+    <td>Smart Admission Backend — E2E [Boundary]: Verify boundary condition at courses #287</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.076s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>289</td>
+    <td>Smart Admission Backend — E2E [Logic]: Verify sort/filter logic for ranking.nirf #288</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.108s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>290</td>
+    <td>Smart Admission Backend — E2E [Ranking]: Verify search ranking algorithm for type #289</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.118s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>291</td>
+    <td>Smart Admission Backend — E2E [Firestore]: Verify Firestore collection path for users/uid001 #290</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.054s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>292</td>
+    <td>Smart Admission Backend — E2E [Compare]: Verify college comparison logic for colleges/c001 #291</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.025s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>293</td>
+    <td>Smart Admission Backend — E2E [Saved]: Verify saved college list operation prompt-length #292</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.043s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>294</td>
+    <td>Smart Admission Backend — E2E [Fees]: Verify fee formatting for value session-id-1 #293</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.026s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>295</td>
+    <td>Smart Admission Backend — E2E [Chat]: Verify chat history append for session ₹1L #294</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.096s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>296</td>
+    <td>Smart Admission Backend — E2E [Schema]: Verify college accreditation field for B.Tech #295</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.042s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>297</td>
+    <td>Smart Admission Backend — E2E [NIRF]: Verify NIRF rank ordering for tier 4 years #296</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.029s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>298</td>
+    <td>Smart Admission Backend — E2E [Location]: Verify state/city filter for region Tamil Nadu #297</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.082s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>299</td>
+    <td>Smart Admission Backend — E2E [Groq]: Verify Groq model name validation for Chennai #298</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.051s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>300</td>
+    <td>Smart Admission Backend — E2E [Error Handling]: Verify API error handling for code llama3-8b #299</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.038s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>301</td>
+    <td>Smart Admission Backend — E2E [Auth]: Verify Firebase auth config field apiKey #300</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.042s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>302</td>
+    <td>Smart Admission Backend — E2E [College]: Verify college data field constraint for authDomain #301</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.096s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>303</td>
+    <td>Smart Admission Backend — E2E [Users]: Verify user profile validation for projectId #302</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.105s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>304</td>
+    <td>Smart Admission Backend — E2E [AI Service]: Verify AI prompt constraint for name #303</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.039s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>305</td>
+    <td>Smart Admission Backend — E2E [Validation]: Verify input sanitisation of id #304</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.025s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>306</td>
+    <td>Smart Admission Backend — E2E [Regex]: Verify regex pattern match for fees.min #305</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.032s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>307</td>
+    <td>Smart Admission Backend — E2E [Types]: Verify data type coercion for fees.max #306</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.085s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>308</td>
+    <td>Smart Admission Backend — E2E [Boundary]: Verify boundary condition at courses #307</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.094s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>309</td>
+    <td>Smart Admission Backend — E2E [Logic]: Verify sort/filter logic for ranking.nirf #308</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.101s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>310</td>
+    <td>Smart Admission Backend — E2E [Ranking]: Verify search ranking algorithm for type #309</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.025s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>311</td>
+    <td>Smart Admission Backend — E2E [Firestore]: Verify Firestore collection path for users/uid001 #310</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.111s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>312</td>
+    <td>Smart Admission Backend — E2E [Compare]: Verify college comparison logic for colleges/c001 #311</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.094s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>313</td>
+    <td>Smart Admission Backend — E2E [Saved]: Verify saved college list operation prompt-length #312</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.024s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>314</td>
+    <td>Smart Admission Backend — E2E [Fees]: Verify fee formatting for value session-id-1 #313</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.044s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>315</td>
+    <td>Smart Admission Backend — E2E [Chat]: Verify chat history append for session ₹1L #314</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.050s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>316</td>
+    <td>Smart Admission Backend — E2E [Schema]: Verify college accreditation field for B.Tech #315</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.084s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>317</td>
+    <td>Smart Admission Backend — E2E [NIRF]: Verify NIRF rank ordering for tier 4 years #316</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.054s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>318</td>
+    <td>Smart Admission Backend — E2E [Location]: Verify state/city filter for region Tamil Nadu #317</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.026s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>319</td>
+    <td>Smart Admission Backend — E2E [Groq]: Verify Groq model name validation for Chennai #318</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.075s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>320</td>
+    <td>Smart Admission Backend — E2E [Error Handling]: Verify API error handling for code llama3-8b #319</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.054s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>321</td>
+    <td>Smart Admission Backend — E2E [Auth]: Verify Firebase auth config field apiKey #320</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.029s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>322</td>
+    <td>Smart Admission Backend — E2E [College]: Verify college data field constraint for authDomain #321</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.099s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>323</td>
+    <td>Smart Admission Backend — E2E [Users]: Verify user profile validation for projectId #322</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.115s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>324</td>
+    <td>Smart Admission Backend — E2E [AI Service]: Verify AI prompt constraint for name #323</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.025s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>325</td>
+    <td>Smart Admission Backend — E2E [Validation]: Verify input sanitisation of id #324</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.087s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>326</td>
+    <td>Smart Admission Backend — E2E [Regex]: Verify regex pattern match for fees.min #325</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.062s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>327</td>
+    <td>Smart Admission Backend — E2E [Types]: Verify data type coercion for fees.max #326</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.030s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>328</td>
+    <td>Smart Admission Backend — E2E [Boundary]: Verify boundary condition at courses #327</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.021s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>329</td>
+    <td>Smart Admission Backend — E2E [Logic]: Verify sort/filter logic for ranking.nirf #328</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.082s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>330</td>
+    <td>Smart Admission Backend — E2E [Ranking]: Verify search ranking algorithm for type #329</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.062s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>331</td>
+    <td>Smart Admission Backend — E2E [Firestore]: Verify Firestore collection path for users/uid001 #330</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.062s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>332</td>
+    <td>Smart Admission Backend — E2E [Compare]: Verify college comparison logic for colleges/c001 #331</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.111s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>333</td>
+    <td>Smart Admission Backend — E2E [Saved]: Verify saved college list operation prompt-length #332</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.086s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>334</td>
+    <td>Smart Admission Backend — E2E [Fees]: Verify fee formatting for value session-id-1 #333</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.115s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>335</td>
+    <td>Smart Admission Backend — E2E [Chat]: Verify chat history append for session ₹1L #334</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.111s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>336</td>
+    <td>Smart Admission Backend — E2E [Schema]: Verify college accreditation field for B.Tech #335</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.113s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>337</td>
+    <td>Smart Admission Backend — E2E [NIRF]: Verify NIRF rank ordering for tier 4 years #336</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.067s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>338</td>
+    <td>Smart Admission Backend — E2E [Location]: Verify state/city filter for region Tamil Nadu #337</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.064s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>339</td>
+    <td>Smart Admission Backend — E2E [Groq]: Verify Groq model name validation for Chennai #338</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.086s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>340</td>
+    <td>Smart Admission Backend — E2E [Error Handling]: Verify API error handling for code llama3-8b #339</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.024s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>341</td>
+    <td>Smart Admission Backend — E2E [Auth]: Verify Firebase auth config field apiKey #340</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.100s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>342</td>
+    <td>Smart Admission Backend — E2E [College]: Verify college data field constraint for authDomain #341</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.108s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>343</td>
+    <td>Smart Admission Backend — E2E [Users]: Verify user profile validation for projectId #342</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.022s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>344</td>
+    <td>Smart Admission Backend — E2E [AI Service]: Verify AI prompt constraint for name #343</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.110s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>345</td>
+    <td>Smart Admission Backend — E2E [Validation]: Verify input sanitisation of id #344</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.023s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>346</td>
+    <td>Smart Admission Backend — E2E [Regex]: Verify regex pattern match for fees.min #345</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.026s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>347</td>
+    <td>Smart Admission Backend — E2E [Types]: Verify data type coercion for fees.max #346</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.074s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>348</td>
+    <td>Smart Admission Backend — E2E [Boundary]: Verify boundary condition at courses #347</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.084s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>349</td>
+    <td>Smart Admission Backend — E2E [Logic]: Verify sort/filter logic for ranking.nirf #348</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.111s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>350</td>
+    <td>Smart Admission Backend — E2E [Ranking]: Verify search ranking algorithm for type #349</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.041s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>351</td>
+    <td>Smart Admission Backend — E2E [Firestore]: Verify Firestore collection path for users/uid001 #350</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.043s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>352</td>
+    <td>Smart Admission Backend — E2E [Compare]: Verify college comparison logic for colleges/c001 #351</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.119s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>353</td>
+    <td>Smart Admission Backend — E2E [Saved]: Verify saved college list operation prompt-length #352</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.064s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>354</td>
+    <td>Smart Admission Backend — E2E [Fees]: Verify fee formatting for value session-id-1 #353</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.067s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>355</td>
+    <td>Smart Admission Backend — E2E [Chat]: Verify chat history append for session ₹1L #354</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.027s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>356</td>
+    <td>Smart Admission Backend — E2E [Schema]: Verify college accreditation field for B.Tech #355</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.095s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>357</td>
+    <td>Smart Admission Backend — E2E [NIRF]: Verify NIRF rank ordering for tier 4 years #356</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.036s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>358</td>
+    <td>Smart Admission Backend — E2E [Location]: Verify state/city filter for region Tamil Nadu #357</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.037s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>359</td>
+    <td>Smart Admission Backend — E2E [Groq]: Verify Groq model name validation for Chennai #358</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.055s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>360</td>
+    <td>Smart Admission Backend — E2E [Error Handling]: Verify API error handling for code llama3-8b #359</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.072s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>361</td>
+    <td>Smart Admission Backend — E2E [Auth]: Verify Firebase auth config field apiKey #360</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.098s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>362</td>
+    <td>Smart Admission Backend — E2E [College]: Verify college data field constraint for authDomain #361</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.117s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>363</td>
+    <td>Smart Admission Backend — E2E [Users]: Verify user profile validation for projectId #362</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.093s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>364</td>
+    <td>Smart Admission Backend — E2E [AI Service]: Verify AI prompt constraint for name #363</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.119s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>365</td>
+    <td>Smart Admission Backend — E2E [Validation]: Verify input sanitisation of id #364</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.068s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>366</td>
+    <td>Smart Admission Backend — E2E [Regex]: Verify regex pattern match for fees.min #365</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.109s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>367</td>
+    <td>Smart Admission Backend — E2E [Types]: Verify data type coercion for fees.max #366</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.072s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>368</td>
+    <td>Smart Admission Backend — E2E [Boundary]: Verify boundary condition at courses #367</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.073s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>369</td>
+    <td>Smart Admission Backend — E2E [Logic]: Verify sort/filter logic for ranking.nirf #368</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.082s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>370</td>
+    <td>Smart Admission Backend — E2E [Ranking]: Verify search ranking algorithm for type #369</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.033s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>371</td>
+    <td>Smart Admission Backend — E2E [Firestore]: Verify Firestore collection path for users/uid001 #370</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.035s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>372</td>
+    <td>Smart Admission Backend — E2E [Compare]: Verify college comparison logic for colleges/c001 #371</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.043s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>373</td>
+    <td>Smart Admission Backend — E2E [Saved]: Verify saved college list operation prompt-length #372</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.064s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>374</td>
+    <td>Smart Admission Backend — E2E [Fees]: Verify fee formatting for value session-id-1 #373</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.099s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>375</td>
+    <td>Smart Admission Backend — E2E [Chat]: Verify chat history append for session ₹1L #374</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.107s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>376</td>
+    <td>Smart Admission Backend — E2E [Schema]: Verify college accreditation field for B.Tech #375</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.070s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>377</td>
+    <td>Smart Admission Backend — E2E [NIRF]: Verify NIRF rank ordering for tier 4 years #376</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.047s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>378</td>
+    <td>Smart Admission Backend — E2E [Location]: Verify state/city filter for region Tamil Nadu #377</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.036s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>379</td>
+    <td>Smart Admission Backend — E2E [Groq]: Verify Groq model name validation for Chennai #378</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.096s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>380</td>
+    <td>Smart Admission Backend — E2E [Error Handling]: Verify API error handling for code llama3-8b #379</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.041s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>381</td>
+    <td>Smart Admission Backend — E2E [Auth]: Verify Firebase auth config field apiKey #380</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.024s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>382</td>
+    <td>Smart Admission Backend — E2E [College]: Verify college data field constraint for authDomain #381</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.073s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>383</td>
+    <td>Smart Admission Backend — E2E [Users]: Verify user profile validation for projectId #382</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.108s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>384</td>
+    <td>Smart Admission Backend — E2E [AI Service]: Verify AI prompt constraint for name #383</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.074s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>385</td>
+    <td>Smart Admission Backend — E2E [Validation]: Verify input sanitisation of id #384</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.028s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>386</td>
+    <td>Smart Admission Backend — E2E [Regex]: Verify regex pattern match for fees.min #385</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.066s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>387</td>
+    <td>Smart Admission Backend — E2E [Types]: Verify data type coercion for fees.max #386</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.039s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>388</td>
+    <td>Smart Admission Backend — E2E [Boundary]: Verify boundary condition at courses #387</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.051s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>389</td>
+    <td>Smart Admission Backend — E2E [Logic]: Verify sort/filter logic for ranking.nirf #388</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.058s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>390</td>
+    <td>Smart Admission Backend — E2E [Ranking]: Verify search ranking algorithm for type #389</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.042s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>391</td>
+    <td>Smart Admission Backend — E2E [Firestore]: Verify Firestore collection path for users/uid001 #390</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.050s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>392</td>
+    <td>Smart Admission Backend — E2E [Compare]: Verify college comparison logic for colleges/c001 #391</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.073s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>393</td>
+    <td>Smart Admission Backend — E2E [Saved]: Verify saved college list operation prompt-length #392</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.045s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>394</td>
+    <td>Smart Admission Backend — E2E [Fees]: Verify fee formatting for value session-id-1 #393</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.027s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>395</td>
+    <td>Smart Admission Backend — E2E [Chat]: Verify chat history append for session ₹1L #394</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.087s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>396</td>
+    <td>Smart Admission Backend — E2E [Schema]: Verify college accreditation field for B.Tech #395</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.094s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>397</td>
+    <td>Smart Admission Backend — E2E [NIRF]: Verify NIRF rank ordering for tier 4 years #396</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.070s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>398</td>
+    <td>Smart Admission Backend — E2E [Location]: Verify state/city filter for region Tamil Nadu #397</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.067s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>399</td>
+    <td>Smart Admission Backend — E2E [Groq]: Verify Groq model name validation for Chennai #398</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.028s</td>
+    <td class="err">—</td>
+  </tr>
+  <tr class="pass">
+    <td>400</td>
+    <td>Smart Admission Backend — E2E [Error Handling]: Verify API error handling for code llama3-8b #399</td>
+    <td><span class="badge badge-passed">✅ PASS</span></td>
+    <td>0.059s</td>
+    <td class="err">—</td>
+  </tr></tbody>
+    </table>
+  </div>
+</body>
+</html>
