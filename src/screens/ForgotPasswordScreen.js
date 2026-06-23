@@ -56,7 +56,7 @@ export default function ForgotPasswordScreen({ navigation }) {
 
   return (
     <LinearGradient colors={['#eff6ff', '#dbeafe']} style={styles.container}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
           
           <Animated.View style={[styles.contentWrapper, { opacity: fadeAnim, transform: [{ translateY: slideUpAnim }] }]}>
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     borderWidth: 1, borderColor: 'rgba(219,234,254,0.5)',
   },
 
-  input: { flex: 1, fontSize: 15, color: '#0f172a', fontWeight: '500' },
+  input: { flex: 1, height: '100%', fontSize: 15, color: '#0f172a', fontWeight: '500' },
 
   // Success state
   successBox:   { alignItems: 'center', paddingVertical: 8 },

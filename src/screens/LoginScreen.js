@@ -86,7 +86,7 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <LinearGradient colors={['#eff6ff', '#dbeafe']} style={styles.container}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
           
           <Animated.View style={[styles.contentWrapper, { opacity: fadeAnim, transform: [{ translateY: slideUpAnim }] }]}>
@@ -252,7 +252,7 @@ function ErrText({ children }) {
 
 const localS = StyleSheet.create({
   fieldLabel: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 },
-  labelText:  { fontSize: 13, fontWeight: '600', color: '#475569', transition: 'color 0.2s' },
+  labelText:  { fontSize: 13, fontWeight: '600', color: '#475569' },
   inputWrap: {
     flexDirection: 'row', alignItems: 'center',
     borderWidth: 1.5, borderColor: '#e2e8f0', borderRadius: 14,
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
   cardTitle: { fontSize: 22, fontWeight: '800', color: '#0f172a', marginBottom: 4 },
   cardSub:   { fontSize: 14, color: '#64748b', marginBottom: 22 },
 
-  input: { flex: 1, fontSize: 15, color: '#0f172a', fontWeight: '500' },
+  input: { flex: 1, height: '100%', fontSize: 15, color: '#0f172a', fontWeight: '500' },
 
   forgotBtn:  { alignSelf: 'flex-end', marginTop: 10 },
   forgotText: { fontSize: 13, color: '#2563eb', fontWeight: '700' },
