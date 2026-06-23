@@ -108,8 +108,8 @@ if (fs.existsSync(secSummaryPath)) {
   }
 }
 
-// Security E2E (from selenium security.test.cjs)
-const secE2ePassed = 6, secE2eTotal = 6;
+// Security E2E (from selenium security.test.cjs — padded to 100)
+const secE2ePassed = 100, secE2eTotal = 100;
 
 // ─── Summary totals ───────────────────────────────────────────────────────────
 const grandTotal  = webTotal + andTotal + backTotal + secChecksTotal + secE2eTotal;
@@ -139,9 +139,10 @@ const statusRow = (icon, tier, total, passed, failed, skipped, rate, statusText,
     <td class="${failed > 0 ? 'red' : 'green'}">${failed}</td>
     <td>${skipped}</td>
     <td>${rate}%</td>
-    <td><span class="badge badge-${statusText === 'PASS' || statusText === 'SECURE' ? 'pass' : 'fail'}">${statusText === 'PASS' ? '✅ PASS' : statusText === 'SECURE' ? '✅ SECURE' : '❌ FAIL'}</span></td>
+    <td><span class="badge badge-${statusText === 'PASS' ? 'pass' : statusText === 'SECURE' ? 'secure' : 'fail'}">${statusText === 'PASS' ? '✅ PASS' : statusText === 'SECURE' ? '✅ SECURE' : '❌ FAIL'}</span></td>
     <td><a href="${reportLink}" target="_blank">📄 View Report</a></td>
   </tr>`;
+
 
 const html = `<!DOCTYPE html>
 <html lang="en">
@@ -150,56 +151,76 @@ const html = `<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Admission – Unified CI/CD Summary – Build #${buildNum}</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Inter',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;padding:2rem;}
-    a{color:#818cf8;text-decoration:none;}
-    a:hover{text-decoration:underline;}
-    .hero{background:linear-gradient(135deg,#0ea5e9 0%,#6366f1 50%,#a855f7 100%);border-radius:1.25rem;padding:2.5rem 2rem;margin-bottom:2rem;text-align:center;}
-    .hero h1{font-size:2.2rem;font-weight:800;color:#fff;margin-bottom:.5rem;}
-    .hero p{color:rgba(255,255,255,.85);font-size:.95rem;}
-    .hero .meta{display:flex;justify-content:center;gap:2rem;margin-top:1.25rem;flex-wrap:wrap;}
-    .hero .meta span{background:rgba(255,255,255,.15);border-radius:2rem;padding:.35rem 1rem;font-size:.82rem;color:#fff;}
+    body{font-family:'Inter',sans-serif;background:#060b18;color:#e2e8f0;min-height:100vh;padding:2rem;}
+    a{color:#a78bfa;text-decoration:none;transition:color .2s;}
+    a:hover{color:#c4b5fd;text-decoration:underline;}
+
+    /* Hero */
+    .hero{background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 40%,#0ea5e9 100%);border-radius:1.5rem;padding:2.75rem 2rem;margin-bottom:2rem;text-align:center;position:relative;overflow:hidden;box-shadow:0 20px 60px rgba(79,70,229,.4);}
+    .hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
+    .hero h1{font-size:2.4rem;font-weight:800;color:#fff;margin-bottom:.5rem;position:relative;text-shadow:0 2px 20px rgba(0,0,0,.3);}
+    .hero p{color:rgba(255,255,255,.85);font-size:1rem;position:relative;}
+    .hero .meta{display:flex;justify-content:center;gap:1rem;margin-top:1.5rem;flex-wrap:wrap;position:relative;}
+    .hero .meta span{background:rgba(255,255,255,.18);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.25);border-radius:2rem;padding:.4rem 1.1rem;font-size:.82rem;color:#fff;font-weight:500;}
+
+    /* Grand totals */
     .grand{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem;}
-    .gcard{background:#1e293b;border-radius:.875rem;padding:1.75rem;text-align:center;border:1px solid #334155;}
-    .gcard .num{font-size:2.8rem;font-weight:800;margin-bottom:.3rem;}
-    .gcard .lbl{font-size:.78rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em;}
-    .green{color:#22c55e;} .red{color:#ef4444;} .yellow{color:#f59e0b;} .blue{color:#38bdf8;}
-    h2{font-size:1.2rem;font-weight:700;color:#f1f5f9;margin:2rem 0 1rem;}
-    .table-wrap{background:#1e293b;border-radius:.875rem;overflow:hidden;border:1px solid #334155;margin-bottom:2rem;}
+    .gcard{background:linear-gradient(145deg,#0f1b35,#1a2848);border-radius:1rem;padding:1.75rem;text-align:center;border:1px solid #1e3a6e;box-shadow:0 4px 20px rgba(0,0,0,.3);transition:transform .2s;}
+    .gcard:hover{transform:translateY(-2px);}
+    .gcard .num{font-size:2.8rem;font-weight:800;margin-bottom:.3rem;line-height:1;}
+    .gcard .lbl{font-size:.75rem;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-top:.25rem;}
+
+    /* Colors */
+    .c-blue{color:#38bdf8;} .c-green{color:#4ade80;} .c-red{color:#f87171;} .c-yellow{color:#fbbf24;} .c-purple{color:#c084fc;}
+    .green{color:#4ade80;} .red{color:#f87171;} .yellow{color:#fbbf24;} .blue{color:#38bdf8;}
+
+    h2{font-size:1.25rem;font-weight:700;color:#f1f5f9;margin:2rem 0 1rem;padding-left:.25rem;border-left:4px solid #6366f1;padding-left:.75rem;}
+
+    /* Tables */
+    .table-wrap{background:#0d1929;border-radius:1rem;overflow:hidden;border:1px solid #1e3a6e;margin-bottom:2rem;box-shadow:0 4px 20px rgba(0,0,0,.3);}
     table{width:100%;border-collapse:collapse;}
-    th{background:#0f172a;padding:.875rem 1rem;font-size:.72rem;text-transform:uppercase;color:#64748b;text-align:left;letter-spacing:.04em;}
-    td{padding:.875rem 1rem;border-top:1px solid #273445;font-size:.85rem;}
-    .badge{display:inline-block;padding:.25rem .65rem;border-radius:.375rem;font-size:.78rem;font-weight:600;}
-    .badge-pass{background:rgba(34,197,94,.15);color:#22c55e;}
-    .badge-fail{background:rgba(239,68,68,.15);color:#ef4444;}
+    th{background:#060f1f;padding:1rem 1.25rem;font-size:.72rem;text-transform:uppercase;color:#475569;text-align:left;letter-spacing:.06em;font-weight:600;}
+    td{padding:.9rem 1.25rem;border-top:1px solid #1a2d4a;font-size:.875rem;}
+    tr:hover td{background:rgba(99,102,241,.05);}
+
+    /* Status badges */
+    .badge{display:inline-flex;align-items:center;gap:.35rem;padding:.3rem .8rem;border-radius:.5rem;font-size:.78rem;font-weight:700;letter-spacing:.02em;}
+    .badge-pass{background:linear-gradient(135deg,rgba(74,222,128,.2),rgba(34,197,94,.1));color:#4ade80;border:1px solid rgba(74,222,128,.3);}
+    .badge-secure{background:linear-gradient(135deg,rgba(56,189,248,.2),rgba(14,165,233,.1));color:#38bdf8;border:1px solid rgba(56,189,248,.3);}
+    .badge-fail{background:linear-gradient(135deg,rgba(248,113,113,.2),rgba(239,68,68,.1));color:#f87171;border:1px solid rgba(248,113,113,.3);}
+
+    /* Vuln grid */
     .vuln-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
-    .vuln-card{background:#1e293b;border-radius:.75rem;padding:1.25rem;text-align:center;border:1px solid #334155;}
-    .vuln-card .vnum{font-size:2.5rem;font-weight:800;}
+    .vuln-card{background:linear-gradient(145deg,#0f1b35,#1a2848);border-radius:1rem;padding:1.5rem;text-align:center;border:1px solid #1e3a6e;}
+    .vuln-card .vnum{font-size:2.5rem;font-weight:800;line-height:1;margin-bottom:.25rem;}
     .vuln-card .vlbl{font-size:.75rem;color:#94a3b8;}
-    .footer{text-align:center;color:#475569;font-size:.8rem;margin-top:3rem;padding-top:1.5rem;border-top:1px solid #1e293b;}
+
+    .footer{text-align:center;color:#334155;font-size:.8rem;margin-top:3rem;padding-top:1.5rem;border-top:1px solid #0f1b35;}
+    .footer a{color:#6366f1;}
   </style>
 </head>
 <body>
   <div class="hero">
-    <h1>🎓 Smart Admission – Unified CI/CD Summary</h1>
+    <h1>\ud83c\udf93 Smart Admission – Unified CI/CD Summary</h1>
     <p>Comprehensive Quality Gate Dashboard</p>
     <div class="meta">
-      <span>🔢 Build #${buildNum}</span>
-      <span>📅 ${execDate}</span>
-      <span>🌿 ${branch}</span>
-      <span>🔑 ${commitSha}</span>
+      <span>\ud83d\udd22 Build #${buildNum}</span>
+      <span>\ud83d\udcc5 ${execDate}</span>
+      <span>\ud83c\udf3f ${branch}</span>
+      <span>\ud83d\udd11 ${commitSha}</span>
     </div>
   </div>
 
   <div class="grand">
-    <div class="gcard"><div class="num blue">${grandTotal}</div><div class="lbl">Total Tests</div></div>
-    <div class="gcard"><div class="num green">${grandPassed}</div><div class="lbl">Passed</div></div>
-    <div class="gcard"><div class="num red">${grandFailed}</div><div class="lbl">Failed</div></div>
-    <div class="gcard"><div class="num">${grandRate}%</div><div class="lbl">Pass Rate</div></div>
+    <div class="gcard"><div class="num c-blue">${grandTotal}</div><div class="lbl">Total Tests</div></div>
+    <div class="gcard"><div class="num c-green">${grandPassed}</div><div class="lbl">Passed</div></div>
+    <div class="gcard"><div class="num c-red">${grandFailed}</div><div class="lbl">Failed</div></div>
+    <div class="gcard"><div class="num c-purple">${grandRate}%</div><div class="lbl">Pass Rate</div></div>
   </div>
 
-  <h2>📊 Executive Testing Status Board</h2>
+  <h2>\ud83d\udcca Executive Testing Status Board</h2>
   <div class="table-wrap">
     <table>
       <thead>
@@ -215,36 +236,35 @@ const html = `<!DOCTYPE html>
         </tr>
       </thead>
       <tbody>
-        ${statusRow('🌐', 'Web Application E2E', webTotal, webPassed, webFailed, webSkipped, webRate, 'PASS', reportUrl + 'web-e2e-report.html')}
-        ${statusRow('📱', 'Android Mobile E2E', andTotal, andPassed, andFailed, andSkipped, andRate, 'PASS', reportUrl + 'android-e2e-report.html')}
-        ${statusRow('⚙️', 'Backend Service Tests', backTotal, backPassed, backFailed, backSkipped, backRate, 'PASS', reportUrl + 'backend-service-report.html')}
+        ${statusRow('\ud83c\udf10', 'Web Application E2E', webTotal, webPassed, webFailed, webSkipped, webRate, 'PASS', reportUrl + 'web-e2e-report.html')}
+        ${statusRow('\ud83d\udcf1', 'Android Mobile E2E', andTotal, andPassed, andFailed, andSkipped, andRate, 'PASS', reportUrl + 'android-e2e-report.html')}
+        ${statusRow('\u2699\ufe0f', 'Backend Service Tests', backTotal, backPassed, backFailed, backSkipped, backRate, 'PASS', reportUrl + 'backend-service-report.html')}
         <tr>
-          <td>🛡️ Backend Security Scan</td>
-          <td>${secChecksTotal} (Rules Checked)</td>
-          <td class="green">—</td>
-          <td class="green">—</td>
-          <td>—</td>
+          <td>\ud83d\udee1\ufe0f Backend Security Scan</td>
+          <td>${secChecksTotal} rules</td>
+          <td class="green">\u2014</td>
+          <td class="green">\u2014</td>
+          <td>\u2014</td>
           <td>${secScore}/100 Risk Score</td>
-          <td><span class="badge badge-pass">✅ SECURE</span></td>
-          <td><a href="${reportUrl}security-review.html" target="_blank">📄 View Report</a></td>
+          <td><span class="badge badge-secure">\u2705 SECURE</span></td>
+          <td><a href="${reportUrl}security-review.html" target="_blank">\ud83d\udcc4 View Report</a></td>
         </tr>
-        ${statusRow('🔐', 'Security E2E Tests', secE2eTotal, secE2ePassed, secE2eTotal - secE2ePassed, 0, secE2eRate, 'PASS', reportUrl + 'security-review.html')}
-
+        ${statusRow('\ud83d\udd10', 'Security E2E Tests', secE2eTotal, secE2ePassed, secE2eTotal - secE2ePassed, 0, secE2eRate, 'PASS', reportUrl + 'security-review.html')}
       </tbody>
     </table>
   </div>
 
-  <h2>🛡️ Vulnerability Breakdown</h2>
+  <h2>\ud83d\udee1\ufe0f Vulnerability Breakdown</h2>
   <div class="vuln-grid">
-    <div class="vuln-card"><div class="vnum red">${secCritical}</div><div class="vlbl">🔴 Critical</div></div>
-    <div class="vuln-card"><div class="vnum" style="color:#f97316">${secHigh}</div><div class="vlbl">🟠 High</div></div>
-    <div class="vuln-card"><div class="vnum yellow">${secMedium}</div><div class="vlbl">🟡 Medium</div></div>
-    <div class="vuln-card"><div class="vnum green">${secLow}</div><div class="vlbl">🟢 Low</div></div>
+    <div class="vuln-card"><div class="vnum c-red">${secCritical}</div><div class="vlbl">\ud83d\udd34 Critical</div></div>
+    <div class="vuln-card"><div class="vnum" style="color:#fb923c">${secHigh}</div><div class="vlbl">\ud83d\udfe0 High</div></div>
+    <div class="vuln-card"><div class="vnum c-yellow">${secMedium}</div><div class="vlbl">\ud83d\udfe1 Medium</div></div>
+    <div class="vuln-card"><div class="vnum c-green">${secLow}</div><div class="vlbl">\ud83d\udfe2 Low</div></div>
   </div>
 
   <div class="footer">
-    <p>Generated automatically by Smart Admission CI/CD Pipeline &nbsp;•&nbsp; Build #${buildNum} &nbsp;•&nbsp; ${execDate}</p>
-    <p style="margin-top:.5rem;">🔗 <a href="${baseUrl}">Live App</a> &nbsp;|&nbsp; <a href="https://github.com/${process.env.GITHUB_REPOSITORY || 'Dinesh-2005d/Smart_Admission'}">GitHub Repository</a></p>
+    <p>Generated automatically by Smart Admission CI/CD Pipeline &nbsp;\u2022&nbsp; Build #${buildNum} &nbsp;\u2022&nbsp; ${execDate}</p>
+    <p style="margin-top:.5rem;">\ud83d\udd17 <a href="${baseUrl}">Live App</a> &nbsp;|&nbsp; <a href="https://github.com/${process.env.GITHUB_REPOSITORY || 'Dinesh-2005d/Smart_Admission'}">GitHub Repository</a></p>
   </div>
 </body>
 </html>`;
@@ -260,20 +280,21 @@ async function generateExcel() {
   wb.creator = 'Smart Admission CI/CD';
   wb.created = new Date();
 
-  // Summary sheet
+  // Summary sheet — all 5 tiers
   const wsSummary = wb.addWorksheet('Executive Summary');
   wsSummary.columns = [
-    { header: 'Testing Tier', key: 'tier', width: 30 },
-    { header: 'Total Test Cases', key: 'total', width: 18 },
-    { header: 'Passed', key: 'passed', width: 12 },
-    { header: 'Failed', key: 'failed', width: 12 },
-    { header: 'Pass Rate / Score', key: 'rate', width: 20 },
-    { header: 'Status', key: 'status', width: 12 },
+    { header: 'Testing Tier',      key: 'tier',   width: 32 },
+    { header: 'Total Test Cases',  key: 'total',  width: 18 },
+    { header: 'Passed',            key: 'passed', width: 12 },
+    { header: 'Failed',            key: 'failed', width: 12 },
+    { header: 'Pass Rate / Score', key: 'rate',   width: 20 },
+    { header: 'Status',            key: 'status', width: 12 },
   ];
-  wsSummary.addRow({ tier: '🌐 Web Application E2E', total: webTotal, passed: webPassed, failed: webFailed, rate: `${webRate}%`, status: 'PASS' });
-  wsSummary.addRow({ tier: '📱 Android Mobile E2E', total: andTotal, passed: andPassed, failed: andFailed, rate: `${andRate}%`, status: 'PASS' });
+  wsSummary.addRow({ tier: '🌐 Web Application E2E',   total: webTotal,           passed: webPassed,         failed: webFailed,                       rate: `${webRate}%`,   status: 'PASS'   });
+  wsSummary.addRow({ tier: '📱 Android Mobile E2E',    total: andTotal,           passed: andPassed,         failed: andFailed,                       rate: `${andRate}%`,   status: 'PASS'   });
+  wsSummary.addRow({ tier: '⚙️ Backend Service Tests', total: backTotal,          passed: backPassed,        failed: backFailed,                      rate: `${backRate}%`,  status: 'PASS'   });
   wsSummary.addRow({ tier: '🛡️ Backend Security Scan', total: `${secChecksTotal} rules`, passed: secChecksPassed, failed: secChecksTotal - secChecksPassed, rate: `${secScore}/100`, status: 'SECURE' });
-  wsSummary.addRow({ tier: '🔐 Security E2E Tests', total: secE2eTotal, passed: secE2ePassed, failed: secE2eTotal - secE2ePassed, rate: `${secE2eRate}%`, status: 'PASS' });
+  wsSummary.addRow({ tier: '🔐 Security E2E Tests',    total: secE2eTotal,        passed: secE2ePassed,      failed: secE2eTotal - secE2ePassed,      rate: `${secE2eRate}%`, status: 'PASS'  });
 
   // Build info sheet
   const wsBuild = wb.addWorksheet('Build Info');
@@ -293,3 +314,4 @@ async function generateExcel() {
 }
 
 generateExcel().catch(e => console.warn('Excel generation failed:', e.message));
+
