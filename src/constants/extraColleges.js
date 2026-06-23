@@ -27,7 +27,7 @@ export const EXTRA_COLLEGES = [
   mc("Patna Teacher Training College","Patna","Bihar","teacher_training","Government",3.8,50,"15,000",65,false,"B+",1990,"Teacher training in Bihar",["B.Ed"],"Bihar B.Ed"),
 
   // ── Chhattisgarh – missing depts ──────────────────────────────────────────
-  mc("Hidayatullah National Law University","Raipur","Chhattisgarh","law","Government",4.1,50,"60,000",72,false,"B+",2003,"NLU in CG",["LLB"],"CG NLU"),
+  mc("Hidayatullah National Law University","Raipur","Chhattisgarh","law","Government",4.1,50,"60,000",72,false,"A",2003,"NLU in CG",["LLB"],"CG NLU"),
   mc("Indira Gandhi Krishi Vishwavidyalaya","Raipur","Chhattisgarh","agriculture","Government",4.2,55,"20,000",72,true,"A",1987,"Agri university in CG",["B.Sc Agriculture"],"CG Agri University"),
   mc("CSVTU Architecture School","Bhilai","Chhattisgarh","architecture","Government",3.8,55,"60,000",68,false,"B",2005,"Architecture in CG",["B.Arch"],"CG Architecture"),
   mc("CG Institute of Management","Raipur","Chhattisgarh","management","Private",3.8,50,"60,000",68,true,"B",2003,"Management in CG",["MBA"],"CG MBA"),

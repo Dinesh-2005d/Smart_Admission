@@ -7,7 +7,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from '../config/firebase';
 
 // ── Fallback localStorage key for guest/unauthenticated users ────────────────
-const GUEST_KEY = 'smart_admission_saved_colleges_guest';
+const GUEST_KEY = 'acadivo_saved_colleges_guest';
 
 const GuestStorage = {
   get: () => {

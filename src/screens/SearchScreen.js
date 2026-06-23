@@ -1,11 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  TextInput, SafeAreaView, StatusBar, KeyboardAvoidingView, Platform
+  TextInput, SafeAreaView, StatusBar, KeyboardAvoidingView, Platform, Animated
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { searchColleges } from '../constants/collegeDatabase';
 import { useSavedColleges } from '../context/SavedCollegesContext';
+
+function AnimatedCard({ index, children }) {
+  const animatedValue = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(animatedValue, {
+      toValue: 1,
+      duration: 400,
+      delay: Math.min(index * 50, 400),
+      useNativeDriver: true,
+    }).start();
+  }, [index]);
+
+  const translateY = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [30, 0],
+  });
+
+  return (
+    <Animated.View style={{ opacity: animatedValue, transform: [{ translateY }] }}>
+      {children}
+    </Animated.View>
+  );
+}
 
 export default function SearchScreen({ navigation }) {
   const [query, setQuery] = useState('');
@@ -95,12 +119,12 @@ export default function SearchScreen({ navigation }) {
         )}
 
         {results.slice(0, page * 10).map((college, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.collegeCard}
-            onPress={() => navigation.navigate('Details', { college })}
-            activeOpacity={0.85}
-          >
+          <AnimatedCard key={index} index={index}>
+            <TouchableOpacity
+              style={styles.collegeCard}
+              onPress={() => navigation.navigate('Details', { college })}
+              activeOpacity={0.85}
+            >
             {/* Top row: icon + name/location + type badge */}
             <View style={styles.cardHeader}>
               <View style={styles.iconCircle}><Text style={styles.iconText}>🏛️</Text></View>
@@ -140,7 +164,8 @@ export default function SearchScreen({ navigation }) {
                 </Text>
               </TouchableOpacity>
             </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          </AnimatedCard>
         ))}
 
         {searched && results.length > page * 10 && (
@@ -166,8 +191,8 @@ const styles = StyleSheet.create({
   contentContainer: { paddingHorizontal: 16, paddingBottom: 40 },
   suggestLabel: { color: '#334155', fontSize: 13, fontWeight: '700', marginBottom: 12, marginTop: 8 },
   tagsWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 20 },
-  quickTag: { backgroundColor: '#0f172a', borderRadius: 20, paddingHorizontal: 14, paddingVertical: 7, borderWidth: 1, borderColor: '#cbd5e1' },
-  quickTagText: { color: '#2563eb', fontSize: 12, fontWeight: '600' },
+  quickTag: { backgroundColor: '#eff6ff', borderRadius: 20, paddingHorizontal: 14, paddingVertical: 7, borderWidth: 1, borderColor: '#bfdbfe' },
+  quickTagText: { color: '#1d4ed8', fontSize: 12, fontWeight: '600' },
   suggestionRow: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#f8f9fa' },
   suggestionText: { color: '#0ea5e9', fontSize: 13, flex: 1 },
   emptyBox: { alignItems: 'center', paddingVertical: 40, gap: 8 },

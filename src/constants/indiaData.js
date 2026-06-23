@@ -69,5 +69,4 @@ export const DEPARTMENTS = [
   { id: 'management', label: 'Management (MBA / PGDM)', icon: '📊' },
   { id: 'hotel_management', label: 'Hotel Management', icon: '🏨' },
   { id: 'teacher_training', label: 'Teacher Training (B.Ed)', icon: '👩‍🏫' },
-  { id: 'education', label: 'Education', icon: '📚' },
 ];

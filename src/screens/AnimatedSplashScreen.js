@@ -2,65 +2,86 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated, Dimensions } from 'react-native';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
 
 export default function AnimatedSplashScreen({ onFinish }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(0.5)).current;
+  const scaleAnim = useRef(new Animated.Value(0.4)).current;
+  const rotateAnim = useRef(new Animated.Value(0)).current;
+  const slideUpAnim = useRef(new Animated.Value(50)).current;
+
   const [fontsLoaded] = Font.useFonts({
     ...Ionicons.font,
   });
 
   useEffect(() => {
-    if (!fontsLoaded) return; // Wait until fonts are loaded
+    if (!fontsLoaded) return;
 
+    // Start entrance animations
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 800,
+        duration: 1000,
         useNativeDriver: true,
       }),
       Animated.spring(scaleAnim, {
         toValue: 1,
-        friction: 4,
+        friction: 6,
         tension: 40,
+        useNativeDriver: true,
+      }),
+      Animated.timing(rotateAnim, {
+        toValue: 1,
+        duration: 1200,
+        useNativeDriver: true,
+      }),
+      Animated.spring(slideUpAnim, {
+        toValue: 0,
+        friction: 8,
+        tension: 30,
         useNativeDriver: true,
       }),
     ]).start();
 
-    // After 2 seconds, trigger the callback to load the main app
+    // Fade out and finish after 2.5 seconds
     const timer = setTimeout(() => {
-      // Fade out before finishing
       Animated.timing(fadeAnim, {
         toValue: 0,
-        duration: 400,
+        duration: 500,
         useNativeDriver: true,
       }).start(() => {
         onFinish();
       });
-    }, 2000);
+    }, 2500);
 
     return () => clearTimeout(timer);
-  }, [fadeAnim, scaleAnim, onFinish, fontsLoaded]);
+  }, [fadeAnim, scaleAnim, rotateAnim, slideUpAnim, onFinish, fontsLoaded]);
+
+  const spin = rotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
 
   return (
-    <View style={styles.container}>
-      <Animated.View style={[styles.content, { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }]}>
-        <View style={styles.iconCircle}>
+    <LinearGradient colors={['#1e3a8a', '#0f172a']} style={styles.container}>
+      <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
+        <Animated.View style={[styles.iconCircle, { transform: [{ scale: scaleAnim }, { rotate: spin }] }]}>
           <Text style={styles.icon}>🎓</Text>
-        </View>
-        <Text style={styles.title}>Acadivo</Text>
-        <Text style={styles.subtitle}>Your AI Admission Counselor</Text>
+        </Animated.View>
+        <Animated.View style={{ transform: [{ translateY: slideUpAnim }] }}>
+          <Text style={styles.title}>Acadivo</Text>
+          <Text style={styles.subtitle}>Your Intelligent AI counselor</Text>
+        </Animated.View>
       </Animated.View>
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -68,31 +89,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   iconCircle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: '#0f172a',
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    backgroundColor: '#ffffff',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 24,
     shadowColor: '#2563eb',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-    elevation: 10,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.4,
+    shadowRadius: 24,
+    elevation: 15,
   },
   icon: {
-    fontSize: 50,
+    fontSize: 56,
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: '900',
-    color: '#0f172a',
+    color: '#ffffff',
+    textAlign: 'center',
     marginBottom: 8,
+    letterSpacing: -0.5,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
-    color: '#2563eb',
+    color: '#eab308',
+    textAlign: 'center',
+    letterSpacing: 0.5,
   },
 });

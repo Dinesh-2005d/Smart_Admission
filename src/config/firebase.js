@@ -3,7 +3,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth }       from 'firebase/auth';
 import { getFirestore }  from 'firebase/firestore';
 
-// SmartAdmission Firebase Project
+// Acadivo Firebase Project
 const firebaseConfig = {
   apiKey:            "AIzaSyCAjg4UBnMalTXJHbWYXJ_iwh5bhNQJ0-Q",
   authDomain:        "smartadmission.firebaseapp.com",

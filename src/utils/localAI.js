@@ -1,4 +1,4 @@
-// A Custom Inbuilt NLP Engine for SmartCampus AI
+// A Custom Inbuilt NLP Engine for Acadivo AI
 
 const OFF_TOPIC_KEYWORDS = [
   'movie', 'actor', 'song', 'music', 'dance', 'politics', 'president',

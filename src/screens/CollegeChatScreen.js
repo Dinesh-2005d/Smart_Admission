@@ -220,9 +220,9 @@ export default function CollegeChatScreen({ route, navigation }) {
   // Full welcome message — matches web version
   const buildWelcome = () => {
     if (college) {
-      return `👋 Hello! I'm **SmartAdmission AI** — your personal college counsellor.\n\nI'm currently loaded with everything about **${college.name}** (${college.location}, ${college.state}).\n\n${groqActive ? '🟢 **Real AI is active** — I can answer anything about colleges, admissions, exams, and careers!\n\n' : ''}Ask me about:\n• 🏠 Hostel & Accommodation\n• 📊 Placements & Salary packages\n• 🎓 Courses & Eligibility\n• 📋 Admission & Counselling\n• 💰 Fees & Scholarships\n• 🏆 Rankings & NAAC Grade\n\nWhat would you like to know? 😊`;
+      return `👋 Hello! I'm **Acadivo AI** — your personal college counsellor.\n\nI'm currently loaded with everything about **${college.name}** (${college.location}, ${college.state}).\n\n${groqActive ? '🟢 **Real AI is active** — I can answer anything about colleges, admissions, exams, and careers!\n\n' : ''}Ask me about:\n• 🏠 Hostel & Accommodation\n• 📊 Placements & Salary packages\n• 🎓 Courses & Eligibility\n• 📋 Admission & Counselling\n• 💰 Fees & Scholarships\n• 🏆 Rankings & NAAC Grade\n\nWhat would you like to know? 😊`;
     }
-    return `👋 Hello! I'm **SmartAdmission AI** — your personal Indian college counsellor.\n\n${groqActive ? '🟢 **Real AI is active!**\n\n' : ''}I can help you with:\n• 🏛️ Finding the right college\n• 📝 JEE, NEET, CLAT, CAT preparation\n• 💼 Career paths after graduation\n• 💰 Scholarships & Education loans\n• 📊 Comparing colleges\n\nAsk me anything about Indian college admissions! 🎓`;
+    return `👋 Hello! I'm **Acadivo AI** — your personal Indian college counsellor.\n\n${groqActive ? '🟢 **Real AI is active!**\n\n' : ''}I can help you with:\n• 🏛️ Finding the right college\n• 📝 JEE, NEET, CLAT, CAT preparation\n• 💼 Career paths after graduation\n• 💰 Scholarships & Education loans\n• 📊 Comparing colleges\n\nAsk me anything about Indian college admissions! 🎓`;
   };
 
   const [messages, setMessages] = useState([{
@@ -304,7 +304,7 @@ export default function CollegeChatScreen({ route, navigation }) {
 
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              <Text style={styles.headerTitle} numberOfLines={1}>SmartAdmission AI</Text>
+              <Text style={styles.headerTitle} numberOfLines={1}>Acadivo AI</Text>
               {groqActive && (
                 <View style={styles.badge70B}>
                   <Text style={styles.badge70BText}>70B</Text>

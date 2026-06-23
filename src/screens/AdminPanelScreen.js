@@ -5,20 +5,14 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
-
-/**
- * AdminPanelScreen
- * Works on both Web and Mobile — no Alert.alert (broken on web).
- * Uses inline confirm/cancel row instead.
- */
 export default function AdminPanelScreen() {
   const { user, adminGetUsers, adminBlockUser, adminUnblockUser, adminDeleteUser } = useAuth();
   const [users,      setUsers]      = useState([]);
   const [loading,    setLoading]    = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [actionId,   setActionId]   = useState(null);  // user being processed
-  const [confirm,    setConfirm]    = useState(null);  // { id, type: 'block'|'delete' }
-  const [toast,      setToast]      = useState(null);  // { type:'ok'|'err', msg }
+  const [actionId,   setActionId]   = useState(null);
+  const [confirm,    setConfirm]    = useState(null);
+  const [toast,      setToast]      = useState(null);
 
   const fetchUsers = useCallback(async () => {
     const list = await adminGetUsers();
@@ -179,7 +173,6 @@ export default function AdminPanelScreen() {
   return (
     <View style={styles.container}>
 
-      {/* Toast notification */}
       {toast && (
         <View style={[styles.toast, toast.type === 'ok' ? styles.toastOk : styles.toastErr]}>
           <Ionicons
@@ -227,6 +220,24 @@ const styles = StyleSheet.create({
   container:  { flex: 1, backgroundColor: '#f0f4ff' },
   center:     { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12 },
   loadingText:{ color: '#64748b', fontSize: 14 },
+
+  // Tab bar
+  tabBar: {
+    flexDirection: 'row', backgroundColor: '#fff',
+    borderBottomWidth: 1, borderBottomColor: '#e2e8f0',
+    paddingHorizontal: 16, paddingTop: 12, gap: 4,
+  },
+  tabBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    paddingHorizontal: 18, paddingVertical: 10, borderRadius: 10,
+    borderWidth: 1.5, borderColor: 'transparent',
+    backgroundColor: '#f8fafc',
+  },
+  tabBtnActive: {
+    backgroundColor: '#eff6ff', borderColor: '#bfdbfe',
+  },
+  tabBtnText:       { fontSize: 13, fontWeight: '600', color: '#94a3b8' },
+  tabBtnTextActive: { color: '#2563eb', fontWeight: '800' },
 
   toast: {
     flexDirection: 'row', alignItems: 'center', gap: 8,

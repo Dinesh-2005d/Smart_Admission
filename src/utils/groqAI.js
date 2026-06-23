@@ -1,5 +1,5 @@
 /**
- * groqAI.js — SmartCampus AI v3.0
+ * groqAI.js — Acadivo AI v3.0
  * Real AI via Groq API (Llama 3 70B — fastest, most capable).
  *
  * Features:
@@ -105,7 +105,7 @@ const formatCollegesForAI = (colleges) => {
 
 // ── Master system prompt ──────────────────────────────────────────────────────
 const buildSystemPrompt = (college, departmentLabel, suggestedColleges, hasCollegeContext) => `
-You are **SmartAdmission AI** — India's most helpful AI college counsellor, powered by Llama 3 70B, built into the SmartCampus Admission app.
+You are **Acadivo AI** — India's most helpful AI college counsellor, powered by Llama 3 70B, built into the Acadivo app.
 
 Your personality: Warm, knowledgeable, encouraging, like a senior who cracked JEE/NEET and is mentoring you. Be conversational, use emojis where appropriate, format responses clearly with bullets and bold text.
 

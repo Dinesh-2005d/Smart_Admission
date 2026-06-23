@@ -1,10 +1,11 @@
 import React, { useRef, useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  StatusBar, SafeAreaView, Linking, Animated, Dimensions, Share, Image, Modal
+  StatusBar, SafeAreaView, Linking, Animated, Dimensions, Share, Modal
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSavedColleges } from '../context/SavedCollegesContext';
+import CollegeLogo from '../components/CollegeLogo';
 
 const { width } = Dimensions.get('window');
 
@@ -27,7 +28,9 @@ const COLORS = {
 export default function DetailsScreen({ route, navigation }) {
   const { college, departmentLabel = '' } = route.params;
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const [activeTab, setActiveTab] = useState('overview');
+  const tabFade = useRef(new Animated.Value(1)).current;
+  const scaleAnim = useRef(new Animated.Value(0.8)).current;
+  const [activeTab, setActiveTab] = useState('placement');
   const [selectedFacility, setSelectedFacility] = useState(null);
   const { issaved, toggleSave } = useSavedColleges();
   const saved = issaved(college);
@@ -36,13 +39,42 @@ export default function DetailsScreen({ route, navigation }) {
     Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }).start();
   }, [fadeAnim]);
 
+  React.useEffect(() => {
+    scaleAnim.setValue(0.8);
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      friction: 6,
+      tension: 40,
+      useNativeDriver: true,
+    }).start();
+  }, [activeTab]);
+
+  const handleTabChange = (tabId) => {
+    Animated.timing(tabFade, {
+      toValue: 0,
+      duration: 150,
+      useNativeDriver: true,
+    }).start(() => {
+      setActiveTab(tabId);
+      Animated.timing(tabFade, {
+        toValue: 1,
+        duration: 250,
+        useNativeDriver: true,
+      }).start();
+    });
+  };
+
   const openMapsExternal = () => {
     const query = encodeURIComponent(college.mapQuery || college.name + ' ' + college.location);
     Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${query}`);
   };
 
   const openWebsite = () => {
-    Linking.openURL(`https://www.google.com/search?q=${encodeURIComponent(college.name + ' official website')}`);
+    if (college.domain) {
+      Linking.openURL(`http://${college.domain}`);
+    } else {
+      Linking.openURL(`https://www.google.com/search?q=${encodeURIComponent(college.name + ' official website')}`);
+    }
   };
 
   const handleShare = async () => {
@@ -108,7 +140,6 @@ export default function DetailsScreen({ route, navigation }) {
   };
 
   const tabs = [
-    { id: 'overview', label: 'ℹ️ Overview', color: COLORS.purple },
     { id: 'map', label: '📍 Map', color: COLORS.teal },
     { id: 'placement', label: '💼 Placement', color: COLORS.green },
     { id: 'courses', label: '🎓 Courses', color: COLORS.blue },
@@ -136,9 +167,13 @@ export default function DetailsScreen({ route, navigation }) {
         {/* Hero Card */}
         <View style={[styles.heroCard, { borderColor: getTypeColor(college.type) + '55' }]}>
           <View style={styles.heroTop}>
-            <Image 
-              source={{ uri: college.image || 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=200&q=80' }} 
-              style={[styles.heroIconCircle, { borderColor: getTypeColor(college.type) }]} 
+            <CollegeLogo
+              collegeName={college.name}
+              department={college.department}
+              size={72}
+              borderRadius={36}
+              allowDynamicFetch={true}
+              collegeDomain={college.domain}
             />
             <View style={styles.heroActions}>
               <TouchableOpacity style={styles.actionBtn} onPress={handleShare}>
@@ -158,14 +193,12 @@ export default function DetailsScreen({ route, navigation }) {
 
           <Text style={styles.heroName}>{college.name}</Text>
           <View style={styles.heroMetaRow}>
-            <Ionicons name="location-sharp" size={13} color={COLORS.pink} />
-            <Text style={styles.heroLocation}>{college.location}</Text>
-            {college.established && (
+            {college.established ? (
               <>
-                <Text style={styles.heroDot}>•</Text>
-                <Text style={styles.heroEst}>Est. {college.established}</Text>
+                <Ionicons name="calendar-outline" size={13} color={COLORS.gold} />
+                <Text style={styles.heroEst}>Established: {college.established}</Text>
               </>
-            )}
+            ) : null}
           </View>
 
           <View style={styles.tagsRow}>
@@ -210,7 +243,7 @@ export default function DetailsScreen({ route, navigation }) {
             <TouchableOpacity
               key={tab.id}
               style={[styles.tab, activeTab === tab.id && { backgroundColor: tab.color, borderColor: tab.color }]}
-              onPress={() => setActiveTab(tab.id)}
+              onPress={() => handleTabChange(tab.id)}
             >
               <Text style={[styles.tabText, activeTab === tab.id && { color: '#ffffff', fontWeight: '800' }]}>
                 {tab.label}
@@ -219,36 +252,8 @@ export default function DetailsScreen({ route, navigation }) {
           ))}
         </ScrollView>
 
-        {/* OVERVIEW TAB */}
-        {activeTab === 'overview' && (
-          <View style={styles.sectionCard}>
-            <Text style={styles.sectionTitle}>📸 Campus Gallery</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 14 }}>
-              {[
-                { img: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=200&q=80', label: 'Main Building', color: COLORS.purple },
-                { img: 'https://images.unsplash.com/photo-1568667256549-094345857637?w=200&q=80', label: 'Library', color: COLORS.blue },
-                { img: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=200&q=80', label: 'Hostel', color: COLORS.teal },
-                { img: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=200&q=80', label: 'Sports', color: COLORS.green },
-                { img: 'https://images.unsplash.com/photo-1543353071-873f17a7a088?w=200&q=80', label: 'Canteen', color: COLORS.orange },
-                { img: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=200&q=80', label: 'Labs', color: COLORS.pink },
-                { img: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=200&q=80', label: 'Computer Lab', color: COLORS.gold },
-                { img: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=200&q=80', label: 'Auditorium', color: COLORS.purple },
-              ].map((item, i) => (
-                <View key={i} style={styles.photoCard}>
-                  <Image source={{ uri: item.img }} style={[styles.photoPlaceholder, { borderColor: item.color + '66', backgroundColor: item.color + '15' }]} />
-                  <Text style={[styles.photoLabel, { color: item.color }]}>{item.label}</Text>
-                </View>
-              ))}
-            </ScrollView>
-            {college.highlight && (
-              <View style={styles.highlightBox}>
-                <Ionicons name="star" size={16} color={COLORS.gold} />
-                <Text style={styles.highlightText}>{college.highlight}</Text>
-              </View>
-            )}
-          </View>
-        )}
 
+        <Animated.View style={{ opacity: tabFade }}>
         {/* MAP TAB */}
         {activeTab === 'map' && (
           <View style={styles.sectionCard}>
@@ -291,18 +296,20 @@ export default function DetailsScreen({ route, navigation }) {
               <View style={[styles.placementFill, { width: `${college.placementRate}%`, backgroundColor: placementColor(college.placementRate) }]} />
             </View>
 
-            <View style={styles.packageRow}>
-              {[
-                { label: 'Avg Package', value: '₹4-12 LPA', color: COLORS.teal },
-                { label: 'Highest', value: '₹25+ LPA', color: COLORS.gold },
-                { label: 'Companies', value: (college.topCompanies?.length || 0) + '+', color: COLORS.purple },
-              ].map((p) => (
-                <View key={p.label} style={[styles.packageBox, { backgroundColor: p.color + '15', borderColor: p.color + '44' }]}>
-                  <Text style={[styles.packageVal, { color: p.color }]}>{p.value}</Text>
-                  <Text style={styles.packageLabel}>{p.label}</Text>
-                </View>
-              ))}
-            </View>
+            <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+              <View style={styles.packageRow}>
+                {[
+                  { label: 'Avg Package', value: college.avgPackage || '₹4-12 LPA', color: COLORS.teal },
+                  { label: 'Highest', value: college.highestPackage || '₹25+ LPA', color: COLORS.gold },
+                  { label: 'Companies', value: (college.topCompanies?.length || 0) + '+', color: COLORS.purple },
+                ].map((p) => (
+                  <View key={p.label} style={[styles.packageBox, { backgroundColor: p.color + '15', borderColor: p.color + '44', flex: 1 }]}>
+                    <Text style={[styles.packageVal, { color: p.color }]}>{p.value}</Text>
+                    <Text style={styles.packageLabel}>{p.label}</Text>
+                  </View>
+                ))}
+              </View>
+            </Animated.View>
 
             <Text style={[styles.companiesTitle, { color: COLORS.sub }]}>🏢 Top Recruiting Companies:</Text>
             <View style={styles.companiesGrid}>
@@ -336,8 +343,7 @@ export default function DetailsScreen({ route, navigation }) {
                     <Text style={[styles.courseBadgeText, { color: c }]}>
                       {college.department === 'medical' ? '5.5 Yrs' : 
                        college.department === 'law' ? '5 Yrs' : 
-                       (college.department === 'arts_science' || college.department === 'commerce') ? '3 Yrs' : 
-                       college.department === 'education' ? '2 Yrs' : '4 Yrs'}
+                       (college.department === 'arts_science' || college.department === 'commerce') ? '3 Yrs' : '4 Yrs'}
                     </Text>
                   </View>
                 </View>
@@ -351,7 +357,6 @@ export default function DetailsScreen({ route, navigation }) {
                  (college.department === 'arts_science' || college.department === 'commerce') ? 'Duration: 3 Years (UG) / 2 Years (PG)' : 
                  college.department === 'pharmacy' ? 'Duration: 4 Years (B.Pharm) / 6 Years (Pharm.D)' :
                  college.department === 'architecture' ? 'Duration: 5 Years (B.Arch)' :
-                 college.department === 'education' ? 'Duration: 2 Years (B.Ed)' :
                  'Duration: 4 Years (B.Tech / B.Sc Agri)'}
               </Text>
             </View>
@@ -385,6 +390,7 @@ export default function DetailsScreen({ route, navigation }) {
             </View>
           </View>
         )}
+        </Animated.View>
 
         {/* Bottom Actions */}
         <TouchableOpacity style={styles.chatBtn} onPress={() => navigation.navigate('CollegeChat', { college, departmentLabel })} activeOpacity={0.85}>
@@ -481,7 +487,9 @@ const styles = StyleSheet.create({
   tab: { paddingHorizontal: 14, paddingVertical: 9, borderRadius: 20, marginRight: 8, backgroundColor: COLORS.card, borderWidth: 1, borderColor: COLORS.border },
   tabText: { color: COLORS.dim, fontSize: 12, fontWeight: '600' },
   sectionCard: { backgroundColor: COLORS.card, borderRadius: 20, padding: 16, marginBottom: 14, borderWidth: 1, borderColor: COLORS.border },
-  sectionTitle: { color: COLORS.text, fontSize: 15, fontWeight: '700', marginBottom: 14 },
+  sectionTitle: { color: COLORS.text, fontSize: 15, fontWeight: '700', marginBottom: 10 },
+  tabScrollView: { maxHeight: 430 },
+  tabScrollContent: { paddingBottom: 8 },
   photoCard: { alignItems: 'center', marginRight: 12 },
   photoPlaceholder: { width: 88, height: 72, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginBottom: 6, borderWidth: 1 },
   photoEmoji: { fontSize: 30 },

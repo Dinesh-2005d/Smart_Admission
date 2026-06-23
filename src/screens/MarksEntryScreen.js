@@ -1,394 +1,283 @@
 import React, { useState, useRef } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  TextInput, Animated, StatusBar, Platform, SafeAreaView,
-  KeyboardAvoidingView, Modal, FlatList,
+  Animated, StatusBar, Platform, SafeAreaView,
+  LayoutAnimation, UIManager,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { DEPARTMENTS, STATES } from '../constants/indiaData';
+import { LinearGradient } from 'expo-linear-gradient';
+import { DEPARTMENTS } from '../constants/indiaData';
 
-// All states for the picker (with emoji flags)
-const STATE_OPTIONS = [
-  { key: 'All India', label: '🇮🇳 All India (Show from all states)' },
-  ...STATES.map(s => ({ key: s, label: `📍 ${s}` })),
-];
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
+const PCT_STEPS = [50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100];
+
+const PCT_COLOR = (pct) => {
+  if (pct >= 90) return '#16a34a';
+  if (pct >= 75) return '#2563eb';
+  if (pct >= 60) return '#d97706';
+  return '#dc2626';
+};
 
 export default function MarksEntryScreen({ navigation, route }) {
-  const { state: homeState, board } = route.params;
+  const { state: homeState, targetState } = route.params;
   const [selectedDept, setSelectedDept] = useState(null);
-  const [percentage, setPercentage] = useState('');
-  const [entranceScore, setEntranceScore] = useState('');
-  const [showEntrance, setShowEntrance] = useState(false);
-  const [showStateModal, setShowStateModal] = useState(false);
-  const [targetState, setTargetState] = useState(homeState); // default = home state
-  const [stateSearch, setStateSearch] = useState('');
+  const [percentage, setPercentage] = useState(75);
+
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scrollRef = useRef(null);
-  const marksCardY = useRef(0);
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, { toValue: 1, duration: 700, useNativeDriver: true }).start();
   }, [fadeAnim]);
 
-  const getEntranceLabel = () => {
-    if (selectedDept === 'engineering') return 'JEE / State Entrance Score (optional)';
-    if (selectedDept === 'medical')     return 'NEET Score (required)';
-    if (selectedDept === 'law')         return 'CLAT Score (optional)';
-    if (selectedDept === 'architecture') return 'NATA Score (optional)';
-    if (selectedDept === 'management')  return 'CAT / MAT Score (optional)';
-    return null;
-  };
-
   const handleDeptSelect = (id) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setSelectedDept(id);
-    setEntranceScore('');
-    setShowEntrance(['engineering', 'medical', 'law', 'architecture', 'management'].includes(id));
-    // Auto-scroll to marks section after a short delay (let state update render first)
-    setTimeout(() => {
-      scrollRef.current?.scrollTo({ y: marksCardY.current - 20, animated: true });
-    }, 120);
   };
 
-  const isValid = () => {
-    if (!selectedDept || !percentage) return false;
-    const pct = parseFloat(percentage);
-    if (isNaN(pct) || pct < 0 || pct > 100) return false;
-    if (selectedDept === 'medical' && !entranceScore) return false;
-    return true;
-  };
-
-  const getScoreColor = () => {
-    const pct = parseFloat(percentage);
-    if (pct >= 90) return '#16a34a';
-    if (pct >= 75) return '#eab308';
-    if (pct >= 60) return '#2563eb';
-    return '#b91c1c';
-  };
-
-  const getScoreMessage = () => {
-    const pct = parseFloat(percentage);
-    if (pct >= 90) return '🌟 Outstanding! Top colleges await you!';
-    if (pct >= 75) return '👍 Great score! Many top colleges available.';
-    if (pct >= 60) return '✅ Good score! Several colleges available.';
-    return '📚 Keep going! Some colleges still available.';
-  };
-
-  const filteredStates = STATE_OPTIONS.filter(s =>
-    s.label.toLowerCase().includes(stateSearch.toLowerCase())
-  );
-
-  const navigateToColleges = () => {
+  const handleFindColleges = () => {
+    if (!selectedDept) return;
     navigation.navigate('CollegeList', {
       homeState,
-      targetState: targetState === 'All India' ? null : targetState,
-      board,
+      targetState: targetState || homeState,
       department: selectedDept,
       departmentLabel: DEPARTMENTS.find(d => d.id === selectedDept)?.label,
-      percentage: parseFloat(percentage),
-      entranceScore: entranceScore ? parseFloat(entranceScore) : null,
+      percentage: percentage,
     });
   };
 
-  const targetStateLabel =
-    targetState === homeState ? `🏠 My State (${homeState})` :
-    targetState === 'All India' ? '🇮🇳 All India' :
-    `📍 ${targetState}`;
-
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'padding'} style={{ flex: 1 }}>
-        <ScrollView ref={scrollRef} style={styles.container} contentContainerStyle={styles.contentContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-
+    <LinearGradient colors={['#eff6ff', '#dbeafe']} style={styles.container}>
+      <SafeAreaView style={styles.safeArea}>
+        <StatusBar barStyle="dark-content" backgroundColor="#eff6ff" />
+        <ScrollView
+          ref={scrollRef}
+          style={{ flex: 1 }}
+          contentContainerStyle={styles.contentContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Header */}
           <View style={styles.headerRow}>
-            <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.backBtn}>
-              <Ionicons name="home" size={18} color="#0f172a" />
-              <Text style={styles.backBtnText}>Back to Home</Text>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn} activeOpacity={0.7}>
+              <Ionicons name="arrow-back" size={16} color="#2563eb" />
+              <Text style={styles.backBtnText}>Back</Text>
             </TouchableOpacity>
+            <View style={styles.stateChip}>
+              <Ionicons name="location" size={13} color="#2563eb" />
+              <Text style={styles.stateChipText}>{targetState || homeState}</Text>
+            </View>
           </View>
 
-          <View style={styles.stepRow}>
-            <View style={styles.stepDone}><Ionicons name="checkmark" size={16} color="#ffffff" /></View>
-            <View style={styles.stepLineActive} />
-            <View style={styles.stepActive}><Text style={styles.stepNumActive}>2</Text></View>
-            <View style={styles.stepLine} />
-            <View style={styles.stepInactive}><Text style={styles.stepNumInactive}>3</Text></View>
-          </View>
-          <Text style={styles.stepLabel}>Step 2 of 3 — Department & Marks</Text>
+          {/* Title */}
+          <Animated.View style={[styles.titleSection, { opacity: fadeAnim }]}>
+            <Text style={styles.pageTitle}>🎓 Select Department</Text>
+            <Text style={styles.pageSubtitle}>Choose the field you want to study</Text>
+          </Animated.View>
 
-          <View style={styles.infoRow}>
-            <View style={styles.infoChip}><Ionicons name="location" size={12} color="#2563eb" /><Text style={styles.infoChipText}> {homeState}</Text></View>
-            <View style={styles.infoChip}><Ionicons name="school" size={12} color="#2563eb" /><Text style={styles.infoChipText}> {board.split('(')[0].trim()}</Text></View>
-          </View>
-
-          <View style={styles.card}>
-            <Text style={styles.sectionTitle}>🎓 Select Department</Text>
-            <View style={styles.deptGrid}>
-              {DEPARTMENTS.map((dept) => (
+          {/* Department Grid */}
+          <Animated.View style={[styles.deptGrid, { opacity: fadeAnim }]}>
+            {DEPARTMENTS.map((dept) => {
+              const isSelected = selectedDept === dept.id;
+              return (
                 <TouchableOpacity
                   key={dept.id}
-                  style={[styles.deptCard, selectedDept === dept.id && styles.deptCardSelected]}
+                  style={[styles.deptCard, isSelected && styles.deptCardSelected]}
                   onPress={() => handleDeptSelect(dept.id)}
                   activeOpacity={0.8}
                 >
                   <Text style={styles.deptIcon}>{dept.icon}</Text>
-                  <Text style={[styles.deptLabel, selectedDept === dept.id && styles.deptLabelSelected]}>
+                  <Text style={[styles.deptLabel, isSelected && styles.deptLabelSelected]}>
                     {dept.label.split('(')[0].trim()}
                   </Text>
-                  <Text style={[styles.deptSub, selectedDept === dept.id && styles.deptSubSelected]}>
+                  <Text style={[styles.deptSub, isSelected && styles.deptSubSelected]}>
                     {dept.label.match(/\(([^)]+)\)/)?.[1] || ''}
                   </Text>
-                  {selectedDept === dept.id && <View style={styles.deptCheck}><Ionicons name="checkmark-circle" size={16} color="#16a34a" /></View>}
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
-          {selectedDept && (
-            <Animated.View
-              style={[styles.card, { opacity: fadeAnim }]}
-              onLayout={(e) => { marksCardY.current = e.nativeEvent.layout.y; }}
-            >
-              <Text style={styles.sectionTitle}>📊 Enter Your Marks</Text>
-
-              <Text style={styles.label}>12th / HSC Percentage *</Text>
-              <View style={styles.inputRow}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="e.g. 85.5"
-                  placeholderTextColor="#475569"
-                  keyboardType="numeric"
-                  value={percentage}
-                  onChangeText={(t) => {
-                    if (t === '' || (/^\d{0,3}(\.\d{0,2})?$/.test(t) && parseFloat(t) <= 100)) setPercentage(t);
-                  }}
-                  maxLength={6}
-                />
-                <View style={[styles.inputSuffix, percentage && { backgroundColor: getScoreColor() + '33' }]}>
-                  <Text style={[styles.inputSuffixText, percentage && { color: getScoreColor() }]}>%</Text>
-                </View>
-              </View>
-
-              {percentage !== '' && parseFloat(percentage) >= 0 && parseFloat(percentage) <= 100 && (
-                <>
-                  <View style={styles.scoreBar}>
-                    <View style={[styles.scoreFill, { width: `${Math.min(parseFloat(percentage), 100)}%`, backgroundColor: getScoreColor() }]} />
-                  </View>
-                  <View style={styles.hintBox}>
-                    <Text style={styles.hintText}>{getScoreMessage()}</Text>
-                  </View>
-                </>
-              )}
-
-              {showEntrance && (
-                <>
-                  <Text style={[styles.label, { marginTop: 16 }]}>{getEntranceLabel()}</Text>
-                  <View style={styles.inputRow}>
-                    <TextInput
-                      style={styles.input}
-                      placeholder={selectedDept === 'medical' ? 'e.g. 650' : 'e.g. 120'}
-                      placeholderTextColor="#475569"
-                      keyboardType="numeric"
-                      value={entranceScore}
-                      onChangeText={setEntranceScore}
-                      maxLength={6}
-                    />
-                    <View style={styles.inputSuffix}>
-                      <Text style={styles.inputSuffixText}>pts</Text>
+                  {isSelected && (
+                    <View style={styles.deptCheck}>
+                      <Ionicons name="checkmark-circle" size={18} color="#16a34a" />
                     </View>
-                  </View>
-                </>
-              )}
+                  )}
+                </TouchableOpacity>
+              );
+            })}
+          </Animated.View>
 
-              {/* State Selector Row */}
-              <Text style={[styles.label, { marginTop: 16 }]}>📍 State Preference</Text>
-              <TouchableOpacity style={styles.statePickerBtn} onPress={() => setShowStateModal(true)} activeOpacity={0.85}>
-                <Text style={styles.statePickerText}>{targetStateLabel}</Text>
-                <Ionicons name="chevron-down" size={18} color="#2563eb" />
-              </TouchableOpacity>
-              <Text style={styles.stateHint}>Change to search colleges in a different state</Text>
+          {/* Percentage Selector */}
+          <Animated.View style={[styles.inputContainer, { opacity: fadeAnim }]}>
+            <Text style={styles.inputLabel}>📊 Select Your 12th / HSC Percentage</Text>
 
-              <TouchableOpacity
-                style={[styles.findBtn, !isValid() && styles.findBtnDisabled]}
-                onPress={() => { if (isValid()) navigateToColleges(); }}
-                disabled={!isValid()}
-                activeOpacity={0.85}
-              >
-                <Ionicons name="sparkles" size={20} color="#ffffff" />
-                <Text style={styles.findBtnText}>Find Best Colleges with AI</Text>
-              </TouchableOpacity>
-            </Animated.View>
-          )}
-
-          {!selectedDept && (
-            <View style={styles.promptBox}>
-              <Text style={styles.promptEmoji}>👆</Text>
-              <Text style={styles.promptText}>Select a department above to continue</Text>
+            {/* Selected value badge */}
+            <View style={[styles.selectedBadge, { borderColor: PCT_COLOR(percentage) }]}>
+              <Text style={[styles.selectedBadgeNum, { color: PCT_COLOR(percentage) }]}>{percentage}%</Text>
+              <Text style={styles.selectedBadgeLabel}>
+                {percentage >= 90 ? '🌟 Excellent – Top colleges available!' :
+                 percentage >= 75 ? '👍 Good – Many colleges qualify!' :
+                 percentage >= 60 ? '🙂 Average – Some colleges qualify.' :
+                 '⚠️ Low – Limited options available.'}
+              </Text>
             </View>
-          )}
-        </ScrollView>
-      </KeyboardAvoidingView>
 
-      {/* State Selection Modal */}
-      <Modal
-        visible={showStateModal}
-        animationType="slide"
-        transparent
-        onRequestClose={() => setShowStateModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalSheet}>
-            <View style={styles.modalHandle} />
-            <Text style={styles.modalTitle}>🗺️ Which state do you want colleges from?</Text>
-            <Text style={styles.modalSubtitle}>
-              Showing colleges from: <Text style={{ color: '#2563eb', fontWeight: '700' }}>{targetStateLabel}</Text>
+            {/* Step buttons grid */}
+            <View style={styles.stepsGrid}>
+              {PCT_STEPS.map((step) => {
+                const active = percentage === step;
+                const col = PCT_COLOR(step);
+                return (
+                  <TouchableOpacity
+                    key={step}
+                    style={[
+                      styles.stepBtn,
+                      { borderColor: col + (active ? 'ff' : '55') },
+                      active && { backgroundColor: col },
+                    ]}
+                    onPress={() => setPercentage(step)}
+                    activeOpacity={0.75}
+                  >
+                    <Text style={[
+                      styles.stepBtnText,
+                      { color: active ? '#ffffff' : col },
+                    ]}>{step}%</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            <Text style={styles.inputHint}>Colleges below your selected percentage cutoff are filtered out automatically.</Text>
+          </Animated.View>
+
+          {/* Find Button */}
+          <TouchableOpacity
+            style={[styles.findBtn, !selectedDept && styles.findBtnDisabled]}
+            onPress={handleFindColleges}
+            disabled={!selectedDept}
+            activeOpacity={0.85}
+          >
+            <Ionicons name="sparkles" size={20} color={selectedDept ? '#ffffff' : '#94a3b8'} />
+            <Text style={[styles.findBtnText, !selectedDept && styles.findBtnTextDisabled]}>
+              {selectedDept
+                ? `Find Colleges · ${DEPARTMENTS.find(d => d.id === selectedDept)?.label.split('(')[0].trim()}`
+                : 'Select a Department to Continue'}
             </Text>
-
-            {/* Search box */}
-            <View style={styles.stateSearchRow}>
-              <Ionicons name="search" size={16} color="#475569" />
-              <TextInput
-                style={styles.stateSearchInput}
-                placeholder="Search state..."
-                placeholderTextColor="#94a3b8"
-                value={stateSearch}
-                onChangeText={setStateSearch}
-              />
-              {stateSearch !== '' && (
-                <TouchableOpacity onPress={() => setStateSearch('')}>
-                  <Ionicons name="close-circle" size={16} color="#475569" />
-                </TouchableOpacity>
-              )}
-            </View>
-
-            {/* Quick picks */}
-            {stateSearch === '' && (
-              <View style={styles.quickPicks}>
-                <TouchableOpacity
-                  style={[styles.quickPickBtn, targetState === homeState && styles.quickPickBtnActive]}
-                  onPress={() => { setTargetState(homeState); setShowStateModal(false); navigateToColleges(); }}
-                >
-                  <Text style={[styles.quickPickText, targetState === homeState && styles.quickPickTextActive]}>🏠 My State ({homeState})</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.quickPickBtn, targetState === 'All India' && styles.quickPickBtnActive]}
-                  onPress={() => { setTargetState('All India'); setShowStateModal(false); setTimeout(navigateToColleges, 50); }}
-                >
-                  <Text style={[styles.quickPickText, targetState === 'All India' && styles.quickPickTextActive]}>🇮🇳 All India</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-
-            <FlatList
-              data={filteredStates}
-              keyExtractor={item => item.key}
-              style={{ maxHeight: 320 }}
-              keyboardShouldPersistTaps="handled"
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[styles.stateItem, targetState === item.key && styles.stateItemActive]}
-                  onPress={() => {
-                    const chosen = item.key === 'All India' ? 'All India' : item.key;
-                    setTargetState(chosen);
-                    setShowStateModal(false);
-                    setStateSearch('');
-                    setTimeout(() => {
-                      navigation.navigate('CollegeList', {
-                        homeState,
-                        targetState: chosen === 'All India' ? null : chosen,
-                        board,
-                        department: selectedDept,
-                        departmentLabel: DEPARTMENTS.find(d => d.id === selectedDept)?.label,
-                        percentage: parseFloat(percentage),
-                        entranceScore: entranceScore ? parseFloat(entranceScore) : null,
-                      });
-                    }, 50);
-                  }}
-                  activeOpacity={0.8}
-                >
-                  <Text style={[styles.stateItemText, targetState === item.key && styles.stateItemTextActive]}>
-                    {item.label}
-                  </Text>
-                  {targetState === item.key && <Ionicons name="checkmark-circle" size={18} color="#2563eb" />}
-                </TouchableOpacity>
-              )}
-            />
-
-            <TouchableOpacity style={styles.modalCloseBtn} onPress={() => { setShowStateModal(false); setStateSearch(''); }}>
-              <Text style={styles.modalCloseBtnText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-    </SafeAreaView>
+            {selectedDept && <Ionicons name="arrow-forward-circle" size={20} color="#ffffff" />}
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: '#ffffff' },
-  container: { flex: 1, backgroundColor: '#ffffff' },
-  contentContainer: { paddingHorizontal: 16, paddingBottom: 40, paddingTop: Platform.OS === 'android' ? 16 : 16 },
-  headerRow: { flexDirection: 'row', marginBottom: 16 },
-  backBtn: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#f1f5f9', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, alignSelf: 'flex-start', borderWidth: 1, borderColor: '#e2e8f0' },
-  backBtnText: { color: '#0f172a', fontWeight: '700', marginLeft: 6, fontSize: 13 },
-  stepRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 6 },
-  stepDone: { width: 34, height: 34, borderRadius: 17, backgroundColor: '#2563eb', alignItems: 'center', justifyContent: 'center' },
-  stepActive: { width: 34, height: 34, borderRadius: 17, backgroundColor: '#2563eb', alignItems: 'center', justifyContent: 'center' },
-  stepInactive: { width: 34, height: 34, borderRadius: 17, backgroundColor: '#0f172a', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#cbd5e1' },
-  stepNumActive: { color: '#ffffff', fontWeight: '900', fontSize: 15 },
-  stepNumInactive: { color: '#475569', fontWeight: '700', fontSize: 15 },
-  stepLine: { width: 40, height: 2, backgroundColor: '#0f172a' },
-  stepLineActive: { width: 40, height: 2, backgroundColor: '#2563eb' },
-  stepLabel: { textAlign: 'center', color: '#475569', fontSize: 12, marginBottom: 14, fontWeight: '500' },
-  infoRow: { flexDirection: 'row', gap: 10, marginBottom: 16, justifyContent: 'center' },
-  infoChip: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#0f172a', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 6, borderWidth: 1, borderColor: '#cbd5e1' },
-  infoChipText: { color: '#2563eb', fontSize: 12, fontWeight: '600' },
-  card: { backgroundColor: '#f8f9fa', borderRadius: 24, padding: 16, borderWidth: 1, borderColor: '#e2e8f0', marginBottom: 16, elevation: 6 },
-  sectionTitle: { color: '#0f172a', fontSize: 16, fontWeight: '700', marginBottom: 14 },
-  deptGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-  deptCard: { width: '48%', backgroundColor: '#ffffff', borderRadius: 16, padding: 14, borderWidth: 1, borderColor: '#e2e8f0', position: 'relative', marginBottom: 14 },
-  deptCardSelected: { borderColor: '#16a34a', backgroundColor: '#dcfce7' },
-  deptIcon: { fontSize: 26, marginBottom: 8 },
-  deptLabel: { color: '#334155', fontSize: 13, fontWeight: '600', marginBottom: 2 },
+  container: { flex: 1 },
+  safeArea: { flex: 1 },
+  contentContainer: { paddingHorizontal: 16, paddingBottom: 40, paddingTop: Platform.OS === 'android' ? 16 : 12 },
+
+  // Header
+  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 },
+  backBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#ffffff', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, borderWidth: 1, borderColor: '#e2e8f0' },
+  backBtnText: { color: '#2563eb', fontWeight: '750', fontSize: 13 },
+  stateChip: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#eff6ff', paddingHorizontal: 12, paddingVertical: 7, borderRadius: 20, borderWidth: 1, borderColor: '#bfdbfe' },
+  stateChipText: { color: '#2563eb', fontWeight: '750', fontSize: 12 },
+
+  // Title
+  titleSection: { marginBottom: 20 },
+  pageTitle: { fontSize: 22, fontWeight: '950', color: '#0f172a', marginBottom: 4 },
+  pageSubtitle: { fontSize: 13, color: '#64748b', fontWeight: '500' },
+
+  // Dept grid
+  deptGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 20 },
+  deptCard: {
+    width: '48%', backgroundColor: '#ffffff', borderRadius: 18, padding: 16,
+    borderWidth: 1.5, borderColor: '#e2e8f0', position: 'relative', marginBottom: 14,
+    shadowColor: '#1e3a8a', shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05, shadowRadius: 10, elevation: 2,
+  },
+  deptCardSelected: { borderColor: '#16a34a', backgroundColor: '#f0fdf4' },
+  deptIcon: { fontSize: 28, marginBottom: 8 },
+  deptLabel: { color: '#334155', fontSize: 13, fontWeight: '800', marginBottom: 2 },
   deptLabelSelected: { color: '#16a34a' },
-  deptSub: { color: '#475569', fontSize: 11 },
+  deptSub: { color: '#94a3b8', fontSize: 11, fontWeight: '500' },
   deptSubSelected: { color: '#15803d' },
   deptCheck: { position: 'absolute', top: 10, right: 10 },
-  label: { color: '#334155', fontSize: 12, fontWeight: '700', marginBottom: 10, textTransform: 'uppercase', letterSpacing: 0.5 },
-  inputRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#ffffff', borderRadius: 14, borderWidth: 1, borderColor: '#e2e8f0', overflow: 'hidden' },
-  input: { flex: 1, color: '#0f172a', fontSize: 22, fontWeight: '800', paddingHorizontal: 16, paddingVertical: 14 },
-  inputSuffix: { paddingHorizontal: 16, paddingVertical: 14, backgroundColor: '#0f172a' },
-  inputSuffixText: { color: '#2563eb', fontWeight: '800', fontSize: 16 },
-  scoreBar: { height: 6, backgroundColor: '#0f172a', borderRadius: 3, marginTop: 10, marginBottom: 4, overflow: 'hidden' },
-  scoreFill: { height: '100%', borderRadius: 3 },
-  hintBox: { backgroundColor: '#fffbeb', borderRadius: 10, padding: 12, marginTop: 8, borderWidth: 1, borderColor: '#fde047' },
-  hintText: { color: '#ca8a04', fontSize: 13, lineHeight: 18 },
-  statePickerBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#ffffff', borderRadius: 14, borderWidth: 1.5, borderColor: '#2563eb', paddingHorizontal: 16, paddingVertical: 13 },
-  statePickerText: { color: '#0f172a', fontSize: 15, fontWeight: '700', flex: 1 },
-  stateHint: { color: '#94a3b8', fontSize: 11, marginTop: 5, marginBottom: 4 },
-  findBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#2563eb', borderRadius: 12, paddingVertical: 14, marginTop: 16 },
-  findBtnDisabled: { backgroundColor: '#0f172a' },
-  findBtnText: { color: '#ffffff', fontSize: 15, fontWeight: '800' },
-  promptBox: { alignItems: 'center', padding: 30, gap: 8 },
-  promptEmoji: { fontSize: 32 },
-  promptText: { color: '#475569', fontSize: 14, textAlign: 'center' },
-  // Modal
-  modalOverlay: { flex: 1, backgroundColor: '#00000066', justifyContent: 'flex-end' },
-  modalSheet: { backgroundColor: '#ffffff', borderTopLeftRadius: 28, borderTopRightRadius: 28, paddingHorizontal: 20, paddingBottom: 34, paddingTop: 16, maxHeight: '88%' },
-  modalHandle: { width: 40, height: 4, backgroundColor: '#e2e8f0', borderRadius: 2, alignSelf: 'center', marginBottom: 16 },
-  modalTitle: { color: '#0f172a', fontSize: 18, fontWeight: '800', marginBottom: 6, textAlign: 'center' },
-  modalSubtitle: { color: '#475569', fontSize: 13, textAlign: 'center', marginBottom: 14 },
-  stateSearchRow: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: '#f1f5f9', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 10, marginBottom: 12, borderWidth: 1, borderColor: '#e2e8f0' },
-  stateSearchInput: { flex: 1, color: '#0f172a', fontSize: 14, fontWeight: '500' },
-  quickPicks: { flexDirection: 'row', gap: 8, marginBottom: 12 },
-  quickPickBtn: { flex: 1, backgroundColor: '#f1f5f9', borderRadius: 12, padding: 10, alignItems: 'center', borderWidth: 1.5, borderColor: '#e2e8f0' },
-  quickPickBtnActive: { backgroundColor: '#eff6ff', borderColor: '#2563eb' },
-  quickPickText: { color: '#334155', fontSize: 12, fontWeight: '600', textAlign: 'center' },
-  quickPickTextActive: { color: '#2563eb' },
-  stateItem: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 12, paddingHorizontal: 4, borderBottomWidth: 1, borderBottomColor: '#f1f5f9' },
-  stateItemActive: { backgroundColor: '#eff6ff', borderRadius: 10, paddingHorizontal: 10 },
-  stateItemText: { color: '#334155', fontSize: 14 },
-  stateItemTextActive: { color: '#2563eb', fontWeight: '700' },
-  modalCloseBtn: { backgroundColor: '#0f172a', borderRadius: 14, paddingVertical: 14, alignItems: 'center', marginTop: 12 },
-  modalCloseBtnText: { color: '#ffffff', fontWeight: '800', fontSize: 15 },
+
+  // Percentage selector styles
+  inputContainer: {
+    backgroundColor: '#ffffff',
+    borderRadius: 18,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(219,234,254,0.5)',
+    marginBottom: 24,
+    shadowColor: '#1e3a8a', shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.08, shadowRadius: 16, elevation: 4,
+  },
+  inputLabel: {
+    color: '#0f172a',
+    fontSize: 13,
+    fontWeight: '800',
+    marginBottom: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  selectedBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    borderWidth: 2,
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginBottom: 16,
+    backgroundColor: '#f8faff',
+  },
+  selectedBadgeNum: {
+    fontSize: 32,
+    fontWeight: '900',
+  },
+  selectedBadgeLabel: {
+    flex: 1,
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#475569',
+    lineHeight: 18,
+  },
+  stepsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 12,
+  },
+  stepBtn: {
+    borderWidth: 2,
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    backgroundColor: '#f8faff',
+    minWidth: 62,
+    alignItems: 'center',
+  },
+  stepBtnText: {
+    fontSize: 14,
+    fontWeight: '800',
+  },
+  inputHint: {
+    color: '#64748b',
+    fontSize: 12,
+    marginTop: 4,
+    lineHeight: 16,
+    fontWeight: '500',
+  },
+
+  // Find button
+  findBtn: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
+    backgroundColor: '#2563eb', borderRadius: 16, paddingVertical: 17, marginBottom: 10,
+    shadowColor: '#2563eb', shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25, shadowRadius: 12, elevation: 6,
+  },
+  findBtnDisabled: { backgroundColor: '#e2e8f0', borderWidth: 1, borderColor: '#cbd5e1' },
+  findBtnText: { color: '#ffffff', fontSize: 15, fontWeight: '900' },
+  findBtnTextDisabled: { color: '#94a3b8' },
 });
