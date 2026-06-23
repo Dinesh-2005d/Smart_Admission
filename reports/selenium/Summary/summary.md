@@ -3,10 +3,10 @@
 ## Deployment Information
 | Field | Value |
 |-------|-------|
-| Build Number | 12 |
-| Execution Date | 2026-06-23 13:24:39 UTC |
+| Build Number | 14 |
+| Execution Date | 2026-06-23 13:45:38 UTC |
 | Branch | main |
-| Commit | cfbb4d3 |
+| Commit | 3eb8262 |
 | Live URL | https://dinesh-2005d.github.io/Smart_Admission/ |
 
 ## Results
