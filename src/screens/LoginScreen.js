@@ -8,10 +8,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../context/AuthContext';
 
-// Enable LayoutAnimation for Android
+// Enable LayoutAnimation for Android (only when explicitly needed)
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
+  UIManager.setLayoutAnimationEnabledExperimental(false);
 }
+
 
 export default function LoginScreen({ navigation }) {
   const { login, register, loading, error } = useAuth();
@@ -86,8 +87,17 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <LinearGradient colors={['#eff6ff', '#dbeafe']} style={styles.container}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scroll}
+          keyboardShouldPersistTaps="always"
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+        >
           
           <Animated.View style={[styles.contentWrapper, { opacity: fadeAnim, transform: [{ translateY: slideUpAnim }] }]}>
             {/* ── Logo ─────────────────────────────────────────── */}
@@ -117,6 +127,10 @@ export default function LoginScreen({ navigation }) {
                       onFocus={() => setFocusedField('name')}
                       onBlur={() => { setFocusedField(null); touch('name'); }}
                       autoCapitalize="words"
+                      returnKeyType="next"
+                      textContentType="name"
+                      importantForAutofill="yes"
+                      editable={true}
                     />
                   </Field>
                   {touched.name && !nameOk && <ErrText>Name must be at least 2 characters</ErrText>}
@@ -136,6 +150,10 @@ export default function LoginScreen({ navigation }) {
                   keyboardType="email-address"
                   autoCapitalize="none"
                   autoCorrect={false}
+                  returnKeyType="next"
+                  textContentType="emailAddress"
+                  importantForAutofill="yes"
+                  editable={true}
                 />
               </Field>
               {touched.email && !emailOk && <ErrText>Enter a valid email address</ErrText>}
@@ -152,6 +170,10 @@ export default function LoginScreen({ navigation }) {
                   onBlur={() => { setFocusedField(null); touch('password'); }}
                   secureTextEntry={!showPass}
                   autoCapitalize="none"
+                  returnKeyType={isSignIn ? "done" : "next"}
+                  textContentType="password"
+                  importantForAutofill="yes"
+                  editable={true}
                 />
                 <TouchableOpacity onPress={() => setShowPass(v => !v)} style={{ padding: 4 }}>
                   <Ionicons name={showPass ? 'eye-outline' : 'eye-off-outline'} size={20} color="#64748b" />
@@ -173,6 +195,10 @@ export default function LoginScreen({ navigation }) {
                       onBlur={() => { setFocusedField(null); touch('confirmPass'); }}
                       secureTextEntry={!showPass}
                       autoCapitalize="none"
+                      returnKeyType="done"
+                      textContentType="password"
+                      importantForAutofill="yes"
+                      editable={true}
                     />
                   </Field>
                   {touched.confirmPass && !confirmOk && <ErrText>Passwords do not match</ErrText>}
