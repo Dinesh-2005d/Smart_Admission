@@ -2,17 +2,11 @@ import React, { useState, useRef } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
   KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator,
-  Animated, LayoutAnimation, UIManager,
+  Animated,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../context/AuthContext';
-
-// Enable LayoutAnimation for Android (only when explicitly needed)
-if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
-  UIManager.setLayoutAnimationEnabledExperimental(false);
-}
-
 
 export default function LoginScreen({ navigation }) {
   const { login, register, loading, error } = useAuth();
@@ -30,7 +24,7 @@ export default function LoginScreen({ navigation }) {
   const isSignIn = mode === 'signin';
 
   // Animation values
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const fadeAnim   = useRef(new Animated.Value(0)).current;
   const slideUpAnim = useRef(new Animated.Value(50)).current;
 
   React.useEffect(() => {
@@ -74,7 +68,6 @@ export default function LoginScreen({ navigation }) {
   };
 
   const toggle = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setMode(m => m === 'signin' ? 'register' : 'signin');
     setLocalErr('');
     setTouched({});
@@ -85,174 +78,181 @@ export default function LoginScreen({ navigation }) {
 
   const displayError = localErr || error;
 
-  return (
-    <LinearGradient colors={['#eff6ff', '#dbeafe']} style={styles.container}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
-      >
-        <ScrollView
-          contentContainerStyle={styles.scroll}
-          keyboardShouldPersistTaps="always"
-          showsVerticalScrollIndicator={false}
-          bounces={false}
-        >
-          
-          <Animated.View style={[styles.contentWrapper, { opacity: fadeAnim, transform: [{ translateY: slideUpAnim }] }]}>
-            {/* ── Logo ─────────────────────────────────────────── */}
-            <View style={styles.header}>
-              <View style={styles.logoCircle}>
-                <Ionicons name="school" size={44} color="#2563eb" />
-              </View>
-              <Text style={styles.appName}>Acad<Text style={{ color: '#2563eb' }}>ivo</Text></Text>
-              <Text style={styles.tagline}>Your Intelligent Admission counselor</Text>
-            </View>
+  // Shared scroll content
+  const scrollContent = (
+    <ScrollView
+      contentContainerStyle={styles.scroll}
+      keyboardShouldPersistTaps="always"
+      showsVerticalScrollIndicator={false}
+      bounces={false}
+      overScrollMode="never"
+    >
+      <Animated.View style={[styles.contentWrapper, { opacity: fadeAnim, transform: [{ translateY: slideUpAnim }] }]}>
+        {/* ── Logo ─────────────────────────────────────────── */}
+        <View style={styles.header}>
+          <View style={styles.logoCircle}>
+            <Ionicons name="school" size={44} color="#2563eb" />
+          </View>
+          <Text style={styles.appName}>Acad<Text style={{ color: '#2563eb' }}>ivo</Text></Text>
+          <Text style={styles.tagline}>Your Intelligent Admission counselor</Text>
+        </View>
 
-            {/* ── Card ─────────────────────────────────────────── */}
-            <View style={styles.card}>
-              <Text style={styles.cardTitle}>{isSignIn ? 'Welcome Back 👋' : 'Create Account 🎓'}</Text>
-              <Text style={styles.cardSub}>{isSignIn ? 'Sign in to your account' : 'Register with your email'}</Text>
+        {/* ── Card ─────────────────────────────────────────── */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>{isSignIn ? 'Welcome Back 👋' : 'Create Account 🎓'}</Text>
+          <Text style={styles.cardSub}>{isSignIn ? 'Sign in to your account' : 'Register with your email'}</Text>
 
-              {/* Name (register only) */}
-              {!isSignIn && (
-                <>
-                  <Field label="Full Name" icon="person-outline" isFocused={focusedField === 'name'}>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Your full name"
-                      placeholderTextColor="#94a3b8"
-                      value={name}
-                      onChangeText={setName}
-                      onFocus={() => setFocusedField('name')}
-                      onBlur={() => { setFocusedField(null); touch('name'); }}
-                      autoCapitalize="words"
-                      returnKeyType="next"
-                      textContentType="name"
-                      importantForAutofill="yes"
-                      editable={true}
-                    />
-                  </Field>
-                  {touched.name && !nameOk && <ErrText>Name must be at least 2 characters</ErrText>}
-                </>
-              )}
-
-              {/* Email */}
-              <Field label="Email Address" icon="mail-outline" style={!isSignIn ? { marginTop: 14 } : {}} isFocused={focusedField === 'email'}>
+          {/* Name (register only) */}
+          {!isSignIn && (
+            <>
+              <Field label="Full Name" icon="person-outline" isFocused={focusedField === 'name'}>
                 <TextInput
                   style={styles.input}
-                  placeholder="your@email.com"
+                  placeholder="Your full name"
                   placeholderTextColor="#94a3b8"
-                  value={email}
-                  onChangeText={setEmail}
-                  onFocus={() => setFocusedField('email')}
-                  onBlur={() => { setFocusedField(null); touch('email'); }}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoCorrect={false}
+                  value={name}
+                  onChangeText={setName}
+                  onFocus={() => setFocusedField('name')}
+                  onBlur={() => { setFocusedField(null); touch('name'); }}
+                  autoCapitalize="words"
                   returnKeyType="next"
-                  textContentType="emailAddress"
-                  importantForAutofill="yes"
-                  editable={true}
+                  autoComplete="name"
                 />
               </Field>
-              {touched.email && !emailOk && <ErrText>Enter a valid email address</ErrText>}
+              {touched.name && !nameOk && <ErrText>Name must be at least 2 characters</ErrText>}
+            </>
+          )}
 
-              {/* Password */}
-              <Field label="Password" icon="lock-closed-outline" style={{ marginTop: 14 }} isFocused={focusedField === 'password'}>
+          {/* Email */}
+          <Field
+            label="Email Address"
+            icon="mail-outline"
+            style={!isSignIn ? { marginTop: 14 } : {}}
+            isFocused={focusedField === 'email'}
+          >
+            <TextInput
+              style={styles.input}
+              placeholder="your@email.com"
+              placeholderTextColor="#94a3b8"
+              value={email}
+              onChangeText={setEmail}
+              onFocus={() => setFocusedField('email')}
+              onBlur={() => { setFocusedField(null); touch('email'); }}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+              returnKeyType="next"
+              autoComplete="email"
+            />
+          </Field>
+          {touched.email && !emailOk && <ErrText>Enter a valid email address</ErrText>}
+
+          {/* Password */}
+          <Field label="Password" icon="lock-closed-outline" style={{ marginTop: 14 }} isFocused={focusedField === 'password'}>
+            <TextInput
+              style={[styles.input, { flex: 1 }]}
+              placeholder="Min 6 characters"
+              placeholderTextColor="#94a3b8"
+              value={password}
+              onChangeText={setPassword}
+              onFocus={() => setFocusedField('password')}
+              onBlur={() => { setFocusedField(null); touch('password'); }}
+              secureTextEntry={!showPass}
+              autoCapitalize="none"
+              returnKeyType={isSignIn ? 'done' : 'next'}
+              autoComplete="password"
+            />
+            <TouchableOpacity onPress={() => setShowPass(v => !v)} style={{ padding: 4 }}>
+              <Ionicons name={showPass ? 'eye-outline' : 'eye-off-outline'} size={20} color="#64748b" />
+            </TouchableOpacity>
+          </Field>
+          {touched.password && !passOk && <ErrText>Password must be at least 6 characters</ErrText>}
+
+          {/* Confirm password (register only) */}
+          {!isSignIn && (
+            <>
+              <Field label="Confirm Password" icon="lock-closed-outline" style={{ marginTop: 14 }} isFocused={focusedField === 'confirmPass'}>
                 <TextInput
                   style={[styles.input, { flex: 1 }]}
-                  placeholder="Min 6 characters"
+                  placeholder="Re-enter password"
                   placeholderTextColor="#94a3b8"
-                  value={password}
-                  onChangeText={setPassword}
-                  onFocus={() => setFocusedField('password')}
-                  onBlur={() => { setFocusedField(null); touch('password'); }}
+                  value={confirmPass}
+                  onChangeText={setConfirmPass}
+                  onFocus={() => setFocusedField('confirmPass')}
+                  onBlur={() => { setFocusedField(null); touch('confirmPass'); }}
                   secureTextEntry={!showPass}
                   autoCapitalize="none"
-                  returnKeyType={isSignIn ? "done" : "next"}
-                  textContentType="password"
-                  importantForAutofill="yes"
-                  editable={true}
+                  returnKeyType="done"
+                  autoComplete="password"
                 />
-                <TouchableOpacity onPress={() => setShowPass(v => !v)} style={{ padding: 4 }}>
-                  <Ionicons name={showPass ? 'eye-outline' : 'eye-off-outline'} size={20} color="#64748b" />
-                </TouchableOpacity>
               </Field>
-              {touched.password && !passOk && <ErrText>Password must be at least 6 characters</ErrText>}
+              {touched.confirmPass && !confirmOk && <ErrText>Passwords do not match</ErrText>}
+            </>
+          )}
 
-              {/* Confirm password (register only) */}
-              {!isSignIn && (
-                <>
-                  <Field label="Confirm Password" icon="lock-closed-outline" style={{ marginTop: 14 }} isFocused={focusedField === 'confirmPass'}>
-                    <TextInput
-                      style={[styles.input, { flex: 1 }]}
-                      placeholder="Re-enter password"
-                      placeholderTextColor="#94a3b8"
-                      value={confirmPass}
-                      onChangeText={setConfirmPass}
-                      onFocus={() => setFocusedField('confirmPass')}
-                      onBlur={() => { setFocusedField(null); touch('confirmPass'); }}
-                      secureTextEntry={!showPass}
-                      autoCapitalize="none"
-                      returnKeyType="done"
-                      textContentType="password"
-                      importantForAutofill="yes"
-                      editable={true}
-                    />
-                  </Field>
-                  {touched.confirmPass && !confirmOk && <ErrText>Passwords do not match</ErrText>}
-                </>
-              )}
+          {/* Forgot Password — sign in only */}
+          {isSignIn && (
+            <TouchableOpacity
+              style={styles.forgotBtn}
+              onPress={() => navigation.navigate('ForgotPassword')}
+            >
+              <Text style={styles.forgotText}>Forgot Password?</Text>
+            </TouchableOpacity>
+          )}
 
-              {/* Forgot Password — sign in only */}
-              {isSignIn && (
-                <TouchableOpacity
-                  style={styles.forgotBtn}
-                  onPress={() => navigation.navigate('ForgotPassword')}
-                >
-                  <Text style={styles.forgotText}>Forgot Password?</Text>
-                </TouchableOpacity>
-              )}
-
-              {/* Error message */}
-              {displayError ? (
-                <View style={styles.errorBox}>
-                  <Ionicons name="alert-circle-outline" size={16} color="#dc2626" />
-                  <Text style={styles.errorText}>{displayError}</Text>
-                </View>
-              ) : null}
-
-              {/* Submit button */}
-              <TouchableOpacity
-                style={[styles.submitBtn, loading && styles.btnDisabled]}
-                onPress={handleSubmit}
-                disabled={loading}
-                activeOpacity={0.85}
-              >
-                {loading ? (
-                  <ActivityIndicator color="#fff" />
-                ) : (
-                  <>
-                    <Ionicons name={isSignIn ? 'log-in-outline' : 'person-add-outline'} size={20} color="#fff" />
-                    <Text style={styles.submitBtnText}>{isSignIn ? 'Sign In' : 'Create Account'}</Text>
-                  </>
-                )}
-              </TouchableOpacity>
-
-              {/* Toggle sign in / register */}
-              <TouchableOpacity onPress={toggle} style={styles.toggleBtn}>
-                <Text style={styles.toggleText}>
-                  {isSignIn ? "Don't have an account? " : 'Already have an account? '}
-                  <Text style={styles.toggleLink}>{isSignIn ? 'Create Account' : 'Sign In'}</Text>
-                </Text>
-              </TouchableOpacity>
+          {/* Error message */}
+          {displayError ? (
+            <View style={styles.errorBox}>
+              <Ionicons name="alert-circle-outline" size={16} color="#dc2626" />
+              <Text style={styles.errorText}>{displayError}</Text>
             </View>
-          </Animated.View>
+          ) : null}
 
-          <Text style={styles.footer}>🇮🇳 Free for all Indian students · 118,000+ Colleges</Text>
-        </ScrollView>
-      </KeyboardAvoidingView>
+          {/* Submit button */}
+          <TouchableOpacity
+            style={[styles.submitBtn, loading && styles.btnDisabled]}
+            onPress={handleSubmit}
+            disabled={loading}
+            activeOpacity={0.85}
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <>
+                <Ionicons name={isSignIn ? 'log-in-outline' : 'person-add-outline'} size={20} color="#fff" />
+                <Text style={styles.submitBtnText}>{isSignIn ? 'Sign In' : 'Create Account'}</Text>
+              </>
+            )}
+          </TouchableOpacity>
+
+          {/* Toggle sign in / register */}
+          <TouchableOpacity onPress={toggle} style={styles.toggleBtn}>
+            <Text style={styles.toggleText}>
+              {isSignIn ? "Don't have an account? " : 'Already have an account? '}
+              <Text style={styles.toggleLink}>{isSignIn ? 'Create Account' : 'Sign In'}</Text>
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </Animated.View>
+
+      <Text style={styles.footer}>🇮🇳 Free for all Indian students · 118,000+ Colleges</Text>
+    </ScrollView>
+  );
+
+  return (
+    <LinearGradient colors={['#eff6ff', '#dbeafe']} style={styles.container}>
+      {/* On Android: NO KeyboardAvoidingView — edgeToEdgeEnabled conflicts with it.
+          softwareKeyboardLayoutMode="resize" in app.json handles it at the OS level.
+          On iOS: KeyboardAvoidingView with padding behavior works perfectly. */}
+      {Platform.OS === 'ios' ? (
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+          {scrollContent}
+        </KeyboardAvoidingView>
+      ) : (
+        <View style={{ flex: 1 }}>
+          {scrollContent}
+        </View>
+      )}
     </LinearGradient>
   );
 }
@@ -262,10 +262,12 @@ function Field({ label, icon, children, style = {}, isFocused }) {
   return (
     <View style={style}>
       <View style={localS.fieldLabel}>
-        <Ionicons name={icon} size={15} color={isFocused ? "#2563eb" : "#64748b"} />
+        <Ionicons name={icon} size={15} color={isFocused ? '#2563eb' : '#64748b'} />
         <Text style={[localS.labelText, isFocused && { color: '#2563eb', fontWeight: '700' }]}>{label}</Text>
       </View>
-      <View style={[localS.inputWrap, isFocused && { borderColor: '#2563eb', backgroundColor: '#ffffff', shadowColor: '#2563eb', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 8, elevation: 4 }]}>
+      {/* NOTE: No elevation/shadow change on focus — Android re-draws the layer
+          when elevation changes which can cause keyboard to dismiss */}
+      <View style={[localS.inputWrap, isFocused && localS.inputWrapFocused]}>
         {children}
       </View>
     </View>
@@ -284,7 +286,12 @@ const localS = StyleSheet.create({
     borderWidth: 1.5, borderColor: '#e2e8f0', borderRadius: 14,
     backgroundColor: '#f8fafc', paddingHorizontal: 14, height: 54,
   },
-  fieldErr:   { fontSize: 12, color: '#dc2626', marginTop: 4, marginLeft: 2 },
+  // Focused: only change border color & background — NO elevation change
+  inputWrapFocused: {
+    borderColor: '#2563eb',
+    backgroundColor: '#ffffff',
+  },
+  fieldErr: { fontSize: 12, color: '#dc2626', marginTop: 4, marginLeft: 2 },
 });
 
 const styles = StyleSheet.create({
