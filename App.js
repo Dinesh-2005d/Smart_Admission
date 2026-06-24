@@ -210,13 +210,14 @@ function DesktopSidebar({ tabs, activeTab, setActiveTab, collapsed, user }) {
 
 // ─── Mobile Bottom Bar ───────────────────────────────────────────────────────
 function MobileBottomBar({ tabs, activeTab, setActiveTab }) {
-  // We only show navigation tabs here
-  const navTabs = tabs.filter(t => !['Admin'].includes(t.name));
+  // Show all tabs including Admin
+  const navTabs = tabs;
   
   return (
     <View style={ds.mobileBottomBar}>
       {navTabs.map(tab => {
         const focused = activeTab === tab.name;
+        const isAdmin = tab.name === 'Admin';
         return (
           <TouchableOpacity 
             key={tab.name} 
@@ -224,12 +225,14 @@ function MobileBottomBar({ tabs, activeTab, setActiveTab }) {
             onPress={() => setActiveTab(tab.name)}
             activeOpacity={0.7}
           >
-            <Ionicons 
-              name={focused ? tab.iconFocused : tab.icon} 
-              size={22} 
-              color={focused ? '#2563eb' : '#64748b'} 
-            />
-            <Text style={[ds.mobileTabLabel, focused && ds.mobileTabLabelActive]}>
+            <View style={[ds.mobileIconWrap, isAdmin && ds.mobileAdminIconWrap, focused && isAdmin && ds.mobileAdminIconWrapActive]}>
+              <Ionicons 
+                name={focused ? tab.iconFocused : tab.icon} 
+                size={22} 
+                color={focused ? (isAdmin ? '#ffffff' : '#2563eb') : (isAdmin ? '#ffffff' : '#64748b')} 
+              />
+            </View>
+            <Text style={[ds.mobileTabLabel, focused && (isAdmin ? ds.mobileTabLabelAdmin : ds.mobileTabLabelActive)]}>
               {tab.label.split(' ')[0]}
             </Text>
             {tab.badge > 0 && (
@@ -496,6 +499,26 @@ const ds = StyleSheet.create({
     color: '#ffffff',
     fontSize: 9,
     fontWeight: 'bold',
+  },
+  // Admin tab icon wrapper
+  mobileIconWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  mobileAdminIconWrap: {
+    backgroundColor: '#dc2626',
+    borderRadius: 10,
+    width: 36,
+    height: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  mobileAdminIconWrapActive: {
+    backgroundColor: '#b91c1c',
+  },
+  mobileTabLabelAdmin: {
+    color: '#dc2626',
+    fontWeight: '700',
   },
 
   // ── Sidebar ────────────────────────────────────────────────────────────────
