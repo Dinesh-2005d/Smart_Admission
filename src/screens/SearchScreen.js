@@ -6,6 +6,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { searchColleges } from '../constants/collegeDatabase';
 import { useSavedColleges } from '../context/SavedCollegesContext';
+import CollegeLogo from '../components/CollegeLogo';
 
 function AnimatedCard({ index, children }) {
   const animatedValue = useRef(new Animated.Value(0)).current;
@@ -127,7 +128,12 @@ export default function SearchScreen({ navigation }) {
             >
             {/* Top row: icon + name/location + type badge */}
             <View style={styles.cardHeader}>
-              <View style={styles.iconCircle}><Text style={styles.iconText}>🏛️</Text></View>
+              <CollegeLogo
+                collegeName={college.name}
+                department={college.department}
+                size={40}
+                borderRadius={20}
+              />
               <View style={styles.cardInfo}>
                 <Text style={styles.collegeName}>{college.name}</Text>
                 <Text style={styles.collegeLocation}>📍 {college.location}</Text>
