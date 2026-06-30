@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  TextInput, KeyboardAvoidingView, Platform,
+  TextInput, KeyboardAvoidingView, Keyboard, Platform,
   Animated, useWindowDimensions, ActivityIndicator, StatusBar,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -238,9 +238,25 @@ export default function CollegeChatScreen({ route, navigation }) {
   const scrollRef  = useRef(null);
   const inputRef   = useRef(null);
   const headerAnim = useRef(new Animated.Value(0)).current;
+  // Keyboard height — used on Android to slide input above keyboard (ChatGPT style)
+  const [kbHeight, setKbHeight] = useState(0);
 
   useEffect(() => {
     Animated.timing(headerAnim, { toValue: 1, duration: 500, useNativeDriver: true }).start();
+  }, []);
+
+  // Android: listen to keyboard events and shift content up (ChatGPT-style)
+  useEffect(() => {
+    if (Platform.OS !== 'android') return;
+    const show = Keyboard.addListener('keyboardDidShow', (e) => {
+      setKbHeight(e.endCoordinates.height);
+      // Scroll to last message so it's visible above keyboard
+      setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 80);
+    });
+    const hide = Keyboard.addListener('keyboardDidHide', () => {
+      setKbHeight(0);
+    });
+    return () => { show.remove(); hide.remove(); };
   }, []);
 
   useEffect(() => {
@@ -284,8 +300,108 @@ export default function CollegeChatScreen({ route, navigation }) {
     setChipsVisible(true);
   };
 
+  // ── Shared inner content (messages + chips + input) ─────────────────────────
+  const chatBody = (
+    <>
+      {/* ── Messages ── */}
+      <ScrollView
+        ref={scrollRef}
+        style={styles.messageScroll}
+        contentContainerStyle={styles.messageContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        {messages.map(msg => (
+          <MessageBubble key={msg.id} msg={msg} />
+        ))}
+
+        {/* Typing indicator */}
+        {isTyping && (
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginBottom: 16, width: '100%' }}>
+            <View style={{ flex: 1 }}>
+              <View style={styles.aiMeta}>
+                <LinearGradient colors={[C.accent + '50', C.accent + '28']} style={styles.aiAvatar}>
+                  <Text style={{ fontSize: 13 }}>🤖</Text>
+                </LinearGradient>
+                <Text style={[styles.aiName, { color: C.accent }]}>Thinking…</Text>
+              </View>
+              <View style={[styles.bubble, styles.aiBubble, { paddingVertical: 10, alignSelf: 'flex-start', minWidth: 80 }]}>
+                <TypingDots />
+              </View>
+            </View>
+          </View>
+        )}
+      </ScrollView>
+
+      {/* ── Quick chips ── */}
+      {chipsVisible && (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.chipScroll}
+          contentContainerStyle={styles.chipContent}
+        >
+          {CHIPS.map((chip, i) => (
+            <TouchableOpacity
+              key={i}
+              style={styles.chip}
+              onPress={() => sendMessage(chip.label)}
+              activeOpacity={0.7}
+            >
+              <Ionicons name={chip.icon} size={12} color={C.accent} />
+              <Text style={styles.chipText}>{chip.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
+
+      {/* ── Input bar ── */}
+      <View style={styles.inputWrap}>
+        <View style={styles.inputRow}>
+          <TouchableOpacity
+            style={[styles.iconBtn, chipsVisible && { borderColor: C.accent, backgroundColor: C.accent + '18' }]}
+            onPress={() => setChipsVisible(v => !v)}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="apps-outline" size={18} color={chipsVisible ? C.accent : C.textDim} />
+          </TouchableOpacity>
+
+          <TextInput
+            ref={inputRef}
+            style={styles.input}
+            placeholder={groqActive ? 'Ask about colleges, exams, careers…' : 'Ask about this college…'}
+            placeholderTextColor={C.textDim}
+            value={inputText}
+            onChangeText={setInputText}
+            onSubmitEditing={() => sendMessage()}
+            returnKeyType="send"
+            multiline
+            editable={!isTyping}
+            selectionColor={C.accent}
+          />
+
+          <TouchableOpacity
+            style={[styles.sendBtn, inputText.trim() && !isTyping && styles.sendBtnActive]}
+            onPress={() => sendMessage()}
+            disabled={!inputText.trim() || isTyping}
+            activeOpacity={0.8}
+          >
+            {isTyping
+              ? <ActivityIndicator size="small" color={C.accent} />
+              : <Ionicons name="send" size={16} color={inputText.trim() ? C.white : C.textDim} />
+            }
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.footer}>
+          {groqActive ? '⚡ Llama 3 70B · Groq · College questions only' : '🤖 Local AI · Add GROQ_API_KEY for real AI'}
+        </Text>
+      </View>
+    </>
+  );
+
   return (
-    <View style={styles.safe}>
+    <View style={[styles.safe, Platform.OS === 'android' && { paddingBottom: kbHeight }]}>
       <StatusBar barStyle="light-content" backgroundColor={C.bg} />
 
       {/* ── Header ── */}
@@ -330,106 +446,16 @@ export default function CollegeChatScreen({ route, navigation }) {
         </TouchableOpacity>
       </Animated.View>
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}
-        keyboardVerticalOffset={0}
-      >
-        {/* ── Messages ── */}
-        <ScrollView
-          ref={scrollRef}
-          style={styles.messageScroll}
-          contentContainerStyle={styles.messageContent}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-        >
-          {messages.map(msg => (
-            <MessageBubble key={msg.id} msg={msg} />
-          ))}
-
-          {/* Typing indicator - same row-wrapper pattern */}
-          {isTyping && (
-            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginBottom: 16, width: '100%' }}>
-              <View style={{ flex: 1 }}>
-                <View style={styles.aiMeta}>
-                  <LinearGradient colors={[C.accent + '50', C.accent + '28']} style={styles.aiAvatar}>
-                    <Text style={{ fontSize: 13 }}>🤖</Text>
-                  </LinearGradient>
-                  <Text style={[styles.aiName, { color: C.accent }]}>Thinking…</Text>
-                </View>
-                <View style={[styles.bubble, styles.aiBubble, { paddingVertical: 10, alignSelf: 'flex-start', minWidth: 80 }]}>
-                  <TypingDots />
-                </View>
-              </View>
-            </View>
-          )}
-        </ScrollView>
-
-        {/* ── Quick chips ── */}
-        {chipsVisible && (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.chipScroll}
-            contentContainerStyle={styles.chipContent}
-          >
-            {CHIPS.map((chip, i) => (
-              <TouchableOpacity
-                key={i}
-                style={styles.chip}
-                onPress={() => sendMessage(chip.label)}
-                activeOpacity={0.7}
-              >
-                <Ionicons name={chip.icon} size={12} color={C.accent} />
-                <Text style={styles.chipText}>{chip.label}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        )}
-
-        {/* ── Input bar ── */}
-        <View style={styles.inputWrap}>
-          <View style={styles.inputRow}>
-            <TouchableOpacity
-              style={[styles.iconBtn, chipsVisible && { borderColor: C.accent, backgroundColor: C.accent + '18' }]}
-              onPress={() => setChipsVisible(v => !v)}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="apps-outline" size={18} color={chipsVisible ? C.accent : C.textDim} />
-            </TouchableOpacity>
-
-            <TextInput
-              ref={inputRef}
-              style={styles.input}
-              placeholder={groqActive ? 'Ask about colleges, exams, careers…' : 'Ask about this college…'}
-              placeholderTextColor={C.textDim}
-              value={inputText}
-              onChangeText={setInputText}
-              onSubmitEditing={() => sendMessage()}
-              returnKeyType="send"
-              multiline
-              editable={!isTyping}
-              selectionColor={C.accent}
-            />
-
-            <TouchableOpacity
-              style={[styles.sendBtn, inputText.trim() && !isTyping && styles.sendBtnActive]}
-              onPress={() => sendMessage()}
-              disabled={!inputText.trim() || isTyping}
-              activeOpacity={0.8}
-            >
-              {isTyping
-                ? <ActivityIndicator size="small" color={C.accent} />
-                : <Ionicons name="send" size={16} color={inputText.trim() ? C.white : C.textDim} />
-              }
-            </TouchableOpacity>
-          </View>
-
-          <Text style={styles.footer}>
-            {groqActive ? '⚡ Llama 3 70B · Groq · College questions only' : '🤖 Local AI · Add GROQ_API_KEY for real AI'}
-          </Text>
+      {/* ── Body: iOS uses KAV padding, Android uses direct paddingBottom ── */}
+      {Platform.OS === 'ios' ? (
+        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }} keyboardVerticalOffset={0}>
+          {chatBody}
+        </KeyboardAvoidingView>
+      ) : (
+        <View style={{ flex: 1 }}>
+          {chatBody}
         </View>
-      </KeyboardAvoidingView>
+      )}
     </View>
   );
 }

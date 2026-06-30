@@ -349,6 +349,101 @@ export const COLLEGE_LOGOS = {
 
   // ── Unmapped Edge Cases ───────────────────────────────────────────────────
   'Sacred Heart College(autonomous)Thirupattur-635 601': 'https://logo.clearbit.com/shctpt.edu',
+
+  // ── Tamil Nadu – Popular Private Colleges ─────────────────────────────────
+  'Saveetha Institute of Medical and Technical Sciences': 'https://logo.clearbit.com/saveetha.com',
+  'SAVEETHA INSTITUTE OF MEDICAL AND TECHNICAL SCIENCES (DEEMED TO BE UNIVERSITY)': 'https://logo.clearbit.com/saveetha.com',
+  'Saveetha Engineering College': 'https://logo.clearbit.com/saveetha.com',
+  'Saveetha Medical College': 'https://logo.clearbit.com/saveetha.com',
+  'Sathyabama Institute of Science and Technology': 'https://logo.clearbit.com/sathyabama.ac.in',
+  'Amrita Vishwa Vidyapeetham': 'https://logo.clearbit.com/amrita.edu',
+  'Amrita School of Engineering': 'https://logo.clearbit.com/amrita.edu',
+  'Hindustan Institute of Technology and Science': 'https://logo.clearbit.com/hindustanuniv.ac.in',
+  'Vel Tech Rangarajan Dr Sagunthala R&D Institute of Science and Technology': 'https://logo.clearbit.com/veltech.edu.in',
+  'Vel Tech University': 'https://logo.clearbit.com/veltech.edu.in',
+  'Rajalakshmi Engineering College': 'https://logo.clearbit.com/rajalakshmi.edu.in',
+  'Sri Krishna College of Engineering and Technology': 'https://logo.clearbit.com/skcet.ac.in',
+  'Karpagam Academy of Higher Education': 'https://logo.clearbit.com/karpagam.edu.in',
+  'KPR Institute of Engineering and Technology': 'https://logo.clearbit.com/kpriet.ac.in',
+  'Kongu Engineering College': 'https://logo.clearbit.com/kongu.ac.in',
+  'Bannari Amman Institute of Technology': 'https://logo.clearbit.com/bitsathy.ac.in',
+  'Kumaraguru College of Technology': 'https://logo.clearbit.com/kct.ac.in',
+  'Mepco Schlenk Engineering College': 'https://logo.clearbit.com/mepcoeng.ac.in',
+  'Velammal Engineering College': 'https://logo.clearbit.com/velammal.edu.in',
+  'Valliammai Engineering College': 'https://logo.clearbit.com/valliammai.ac.in',
+  'Panimalar Engineering College': 'https://logo.clearbit.com/panimalar.ac.in',
+  'Sri Sai Ram Engineering College': 'https://logo.clearbit.com/sairam.edu.in',
+  'SASTRA Deemed University': 'https://logo.clearbit.com/sastra.edu',
+  'Shanmugha Arts Science Technology & Research Academy (SASTRA)': 'https://logo.clearbit.com/sastra.edu',
+  'Kalasalingam Academy of Research and Education': 'https://logo.clearbit.com/kalasalingam.ac.in',
+  'Sri Venkateswara College of Engineering': 'https://logo.clearbit.com/svce.ac.in',
+  'Jeppiaar Engineering College': 'https://logo.clearbit.com/jeppiaarcollege.org',
+
+  // ── Karnataka – Popular Private Colleges ──────────────────────────────────
+  'Manipal Academy of Higher Education': 'https://logo.clearbit.com/manipal.edu',
+  'Manipal Institute of Technology': 'https://logo.clearbit.com/manipal.edu',
+  'M.S. Ramaiah Institute of Technology': 'https://logo.clearbit.com/msrit.edu',
+  'Dayananda Sagar College of Engineering': 'https://logo.clearbit.com/dsce.edu.in',
+  'JSS Academy of Technical Education': 'https://logo.clearbit.com/jssateb.ac.in',
+  'New Horizon College of Engineering': 'https://logo.clearbit.com/newhorizonindia.edu',
+  'CMR Institute of Technology': 'https://logo.clearbit.com/cmrit.ac.in',
+  'Alliance University': 'https://logo.clearbit.com/alliance.edu.in',
+  'Jain University': 'https://logo.clearbit.com/jainuniversity.ac.in',
+  'Reva University': 'https://logo.clearbit.com/reva.edu.in',
+
+  // ── Maharashtra ───────────────────────────────────────────────────────────
+  'MIT World Peace University': 'https://logo.clearbit.com/mitwpu.edu.in',
+  'Pune Institute of Computer Technology': 'https://logo.clearbit.com/pict.edu',
+  'Vishwakarma Institute of Technology': 'https://logo.clearbit.com/vit.edu',
+  'D.Y. Patil International University': 'https://logo.clearbit.com/dypiemr.ac.in',
+  'Sinhgad College of Engineering': 'https://logo.clearbit.com/sinhgad.edu',
+  'Bharati Vidyapeeth Deemed University': 'https://logo.clearbit.com/bharatividyapeeth.edu',
+  'Sandip University': 'https://logo.clearbit.com/sandipuniversity.edu.in',
+
+  // ── Delhi / NCR ───────────────────────────────────────────────────────────
+  'Guru Gobind Singh Indraprastha University': 'https://logo.clearbit.com/ipu.ac.in',
+  'Jamia Millia Islamia': 'https://logo.clearbit.com/jmi.ac.in',
+  'Amity University': 'https://logo.clearbit.com/amity.edu',
+  'Shiv Nadar University': 'https://logo.clearbit.com/snu.edu.in',
+
+  // ── Uttar Pradesh ─────────────────────────────────────────────────────────
+  'Galgotias University': 'https://logo.clearbit.com/galgotiasuniversity.edu.in',
+  'Lovely Professional University': 'https://logo.clearbit.com/lpu.in',
+  'Chandigarh University': 'https://logo.clearbit.com/cuchd.in',
+  'Chitkara University': 'https://logo.clearbit.com/chitkara.edu.in',
+
+  // ── Rajasthan ─────────────────────────────────────────────────────────────
+  'Poornima University': 'https://logo.clearbit.com/poornima.edu.in',
+  'LNM Institute of Information Technology': 'https://logo.clearbit.com/lnmiit.ac.in',
+
+  // ── Gujarat ───────────────────────────────────────────────────────────────
+  'Nirma University': 'https://logo.clearbit.com/nirmauni.ac.in',
+  'Dhirubhai Ambani Institute of Information and Communication Technology': 'https://logo.clearbit.com/daiict.ac.in',
+  'Charotar University of Science and Technology': 'https://logo.clearbit.com/charusat.ac.in',
+
+  // ── Andhra Pradesh / Telangana ────────────────────────────────────────────
+  'KL University': 'https://logo.clearbit.com/kluniversity.in',
+  'Koneru Lakshmaiah Education Foundation': 'https://logo.clearbit.com/kluniversity.in',
+  'GITAM University': 'https://logo.clearbit.com/gitam.edu',
+  'Vignan Foundation for Science Technology and Research': 'https://logo.clearbit.com/vignan.ac.in',
+  'Sreenidhi Institute of Science and Technology': 'https://logo.clearbit.com/sreenidhi.edu.in',
+
+  // ── Kerala ────────────────────────────────────────────────────────────────
+  'Cochin University of Science and Technology': 'https://logo.clearbit.com/cusat.ac.in',
+  'APJ Abdul Kalam Technological University': 'https://logo.clearbit.com/ktu.edu.in',
+
+  // ── West Bengal ───────────────────────────────────────────────────────────
+  'Heritage Institute of Technology': 'https://logo.clearbit.com/heritageit.edu',
+  'Institute of Engineering & Management': 'https://logo.clearbit.com/iemcal.com',
+  'Techno India University': 'https://logo.clearbit.com/technoindiauniversity.ac.in',
+
+  // ── Haryana ───────────────────────────────────────────────────────────────
+  'Maharishi Dayanand University': 'https://logo.clearbit.com/mdu.ac.in',
+  'Kurukshetra University': 'https://logo.clearbit.com/kuk.ac.in',
+
+  // ── Bihar / Jharkhand ─────────────────────────────────────────────────────
+  'BIT Mesra': 'https://logo.clearbit.com/bitmesra.ac.in',
+  'Xavier Institute of Social Service': 'https://logo.clearbit.com/xiss.edu',
 };
 
 // Helper: Clean/normalize names for high-confidence matching

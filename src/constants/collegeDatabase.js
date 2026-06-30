@@ -59,15 +59,127 @@ const DEPT_COURSES = {
   education:        ['B.A Education', 'M.A Education', 'B.Ed'],
 };
 
-// Helper: Generate a stable, realistic established year from name hash
+// ── Manual established year overrides (correct real-world founding years) ─────
+const ESTABLISHED_OVERRIDES = {
+  // Tamil Nadu
+  'Saveetha Institute of Medical and Technical Sciences': 2005,
+  'SAVEETHA INSTITUTE OF MEDICAL AND TECHNICAL SCIENCES (DEEMED TO BE UNIVERSITY)': 2005,
+  'Saveetha Engineering College': 2001,
+  'Saveetha Medical College': 2005,
+  'VIT Vellore': 1984,
+  'SRM Institute of Science and Technology': 1985,
+  'SRM University': 1985,
+  'Vel Tech Rangarajan Dr Sagunthala R&D Institute of Science and Technology': 1997,
+  'Vel Tech University': 1997,
+  'Karpagam Academy of Higher Education': 1998,
+  'Amrita Vishwa Vidyapeetham': 2003,
+  'Amrita School of Engineering': 2003,
+  'Hindustan Institute of Technology and Science': 1985,
+  'Sri Venkateswara College of Engineering': 1987,
+  'Rajalakshmi Engineering College': 1997,
+  'Sri Krishna College of Engineering and Technology': 1998,
+  'KPR Institute of Engineering and Technology': 2007,
+  'SNS College of Engineering': 2006,
+  'Kongu Engineering College': 1983,
+  'Bannari Amman Institute of Technology': 1996,
+  'Dr. Mahalingam College of Engineering and Technology': 1998,
+  'Kumaraguru College of Technology': 1984,
+  'Mepco Schlenk Engineering College': 1984,
+  'A.C. College of Engineering and Technology': 1972,
+  'Velammal Engineering College': 1995,
+  'Easwari Engineering College': 1996,
+  'St. Joseph College of Engineering': 2000,
+  'Sri Sivasubramaniya Nadar College of Engineering': 1996,
+  'Meenakshi Sundararajan Engineering College': 2001,
+  'Sathyabama Institute of Science and Technology': 1987,
+  'Loyola-ICAM College of Engineering and Technology': 2009,
+  'Vellore Institute of Technology': 1984,
+  'Shanmugha Arts Science Technology & Research Academy (SASTRA)': 1984,
+  'SASTRA Deemed University': 1984,
+  'Kalasalingam Academy of Research and Education': 1984,
+  'Valliammai Engineering College': 1994,
+  'Jeppiaar Engineering College': 2001,
+  'Panimalar Engineering College': 2000,
+  'R.M.K. Engineering College': 1995,
+  'R.M.D. Engineering College': 1996,
+  'Misrimal Navajee Munoth Jain Engineering College': 2001,
+  'Sri Sai Ram Engineering College': 1995,
+  'Saveetha School of Engineering': 2001,
+  // Maharashtra  
+  'MIT World Peace University': 1983,
+  'Symbiosis International University': 2002,
+  'Pune Institute of Computer Technology': 1983,
+  'Vishwakarma Institute of Technology': 1983,
+  'D.Y. Patil International University': 2002,
+  'Dr. D.Y. Patil Vidyapeeth': 2002,
+  // Karnataka
+  'Manipal Academy of Higher Education': 1953,
+  'Manipal Institute of Technology': 1957,
+  'M.S. Ramaiah Institute of Technology': 1962,
+  'Dayananda Sagar College of Engineering': 1979,
+  'R.V. College of Engineering': 1963,
+  'BMS College of Engineering': 1946,
+  'JSS Academy of Technical Education': 1963,
+  'New Horizon College of Engineering': 2001,
+  'Jyothy Institute of Technology': 2007,
+  // Delhi / NCR
+  'Guru Gobind Singh Indraprastha University': 1998,
+  'Jamia Millia Islamia': 1920,
+  'Indira Gandhi Delhi Technical University for Women': 1998,
+  // Uttar Pradesh
+  'Amity University': 2005,
+  'Shiv Nadar University': 2011,
+  'Galgotias University': 2011,
+  'GL Bajaj Institute of Technology and Management': 2010,
+  // Rajasthan
+  'Poornima University': 2012,
+  'LNM Institute of Information Technology': 2003,
+  'Jaipur Engineering College and Research Centre': 1999,
+  // Andhra Pradesh / Telangana
+  'Jawaharlal Nehru Technological University Kakinada': 1946,
+  'Koneru Lakshmaiah Education Foundation': 1980,
+  'KL University': 1980,
+  'Vignan Foundation for Science Technology and Research': 1997,
+  'Sri Padmavati Mahila Visvavidyalayam': 1983,
+  'GITAM University': 1980,
+  // Kerala
+  'Amrita School of Engineering Coimbatore': 2003,
+  'Cochin University of Science and Technology': 1971,
+  'APJ Abdul Kalam Technological University': 2014,
+  // Gujarat
+  'Dhirubhai Ambani Institute of Information and Communication Technology': 2001,
+  'Nirma University': 1994,
+  'Charotar University of Science and Technology': 2009,
+  // West Bengal
+  'Heritage Institute of Technology': 2001,
+  'Institute of Engineering & Management': 1989,
+  'Techno India University': 2012,
+  // Punjab
+  'Lovely Professional University': 2006,
+  'Chandigarh University': 2012,
+  'Chitkara University': 2003,
+  // Bihar
+  'Central University of South Bihar': 2009,
+  // Pan-India
+  'ICFAI University': 1995,
+  'Symbiosis Institute of Business Management': 1978,
+};
+
+// Helper: Generate a stable, realistic established year from name hash (fallback)
 const getEstablishedYear = (name) => {
   if (!name) return 1998;
+  // Check manual override first (case-insensitive prefix match)
+  const nameKey = Object.keys(ESTABLISHED_OVERRIDES).find(
+    k => name.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(name.toLowerCase())
+  );
+  if (nameKey) return ESTABLISHED_OVERRIDES[nameKey];
+  // Fallback: hash-based year (1947–2015)
   let hash = 0;
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
   const start = 1947;
-  const range = 2018 - 1947;
+  const range = 2015 - 1947;
   return start + Math.abs(hash % range);
 };
 
