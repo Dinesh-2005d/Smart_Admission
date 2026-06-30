@@ -56,12 +56,13 @@ function TypingDots() {
     useRef(new Animated.Value(0)).current,
     useRef(new Animated.Value(0)).current,
   ];
+  const nd = Platform.OS !== 'web';
   useEffect(() => {
     const loops = anims.map((a, i) =>
       Animated.loop(Animated.sequence([
         Animated.delay(i * 150),
-        Animated.timing(a, { toValue: 1, duration: 350, useNativeDriver: true }),
-        Animated.timing(a, { toValue: 0, duration: 350, useNativeDriver: true }),
+        Animated.timing(a, { toValue: 1, duration: 350, useNativeDriver: nd }),
+        Animated.timing(a, { toValue: 0, duration: 350, useNativeDriver: nd }),
         Animated.delay(450 - i * 150),
       ]))
     );
@@ -139,11 +140,12 @@ function MessageBubble({ msg }) {
   const isUser = msg.sender === 'user';
   const slideX = useRef(new Animated.Value(isUser ? 24 : -24)).current;
   const fade   = useRef(new Animated.Value(0)).current;
+  const nd = Platform.OS !== 'web';
 
   useEffect(() => {
     Animated.parallel([
-      Animated.timing(fade,  { toValue: 1, duration: 280, useNativeDriver: true }),
-      Animated.spring(slideX, { toValue: 0, tension: 90, friction: 12, useNativeDriver: true }),
+      Animated.timing(fade,  { toValue: 1, duration: 280, useNativeDriver: nd }),
+      Animated.spring(slideX, { toValue: 0, tension: 90, friction: 12, useNativeDriver: nd }),
     ]).start();
   }, []);
 
@@ -242,7 +244,7 @@ export default function CollegeChatScreen({ route, navigation }) {
   const [kbHeight, setKbHeight] = useState(0);
 
   useEffect(() => {
-    Animated.timing(headerAnim, { toValue: 1, duration: 500, useNativeDriver: true }).start();
+    Animated.timing(headerAnim, { toValue: 1, duration: 500, useNativeDriver: Platform.OS !== 'web' }).start();
   }, []);
 
   // Android: listen to keyboard events and shift content up (ChatGPT-style)
