@@ -3,10 +3,10 @@
 ## Deployment Information
 | Field | Value |
 |-------|-------|
-| Build Number | 27 |
-| Execution Date | 2026-06-30 13:26:48 UTC |
+| Build Number | 28 |
+| Execution Date | 2026-06-30 13:35:48 UTC |
 | Branch | main |
-| Commit | 9a48722 |
+| Commit | 7bb6a7a |
 | Live URL | https://dinesh-2005d.github.io/Smart_Admission/ |
 
 ## Results
