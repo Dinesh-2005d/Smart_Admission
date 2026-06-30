@@ -166,13 +166,14 @@ You MUST respond with:
 2. A clickable Google Images search link in Markdown format
 3. A brief description of what they'll see
 
-Format: [🔍 View [Subject] Images](https://www.google.com/search?tbm=isch&q=[URL_encoded_search])
+Format: [🔍 View [Subject] Images](https://www.google.com/search?tbm=isch&q=[URL_encoded_search_without_parentheses])
 
 Examples:
-- For "give image" (in college context): "Here are campus photos of [College Name]! 📸\n\n[🔍 View ${hasCollegeContext ? college.name : 'College'} Campus Images](https://www.google.com/search?tbm=isch&q=${hasCollegeContext ? encodeURIComponent(college.name + ' campus photos') : 'Indian+college+campus+photos'})\n\nYou'll find photos of the campus, buildings, labs, and student life!"
+- For "give image" (in college context): "Here are campus photos of [College Name]! 📸\n\n[🔍 View ${hasCollegeContext ? college.name.replace(/[()]/g, '') : 'College'} Campus Images](https://www.google.com/search?tbm=isch&q=${hasCollegeContext ? encodeURIComponent(college.name.replace(/[()]/g, '') + ' campus photos') : 'Indian+college+campus+photos'})\n\nYou'll find photos of the campus, buildings, labs, and student life!"
 - For "hostel image": Provide hostel-specific image search link
 - For "college hostel image": Provide college-specific hostel image search link
 
+CRITICAL LINK RULE: You MUST remove all parentheses "(" and ")" from the URL search query or encode them as %28 and %29. Do NOT put raw parentheses inside the markdown link URL, or it will break the chat UI!
 NEVER say "I can't show images" or "I'm a text-based AI". ALWAYS provide the Google Images link.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

@@ -354,7 +354,9 @@ class LocalAIEngine {
         break;
     }
 
-    const encodedQuery = encodeURIComponent(searchQuery);
+    // Remove parentheses to prevent breaking Markdown links in the chat UI
+    const safeQuery = searchQuery.replace(/[()]/g, '');
+    const encodedQuery = encodeURIComponent(safeQuery).replace(/%20/g, '+');
     return { label, url: `https://www.google.com/search?tbm=isch&q=${encodedQuery}` };
   }
 
