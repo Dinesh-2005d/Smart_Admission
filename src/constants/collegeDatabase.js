@@ -165,6 +165,15 @@ const ESTABLISHED_OVERRIDES = {
   'Symbiosis Institute of Business Management': 1978,
 };
 
+// ── Manual type overrides (to fix incorrectly categorized Govt/Private data) ──
+const TYPE_OVERRIDES = {
+  'Saveetha Institute of Medical and Technical Sciences': 'Private',
+  'SAVEETHA INSTITUTE OF MEDICAL AND TECHNICAL SCIENCES (DEEMED TO BE UNIVERSITY)': 'Private',
+  'Saveetha Engineering College': 'Private',
+  'Saveetha Medical College': 'Private',
+  'Saveetha School of Engineering': 'Private'
+};
+
 // Helper: Generate a stable, realistic established year from name hash (fallback)
 const getEstablishedYear = (name) => {
   if (!name) return 1998;
@@ -512,7 +521,7 @@ const PARSED_COLLEGES = collegesData
       location:       c[1] || normState,
       state:          normState,
       department:     dept,
-      type:           c[4] === 'Government' ? 'Government' : 'Private',
+      type:           TYPE_OVERRIDES[c[0]] || (c[4] === 'Government' ? 'Government' : 'Private'),
       gender:         'Co-Education',
       rating:         ratingVal,
       placementRate:  typeof c[6] === 'number' ? c[6] : 70,
