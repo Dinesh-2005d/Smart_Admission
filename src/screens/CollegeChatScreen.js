@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
   TextInput, KeyboardAvoidingView, Keyboard, Platform,
-  Animated, useWindowDimensions, ActivityIndicator, StatusBar,
+  Animated, useWindowDimensions, ActivityIndicator, StatusBar, Linking
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -92,13 +92,40 @@ function RichText({ text, isUser }) {
   const bold = isUser ? C.white : C.accent;
   const lines = (text || '').split('\n');
 
-  const parseBold = (str) => {
-    const parts = str.split('**');
-    return parts.map((p, i) => (
-      <Text key={i} style={{ fontWeight: i % 2 === 1 ? '800' : '400', color: i % 2 === 1 ? bold : base }}>
-        {p}
-      </Text>
-    ));
+  const parseRichText = (str) => {
+    const parts = str.split(/(\[.*?\]\(.*?\))|(\*\*.*?\*\*)/);
+    return parts.map((part, i) => {
+      if (!part) return null;
+      
+      // Markdown link: [text](url)
+      if (part.startsWith('[') && part.includes('](') && part.endsWith(')')) {
+        const textMatch = part.match(/\[(.*?)\]/);
+        const urlMatch = part.match(/\((.*?)\)/);
+        if (textMatch && urlMatch) {
+          return (
+            <Text 
+              key={i} 
+              style={{ color: '#4da6ff', textDecorationLine: 'underline', fontWeight: '600' }}
+              onPress={() => Linking.openURL(urlMatch[1]).catch(() => {})}
+            >
+              {textMatch[1]}
+            </Text>
+          );
+        }
+      }
+      
+      // Bold text: **text**
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return (
+          <Text key={i} style={{ fontWeight: '800', color: bold }}>
+            {part.slice(2, -2)}
+          </Text>
+        );
+      }
+      
+      // Normal text
+      return <Text key={i}>{part}</Text>;
+    });
   };
 
   return (
@@ -127,7 +154,7 @@ function RichText({ text, isUser }) {
               </Text>
             )}
             <Text style={{ flex: 1, color: base, fontSize: 12.5, lineHeight: 19 }}>
-              {parseBold(content)}
+              {parseRichText(content)}
             </Text>
           </View>
         );
