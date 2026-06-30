@@ -148,6 +148,9 @@ function MessageBubble({ msg }) {
     Animated.parallel([
       Animated.timing(fade,  { toValue: 1, duration: 280, useNativeDriver: nd }),
       Animated.spring(slideX, { toValue: 0, tension: 90, friction: 12, useNativeDriver: nd }),
+    ]).start();
+  }, []);
+
   const handleSpeak = async () => {
     const isSpeaking = await Speech.isSpeakingAsync();
     if (isSpeaking) {
