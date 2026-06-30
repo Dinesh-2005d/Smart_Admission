@@ -13,7 +13,7 @@
               "id": "CVE-2026-55603",
               "name": "LanguageSpecificPackageVulnerability",
               "shortDescription": {
-                "text": "http-proxy-middleware: multipart/form-data field injection via unescaped CRLF in `fixRequestBody`"
+                "text": "http-proxy-middleware: http-proxy-middleware: Data integrity compromise via CR/LF injection"
               },
               "fullDescription": {
                 "text": "http-proxy-middleware is node.js http-proxy middleware. From 3.0.4 until 3.0.7 and 4.1.1, fixRequestBody() is the library's documented helper for re-emitting a request body that was already consumed by a body parser. When the outgoing Content-Type is multipart/form-data, it rebuilds the body with handlerFormDataBodyData(), which interpolates each req.body key and value directly into the multipart wire format without neutralizing CR/LF. A \\r\\n inside a value (or key) lets an attacker close the current part and inject an entirely new form part. Because the proxy's own body parser saw a single opaque value, any gateway-side policy or validation performed on req.body is evaluated against a different set of fields than the upstream backend ultimately parses a request/parameter desynchronization across the trust boundary. This vulnerability is fixed in 3.0.7 and 4.1.1."
@@ -42,7 +42,7 @@
               "id": "CVE-2026-55602",
               "name": "LanguageSpecificPackageVulnerability",
               "shortDescription": {
-                "text": "http-proxy-middleware `router` host+path substring matching allows Host-header-driven backend routing bypass"
+                "text": "http-proxy-middleware: http-proxy-middleware: Unintended backend routing due to crafted Host header"
               },
               "fullDescription": {
                 "text": "http-proxy-middleware is node.js http-proxy middleware. From 0.16.0 until 2.0.10, 3.0.6, and 4.1.0, http-proxy-middleware documents router proxy-table entries as host, path, or host+path selectors, but the host+path implementation uses unanchored substring matching on attacker-controlled request metadata. As a result, a crafted Host header that is only a superstring match for a configured host+path key can still route a request to an unintended backend. This vulnerability is fixed in 2.0.10, 3.0.6, and 4.1.0."
