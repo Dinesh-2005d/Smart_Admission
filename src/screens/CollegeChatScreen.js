@@ -148,19 +148,32 @@ function MessageBubble({ msg }) {
     Animated.parallel([
       Animated.timing(fade,  { toValue: 1, duration: 280, useNativeDriver: nd }),
       Animated.spring(slideX, { toValue: 0, tension: 90, friction: 12, useNativeDriver: nd }),
-    ]).start();
-  }, []);
+  const handleSpeak = async () => {
+    const isSpeaking = await Speech.isSpeakingAsync();
+    if (isSpeaking) {
+      Speech.stop();
+      return;
+    }
+    
+    const cleanText = msg.text.replace(/[*_#]/g, '');
+    
+    // Find a professional female voice
+    const voices = await Speech.getAvailableVoicesAsync();
+    let selectedVoice = null;
+    if (voices && voices.length > 0) {
+      // Prioritise known high-quality female English voices
+      selectedVoice = voices.find(v => 
+        v.language.startsWith('en') && 
+        (v.name.toLowerCase().includes('female') || v.name.includes('Samantha') || v.name.includes('Victoria') || v.name.includes('Karen'))
+      ) || voices.find(v => v.language.startsWith('en-IN') || v.language.startsWith('en-GB'));
+    }
 
-  const handleSpeak = () => {
-    Speech.isSpeakingAsync().then(isSpeaking => {
-      if (isSpeaking) {
-        Speech.stop();
-      } else {
-        // Strip markdown before speaking for a cleaner voice read
-        const cleanText = msg.text.replace(/[*_#]/g, '');
-        Speech.speak(cleanText, { language: 'en-IN', rate: 0.95, pitch: 1.1 });
-      }
-    });
+    const options = { language: 'en-IN', rate: 0.95, pitch: 1.2 };
+    if (selectedVoice) {
+      options.voice = selectedVoice.identifier;
+    }
+    
+    Speech.speak(cleanText, options);
   };
 
   const typeColor = {
@@ -411,7 +424,17 @@ export default function CollegeChatScreen({ route, navigation }) {
             placeholderTextColor={C.textDim}
             value={inputText}
             onChangeText={setInputText}
-            onSubmitEditing={() => sendMessage()}
+            onSubmitEditing={() => {
+              if (inputText.trim() && !isTyping) sendMessage();
+            }}
+            onKeyPress={(e) => {
+              if (Platform.OS === 'web' && e.nativeEvent.key === 'Enter' && !e.nativeEvent.shiftKey) {
+                e.preventDefault();
+                if (inputText.trim() && !isTyping) {
+                  sendMessage();
+                }
+              }
+            }}
             returnKeyType="send"
             multiline
             editable={!isTyping}
