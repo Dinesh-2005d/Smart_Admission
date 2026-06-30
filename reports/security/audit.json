@@ -42,8 +42,8 @@
         "node_modules/@expo/config"
       ],
       "fixAvailable": {
-        "name": "expo",
-        "version": "46.0.21",
+        "name": "expo-constants",
+        "version": "56.0.18",
         "isSemVerMajor": true
       }
     },
