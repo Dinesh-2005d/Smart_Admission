@@ -508,6 +508,29 @@ const guessDeptFromName = (name, rawDept) => {
   return rawDept;
 };
 
+// ── Location normalization (fix corrupt split-state data in compressed JSON) ──
+// The compressed JSON has corrupted location data where state names got split:
+//   location="Nadu" + state="Tamil" → should be location="Tamil Nadu"
+//   location="Pradesh" + state="Andhra" → should be location="Andhra Pradesh"
+const STATE_FRAGMENTS = new Set([
+  'nadu', 'pradesh', 'bengal', 'kashmir', 'maharash', 'karnatak', 'karnata',
+  'andhra', 'tamil', 'uttar', 'madhya', 'himachal', 'arunachal', 'west',
+  'telanga', 'chhattis', 'rajasth', 'mahara', 'unknown',
+]);
+
+const normalizeLocation = (rawLocation, fullStateName) => {
+  if (!rawLocation || typeof rawLocation !== 'string') return fullStateName;
+  const loc = rawLocation.trim();
+  // If location is empty or a single short word that's a known state fragment, use full state name
+  if (loc.length < 2) return fullStateName;
+  if (STATE_FRAGMENTS.has(loc.toLowerCase())) return fullStateName;
+  // If location matches the state exactly or is part of it, use state name
+  if (fullStateName && fullStateName.toLowerCase().includes(loc.toLowerCase()) && loc.length < fullStateName.length) {
+    return fullStateName;
+  }
+  return loc;
+};
+
 const PARSED_COLLEGES = collegesData
   .filter(c => {
     // Skip completely junk rows: name must be a real string, state must be somewhat valid
@@ -526,6 +549,7 @@ const PARSED_COLLEGES = collegesData
     const dept      = guessDeptFromName(c[0], rawDept);
     const ratingVal = typeof c[5] === 'number' ? c[5] : 4.0;
     const packageInfo = getPackageDetails(dept, ratingVal);
+    const normLocation = normalizeLocation(c[1], normState);
     
     // Boost placement rate for top-rated colleges to reflect real-world data
     let placement = typeof c[6] === 'number' ? c[6] : 70;
@@ -535,7 +559,7 @@ const PARSED_COLLEGES = collegesData
     
     return {
       name:           c[0],
-      location:       c[1] || normState,
+      location:       normLocation,
       state:          normState,
       department:     dept,
       type:           TYPE_OVERRIDES[c[0]] || (c[4] === 'Government' ? 'Government' : 'Private'),
@@ -548,15 +572,16 @@ const PARSED_COLLEGES = collegesData
       hostelAvailable: c[8] === 1,
       naacGrade:      getNaacGrade(c[0], ratingVal),
       established:    getEstablishedYear(c[0]),
-      description:    generateDescription(c[0], c[4], dept, c[1] || normState, normState, ratingVal),
+      description:    generateDescription(c[0], c[4], dept, normLocation, normState, ratingVal),
       courses:        DEPT_COURSES[dept] || ['Various Courses'],
       highlight:      '',
-      mapQuery:       `${c[0]} ${c[1] || ''} ${normState}`,
+      mapQuery:       `${c[0]} ${normLocation} ${normState}`,
       domain:         c[9] || '',
       avgPackage:     packageInfo.avgPackage,
       highestPackage: packageInfo.highestPackage,
     };
   });
+
 
 // Combine ALL sources: curated top colleges + gap-filling extras + all parsed colleges
 export const COLLEGE_DATABASE = [...TOP_COLLEGES, ...EXTRA_COLLEGES, ...PARSED_COLLEGES];
