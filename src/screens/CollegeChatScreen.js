@@ -135,6 +135,7 @@ function RichText({ text, isUser }) {
   );
 }
 
+
 // ── Message bubble ─────────────────────────────────────────────────────────────
 function MessageBubble({ msg }) {
   const isUser = msg.sender === 'user';
@@ -155,9 +156,65 @@ function MessageBubble({ msg }) {
     rating: C.amber, rejected: C.rose, groq: C.accent, welcome: C.accent,
   }[msg.type] || C.accent;
 
+  // ── Shared bubble contents ────────────────────────────────────────────────
+  const bubbleContent = (
+    <>
+      {!isUser && (
+        <View style={styles.aiMeta}>
+          <LinearGradient colors={[typeColor + '50', typeColor + '28']} style={styles.aiAvatar}>
+            <Text style={{ fontSize: 12 }}>🤖</Text>
+          </LinearGradient>
+          <Text style={[styles.aiName, { color: typeColor }]}>
+            {msg.isRealAI ? 'Acadivo AI' : 'College AI'}
+          </Text>
+          {msg.isRealAI && (
+            <View style={styles.livePill}>
+              <View style={styles.liveDot} />
+              <Text style={styles.liveLabel}>LIVE AI</Text>
+            </View>
+          )}
+        </View>
+      )}
+
+      {isUser ? (
+        <LinearGradient
+          colors={['#8b83ff', '#6c63ff']}
+          style={[styles.bubble, styles.userBubble]}
+          start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
+        >
+          <Text style={{ color: C.white, fontSize: 13, lineHeight: 20 }}>{msg.text}</Text>
+        </LinearGradient>
+      ) : (
+        <View style={[styles.bubble, styles.aiBubble, { borderColor: typeColor + '35' }]}>
+          <RichText text={msg.text} isUser={false} />
+        </View>
+      )}
+
+      <Text style={[styles.timestamp, isUser && { textAlign: 'right' }]}>{msg.time}</Text>
+    </>
+  );
+
+  // ── Web layout: alignItems on parent (flex:0 collapses on CSS/web) ─────────
+  if (Platform.OS === 'web') {
+    return (
+      <View style={{
+        width: '100%',
+        alignItems: isUser ? 'flex-end' : 'flex-start',
+        marginBottom: 5,
+      }}>
+        <Animated.View style={{
+          opacity: fade,
+          transform: [{ translateX: slideX }],
+          maxWidth: isUser ? 300 : 460,
+        }}>
+          {bubbleContent}
+        </Animated.View>
+      </View>
+    );
+  }
+
+  // ── Native layout: flex-row + justifyContent (alignSelf on Animated is buggy on Android) ──
   return (
-    // Outer full-width row — justifyContent handles LEFT/RIGHT alignment
-    // This is the correct Android-safe pattern (no alignSelf on Animated.View)
     <View style={{
       flexDirection: 'row',
       justifyContent: isUser ? 'flex-end' : 'flex-start',
@@ -167,54 +224,15 @@ function MessageBubble({ msg }) {
       <Animated.View style={{
         opacity: fade,
         transform: [{ translateX: slideX }],
-        // Web: fixed px caps | Mobile: % of screen
-        maxWidth: isUser
-          ? Platform.select({ web: 340, default: '72%' })
-          : Platform.select({ web: 500, default: '85%' }),
+        maxWidth: isUser ? '72%' : '85%',
         flex: isUser ? 0 : 1,
       }}>
-        {/* AI label row */}
-        {!isUser && (
-          <View style={styles.aiMeta}>
-            <LinearGradient
-              colors={[typeColor + '50', typeColor + '28']}
-              style={styles.aiAvatar}
-            >
-              <Text style={{ fontSize: 13 }}>🤖</Text>
-            </LinearGradient>
-            <Text style={[styles.aiName, { color: typeColor }]}>
-              {msg.isRealAI ? 'Acadivo AI' : 'College AI'}
-            </Text>
-            {msg.isRealAI && (
-              <View style={styles.livePill}>
-                <View style={styles.liveDot} />
-                <Text style={styles.liveLabel}>LIVE AI</Text>
-              </View>
-            )}
-          </View>
-        )}
-
-        {/* Bubble */}
-        {isUser ? (
-          <LinearGradient
-            colors={['#8b83ff', '#6c63ff']}
-            style={[styles.bubble, styles.userBubble]}
-            start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
-          >
-            <Text style={{ color: C.white, fontSize: 13, lineHeight: 20 }}>{msg.text}</Text>
-          </LinearGradient>
-        ) : (
-          <View style={[styles.bubble, styles.aiBubble, { borderColor: typeColor + '35' }]}>
-            <RichText text={msg.text} isUser={false} />
-          </View>
-        )}
-
-        {/* Timestamp */}
-        <Text style={[styles.timestamp, isUser && { textAlign: 'right' }]}>{msg.time}</Text>
+        {bubbleContent}
       </Animated.View>
     </View>
   );
 }
+
 
 // ── Main Screen ────────────────────────────────────────────────────────────────
 export default function CollegeChatScreen({ route, navigation }) {
