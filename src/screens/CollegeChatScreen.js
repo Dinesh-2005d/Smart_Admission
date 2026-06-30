@@ -7,6 +7,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Speech from 'expo-speech';
 import { askGroqAboutCollege, isGroqConfigured, resetConversation } from '../utils/groqAI';
 
 // ── Color palette ──────────────────────────────────────────────────────────────
@@ -150,6 +151,18 @@ function MessageBubble({ msg }) {
     ]).start();
   }, []);
 
+  const handleSpeak = () => {
+    Speech.isSpeakingAsync().then(isSpeaking => {
+      if (isSpeaking) {
+        Speech.stop();
+      } else {
+        // Strip markdown before speaking for a cleaner voice read
+        const cleanText = msg.text.replace(/[*_#]/g, '');
+        Speech.speak(cleanText, { language: 'en-IN', rate: 0.95, pitch: 1.1 });
+      }
+    });
+  };
+
   const typeColor = {
     suggestions: C.green, hostel: C.sky, placement: C.green,
     fees: C.amber, courses: C.accent, admission: '#fb923c',
@@ -167,6 +180,9 @@ function MessageBubble({ msg }) {
           <Text style={[styles.aiName, { color: typeColor }]}>
             {msg.isRealAI ? 'Acadivo AI' : 'College AI'}
           </Text>
+          <TouchableOpacity onPress={handleSpeak} style={{ marginLeft: 6, padding: 2 }}>
+            <Ionicons name="volume-medium" size={14} color={typeColor} />
+          </TouchableOpacity>
           {msg.isRealAI && (
             <View style={styles.livePill}>
               <View style={styles.liveDot} />
