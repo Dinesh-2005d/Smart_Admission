@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Speech from 'expo-speech';
 import { askGroqAboutCollege, isGroqConfigured, resetConversation } from '../utils/groqAI';
+import { resetLocalAIContext } from '../utils/localAI';
 
 // ── Color palette ──────────────────────────────────────────────────────────────
 const C = {
@@ -373,6 +374,7 @@ export default function CollegeChatScreen({ route, navigation }) {
 
   const clearChat = () => {
     resetConversation();
+    resetLocalAIContext();
     setMessages([{
       id: Date.now(), sender: 'ai', type: 'welcome',
       isRealAI: groqActive, time: getTime(),
@@ -485,7 +487,7 @@ export default function CollegeChatScreen({ route, navigation }) {
         </View>
 
         <Text style={styles.footer}>
-          {groqActive ? '⚡ Llama 3 70B · Groq · College questions only' : '🤖 Local AI · Add GROQ_API_KEY for real AI'}
+          {groqActive ? '⚡ Acadivo AI · Powered by Llama 3 70B' : '🤖 Local AI · Add GROQ_API_KEY for real AI'}
         </Text>
       </View>
     </>

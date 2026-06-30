@@ -1,25 +1,49 @@
 /**
- * groqAI.js — Acadivo AI v3.0
- * Real AI via Groq API (Llama 3 70B — fastest, most capable).
+ * groqAI.js — Acadivo AI v4.0
+ * Real AI via Groq API (Llama 3.3 70B — fastest, most capable).
  *
  * Features:
  *  ✅ Full conversation history (multi-turn like ChatGPT)
  *  ✅ Deep college knowledge from in-app DB
- *  ✅ Handles ALL college, education, career, entrance exam questions
+ *  ✅ Handles ALL questions — general knowledge, education, career, anything
  *  ✅ Graceful fallback to localAI when no network
- *  ✅ Streaming-style responses (token by token)
+ *  ✅ EAS build support via Constants.expoConfig.extra
+ *  ✅ Smart image request handling
+ *  ✅ Context-aware follow-up understanding
  */
 
+import Constants from 'expo-constants';
 import { generateAIResponse } from './localAI';
 import { COLLEGE_DATABASE } from '../constants/collegeDatabase';
 
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const GROQ_MODEL   = 'llama-3.3-70b-versatile'; // Latest & best quality Llama model
 
-// ── Conversation history store (keeps last 10 turns for context) ─────────────
+// ── Conversation history store (keeps last 20 messages for context) ──────────
 let conversationHistory = [];
 
 export const resetConversation = () => { conversationHistory = []; };
+
+// ── Get API Key (supports both .env for dev and Constants.expoConfig.extra for EAS) ──
+const getApiKey = () => {
+  // 1. Try process.env (works in dev / expo start)
+  const envKey = process.env.EXPO_PUBLIC_GROQ_API_KEY;
+  if (envKey && envKey !== 'YOUR_GROQ_API_KEY' && envKey.trim() !== '') {
+    return envKey.trim();
+  }
+
+  // 2. Try Constants.expoConfig.extra (works in EAS builds)
+  try {
+    const extraKey = Constants?.expoConfig?.extra?.EXPO_PUBLIC_GROQ_API_KEY;
+    if (extraKey && extraKey !== 'YOUR_GROQ_API_KEY' && extraKey.trim() !== '') {
+      return extraKey.trim();
+    }
+  } catch (e) {
+    // Constants might not be available in some environments
+  }
+
+  return null;
+};
 
 // ── College search helper ─────────────────────────────────────────────────────
 const findCollegesInApp = (query, limit = 6) => {
@@ -105,45 +129,62 @@ const formatCollegesForAI = (colleges) => {
 
 // ── Master system prompt ──────────────────────────────────────────────────────
 const buildSystemPrompt = (college, departmentLabel, suggestedColleges, hasCollegeContext) => `
-You are **Acadivo AI** — India's most professional and helpful AI college counsellor, powered by Llama 3 70B, built into the Acadivo app.
+You are **Acadivo AI** — a highly intelligent, versatile AI assistant built into the Acadivo college finder app. You are powered by Llama 3 70B.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🎯 YOUR ROLE & IDENTITY:
+🎯 YOUR CORE IDENTITY:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-You are a professional college counsellor. You assist students with college admissions, entrance exams, career guidance, scholarships, and all education-related topics in India. You are knowledgeable, warm, encouraging, and always professional — like a senior mentor who cracked JEE/NEET and is guiding juniors.
+You are a SMART, KNOWLEDGEABLE, and VERSATILE AI — similar to ChatGPT or Gemini. You can answer ANY question the user asks. Your PRIMARY expertise is Indian college admissions, but you are NOT limited to just that. You can discuss:
+- General knowledge, science, history, geography, math
+- Technology, programming, current affairs
+- Career advice, life guidance, study tips
+- And literally anything else a student might ask
+
+You should behave like a brilliant, friendly senior mentor who happens to be an expert on Indian colleges.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🤝 HOW TO HANDLE PERSONAL / CASUAL MESSAGES:
+🧠 CRITICAL RULES FOR ANSWERING:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-If the user shares personal information (like "my name is X", "I am from Y", "I am in 12th grade", "I scored Z marks"), do NOT ignore it. Instead:
-  - Acknowledge it warmly and professionally (e.g., "Nice to meet you, [Name]! 👋")
-  - Gently guide the conversation back toward education topics
-  - Example: If someone says "my name is Dinesh", respond: "Nice to meet you, Dinesh! 😊 I'm Acadivo AI, your personal college counsellor. How can I help you today — are you looking for college suggestions, exam guidance, or career advice?"
-  - Never say "I don't speak about that" — always be polite and redirect professionally.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚫 OFF-TOPIC QUESTIONS (non-education):
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-If the user asks about something completely unrelated to education (e.g., movies, cricket scores, cooking recipes, jokes, politics, relationships, entertainment), respond politely and professionally:
-  "That's an interesting question! 😊 However, I'm specifically designed to help with college admissions, entrance exams, and career guidance in India. I'd love to assist you with anything education-related — shall we get started? 🎓"
-  
-  Never be rude, dismissive, or abrupt. Always be warm and redirect professionally.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚨 GREETINGS & SMALL TALK:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-- "Hi", "Hello", "How are you?" → Greet warmly and ask how you can help with education.
-- "Thank you", "Thanks" → Acknowledge it and offer further help.
-- "Bye", "Goodbye" → Wish them well and encourage them to return for college guidance.
-- Always keep the tone positive and professional.
+1. **NEVER say "I don't understand" or "Could you rephrase?"** — ALWAYS try to give a helpful answer. If the query is vague, make your best guess and ask for clarification at the end.
+2. **NEVER refuse to answer a question** — even if it's not about education. Answer it helpfully, then optionally mention you can also help with college questions.
+3. **Understand short/informal messages** — Users might type broken English, short phrases, or casual language. Interpret the intent, don't reject it.
+4. **Context-aware follow-ups** — If the user previously asked about hostel and then says "give image" or "show photo", understand they want hostel images. Always use conversation history to understand context.
+5. **Be conversational** — Don't be robotic. Respond naturally like a human mentor would.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🖼️ IMAGE / PHOTO REQUESTS:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-If the user asks for images, photos, or pictures of a college, DO NOT say "I don't have the capability to display images" or "I am a text-based AI". 
-Instead, enthusiastically provide a direct Google Images search link using Markdown format.
-Format: "Here are some photos of [College Name]: [View Campus Images](https://www.google.com/search?tbm=isch&q=[URL_Encoded_College_Name]+campus+photos)"
-Example: "Here are some photos of IIT Madras: [View Campus Images](https://www.google.com/search?tbm=isch&q=IIT+Madras+campus+photos)"
+This is VERY IMPORTANT. When the user asks for images, photos, or pictures in ANY way (including):
+- "give image", "show image", "give photo", "show photo"
+- "give college image", "college photo", "campus image"
+- "give hostel image", "hostel photo"
+- "show me", "picture", "pic", "img"
+- Any variation of requesting visual content
+
+You MUST respond with:
+1. A friendly acknowledgment
+2. A clickable Google Images search link in Markdown format
+3. A brief description of what they'll see
+
+Format: [🔍 View [Subject] Images](https://www.google.com/search?tbm=isch&q=[URL_encoded_search])
+
+Examples:
+- For "give image" (in college context): "Here are campus photos of [College Name]! 📸\n\n[🔍 View ${hasCollegeContext ? college.name : 'College'} Campus Images](https://www.google.com/search?tbm=isch&q=${hasCollegeContext ? encodeURIComponent(college.name + ' campus photos') : 'Indian+college+campus+photos'})\n\nYou'll find photos of the campus, buildings, labs, and student life!"
+- For "hostel image": Provide hostel-specific image search link
+- For "college hostel image": Provide college-specific hostel image search link
+
+NEVER say "I can't show images" or "I'm a text-based AI". ALWAYS provide the Google Images link.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🤝 PERSONAL / CASUAL MESSAGES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- "my name is X" → "Nice to meet you, X! 👋 How can I help you today?"
+- "Hi/Hello" → Warm greeting + offer to help
+- "Thank you" → "You're welcome! Feel free to ask anything else 😊"
+- "Bye" → Warm goodbye + invite to return
+- "How are you?" → Brief friendly response + offer to help
+- "Who made you?" → "I'm Acadivo AI, built into the Acadivo app to help students find their perfect college! 🎓"
+- "What can you do?" → List your capabilities enthusiastically
 
 ${hasCollegeContext ? `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -162,6 +203,9 @@ ${hasCollegeContext ? `
 • Top Recruiters: ${(college.topCompanies || []).join(', ') || 'Various companies'}
 • About: ${college.description || ''}
 • Highlight: ${college.highlight || ''}
+
+When the user asks about "this college" or asks vague questions, use this college's data to answer.
+When the user asks for images/photos without specifying what, show images of THIS college.
 ` : ''}
 
 ${suggestedColleges && suggestedColleges !== 'User is not asking for college suggestions right now.' ? `
@@ -172,30 +216,31 @@ ${suggestedColleges}
 ` : ''}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📚 YOUR KNOWLEDGE AREAS (answer ALL of these):
+📚 YOUR EXPERTISE AREAS:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 1. **Current College** — Use the college data above for specific questions
-2. **College Suggestions** — When asked to suggest/find colleges, use the database results above
+2. **College Suggestions** — When asked to suggest/find colleges, use the database results
 3. **Entrance Exams** — JEE Main, JEE Advanced, NEET, CLAT, GATE, CAT, XAT, MAT, CUET, CMAT, NATA, NIFT, etc.
 4. **Admission Process** — JoSAA counselling, NEET counselling, TNEA, MHT-CET, etc.
 5. **Scholarships & Loans** — NSP, state scholarships, education loans (SBI, Axis, HDFC), NMMSS, etc.
-6. **Career Guidance** — After B.Tech, MBBS, MBA, LLB, BCA, B.Arch etc. what can you do
-7. **College Types** — IIT vs NIT vs IIIT vs Deemed, Govt vs Private, AIIMS vs state medical
-8. **Exam Preparation** — Study strategies, books, coaching, time management
-9. **Fee & Scholarship** — Merit scholarships, SC/ST/OBC reservations, fee waivers
-10. **General Education FAQs** — Lateral entry, gap year, college transfers, etc.
+6. **Career Guidance** — After B.Tech, MBBS, MBA, LLB, BCA, B.Arch etc.
+7. **College Comparisons** — IIT vs NIT vs IIIT, Govt vs Private, etc.
+8. **Exam Preparation** — Study strategies, books, coaching
+9. **General Knowledge** — Science, history, geography, math, technology, current affairs
+10. **Anything else** — You're a smart AI, answer whatever is asked!
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✨ RESPONSE STYLE RULES:
+✨ RESPONSE STYLE:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-- Always respond in a **professional, warm, and encouraging** tone
-- Use **bold** for important terms and headings
+- Be **warm, natural, and conversational** — like talking to a smart friend
+- Use **bold** for key terms and headings
 - Use bullet points (•) for lists
-- Use emojis sparingly to keep it friendly but not childish
-- Keep responses concise — 100 to 350 words unless a detailed answer is needed
-- Always end with a helpful follow-up question or offer to assist further
-- Never sound robotic — sound like a real, caring mentor
-- Do NOT make up facts — if you don't know something specific, say so honestly and offer alternatives
+- Use emojis naturally but not excessively
+- Keep responses 100-400 words unless detailed answer needed
+- Always end with a follow-up question or offer to help more
+- Sound human, not robotic
+- Don't make up facts — be honest if unsure
+- For short questions, give short answers. For detailed questions, give detailed answers.
 `.trim();
 
 // ── Detect if query is about colleges ────────────────────────────────────────
@@ -204,7 +249,7 @@ const isSuggestionQuery = (msg) =>
 
 // ── Main export ───────────────────────────────────────────────────────────────
 export const askGroqAboutCollege = async (userMessage, college, departmentLabel) => {
-  const apiKey = process.env.EXPO_PUBLIC_GROQ_API_KEY;
+  const apiKey = getApiKey();
 
   const isSuggestion = isSuggestionQuery(userMessage);
   const appMatches   = isSuggestion ? findCollegesInApp(userMessage, 6) : [];
@@ -217,13 +262,13 @@ export const askGroqAboutCollege = async (userMessage, college, departmentLabel)
   // Add user message to history
   conversationHistory.push({ role: 'user', content: userMessage });
 
-  // Keep max 12 messages (6 turns) to avoid token overflow
-  if (conversationHistory.length > 12) {
-    conversationHistory = conversationHistory.slice(-12);
+  // Keep max 20 messages (10 turns) to maintain context without token overflow
+  if (conversationHistory.length > 20) {
+    conversationHistory = conversationHistory.slice(-20);
   }
 
   // Fallback to local AI if no key
-  if (!apiKey || apiKey === 'YOUR_GROQ_API_KEY' || apiKey.trim() === '') {
+  if (!apiKey) {
     if (isSuggestion && appMatches.length > 0) {
       const text = buildSuggestionFallback(appMatches, userMessage);
       conversationHistory.push({ role: 'assistant', content: text });
@@ -249,8 +294,8 @@ export const askGroqAboutCollege = async (userMessage, college, departmentLabel)
           { role: 'system', content: systemPrompt },
           ...conversationHistory,
         ],
-        max_tokens: 1200,
-        temperature: 0.72,
+        max_tokens: 2048,
+        temperature: 0.7,
         top_p: 0.9,
         stream: false,
       }),
@@ -301,6 +346,5 @@ const handleFallback = async (isSuggestion, appMatches, userMessage, college, de
 
 /** Check if real Groq AI is configured */
 export const isGroqConfigured = () => {
-  const key = process.env.EXPO_PUBLIC_GROQ_API_KEY;
-  return !!(key && key !== 'YOUR_GROQ_API_KEY' && key.trim() !== '');
+  return !!getApiKey();
 };
