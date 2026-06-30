@@ -241,18 +241,17 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <LinearGradient colors={['#eff6ff', '#dbeafe']} style={styles.container}>
-      {/* On Android: NO KeyboardAvoidingView — edgeToEdgeEnabled conflicts with it.
-          softwareKeyboardLayoutMode="resize" in app.json handles it at the OS level.
-          On iOS: KeyboardAvoidingView with padding behavior works perfectly. */}
-      {Platform.OS === 'ios' ? (
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-          {scrollContent}
-        </KeyboardAvoidingView>
-      ) : (
-        <View style={{ flex: 1 }}>
-          {scrollContent}
-        </View>
-      )}
+      {/* KeyboardAvoidingView works for both platforms.
+          Android: 'height' shrinks the layout when keyboard appears.
+          iOS: 'padding' adds bottom padding to push content up.
+          Both work correctly with edgeToEdgeEnabled + SafeAreaProvider. */}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={0}
+      >
+        {scrollContent}
+      </KeyboardAvoidingView>
     </LinearGradient>
   );
 }
@@ -296,7 +295,7 @@ const localS = StyleSheet.create({
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  scroll:    { flexGrow: 1, alignItems: 'center', paddingVertical: 44, paddingHorizontal: 24, justifyContent: 'center' },
+  scroll: { flexGrow: 1, alignItems: 'center', paddingVertical: 28, paddingHorizontal: 24, justifyContent: 'center' },
   contentWrapper: { width: '100%', maxWidth: 420, alignItems: 'center' },
 
   header:     { alignItems: 'center', marginBottom: 28 },

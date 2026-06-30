@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  StatusBar, SafeAreaView, Linking, Animated, Dimensions, Share, Modal
+  StatusBar, Linking, Animated, Dimensions, Share, Modal
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSavedColleges } from '../context/SavedCollegesContext';
@@ -160,7 +160,7 @@ export default function DetailsScreen({ route, navigation }) {
   ];
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.bg} />
       <Animated.ScrollView style={[styles.container, { opacity: fadeAnim }]} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
 
@@ -455,7 +455,7 @@ export default function DetailsScreen({ route, navigation }) {
         </TouchableOpacity>
       </Modal>
 
-    </SafeAreaView>
+    </View>
   );
 }
 

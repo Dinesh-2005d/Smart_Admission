@@ -37,8 +37,33 @@ export function AuthProvider({ children }) {
               setUser(null);
               setError('Account suspended. Contact admin.');
             } else {
-              setUser({ uid: firebaseUser.uid, ...profile });
+              // ── Always enforce Admin role for the admin email ──────────────
+              const isAdminEmail =
+                (firebaseUser.email || '').trim().toLowerCase() === ADMIN_EMAIL;
+              const finalProfile = isAdminEmail
+                ? { ...profile, role: 'Admin' }
+                : profile;
+              // If role in Firestore is wrong, silently fix it
+              if (isAdminEmail && profile.role !== 'Admin') {
+                updateDoc(doc(db, 'users', firebaseUser.uid), { role: 'Admin' }).catch(() => {});
+              }
+              setUser({ uid: firebaseUser.uid, ...finalProfile });
             }
+          } else {
+            // Firestore doc missing — create a minimal one so the admin can log in
+            const isAdminEmail =
+              (firebaseUser.email || '').trim().toLowerCase() === ADMIN_EMAIL;
+            const fallbackProfile = {
+              uid:      firebaseUser.uid,
+              name:     firebaseUser.displayName || firebaseUser.email.split('@')[0],
+              email:    firebaseUser.email.trim().toLowerCase(),
+              role:     isAdminEmail ? 'Admin' : 'Student',
+              blocked:  false,
+              provider: firebaseUser.providerData?.[0]?.providerId === 'google.com' ? 'google' : 'email',
+              createdAt: serverTimestamp(),
+            };
+            await setDoc(doc(db, 'users', firebaseUser.uid), fallbackProfile);
+            setUser(fallbackProfile);
           }
         } catch {
           setUser(null);
@@ -90,6 +115,16 @@ export function AuthProvider({ children }) {
         setLoading(false);
         setError('Account suspended. Contact admin.');
         return { success: false, message: 'Account suspended. Contact admin.' };
+      }
+      // ── Enforce Admin role for the admin email ─────────────────────────────
+      // onAuthStateChanged will handle setting user with correct role.
+      // But if Firestore has wrong role, fix it immediately.
+      if (snap.exists()) {
+        const profile = snap.data();
+        const isAdminEmail = email.trim().toLowerCase() === ADMIN_EMAIL;
+        if (isAdminEmail && profile.role !== 'Admin') {
+          await updateDoc(doc(db, 'users', cred.user.uid), { role: 'Admin' });
+        }
       }
       setLoading(false);
       return { success: true };

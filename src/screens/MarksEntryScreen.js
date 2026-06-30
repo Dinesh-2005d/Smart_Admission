@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  Animated, StatusBar, Platform, SafeAreaView,
+  Animated, Platform,
   LayoutAnimation, UIManager,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -28,6 +28,8 @@ export default function MarksEntryScreen({ navigation, route }) {
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scrollRef = useRef(null);
+  const bottomRef = useRef(null);
+  const bottomY   = useRef(0);
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, { toValue: 1, duration: 700, useNativeDriver: true }).start();
@@ -36,6 +38,13 @@ export default function MarksEntryScreen({ navigation, route }) {
   const handleDeptSelect = (id) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setSelectedDept(id);
+    // Scroll down to show the Find Colleges button after a brief delay
+    // so the layout animation has time to run
+    setTimeout(() => {
+      if (scrollRef.current) {
+        scrollRef.current.scrollToEnd({ animated: true });
+      }
+    }, 120);
   };
 
   const handleFindColleges = () => {
@@ -51,14 +60,12 @@ export default function MarksEntryScreen({ navigation, route }) {
 
   return (
     <LinearGradient colors={['#eff6ff', '#dbeafe']} style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <StatusBar barStyle="dark-content" backgroundColor="#eff6ff" />
-        <ScrollView
-          ref={scrollRef}
-          style={{ flex: 1 }}
-          contentContainerStyle={styles.contentContainer}
-          showsVerticalScrollIndicator={false}
-        >
+      <ScrollView
+        ref={scrollRef}
+        style={{ flex: 1 }}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
           {/* Header */}
           <View style={styles.headerRow}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn} activeOpacity={0.7}>
@@ -149,30 +156,43 @@ export default function MarksEntryScreen({ navigation, route }) {
           </Animated.View>
 
           {/* Find Button */}
-          <TouchableOpacity
-            style={[styles.findBtn, !selectedDept && styles.findBtnDisabled]}
-            onPress={handleFindColleges}
-            disabled={!selectedDept}
-            activeOpacity={0.85}
+          <View
+            ref={bottomRef}
+            onLayout={(e) => { bottomY.current = e.nativeEvent.layout.y; }}
           >
-            <Ionicons name="sparkles" size={20} color={selectedDept ? '#ffffff' : '#94a3b8'} />
-            <Text style={[styles.findBtnText, !selectedDept && styles.findBtnTextDisabled]}>
-              {selectedDept
-                ? `Find Colleges · ${DEPARTMENTS.find(d => d.id === selectedDept)?.label.split('(')[0].trim()}`
-                : 'Select a Department to Continue'}
-            </Text>
-            {selectedDept && <Ionicons name="arrow-forward-circle" size={20} color="#ffffff" />}
-          </TouchableOpacity>
-        </ScrollView>
-      </SafeAreaView>
+            {/* Hint banner — shown when no dept selected */}
+            {!selectedDept && (
+              <View style={styles.hintBanner}>
+                <Ionicons name="hand-left-outline" size={16} color="#2563eb" />
+                <Text style={styles.hintBannerText}>
+                  Select a department above to continue
+                </Text>
+              </View>
+            )}
+
+            <TouchableOpacity
+              style={[styles.findBtn, !selectedDept && styles.findBtnDisabled]}
+              onPress={handleFindColleges}
+              disabled={!selectedDept}
+              activeOpacity={0.85}
+            >
+              <Ionicons name="sparkles" size={20} color={selectedDept ? '#ffffff' : '#94a3b8'} />
+              <Text style={[styles.findBtnText, !selectedDept && styles.findBtnTextDisabled]}>
+                {selectedDept
+                  ? `Find Colleges · ${DEPARTMENTS.find(d => d.id === selectedDept)?.label.split('(')[0].trim()}`
+                  : 'Select a Department to Continue'}
+              </Text>
+              {selectedDept && <Ionicons name="arrow-forward-circle" size={20} color="#ffffff" />}
+            </TouchableOpacity>
+          </View>
+      </ScrollView>
     </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  safeArea: { flex: 1 },
-  contentContainer: { paddingHorizontal: 16, paddingBottom: 40, paddingTop: Platform.OS === 'android' ? 16 : 12 },
+  contentContainer: { paddingHorizontal: 16, paddingBottom: 40, paddingTop: 12 },
 
   // Header
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 },
@@ -280,4 +300,15 @@ const styles = StyleSheet.create({
   findBtnDisabled: { backgroundColor: '#e2e8f0', borderWidth: 1, borderColor: '#cbd5e1' },
   findBtnText: { color: '#ffffff', fontSize: 15, fontWeight: '900' },
   findBtnTextDisabled: { color: '#94a3b8' },
+
+  // Hint banner above the find button
+  hintBanner: {
+    flexDirection: 'row', alignItems: 'center', gap: 8,
+    backgroundColor: '#eff6ff', borderRadius: 12, paddingHorizontal: 14,
+    paddingVertical: 10, marginBottom: 10,
+    borderWidth: 1, borderColor: '#bfdbfe',
+  },
+  hintBannerText: {
+    color: '#2563eb', fontSize: 13, fontWeight: '600', flex: 1,
+  },
 });

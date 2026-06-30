@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  TextInput, Animated, StatusBar, Platform, SafeAreaView,
-  LayoutAnimation, UIManager, Dimensions,
+  TextInput, Animated, StatusBar, Platform,
+  LayoutAnimation, UIManager, Dimensions, Linking,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -15,16 +15,78 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 
 const SCREEN_W = Dimensions.get('window').width;
 
-// ── Curated top colleges for animations ───────────────────────────────────────
+// ── Curated top colleges for spotlight carousel ──────────────────────────────
 const SPOTLIGHT_COLLEGES = [
-  { name: 'IIT Bombay',          location: 'Mumbai, Maharashtra',       dept: 'Engineering',  naac: 'A++', rating: 5.0, icon: '🏛️', color: '#7c3aed', bg: ['#f5f3ff','#ede9fe'] },
-  { name: 'AIIMS New Delhi',     location: 'New Delhi, Delhi',          dept: 'Medical',      naac: 'A++', rating: 5.0, icon: '🏥', color: '#dc2626', bg: ['#fff1f2','#ffe4e6'] },
-  { name: 'IIT Madras',          location: 'Chennai, Tamil Nadu',       dept: 'Engineering',  naac: 'A++', rating: 4.9, icon: '⚙️', color: '#2563eb', bg: ['#eff6ff','#dbeafe'] },
-  { name: 'BITS Pilani',         location: 'Pilani, Rajasthan',         dept: 'Engineering',  naac: 'A++', rating: 4.8, icon: '💡', color: '#0891b2', bg: ['#ecfeff','#cffafe'] },
-  { name: 'CMC Vellore',         location: 'Vellore, Tamil Nadu',       dept: 'Medical',      naac: 'A++', rating: 4.9, icon: '🩺', color: '#059669', bg: ['#ecfdf5','#d1fae5'] },
-  { name: 'IIT Kharagpur',       location: 'Kharagpur, West Bengal',    dept: 'Engineering',  naac: 'A++', rating: 5.0, icon: '🎓', color: '#d97706', bg: ['#fffbeb','#fef3c7'] },
-  { name: 'NIT Trichy',          location: 'Tiruchirappalli, Tamil Nadu', dept: 'Engineering',naac: 'A++', rating: 4.8, icon: '🔬', color: '#7c3aed', bg: ['#f5f3ff','#ede9fe'] },
-  { name: 'TNAU Coimbatore',     location: 'Coimbatore, Tamil Nadu',    dept: 'Agriculture',  naac: 'A++', rating: 4.8, icon: '🌾', color: '#16a34a', bg: ['#f0fdf4','#dcfce7'] },
+  // 1. IIT Madras
+  {
+    name: 'IIT Madras', location: 'Chennai, Tamil Nadu',
+    dept: 'Engineering', naac: 'A++', rating: 4.9,
+    icon: '⚙️', color: '#2563eb', bg: ['#eff6ff', '#dbeafe'],
+    website: 'https://www.iitm.ac.in',
+  },
+  // 2. Saveetha University (SIMATS)
+  {
+    name: 'Saveetha University', location: 'Chennai, Tamil Nadu',
+    dept: 'Multi-disciplinary', naac: 'A++', rating: 4.7,
+    icon: '🏛️', color: '#7c3aed', bg: ['#f5f3ff', '#ede9fe'],
+    website: 'https://www.saveetha.com',
+  },
+  // 3. CMC Vellore
+  {
+    name: 'CMC Vellore', location: 'Vellore, Tamil Nadu',
+    dept: 'Medical', naac: 'A++', rating: 4.9,
+    icon: '🩺', color: '#059669', bg: ['#ecfdf5', '#d1fae5'],
+    website: 'https://www.cmch-vellore.edu',
+  },
+  // 4. Saveetha Engineering College (Autonomous)
+  {
+    name: 'Saveetha Engineering College', location: 'Chennai, Tamil Nadu',
+    dept: 'Engineering', naac: 'A+', rating: 4.5,
+    icon: '🔧', color: '#d97706', bg: ['#fffbeb', '#fef3c7'],
+    website: 'https://www.saveetha.ac.in',
+  },
+  // 5. Saveetha Dental College
+  {
+    name: 'Saveetha Dental College', location: 'Chennai, Tamil Nadu',
+    dept: 'Dental', naac: 'A++', rating: 4.8,
+    icon: '🦷', color: '#0891b2', bg: ['#ecfeff', '#cffafe'],
+    website: 'https://www.saveetha.com/saveetha-dental-college',
+  },
+  // 6. Saveetha Medical College
+  {
+    name: 'Saveetha Medical College', location: 'Thandalam, Tamil Nadu',
+    dept: 'Medical', naac: 'A', rating: 4.4,
+    icon: '🏥', color: '#dc2626', bg: ['#fff1f2', '#ffe4e6'],
+    website: 'https://www.saveetha.com/saveetha-medical-college-and-hospital',
+  },
+  // 7. IIT Bombay
+  {
+    name: 'IIT Bombay', location: 'Mumbai, Maharashtra',
+    dept: 'Engineering', naac: 'A++', rating: 5.0,
+    icon: '🏙️', color: '#7c3aed', bg: ['#f5f3ff', '#ede9fe'],
+    website: 'https://www.iitb.ac.in',
+  },
+  // 8. AIIMS New Delhi
+  {
+    name: 'AIIMS New Delhi', location: 'New Delhi, Delhi',
+    dept: 'Medical', naac: 'A++', rating: 5.0,
+    icon: '🏥', color: '#dc2626', bg: ['#fff1f2', '#ffe4e6'],
+    website: 'https://www.aiims.edu',
+  },
+  // 9. BITS Pilani
+  {
+    name: 'BITS Pilani', location: 'Pilani, Rajasthan',
+    dept: 'Engineering', naac: 'A++', rating: 4.8,
+    icon: '💡', color: '#0891b2', bg: ['#ecfeff', '#cffafe'],
+    website: 'https://www.bits-pilani.ac.in',
+  },
+  // 10. NIT Trichy
+  {
+    name: 'NIT Trichy', location: 'Tiruchirappalli, Tamil Nadu',
+    dept: 'Engineering', naac: 'A++', rating: 4.8,
+    icon: '🔬', color: '#7c3aed', bg: ['#f5f3ff', '#ede9fe'],
+    website: 'https://www.nitt.edu',
+  },
 ];
 
 // ── About the app feature data ───────────────────────────────────────────────
@@ -134,6 +196,12 @@ function CollegeSpotlight() {
 
   const college = SPOTLIGHT_COLLEGES[idx];
 
+  const openWebsite = () => {
+    if (college.website) {
+      Linking.openURL(college.website).catch(() => {});
+    }
+  };
+
   return (
     <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
       <LinearGradient colors={college.bg} style={spotStyles.card}>
@@ -151,7 +219,7 @@ function CollegeSpotlight() {
           </View>
         </View>
 
-        {/* Dept + rating */}
+        {/* Dept + rating + Visit Website */}
         <View style={spotStyles.bottomRow}>
           <View style={[spotStyles.deptChip, { backgroundColor: college.color + '18', borderColor: college.color + '40' }]}>
             <Ionicons name="school" size={11} color={college.color} />
@@ -162,17 +230,31 @@ function CollegeSpotlight() {
           </Text>
         </View>
 
+        {/* Visit Website button */}
+        {college.website && (
+          <TouchableOpacity
+            style={[spotStyles.webBtn, { borderColor: college.color + '60', backgroundColor: college.color + '12' }]}
+            onPress={openWebsite}
+            activeOpacity={0.75}
+          >
+            <Ionicons name="globe-outline" size={13} color={college.color} />
+            <Text style={[spotStyles.webBtnText, { color: college.color }]}>Visit Official Website</Text>
+            <Ionicons name="open-outline" size={12} color={college.color} />
+          </TouchableOpacity>
+        )}
+
         {/* Dot indicators */}
         <View style={spotStyles.dots}>
           {SPOTLIGHT_COLLEGES.map((_, i) => (
-            <View
-              key={i}
-              style={[
-                spotStyles.dot,
-                { backgroundColor: i === idx ? college.color : college.color + '30',
-                  width: i === idx ? 16 : 6 },
-              ]}
-            />
+            <TouchableOpacity key={i} onPress={() => setIdx(i)}>
+              <View
+                style={[
+                  spotStyles.dot,
+                  { backgroundColor: i === idx ? college.color : college.color + '30',
+                    width: i === idx ? 16 : 6 },
+                ]}
+              />
+            </TouchableOpacity>
           ))}
         </View>
       </LinearGradient>
@@ -197,7 +279,15 @@ const spotStyles = StyleSheet.create({
   deptChip:   { flexDirection: 'row', alignItems: 'center', gap: 5, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5, borderWidth: 1 },
   deptText:   { fontSize: 10.5, fontWeight: '800' },
   stars:      { fontSize: 12, fontWeight: '700', letterSpacing: -0.3 },
-  dots:       { flexDirection: 'row', gap: 5, marginTop: 16, justifyContent: 'center', alignItems: 'center' },
+  // Visit Website button
+  webBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    marginTop: 12, borderRadius: 10, borderWidth: 1,
+    paddingHorizontal: 12, paddingVertical: 7,
+    alignSelf: 'flex-start',
+  },
+  webBtnText: { fontSize: 11.5, fontWeight: '700' },
+  dots:       { flexDirection: 'row', gap: 5, marginTop: 14, justifyContent: 'center', alignItems: 'center' },
   dot:        { height: 6, borderRadius: 3 },
 });
 
@@ -261,14 +351,13 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <LinearGradient colors={['#eff6ff', '#dbeafe']} style={styles.container}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <StatusBar barStyle="dark-content" backgroundColor="#eff6ff" />
-        <ScrollView
-          style={{ flex: 1 }}
-          contentContainerStyle={styles.contentContainer}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
+      <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={styles.contentContainer}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
           {/* Logo / Branding */}
           <Animated.View style={[styles.hero, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
             <View style={styles.logoBadge}>
@@ -401,14 +490,13 @@ export default function HomeScreen({ navigation }) {
             </View>
           </Animated.View>
         </ScrollView>
-      </SafeAreaView>
     </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  contentContainer: { paddingHorizontal: 20, paddingBottom: 40, paddingTop: Platform.OS === 'android' ? 24 : 16 },
+  contentContainer: { paddingHorizontal: 20, paddingBottom: 40, paddingTop: 12 },
 
   // Hero
   hero: { alignItems: 'center', paddingBottom: 28, paddingTop: 10 },

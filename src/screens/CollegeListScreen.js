@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  Animated, StatusBar, SafeAreaView, ActivityIndicator,
+  Animated, StatusBar, ActivityIndicator,
   Modal, FlatList, TextInput,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -249,7 +249,7 @@ export default function CollegeListScreen({ navigation, route }) {
   // ── Loading state ──────────────────────────────────────────────────────────
   if (loading) {
     return (
-      <SafeAreaView style={styles.safeArea}>
+      <View style={styles.safeArea}>
         <View style={styles.loadingContainer}>
           <View style={styles.loadingCard}>
             <ActivityIndicator size="large" color={C.purple} />
@@ -263,7 +263,7 @@ export default function CollegeListScreen({ navigation, route }) {
             </View>
           </View>
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 
@@ -345,7 +345,7 @@ export default function CollegeListScreen({ navigation, route }) {
 
   // ─── Main render ──────────────────────────────────────────────────────────
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={C.bg} />
 
       {/* ── Top Filter Bar (Dept + State) ── */}
@@ -500,7 +500,7 @@ export default function CollegeListScreen({ navigation, route }) {
 
       {renderStateModal()}
       {renderDeptModal()}
-    </SafeAreaView>
+    </View>
   );
 }
 

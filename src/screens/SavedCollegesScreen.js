@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  Animated, SafeAreaView, StatusBar, Alert, Platform,
+  Animated, StatusBar, Alert, Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -88,7 +88,7 @@ export default function SavedCollegesScreen({ navigation }) {
   if (savedColleges.length === 0) {
     return (
       <LinearGradient colors={['#eff6ff', '#dbeafe']} style={styles.container}>
-        <SafeAreaView style={styles.safeArea}>
+        <View style={styles.safeArea}>
           <StatusBar barStyle="dark-content" backgroundColor="#eff6ff" />
           <View style={styles.emptyContainer}>
             <Animated.View style={[styles.emptyIconCircle, { transform: [{ scale: pulseAnim }] }]}>
@@ -107,7 +107,7 @@ export default function SavedCollegesScreen({ navigation }) {
               <Text style={styles.exploreBtnText}>Find Colleges</Text>
             </TouchableOpacity>
           </View>
-        </SafeAreaView>
+        </View>
       </LinearGradient>
     );
   }
@@ -115,7 +115,7 @@ export default function SavedCollegesScreen({ navigation }) {
   // ── Saved list ──────────────────────────────────────────────────────────────
   return (
     <LinearGradient colors={['#eff6ff', '#dbeafe']} style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
+      <View style={styles.safeArea}>
         <StatusBar barStyle="dark-content" backgroundColor="#eff6ff" />
         <ScrollView
           style={{ flex: 1 }}
@@ -225,7 +225,7 @@ export default function SavedCollegesScreen({ navigation }) {
 
           <View style={{ height: 30 }} />
         </ScrollView>
-      </SafeAreaView>
+      </View>
     </LinearGradient>
   );
 }

@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
-  TextInput, KeyboardAvoidingView, Platform, SafeAreaView,
+  TextInput, KeyboardAvoidingView, Platform,
   Animated, useWindowDimensions, ActivityIndicator, StatusBar,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { askGroqAboutCollege, isGroqConfigured, resetConversation } from '../utils/groqAI';
@@ -215,6 +216,7 @@ function MessageBubble({ msg }) {
 export default function CollegeChatScreen({ route, navigation }) {
   const { college, departmentLabel } = route.params || {};
   const groqActive = isGroqConfigured();
+  const insets = useSafeAreaInsets();
   const getTime = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   // Full welcome message — matches web version
@@ -283,7 +285,7 @@ export default function CollegeChatScreen({ route, navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={styles.safe}>
       <StatusBar barStyle="light-content" backgroundColor={C.bg} />
 
       {/* ── Header ── */}
@@ -329,9 +331,9 @@ export default function CollegeChatScreen({ route, navigation }) {
       </Animated.View>
 
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === 'android' ? 0 : 0}
+        keyboardVerticalOffset={0}
       >
         {/* ── Messages ── */}
         <ScrollView
@@ -428,7 +430,7 @@ export default function CollegeChatScreen({ route, navigation }) {
           </Text>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -520,7 +522,7 @@ const styles = StyleSheet.create({
   // Input — compact to maximise chat space
   inputWrap: {
     backgroundColor: C.surface, borderTopWidth: 1,
-    borderTopColor: C.border, paddingTop: 2, paddingBottom: 2,
+    borderTopColor: C.border, paddingTop: 6, paddingBottom: Platform.OS === 'android' ? 6 : 2,
   },
   inputRow: {
     flexDirection: 'row', alignItems: 'flex-end',

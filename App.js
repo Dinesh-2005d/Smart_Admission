@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
   TouchableOpacity, Text, View, ActivityIndicator, Platform,
-  StyleSheet, Animated, SafeAreaView, ScrollView, Dimensions, useWindowDimensions
+  StyleSheet, Animated, ScrollView, Dimensions, useWindowDimensions
 } from 'react-native';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -210,11 +211,12 @@ function DesktopSidebar({ tabs, activeTab, setActiveTab, collapsed, user }) {
 
 // ─── Mobile Bottom Bar ───────────────────────────────────────────────────────
 function MobileBottomBar({ tabs, activeTab, setActiveTab }) {
+  const insets = useSafeAreaInsets();
   // Show all tabs including Admin
   const navTabs = tabs;
   
   return (
-    <View style={ds.mobileBottomBar}>
+    <View style={[ds.mobileBottomBar, { paddingBottom: Math.max(insets.bottom, 8) }]}>
       {navTabs.map(tab => {
         const focused = activeTab === tab.name;
         const isAdmin = tab.name === 'Admin';
@@ -249,6 +251,7 @@ function MobileBottomBar({ tabs, activeTab, setActiveTab }) {
 
 // ─── Desktop Top Bar ─────────────────────────────────────────────────────────
 function TopBar({ activeTab, tabs, onToggleSidebar, navStack, onNavigate, onGoBackToStackIndex, isMobile }) {
+  const insets = useSafeAreaInsets();
   const activeTabData = tabs.find(t => t.name === activeTab);
   const tabLabel      = activeTabData?.label || '';
 
@@ -264,7 +267,10 @@ function TopBar({ activeTab, tabs, onToggleSidebar, navStack, onNavigate, onGoBa
   const canGoBack = navStack.length > 0;
 
   return (
-    <LinearGradient colors={['#ffffff', '#f8faff']} style={ds.topBar}>
+    <LinearGradient 
+      colors={['#ffffff', '#f8faff']} 
+      style={[ds.topBar, isMobile && { paddingTop: Math.max(insets.top, 14) }]}
+    >
       {/* Left: toggle / back + breadcrumb */}
       <View style={ds.topBarLeft}>
         {canGoBack ? (
@@ -405,7 +411,7 @@ function MainTabs() {
   };
 
   return (
-    <SafeAreaView style={[ds.root, { flexDirection: isMobile ? 'column' : 'row' }]}>
+    <View style={[ds.root, { flexDirection: isMobile ? 'column' : 'row' }]}>
       {/* Left sidebar */}
       {!isMobile && (
         <DesktopSidebar
@@ -442,7 +448,7 @@ function MainTabs() {
           />
         )}
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -459,8 +465,7 @@ const ds = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderTopWidth: 1,
     borderTopColor: '#e2e8f0',
-    paddingBottom: Platform.OS === 'ios' ? 20 : 10,
-    paddingTop: 10,
+    paddingTop: 8,
     justifyContent: 'space-around',
     elevation: 10,
     shadowColor: '#000',
@@ -618,7 +623,7 @@ const ds = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 24,
-    paddingVertical: 14,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#e2e8f0',
     shadowColor: '#1e3a8a',
@@ -723,10 +728,12 @@ export default function App() {
   }
 
   return (
-    <SavedCollegesProvider>
-      <AuthProvider>
-        <AppNavigator />
-      </AuthProvider>
-    </SavedCollegesProvider>
+    <SafeAreaProvider>
+      <SavedCollegesProvider>
+        <AuthProvider>
+          <AppNavigator />
+        </AuthProvider>
+      </SavedCollegesProvider>
+    </SafeAreaProvider>
   );
 }
