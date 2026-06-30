@@ -117,7 +117,6 @@ function CollegeCard({ college, index, percentage, navigation, departmentLabel, 
             </Text>
             <Text style={styles.statLabel}>Hostel</Text>
           </View>
-          </View>
         </View>
 
         {college.highlight ? (
