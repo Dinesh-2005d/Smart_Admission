@@ -119,13 +119,13 @@ function RichText({ text, isUser }) {
             : line;
 
         return (
-          <View key={i} style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: (isBullet || isNumbered) ? 2 : 0, paddingLeft: (isBullet || isNumbered) ? 4 : 0 }}>
+          <View key={i} style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: (isBullet || isNumbered) ? 1 : 0, paddingLeft: (isBullet || isNumbered) ? 4 : 0 }}>
             {(isBullet || isNumbered) && (
-              <Text style={{ color: C.accent, fontWeight: '800', marginRight: 5, fontSize: 13 }}>
+              <Text style={{ color: C.accent, fontWeight: '800', marginRight: 4, fontSize: 11.5 }}>
                 {isBullet ? '•' : trimmed.match(/^\d+/)[0] + '.'}
               </Text>
             )}
-            <Text style={{ flex: 1, color: base, fontSize: 14.5, lineHeight: 22 }}>
+            <Text style={{ flex: 1, color: base, fontSize: 12.5, lineHeight: 19 }}>
               {parseBold(content)}
             </Text>
           </View>
@@ -161,14 +161,14 @@ function MessageBubble({ msg }) {
     <View style={{
       flexDirection: 'row',
       justifyContent: isUser ? 'flex-end' : 'flex-start',
-      marginBottom: 8,
+      marginBottom: 5,
       width: '100%',
     }}>
       <Animated.View style={{
         opacity: fade,
         transform: [{ translateX: slideX }],
-        // AI: nearly full width | User: 78% max
-        maxWidth: isUser ? '78%' : '97%',
+        // AI: 85% max | User: 72% max
+        maxWidth: isUser ? '72%' : '85%',
         flex: isUser ? 0 : 1,
       }}>
         {/* AI label row */}
@@ -199,7 +199,7 @@ function MessageBubble({ msg }) {
             style={[styles.bubble, styles.userBubble]}
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
           >
-            <Text style={{ color: C.white, fontSize: 15, lineHeight: 23 }}>{msg.text}</Text>
+            <Text style={{ color: C.white, fontSize: 13, lineHeight: 20 }}>{msg.text}</Text>
           </LinearGradient>
         ) : (
           <View style={[styles.bubble, styles.aiBubble, { borderColor: typeColor + '35' }]}>
@@ -525,13 +525,13 @@ const styles = StyleSheet.create({
   liveLabel:{ color: C.green, fontSize: 8, fontWeight: '800' },
 
   // Bubbles
-  bubble: { borderRadius: 16, padding: 9, borderWidth: 1 },
+  bubble: { borderRadius: 14, padding: 7, borderWidth: 1 },
   userBubble: { borderColor: '#9d96ff', borderBottomRightRadius: 4 },
   aiBubble:   {
     backgroundColor: C.aiBg, borderColor: C.border,
     borderBottomLeftRadius: 4,
   },
-  timestamp: { color: C.textDim, fontSize: 9, marginTop: 4, marginHorizontal: 2 },
+  timestamp: { color: C.textDim, fontSize: 8, marginTop: 2, marginHorizontal: 2 },
 
   // Chips — compact
   chipScroll: {
