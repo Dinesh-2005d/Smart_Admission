@@ -117,10 +117,6 @@ function CollegeCard({ college, index, percentage, navigation, departmentLabel, 
             </Text>
             <Text style={styles.statLabel}>Hostel</Text>
           </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={[styles.statValue, { color: C.blue, fontSize: 10 }]}>🎯 {college.minPercentage}%</Text>
-            <Text style={styles.statLabel}>Min Marks</Text>
           </View>
         </View>
 

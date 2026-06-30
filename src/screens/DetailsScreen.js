@@ -227,7 +227,6 @@ export default function DetailsScreen({ route, navigation }) {
           {[
             { label: 'Rating', value: college.rating, icon: '⭐', color: COLORS.gold, bg: COLORS.gold + '15' },
             { label: 'Placement', value: college.placementRate + '%', icon: '📈', color: placementColor(college.placementRate), bg: placementColor(college.placementRate) + '15' },
-            { label: 'Min Marks', value: college.minPercentage + '%', icon: '🎯', color: COLORS.blue, bg: COLORS.blue + '15' },
           ].map((s) => (
             <View key={s.label} style={[styles.statBox, { backgroundColor: s.bg, borderColor: s.color + '44' }]}>
               <Text style={styles.statIcon}>{s.icon}</Text>
