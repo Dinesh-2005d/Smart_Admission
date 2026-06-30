@@ -167,8 +167,10 @@ function MessageBubble({ msg }) {
       <Animated.View style={{
         opacity: fade,
         transform: [{ translateX: slideX }],
-        // AI: 85% max | User: 72% max
-        maxWidth: isUser ? '72%' : '85%',
+        // Web: fixed px caps | Mobile: % of screen
+        maxWidth: isUser
+          ? Platform.select({ web: 340, default: '72%' })
+          : Platform.select({ web: 500, default: '85%' }),
         flex: isUser ? 0 : 1,
       }}>
         {/* AI label row */}
@@ -402,6 +404,17 @@ export default function CollegeChatScreen({ route, navigation }) {
     </>
   );
 
+  // On web: centre chat in a max-width 680px column so it doesn't fill the browser
+  const webChatWrapper = Platform.OS === 'web'
+    ? (
+        <View style={{ flex: 1, alignItems: 'center', backgroundColor: C.bg }}>
+          <View style={{ flex: 1, width: '100%', maxWidth: 680 }}>
+            {chatBody}
+          </View>
+        </View>
+      )
+    : chatBody;
+
   return (
     <View style={[styles.safe, Platform.OS === 'android' && { paddingBottom: kbHeight }]}>
       <StatusBar barStyle="light-content" backgroundColor={C.bg} />
@@ -451,11 +464,11 @@ export default function CollegeChatScreen({ route, navigation }) {
       {/* ── Body: iOS uses KAV padding, Android uses direct paddingBottom ── */}
       {Platform.OS === 'ios' ? (
         <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }} keyboardVerticalOffset={0}>
-          {chatBody}
+          {webChatWrapper}
         </KeyboardAvoidingView>
       ) : (
         <View style={{ flex: 1 }}>
-          {chatBody}
+          {webChatWrapper}
         </View>
       )}
     </View>
