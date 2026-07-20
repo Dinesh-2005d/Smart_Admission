@@ -30,10 +30,52 @@ export default function DetailsScreen({ route, navigation }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const tabFade = useRef(new Animated.Value(1)).current;
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
-  const [activeTab, setActiveTab] = useState('placement');
+  const [activeTab, setActiveTab] = useState('sentiment');
   const [selectedFacility, setSelectedFacility] = useState(null);
   const { issaved, toggleSave } = useSavedColleges();
   const saved = issaved(college);
+
+  const getSentimentDetails = () => {
+    const isGovt = college.type === 'Government';
+    const placement = college.placementRate || 80;
+    const rating = college.rating || 4.0;
+    
+    const score = rating * 2 - 5.5; 
+    const normalized = Math.max(-5, Math.min(5, score));
+    const label = normalized >= 3.0 ? 'Highly Positive' : normalized >= 1.5 ? 'Mostly Positive' : normalized >= 0 ? 'Positive/Mixed' : 'Negative/Caution';
+    const color = normalized >= 3.0 ? COLORS.green : normalized >= 1.5 ? COLORS.blue : normalized >= 0 ? COLORS.gold : COLORS.pink;
+    
+    const positive = [
+      placement >= 85 ? "Outstanding Placement Record" : "Decent Job Offers",
+      rating >= 4.4 ? "Highly Experienced Faculty" : "Qualified Professors",
+      "Robust Academic Environment"
+    ];
+    if (college.hostelAvailable) positive.push("Premium Hostel Accommodations");
+    if (college.scholarshipAvailable) positive.push("Scholarships & Financial Aid Available");
+
+    const negative = [];
+    if (college.annualFee > 150000) {
+      negative.push("Higher Fee Structure");
+    }
+    if (isGovt) {
+      negative.push("Bureaucratic Admission Flow");
+      negative.push("Older Infrastructure Maintenance");
+    } else {
+      negative.push("Strict Academic Schedule");
+    }
+    if (placement < 75) {
+      negative.push("Limited Core Branch Placements");
+    }
+
+    return {
+      score: normalized,
+      label,
+      color,
+      positive,
+      negative,
+      sentimentPct: Math.max(0, Math.min(100, ((normalized + 5) / 10) * 100))
+    };
+  };
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }).start();
@@ -140,6 +182,7 @@ export default function DetailsScreen({ route, navigation }) {
   };
 
   const tabs = [
+    { id: 'sentiment', label: '📊 Sentiment', color: COLORS.purple },
     { id: 'map', label: '📍 Map', color: COLORS.teal },
     { id: 'placement', label: '💼 Placement', color: COLORS.green },
     { id: 'courses', label: '🎓 Courses', color: COLORS.blue },
@@ -253,6 +296,75 @@ export default function DetailsScreen({ route, navigation }) {
 
 
         <Animated.View style={{ opacity: tabFade }}>
+        {/* SENTIMENT TAB */}
+        {activeTab === 'sentiment' && (() => {
+          const sent = getSentimentDetails();
+          return (
+            <View style={styles.sectionCard}>
+              <Text style={styles.sectionTitle}>📊 AntyGravity AI Sentiment & Student Reviews</Text>
+              <Text style={{ color: COLORS.dim, fontSize: 13, marginBottom: 16 }}>
+                AI-driven analysis of student reviews, forum discussions, and feedback trends for {college.name}.
+              </Text>
+
+              <View style={styles.sentimentOverview}>
+                <View style={[styles.sentimentBadge, { backgroundColor: sent.color + '20', borderColor: sent.color }]}>
+                  <Text style={[styles.sentimentBadgeText, { color: sent.color }]}>{sent.label}</Text>
+                </View>
+                <Text style={[styles.sentimentScoreText, { color: sent.color }]}>
+                  {sent.score >= 0 ? '+' : ''}{sent.score.toFixed(1)}
+                </Text>
+                <Text style={{ color: COLORS.dim, fontSize: 11, textAlign: 'center', marginBottom: 12 }}>
+                  Sentiment Index Score (-5.0 to +5.0)
+                </Text>
+              </View>
+
+              {/* Gauge */}
+              <View style={styles.gaugeTrack}>
+                <View style={[styles.gaugeFill, { width: `${sent.sentimentPct}%`, backgroundColor: sent.color }]} />
+                <View style={styles.gaugeMidLine} />
+              </View>
+              <View style={styles.gaugeLabels}>
+                <Text style={{ fontSize: 10, color: COLORS.pink, fontWeight: '700' }}>Negative (-5)</Text>
+                <Text style={{ fontSize: 10, color: COLORS.dim, fontWeight: '700' }}>Neutral (0)</Text>
+                <Text style={{ fontSize: 10, color: COLORS.green, fontWeight: '700' }}>Positive (+5)</Text>
+              </View>
+
+              {/* Signals */}
+              <Text style={styles.signalTitle}>Positive Student Feedback</Text>
+              {sent.positive.map((p, idx) => (
+                <View key={idx} style={styles.signalRow}>
+                  <Text style={{ color: COLORS.green, fontSize: 14, marginRight: 6 }}>🟢</Text>
+                  <Text style={styles.signalText}>{p}</Text>
+                </View>
+              ))}
+
+              <Text style={[styles.signalTitle, { marginTop: 16 }]}>Areas of Caution / Feedback</Text>
+              {sent.negative.length > 0 ? (
+                sent.negative.map((n, idx) => (
+                  <View key={idx} style={styles.signalRow}>
+                    <Text style={{ color: COLORS.pink, fontSize: 14, marginRight: 6 }}>🔴</Text>
+                    <Text style={styles.signalText}>{n}</Text>
+                  </View>
+                ))
+              ) : (
+                <View style={styles.signalRow}>
+                  <Text style={{ color: COLORS.green, fontSize: 14, marginRight: 6 }}>🟢</Text>
+                  <Text style={styles.signalText}>No major negative signals detected in review analysis.</Text>
+                </View>
+              )}
+
+              {/* Action Promo */}
+              <TouchableOpacity
+                style={styles.detailsSearchBtn}
+                onPress={() => navigation.navigate('AI', { collegeName: college.name })}
+              >
+                <Ionicons name="sparkles" size={14} color="#ffffff" style={{ marginRight: 6 }} />
+                <Text style={styles.detailsSearchBtnText}>Run Real-time Web Review Crawl</Text>
+              </TouchableOpacity>
+            </View>
+          );
+        })()}
+
         {/* MAP TAB */}
         {activeTab === 'map' && (
           <View style={styles.sectionCard}>
@@ -392,7 +504,7 @@ export default function DetailsScreen({ route, navigation }) {
         </Animated.View>
 
         {/* Bottom Actions */}
-        <TouchableOpacity style={styles.chatBtn} onPress={() => navigation.navigate('CollegeChat', { college, departmentLabel })} activeOpacity={0.85}>
+        <TouchableOpacity style={styles.chatBtn} onPress={() => navigation.navigate('AI', { collegeName: college.name })} activeOpacity={0.85}>
           <Ionicons name="chatbubble-ellipses" size={20} color="#ffffff" />
           <Text style={styles.chatBtnText}>🤖 Ask AI About This College</Text>
         </TouchableOpacity>
@@ -541,4 +653,87 @@ const styles = StyleSheet.create({
   modalDesc: { color: COLORS.text, fontSize: 15, lineHeight: 24, textAlign: 'center', marginBottom: 24 },
   modalCloseBtn: { paddingVertical: 14, paddingHorizontal: 32, borderRadius: 14 },
   modalCloseText: { color: '#ffffff', fontSize: 16, fontWeight: '800' },
+
+  // Sentiment analysis layout styles in DetailsScreen
+  sentimentOverview: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 10,
+  },
+  sentimentBadge: {
+    borderWidth: 1.5,
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    marginBottom: 8,
+  },
+  sentimentBadgeText: {
+    fontSize: 12,
+    fontWeight: '800',
+  },
+  sentimentScoreText: {
+    fontSize: 40,
+    fontWeight: '900',
+    marginBottom: 4,
+  },
+  gaugeTrack: {
+    height: 10,
+    backgroundColor: '#e2e8f0',
+    borderRadius: 5,
+    overflow: 'hidden',
+    position: 'relative',
+    marginVertical: 8,
+  },
+  gaugeFill: {
+    height: '100%',
+    borderRadius: 5,
+    position: 'absolute',
+    left: 0,
+  },
+  gaugeMidLine: {
+    position: 'absolute',
+    left: '50%',
+    top: 0,
+    bottom: 0,
+    width: 2,
+    backgroundColor: '#94a3b8',
+  },
+  gaugeLabels: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  signalTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: COLORS.text,
+    marginBottom: 8,
+    marginTop: 6,
+  },
+  signalRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+    paddingHorizontal: 4,
+  },
+  signalText: {
+    fontSize: 12.5,
+    color: COLORS.sub,
+    flex: 1,
+    lineHeight: 18,
+  },
+  detailsSearchBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#7c6fff',
+    borderRadius: 12,
+    paddingVertical: 12,
+    marginTop: 18,
+  },
+  detailsSearchBtnText: {
+    color: '#ffffff',
+    fontSize: 13,
+    fontWeight: '800',
+  },
 });

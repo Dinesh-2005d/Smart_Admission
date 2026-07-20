@@ -462,12 +462,15 @@ function MainTabs() {
     ] : []),
   ];
 
+  const [tabParams,  setTabParams]  = useState({});
+
   // Navigate: if name is a tab → switch tab (clear stack).
   // If name is a stack screen → push onto navStack.
   const handleNavigate = (name, params = {}) => {
     if (tabs.some(t => t.name === name)) {
       setNavStack([]);
       setActiveTab(name);
+      setTabParams(params);
     } else if (STACK_SCREENS[name]) {
       setNavStack(prev => [...prev, { name, params }]);
     }
@@ -494,12 +497,13 @@ function MainTabs() {
 
   const currentRoute = currentStack
     ? { name: currentStack.name, params: currentStack.params }
-    : { name: activeTab, params: {} };
+    : { name: activeTab, params: tabParams };
 
   const fakeNav = {
     navigate:    handleNavigate,
     goBack:      handleGoBack,
     setOptions:  () => {},
+    setParams:   (params) => setTabParams(prev => ({ ...prev, ...params })),
     addListener: () => ({ remove: () => {} }),
     isFocused:   () => true,
   };
@@ -508,6 +512,7 @@ function MainTabs() {
   const handleTabChange = (name) => {
     setNavStack([]);
     setActiveTab(name);
+    setTabParams({});
   };
 
   return (

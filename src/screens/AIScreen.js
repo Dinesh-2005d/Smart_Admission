@@ -300,7 +300,7 @@ function SparklineTrend({ data }) {
 // ════════════════════════════════════════════════════════════════════════════
 // MAIN SCREEN
 // ════════════════════════════════════════════════════════════════════════════
-export default function AIScreen() {
+export default function AIScreen({ route, navigation }) {
   const { user }         = useAuth();
   const chatCtx          = useChatHistory();
   const searchHistCtx    = useSearchHistory();
@@ -349,6 +349,36 @@ export default function AIScreen() {
   useEffect(() => {
     setTimeout(() => scrollRef.current?.scrollToEnd?.({ animated: true }), 100);
   }, [chatCtx.messages.length, thinking]);
+
+  // ── Sentiment search ───────────────────────────────────────────────────────
+  const handleSentimentSearch = useCallback(async (overrideQuery) => {
+    const q = (typeof overrideQuery === 'string' ? overrideQuery : sQuery).trim();
+    if (!q) return;
+    setCrawling(true); setCrawlError(null); setCrawlResult(null); setSentiment(null); setSelectedHist(null);
+    try {
+      const crawl      = await crawlWeb(q);
+      const sentResult = analyzeText(crawl.combinedText || q);
+      setCrawlResult(crawl);
+      setSentiment(sentResult);
+      await searchHistCtx.addSearch?.(q, crawl.results, sentResult);
+      sScrollRef.current?.scrollTo?.({ y: 0, animated: true });
+    } catch (e) {
+      setCrawlError(e.message || 'Search failed. Check internet connection.');
+    } finally {
+      setCrawling(false);
+    }
+  }, [sQuery, searchHistCtx]);
+
+  // ── Handle incoming search triggers from other screens ──────────────────────
+  useEffect(() => {
+    if (route?.params?.collegeName) {
+      const targetCollege = route.params.collegeName;
+      setActiveTab('analyse');
+      setSQuery(targetCollege);
+      handleSentimentSearch(targetCollege);
+      navigation?.setParams({ collegeName: null });
+    }
+  }, [route?.params?.collegeName, handleSentimentSearch, navigation]);
 
   // ── Send a message ────────────────────────────────────────────────────────
   const handleSend = useCallback(async (overrideText) => {
@@ -422,25 +452,6 @@ export default function AIScreen() {
       ]);
     }
   }, [chatCtx]);
-
-  // ── Sentiment search ───────────────────────────────────────────────────────
-  const handleSentimentSearch = useCallback(async () => {
-    const q = sQuery.trim();
-    if (!q) return;
-    setCrawling(true); setCrawlError(null); setCrawlResult(null); setSentiment(null); setSelectedHist(null);
-    try {
-      const crawl      = await crawlWeb(q);
-      const sentResult = analyzeText(crawl.combinedText || q);
-      setCrawlResult(crawl);
-      setSentiment(sentResult);
-      await searchHistCtx.addSearch?.(q, crawl.results, sentResult);
-      sScrollRef.current?.scrollTo?.({ y: 0, animated: true });
-    } catch (e) {
-      setCrawlError(e.message || 'Search failed. Check internet connection.');
-    } finally {
-      setCrawling(false);
-    }
-  }, [sQuery, searchHistCtx]);
 
   const sentimentColor = sentiment ? getSentimentColor(sentiment.label) : '#60a5fa';
 
