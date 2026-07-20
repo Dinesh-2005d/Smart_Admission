@@ -1,0 +1,2852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Admission Android – Appium E2E Report – Build #45</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;padding:2rem;}
+    a{color:#818cf8;}
+    .header{background:linear-gradient(135deg,#16a34a,#0ea5e9);border-radius:1rem;padding:2rem;margin-bottom:2rem;text-align:center;}
+    .header h1{font-size:2rem;font-weight:700;color:#fff;margin-bottom:.5rem;}
+    .header p{color:rgba(255,255,255,.8);font-size:.9rem;}
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem;}
+    .stat{background:#1e293b;border-radius:.75rem;padding:1.5rem;text-align:center;border:1px solid #334155;}
+    .stat .val{font-size:2.5rem;font-weight:700;margin-bottom:.25rem;}
+    .stat .lbl{font-size:.75rem;color:#94a3b8;}
+    .table-wrap{background:#1e293b;border-radius:.75rem;overflow:hidden;border:1px solid #334155;}
+    table{width:100%;border-collapse:collapse;}
+    th{background:#0f172a;padding:1rem;font-size:.72rem;text-transform:uppercase;color:#64748b;text-align:left;}
+    td{padding:.85rem 1rem;border-top:1px solid #273445;font-size:.85rem;}
+    tr.pass td{border-left:3px solid #22c55e;}
+    tr.fail td{border-left:3px solid #ef4444;}
+    tr.skip td{border-left:3px solid #f59e0b;}
+    .badge{display:inline-block;padding:.2rem .6rem;border-radius:.375rem;font-size:.75rem;font-weight:600;}
+    .badge-passed{background:rgba(34,197,94,.15);color:#22c55e;}
+    .badge-failed{background:rgba(239,68,68,.15);color:#ef4444;}
+    .badge-skipped{background:rgba(245,158,11,.15);color:#f59e0b;}
+    .err{color:#f87171;font-size:.78rem;max-width:280px;word-break:break-word;}
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📱 Smart Admission Android – Appium E2E Report</h1>
+    <p>Build #45 &nbsp;•&nbsp; 2026-07-20 04:26:42 UTC &nbsp;•&nbsp; Branch: main &nbsp;•&nbsp; Commit: 6c3e421</p>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="val">400</div><div class="lbl">Total</div></div>
+    <div class="stat"><div class="val" style="color:#22c55e">0</div><div class="lbl">Passed</div></div>
+    <div class="stat"><div class="val" style="color:#ef4444">0</div><div class="lbl">Failed</div></div>
+    <div class="stat"><div class="val" style="color:#f59e0b">400</div><div class="lbl">Skipped</div></div>
+    <div class="stat"><div class="val">0.0%</div><div class="lbl">Pass %</div></div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Test Case</th><th>Status</th><th>Duration</th><th>Error</th><th>Screenshot</th></tr></thead>
+      <tbody><tr class="skip">
+      <td>1</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #0)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>2</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #1)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>3</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #2)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>4</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #3)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>5</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #4)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>6</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #5)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>7</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #6)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>8</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #7)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>9</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #8)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>10</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #9)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>11</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #10)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>12</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #11)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>13</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #12)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>14</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #13)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>15</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #14)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>16</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #15)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>17</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #16)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>18</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #17)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>19</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #18)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>20</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #19)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>21</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #20)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>22</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #21)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>23</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #22)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>24</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #23)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>25</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #24)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>26</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #25)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>27</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #26)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>28</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #27)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>29</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #28)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>30</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #29)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>31</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #30)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>32</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #31)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>33</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #32)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>34</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #33)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>35</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #34)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>36</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #35)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>37</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #36)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>38</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #37)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>39</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #38)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>40</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #39)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>41</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #40)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>42</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #41)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>43</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #42)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>44</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #43)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>45</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #44)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>46</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #45)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>47</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #46)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>48</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #47)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>49</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #48)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>50</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #49)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>51</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #50)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>52</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #51)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>53</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #52)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>54</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #53)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>55</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #54)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>56</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #55)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>57</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #56)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>58</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #57)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>59</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #58)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>60</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #59)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>61</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #60)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>62</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #61)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>63</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #62)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>64</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #63)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>65</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #64)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>66</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #65)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>67</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #66)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>68</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #67)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>69</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #68)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>70</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #69)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>71</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #70)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>72</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #71)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>73</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #72)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>74</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #73)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>75</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #74)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>76</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #75)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>77</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #76)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>78</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #77)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>79</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #78)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>80</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #79)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>81</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #80)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>82</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #81)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>83</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #82)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>84</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #83)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>85</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #84)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>86</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #85)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>87</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #86)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>88</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #87)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>89</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #88)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>90</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #89)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>91</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #90)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>92</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #91)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>93</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #92)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>94</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #93)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>95</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #94)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>96</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #95)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>97</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #96)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>98</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #97)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>99</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #98)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>100</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #99)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>101</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #100)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>102</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #101)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>103</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #102)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>104</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #103)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>105</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #104)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>106</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #105)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>107</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #106)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>108</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #107)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>109</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #108)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>110</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #109)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>111</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #110)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>112</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #111)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>113</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #112)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>114</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #113)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>115</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #114)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>116</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #115)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>117</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #116)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>118</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #117)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>119</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #118)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>120</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #119)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>121</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #120)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>122</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #121)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>123</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #122)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>124</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #123)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>125</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #124)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>126</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #125)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>127</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #126)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>128</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #127)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>129</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #128)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>130</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #129)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>131</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #130)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>132</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #131)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>133</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #132)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>134</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #133)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>135</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #134)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>136</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #135)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>137</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #136)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>138</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #137)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>139</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #138)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>140</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #139)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>141</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #140)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>142</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #141)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>143</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #142)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>144</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #143)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>145</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #144)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>146</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #145)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>147</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #146)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>148</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #147)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>149</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #148)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>150</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #149)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>151</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #150)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>152</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #151)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>153</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #152)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>154</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #153)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>155</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #154)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>156</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #155)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>157</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #156)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>158</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #157)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>159</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #158)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>160</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #159)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>161</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #160)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>162</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #161)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>163</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #162)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>164</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #163)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>165</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #164)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>166</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #165)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>167</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #166)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>168</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #167)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>169</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #168)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>170</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #169)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>171</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #170)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>172</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #171)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>173</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #172)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>174</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #173)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>175</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #174)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>176</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #175)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>177</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #176)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>178</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #177)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>179</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #178)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>180</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #179)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>181</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #180)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>182</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #181)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>183</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #182)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>184</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #183)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>185</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #184)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>186</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #185)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>187</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #186)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>188</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #187)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>189</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #188)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>190</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #189)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>191</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #190)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>192</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #191)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>193</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #192)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>194</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #193)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>195</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #194)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>196</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #195)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>197</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #196)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>198</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #197)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>199</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #198)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>200</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #199)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>201</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #200)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>202</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #201)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>203</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #202)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>204</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #203)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>205</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #204)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>206</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #205)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>207</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #206)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>208</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #207)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>209</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #208)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>210</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #209)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>211</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #210)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>212</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #211)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>213</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #212)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>214</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #213)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>215</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #214)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>216</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #215)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>217</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #216)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>218</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #217)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>219</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #218)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>220</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #219)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>221</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #220)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>222</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #221)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>223</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #222)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>224</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #223)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>225</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #224)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>226</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #225)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>227</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #226)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>228</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #227)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>229</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #228)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>230</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #229)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>231</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #230)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>232</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #231)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>233</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #232)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>234</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #233)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>235</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #234)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>236</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #235)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>237</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #236)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>238</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #237)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>239</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #238)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>240</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #239)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>241</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #240)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>242</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #241)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>243</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #242)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>244</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #243)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>245</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #244)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>246</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #245)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>247</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #246)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>248</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #247)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>249</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #248)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>250</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #249)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>251</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #250)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>252</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #251)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>253</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #252)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>254</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #253)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>255</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #254)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>256</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #255)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>257</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #256)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>258</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #257)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>259</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #258)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>260</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #259)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>261</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #260)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>262</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #261)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>263</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #262)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>264</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #263)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>265</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #264)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>266</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #265)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>267</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #266)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>268</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #267)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>269</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #268)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>270</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #269)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>271</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #270)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>272</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #271)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>273</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #272)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>274</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #273)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>275</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #274)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>276</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #275)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>277</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #276)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>278</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #277)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>279</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #278)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>280</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #279)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>281</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #280)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>282</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #281)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>283</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #282)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>284</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #283)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>285</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #284)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>286</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #285)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>287</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #286)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>288</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #287)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>289</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #288)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>290</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #289)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>291</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #290)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>292</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #291)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>293</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #292)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>294</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #293)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>295</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #294)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>296</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #295)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>297</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #296)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>298</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #297)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>299</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #298)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>300</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #299)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>301</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #300)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>302</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #301)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>303</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #302)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>304</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #303)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>305</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #304)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>306</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #305)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>307</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #306)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>308</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #307)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>309</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #308)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>310</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #309)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>311</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #310)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>312</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #311)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>313</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #312)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>314</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #313)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>315</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #314)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>316</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #315)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>317</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #316)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>318</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #317)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>319</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #318)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>320</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #319)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>321</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #320)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>322</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #321)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>323</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #322)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>324</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #323)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>325</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #324)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>326</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #325)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>327</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #326)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>328</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #327)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>329</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #328)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>330</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #329)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>331</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #330)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>332</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #331)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>333</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #332)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>334</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #333)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>335</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #334)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>336</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #335)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>337</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #336)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>338</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #337)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>339</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #338)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>340</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #339)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>341</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #340)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>342</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #341)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>343</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #342)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>344</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #343)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>345</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #344)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>346</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #345)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>347</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #346)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>348</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #347)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>349</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #348)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>350</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #349)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>351</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #350)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>352</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #351)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>353</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #352)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>354</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #353)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>355</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #354)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>356</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #355)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>357</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #356)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>358</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #357)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>359</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #358)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>360</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #359)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>361</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #360)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>362</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #361)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>363</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #362)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>364</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #363)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>365</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #364)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>366</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #365)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>367</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #366)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>368</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #367)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>369</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #368)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>370</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #369)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>371</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #370)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>372</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #371)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>373</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #372)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>374</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #373)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>375</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #374)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>376</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #375)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>377</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #376)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>378</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #377)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>379</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #378)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>380</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #379)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>381</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #380)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>382</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #381)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>383</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #382)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>384</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #383)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>385</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #384)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>386</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #385)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>387</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #386)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>388</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #387)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>389</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #388)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>390</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #389)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>391</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #390)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>392</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #391)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>393</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #392)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>394</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #393)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>395</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #394)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>396</td>
+      <td>Smart Admission Android — Fallback [Layout]: Verify app layout scaling for density (Check Point #395)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>397</td>
+      <td>Smart Admission Android — Fallback [Navigation]: Verify navigation gesture behavior for panel (Check Point #396)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>398</td>
+      <td>Smart Admission Android — Fallback [Accessibility]: Verify element accessibility label for component (Check Point #397)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>399</td>
+      <td>Smart Admission Android — Fallback [Rendering]: Verify component rendering state under theme (Check Point #398)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr><tr class="skip">
+      <td>400</td>
+      <td>Smart Admission Android — Fallback [Input]: Verify form behavior with input string (Check Point #399)</td>
+      <td><span class="badge badge-skipped">⏭ SKIP</span></td>
+      <td>0.00s</td>
+      <td class="err">—</td>
+      <td>—</td>
+    </tr></tbody>
+    </table>
+  </div>
+</body>
+</html>
