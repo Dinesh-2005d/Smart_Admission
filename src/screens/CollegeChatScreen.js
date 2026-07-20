@@ -10,6 +10,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as Speech from 'expo-speech';
 import { askGroqAboutCollege, isGroqConfigured, resetConversation } from '../utils/groqAI';
 import { resetLocalAIContext } from '../utils/localAI';
+import { useChatHistory } from '../context/ChatHistoryContext';
+import { useAuth } from '../context/AuthContext';
 
 // ── Color palette ──────────────────────────────────────────────────────────────
 const C = {
@@ -313,9 +315,42 @@ export default function CollegeChatScreen({ route, navigation }) {
     id: 1, sender: 'ai', type: 'welcome',
     isRealAI: groqActive, time: getTime(), text: buildWelcome(),
   }]);
-  const [inputText, setInputText]     = useState('');
-  const [isTyping, setIsTyping]       = useState(false);
+  const [inputText, setInputText]       = useState('');
+  const [isTyping, setIsTyping]         = useState(false);
   const [chipsVisible, setChipsVisible] = useState(true);
+  const [savedIndicator, setSavedIndicator] = useState(false);
+
+  // ── Firestore session (ChatHistoryContext) ────────────────────────────────
+  const chatCtx       = useChatHistory();
+  const { user }      = useAuth();
+  const sessionIdRef  = useRef(null);  // holds active Firestore session ID
+
+  // Create a Firestore session once user sends first message
+  const ensureSession = useCallback(async (firstMsg) => {
+    if (sessionIdRef.current) return sessionIdRef.current;
+    if (!user?.uid) return null;
+    const title = college
+      ? `${college.name} · ${firstMsg.slice(0, 40)}`
+      : firstMsg.slice(0, 50);
+    const sid = await chatCtx.createSession(title);
+    sessionIdRef.current = sid;
+    return sid;
+  }, [user?.uid, college, chatCtx]);
+
+  // Save a single message to Firestore
+  const saveToFirestore = useCallback(async (sid, role, text, type = 'groq', isRealAI = false) => {
+    if (!sid) return;
+    await chatCtx.addMessage(sid, {
+      id:       Date.now().toString(),
+      role,
+      text,
+      time:     new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
+      type,
+      isRealAI,
+    });
+    setSavedIndicator(true);
+    setTimeout(() => setSavedIndicator(false), 1500);
+  }, [chatCtx]);
 
   const scrollRef  = useRef(null);
   const inputRef   = useRef(null);
@@ -356,12 +391,19 @@ export default function CollegeChatScreen({ route, navigation }) {
     const userMsg = { id: Date.now(), sender: 'user', text: msgText, time: getTime() };
     setMessages(prev => [...prev, userMsg]);
 
+    // Ensure Firestore session exists, then save user message
+    const sid = await ensureSession(msgText);
+    await saveToFirestore(sid, 'user', msgText, 'user', false);
+
     try {
       const res = await askGroqAboutCollege(msgText, college || {}, departmentLabel || '');
-      setMessages(prev => [...prev, {
+      const aiMsg = {
         id: Date.now() + 1, sender: 'ai',
         text: res.text, type: res.type, isRealAI: res.isRealAI, time: getTime(),
-      }]);
+      };
+      setMessages(prev => [...prev, aiMsg]);
+      // Save AI response to Firestore
+      await saveToFirestore(sid, 'assistant', res.text, res.type, res.isRealAI);
     } catch {
       setMessages(prev => [...prev, {
         id: Date.now() + 1, sender: 'ai',
@@ -370,7 +412,7 @@ export default function CollegeChatScreen({ route, navigation }) {
       }]);
     }
     setIsTyping(false);
-  }, [inputText, isTyping, college, departmentLabel]);
+  }, [inputText, isTyping, college, departmentLabel, ensureSession, saveToFirestore]);
 
   const clearChat = () => {
     resetConversation();
@@ -540,7 +582,10 @@ export default function CollegeChatScreen({ route, navigation }) {
               )}
             </View>
             <Text style={styles.headerSub} numberOfLines={1}>
-              {college ? `📍 ${college.name}` : '🇮🇳 Indian College Counsellor'}
+              {savedIndicator
+                ? '☁️ Saved to your account ✓'
+                : college ? `📍 ${college.name}` : '🇮🇳 Indian College Counsellor'
+              }
             </Text>
           </View>
         </View>
@@ -548,6 +593,15 @@ export default function CollegeChatScreen({ route, navigation }) {
         <TouchableOpacity onPress={clearChat} style={styles.headerBtn}>
           <Ionicons name="refresh-outline" size={16} color={C.textSec} />
         </TouchableOpacity>
+
+        {/* Cloud save status icon */}
+        <View style={{ alignItems: 'center', justifyContent: 'center', paddingRight: 4 }}>
+          <Ionicons
+            name={user?.uid ? (savedIndicator ? 'cloud-done' : 'cloud-upload-outline') : 'cloud-offline-outline'}
+            size={16}
+            color={user?.uid ? (savedIndicator ? C.green : C.textDim) : C.rose}
+          />
+        </View>
       </Animated.View>
 
       {/* ── Body: iOS uses KAV padding, Android uses direct paddingBottom ── */}
