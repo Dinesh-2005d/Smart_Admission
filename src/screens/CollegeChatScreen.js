@@ -222,7 +222,7 @@ function MessageBubble({ msg }) {
             <Text style={{ fontSize: 12 }}>🤖</Text>
           </LinearGradient>
           <Text style={[styles.aiName, { color: typeColor }]}>
-            {msg.isRealAI ? 'Acadivo AI' : 'College AI'}
+            {msg.isRealAI ? 'AntyGravity AI' : 'AntyGravity AI'}
           </Text>
           <TouchableOpacity onPress={handleSpeak} style={{ marginLeft: 6, padding: 2 }}>
             <Ionicons name="volume-medium" size={14} color={typeColor} />
@@ -304,9 +304,9 @@ export default function CollegeChatScreen({ route, navigation }) {
   // Full welcome message — matches web version
   const buildWelcome = () => {
     if (college) {
-      return `👋 Hello! I'm **Acadivo AI** — your personal college counsellor.\n\nI'm currently loaded with everything about **${college.name}** (${college.location}, ${college.state}).\n\n${groqActive ? '🟢 **Real AI is active** — I can answer anything about colleges, admissions, exams, and careers!\n\n' : ''}Ask me about:\n• 🏠 Hostel & Accommodation\n• 📊 Placements & Salary packages\n• 🎓 Courses & Eligibility\n• 📋 Admission & Counselling\n• 💰 Fees & Scholarships\n• 🏆 Rankings & NAAC Grade\n\nWhat would you like to know? 😊`;
+      return `👋 Hello! I'm **AntyGravity AI** — your intelligent college guidance model.\n\nI'm powered by web crawling, NLP, and a verified college knowledge base. Currently loaded with everything about **${college.name}** (${college.location}, ${college.state}).\n\n${groqActive ? '🟢 **Real AI is active** — I can answer anything about colleges, admissions, exams, and careers!\n\n' : ''}Ask me about:\n• 🏠 Hostel \u0026 Accommodation\n• 📊 Placements \u0026 Salary packages\n• 🎓 Courses \u0026 Eligibility\n• 📋 Admission \u0026 Counselling\n• 💰 Fees \u0026 Scholarships\n• 🏆 Rankings \u0026 NAAC Grade\n• 😊 Student Reviews \u0026 Sentiment\n\nWhat would you like to know?`;
     }
-    return `👋 Hello! I'm **Acadivo AI** — your personal Indian college counsellor.\n\n${groqActive ? '🟢 **Real AI is active!**\n\n' : ''}I can help you with:\n• 🏛️ Finding the right college\n• 📝 JEE, NEET, CLAT, CAT preparation\n• 💼 Career paths after graduation\n• 💰 Scholarships & Education loans\n• 📊 Comparing colleges\n\nAsk me anything about Indian college admissions! 🎓`;
+    return `👋 Hello! I'm **AntyGravity AI** — your intelligent, multi-modal college guidance model.\n\n${groqActive ? '🟢 **Real AI is active!**\n\n' : ''}I combine a verified college knowledge base, web crawling, and NLP to answer:\n• 🏛️ Finding the right college for you\n• 📝 JEE, NEET, CLAT, CAT preparation\n• 💼 Career paths after graduation\n• 💰 Scholarships \u0026 Education loans\n• 📊 College comparisons \u0026 sentiment analysis\n\nAsk me anything about Indian college admissions! 🎓`;
   };
 
   const [messages, setMessages] = useState([{
@@ -487,7 +487,7 @@ export default function CollegeChatScreen({ route, navigation }) {
         </View>
 
         <Text style={styles.footer}>
-          {groqActive ? '⚡ Acadivo AI · Powered by Llama 3 70B' : '🤖 Local AI · Add GROQ_API_KEY for real AI'}
+          {groqActive ? '⚡ AntyGravity AI · Powered by Llama 3 70B' : '🤖 AntyGravity AI · Local Mode'}
         </Text>
       </View>
     </>
@@ -526,7 +526,7 @@ export default function CollegeChatScreen({ route, navigation }) {
 
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              <Text style={styles.headerTitle} numberOfLines={1}>Acadivo AI</Text>
+              <Text style={styles.headerTitle} numberOfLines={1}>AntyGravity AI</Text>
               {groqActive && (
                 <View style={styles.badge70B}>
                   <Text style={styles.badge70BText}>70B</Text>

@@ -1,7 +1,10 @@
 /**
- * AIScreen.js — Acadivo AI Advisor v2.0
+ * AIScreen.js — AntyGravity AI Platform v2.0
  *
- * A 4-tab AI-powered guidance platform:
+ * AntyGravity AI — a custom-built multi-modal AI for Indian college guidance.
+ * Combines: Knowledge Base + Web Crawling + NLP + Sentiment Analysis + Groq LLM
+ *
+ * 4-tab AI-powered guidance platform:
  *   💬 Chat    — Full AI conversation with session management
  *   📜 History — Past chat sessions (Firestore synced)
  *   📊 Analyse — Web crawl + NLP sentiment analysis
@@ -58,9 +61,11 @@ const QUICK_CHIPS = [
   { icon: 'trophy-outline',        label: 'IIT vs NIT — which is better?' },
   { icon: 'document-text-outline', label: 'How to apply for JEE Advanced?' },
   { icon: 'ribbon-outline',        label: 'Colleges with NAAC A+ grade' },
+  { icon: 'star-outline',          label: 'Review sentiment for Anna University' },
   { icon: 'card-outline',          label: 'Education loan options in India' },
   { icon: 'flash-outline',         label: 'How to prepare for NEET 2025?' },
   { icon: 'business-outline',      label: 'MBA colleges with best placements' },
+  { icon: 'analytics-outline',     label: 'Compare CSE programs in Chennai' },
 ];
 
 // ── Typing dots ───────────────────────────────────────────────────────────────
@@ -189,7 +194,7 @@ function MessageBubble({ msg }) {
             <Text style={{ fontSize: 12 }}>🤖</Text>
           </LinearGradient>
           <Text style={[cs.aiName, { color: typeColor }]}>
-            {msg.isRealAI ? 'Acadivo AI' : 'College AI'}
+            {msg.isRealAI ? 'AntyGravity AI' : 'AntyGravity AI'}
           </Text>
           {msg.isRealAI && (
             <View style={cs.livePill}>
@@ -431,7 +436,7 @@ export default function AIScreen() {
   // Welcome message (shown when no session active)
   const WELCOME_MSG = {
     id: 'welcome', role: 'assistant', text:
-      `👋 Hi${user?.name ? ', **' + user.name + '**' : ''}! I'm **Acadivo AI**, your personal college guidance expert.\n\nI can help you with:\n• Finding colleges that match your marks/cutoff\n• Comparing colleges, fees, placements\n• Admission processes for JEE, NEET, CLAT, CAT\n• Scholarships, hostel facilities, career guidance\n• Any question about Indian higher education\n\nJust ask me anything! 🎓`,
+      `👋 Hi${user?.name ? ', **' + user.name + '**' : ''}! I'm **AntyGravity AI** — your intelligent, multi-modal college guidance model.\n\nI combine:\n• 📚 **Verified Knowledge Base** — structured college data for 500+ institutions\n• 🕸️ **Web Crawling** — real-time data from trusted educational websites\n• 🧠 **NLP + Sentiment Analysis** — AI-powered opinion mining on student reviews\n• 🎯 **Personalization** — tailored recommendations from your history\n\n**Ask me anything:**\n• Which colleges accept my cutoff marks?\n• Compare CSE programs in Chennai\n• What do students say about VIT Vellore? (sentiment)\n• Admission process for IIT, AIIMS, IIM\n\nPowered by Llama 3.3 70B + AntyGravity AI 🚀`,
     time: now(), type: 'welcome', isRealAI: !!groqActive,
   };
 
@@ -450,9 +455,9 @@ export default function AIScreen() {
       <LinearGradient colors={['#0d0d14', '#16161f']} style={cs.header}>
         <View style={cs.headerRow}>
           <View style={{ flex: 1 }}>
-            <Text style={cs.headerTitle}>🤖 AI Advisor</Text>
+            <Text style={cs.headerTitle}>🤖 AntyGravity AI</Text>
             <Text style={cs.headerSub}>
-              {groqActive ? '✅ Groq AI Active' : '⚡ Local AI'} · Personalized Guidance
+              {groqActive ? '🟢 AI Active · Knowledge Base + Web Crawl + NLP' : '⚡ Local Mode'} · Personalized
             </Text>
           </View>
           {user && (

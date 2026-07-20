@@ -381,8 +381,8 @@ class LocalAIEngine {
       // ── Greetings ──────────────────────────────────────────────────────────
       case 'greeting':
         return pickRandom([
-          `Hello there! 👋 Welcome to **Acadivo AI**! I'm your personal college assistant. How can I help you today?\n\nYou can ask me about:\n• 🏛️ College details & facilities\n• 💰 Fees & scholarships\n• 📊 Placements & career\n• 📸 Campus photos\n• 📋 Admissions & eligibility\n\nAsk me anything! 😊`,
-          `Hey! 😊 Great to have you here! I'm **Acadivo AI** — your smart college assistant.\n\nI can help with fees, placements, courses, hostel info, campus photos, and much more! What would you like to know?`,
+          `Hello there! 👋 Welcome to **AntyGravity AI**! I'm your personal college assistant. How can I help you today?\n\nYou can ask me about:\n• 🏛️ College details & facilities\n• 💰 Fees & scholarships\n• 📊 Placements & career\n• 📸 Campus photos\n• 📋 Admissions & eligibility\n\nAsk me anything! 😊`,
+          `Hey! 😊 Great to have you here! I'm **AntyGravity AI** — your smart college assistant.\n\nI can help with fees, placements, courses, hostel info, campus photos, and much more! What would you like to know?`,
           `Hi there! 👋 I'm your AI college counsellor at **Acadivo**. Ask me about ${name} or any college-related topic — I'm here to help! 🎓`,
         ]);
 
@@ -405,8 +405,8 @@ class LocalAIEngine {
       // ── Identity ───────────────────────────────────────────────────────────
       case 'identity':
         return pickRandom([
-          `I'm **Acadivo AI** 🤖 — a smart college assistant built into the Acadivo app!\n\n**Here's what I can do:**\n• 🏛️ Give detailed info about any college\n• 📊 Share placement stats & salary packages\n• 💰 Explain fee structures & scholarships\n• 📸 Show campus photos & images\n• 📋 Guide you through admission processes\n• 🎯 Help with entrance exam preparation\n• 🗺️ Provide college locations & directions\n\nAsk me anything! 😊`,
-          `Hey! I'm **Acadivo AI** — your personal college counsellor! 🎓\n\nI can answer questions about colleges, admissions, fees, placements, campus life, and much more. Think of me as your senior mentor who knows everything about Indian colleges! 😊\n\nWhat would you like to know?`,
+          `I'm **AntyGravity AI** 🤖 — a smart college assistant built into the Acadivo app!\n\n**Here's what I can do:**\n• 🏛️ Give detailed info about any college\n• 📊 Share placement stats & salary packages\n• 💰 Explain fee structures & scholarships\n• 📸 Show campus photos & images\n• 📋 Guide you through admission processes\n• 🎯 Help with entrance exam preparation\n• 🗺️ Provide college locations & directions\n\nAsk me anything! 😊`,
+          `Hey! I'm **AntyGravity AI** — your personal college counsellor! 🎓\n\nI can answer questions about colleges, admissions, fees, placements, campus life, and much more. Think of me as your senior mentor who knows everything about Indian colleges! 😊\n\nWhat would you like to know?`,
         ]);
 
       // ── Personal intro ─────────────────────────────────────────────────────
@@ -577,7 +577,7 @@ class LocalAIEngine {
       // ── Personal Intro ─────────────────────────────────────────────────────
       case 'personal':
         return pickRandom([
-          `Nice to meet you! 😊 I'm glad you're here.\n\nI'm **Acadivo AI** — your personal college counsellor. I can help you find the right college, understand admissions, and plan your career!\n\nWhat are you looking for? Tell me about your interests and I'll guide you! 🎯`,
+          `Nice to meet you! 😊 I'm glad you're here.\n\nI'm **AntyGravity AI** — your personal college counsellor. I can help you find the right college, understand admissions, and plan your career!\n\nWhat are you looking for? Tell me about your interests and I'll guide you! 🎯`,
         ]);
 
       // ── DEFAULT: Smart general response ────────────────────────────────────
@@ -596,9 +596,9 @@ class LocalAIEngine {
 
         // Truly unknown — give a helpful, friendly response (NEVER say "I don't understand")
         return pickRandom([
-          `Great question! 😊 Let me help you with that.\n\nI'm **Acadivo AI** — I know a lot about **${name}** and Indian colleges in general. Here are some things I can tell you about:\n\n• 📋 **Admissions** — Eligibility, cutoffs, process\n• 💰 **Fees** — Fee structure & scholarships\n• 💼 **Placements** — Companies, packages, rates\n• 🏠 **Hostel** — Availability & facilities\n• 🎓 **Courses** — Programs offered\n• 📸 **Campus Photos** — Just say "show image"\n• 📍 **Location** — Directions & map\n\nWhat would you like to explore? 🎯`,
+          `Great question! 😊 Let me help you with that.\n\nI'm **AntyGravity AI** — I know a lot about **${name}** and Indian colleges in general. Here are some things I can tell you about:\n\n• 📋 **Admissions** — Eligibility, cutoffs, process\n• 💰 **Fees** — Fee structure & scholarships\n• 💼 **Placements** — Companies, packages, rates\n• 🏠 **Hostel** — Availability & facilities\n• 🎓 **Courses** — Programs offered\n• 📸 **Campus Photos** — Just say "show image"\n• 📍 **Location** — Directions & map\n\nWhat would you like to explore? 🎯`,
           `I appreciate your question! 😊\n\nAs your college assistant for **${name}**, I can provide detailed information about:\n\n• Admissions, fees, placements, courses\n• Hostel, facilities, campus life\n• Entrance exams & career guidance\n• Campus photos & gallery\n\nTry asking something like "tell me about placements" or "show campus image"!\n\nHow can I help you? 🎓`,
-          `Hey! 👋 I'd love to help you out.\n\nHere at **Acadivo AI**, I specialize in everything about **${name}** — from admissions to placements, fees to hostel, and much more!\n\n📸 Want photos? Just say **"show image"**\n💰 Want fee details? Ask **"fee structure"**\n💼 Want placements? Ask **"placement details"**\n\nGo ahead, ask me anything! 😊`,
+          `Hey! 👋 I'd love to help you out.\n\nHere at **AntyGravity AI**, I specialize in everything about **${name}** — from admissions to placements, fees to hostel, and much more!\n\n📸 Want photos? Just say **"show image"**\n💰 Want fee details? Ask **"fee structure"**\n💼 Want placements? Ask **"placement details"**\n\nGo ahead, ask me anything! 😊`,
         ]);
       }
     }
