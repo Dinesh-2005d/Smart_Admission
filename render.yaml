@@ -5,22 +5,23 @@ services:
   # 1. Express Backend Auth & API Server
   - type: web
     name: smartcampus-auth-server
-    env: node
+    runtime: node
     buildCommand: npm install
     startCommand: node auth-server.js
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 10000
+        value: "10000"
 
   # 2. Expo React Native Web Application
   - type: web
     name: smartcampus-web
-    env: static
+    runtime: static
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist
     routes:
       - type: rewrite
         source: /*
         destination: /index.html
+
