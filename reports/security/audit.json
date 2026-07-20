@@ -248,6 +248,39 @@
         "isSemVerMajor": true
       }
     },
+    "expo-dev-client": {
+      "name": "expo-dev-client",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "expo-dev-launcher",
+        "expo-manifests"
+      ],
+      "effects": [],
+      "range": "<=0.0.1-canary-20240418-8d74597 || 3.1.0 - 55.0.0-canary-20260223-05214f1 || 55.0.4-canary-20260128-67ce8d5 || 55.0.20-canary-20260327-0789fbc - 55.0.20-canary-20260402-9da566b || 56.0.0-canary-20260212-4f61309 - 56.0.0-canary-20260506-964f25d",
+      "nodes": [
+        "node_modules/expo-dev-client"
+      ],
+      "fixAvailable": {
+        "name": "expo-dev-client",
+        "version": "57.0.7",
+        "isSemVerMajor": true
+      }
+    },
+    "expo-dev-launcher": {
+      "name": "expo-dev-launcher",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "expo-manifests"
+      ],
+      "effects": [],
+      "range": "<=0.0.1-canary-20240418-8d74597 || 3.1.0 - 55.0.0-canary-20260223-05214f1 || 55.0.5-canary-20260128-67ce8d5 || 55.0.21-canary-20260327-0789fbc - 55.0.21-canary-20260402-9da566b || 56.0.0-canary-20260212-4f61309 - 56.0.0-canary-20260506-964f25d",
+      "nodes": [
+        "node_modules/expo-dev-launcher"
+      ],
+      "fixAvailable": true
+    },
     "expo-linking": {
       "name": "expo-linking",
       "severity": "moderate",
@@ -274,6 +307,8 @@
         "@expo/config"
       ],
       "effects": [
+        "expo-dev-client",
+        "expo-dev-launcher",
         "expo-updates"
       ],
       "range": "<=0.0.1-canary-20240418-8d74597 || 0.9.0 - 55.0.15 || 56.0.0-canary-20260212-4f61309 - 56.0.0-canary-20260506-964f25d",
@@ -554,18 +589,18 @@
     "vulnerabilities": {
       "info": 0,
       "low": 1,
-      "moderate": 18,
+      "moderate": 20,
       "high": 3,
       "critical": 0,
-      "total": 22
+      "total": 24
     },
     "dependencies": {
-      "prod": 826,
+      "prod": 833,
       "dev": 362,
       "optional": 38,
       "peer": 0,
       "peerOptional": 0,
-      "total": 1199
+      "total": 1206
     }
   }
 }
