@@ -374,6 +374,7 @@ export default function AIScreen({ route, navigation }) {
   // ── Handle incoming search triggers from other screens ──────────────────────
   useEffect(() => {
     const targetCollege = route?.params?.collegeName;
+    const collegeObj = route?.params?.college || null;
     if (targetCollege && lastTriggeredCollegeRef.current !== targetCollege) {
       lastTriggeredCollegeRef.current = targetCollege;
       setActiveTab('chat');
@@ -394,9 +395,21 @@ export default function AIScreen({ route, navigation }) {
         
         const userMsg = { id: Date.now() + 'u', role: 'user', text: promptText, time: now(), type: 'user' };
         await chatCtx.addMessage(sessionId, userMsg);
+
+        // Perform background web crawl & analysis, then save to Gmail-synced search history
+        try {
+          const crawl = await crawlWeb(targetCollege);
+          const sentResult = analyzeText(crawl.combinedText || targetCollege);
+          await searchHistCtx.addSearch?.(targetCollege, crawl.results, sentResult);
+        } catch (crawlErr) {
+          console.warn('Background crawl/history save failed:', crawlErr);
+        }
         
         try {
-          const response = await askGroqAboutCollege(promptText, null, null, '');
+          const personalization = await chatCtx.getPersonalizationContext(
+            searchHistCtx.history || []
+          );
+          const response = await askGroqAboutCollege(promptText, collegeObj, null, personalization);
           const aiMsg = {
             id:       Date.now() + 'a',
             role:     'assistant',
@@ -414,9 +427,9 @@ export default function AIScreen({ route, navigation }) {
       };
 
       triggerAutoChat();
-      navigation?.setParams({ collegeName: null });
+      navigation?.setParams({ collegeName: null, college: null });
     }
-  }, [route?.params?.collegeName, chatCtx, navigation]);
+  }, [route?.params?.collegeName, route?.params?.college, chatCtx, searchHistCtx, navigation]);
 
   // ── Send a message ────────────────────────────────────────────────────────
   const handleSend = useCallback(async (overrideText) => {

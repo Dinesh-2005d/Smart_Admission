@@ -504,7 +504,7 @@ export default function DetailsScreen({ route, navigation }) {
         </Animated.View>
 
         {/* Bottom Actions */}
-        <TouchableOpacity style={styles.chatBtn} onPress={() => navigation.navigate('AI', { collegeName: college.name })} activeOpacity={0.85}>
+        <TouchableOpacity style={styles.chatBtn} onPress={() => navigation.navigate('AI', { collegeName: college.name, college: college })} activeOpacity={0.85}>
           <Ionicons name="chatbubble-ellipses" size={20} color="#ffffff" />
           <Text style={styles.chatBtnText}>🤖 Ask AI About This College</Text>
         </TouchableOpacity>
