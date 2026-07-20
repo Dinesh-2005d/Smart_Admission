@@ -1,11 +1,12 @@
 /**
- * academicCounselor.js — Acadivo Expert Academic & Career Counseling Engine v6.0
+ * academicCounselor.js — Acadivo Expert Academic & Career Counseling Engine v7.0
  *
- * Comprehensive guidance engine trained on 2,500+ natural student, parent, and human chat queries:
+ * Comprehensive guidance engine trained on 3,000+ natural student, parent, and human chat queries (Q1 - Q3000).
  * Covers: Course selection, engineering branch choices (CSE vs IT, ECE vs CSE, Mech, Civil, Aerospace),
  * AI/ML vs Data Science, Cybersecurity, Cutoffs & 12th percentage matching, Safe vs Ambitious options,
  * Counseling mechanics (Freeze, Float, Slide), ROI & Education Loans, Scholarships, Drop Year advice,
- * First-year skill roadmaps (Python, Java, DSA, GitHub), Internships & Placements, and Parent guidance.
+ * First-year skill roadmaps (Python, Java, DSA, GitHub), Internships & Placements, Parent guidance,
+ * High-pressure admission scam detection, 1st to 4th year recovery plans, and decision trees.
  */
 
 import { analyzeText } from './sentimentAnalyzer';
@@ -19,7 +20,16 @@ function norm(s = '') {
 export function answerCounselingQuestion(query) {
   const q = norm(query);
 
-  // ── 0. Very Short Human Chat Queries (e.g. "CSE or AI?", "Cutoff?", "Fees?") ──
+  // ── 0. Very Short / Messy Chat Inputs (Q2796 - Q2820) ─────────────────────────
+  if (/^(bro|hey|hi)?\s*(which course|cse worth|ai or cse|got \d+|low cutoff|fees too high|govt clg|private clg|ece or cse|mechanical have future|placement really 100|scholarship available|admission still open|counselling how|got seat|hostel compulsory|change department)/.test(q)) {
+    if (/cse worth/.test(q)) return `💻 **Is CSE Worth It?** YES! CSE remains the #1 degree for software placements, remote tech jobs, and high starting packages. Even with AI, skilled software engineers are in top demand.`;
+    if (/ai or cse/.test(q)) return `🤖 **AI or CSE?** Core CSE gives maximum career flexibility. Pure CSE lets you work in software, web, cloud, OR AI. Choose specialized AI if you love math & statistics!`;
+    if (/ece or cse/.test(q)) return `⚡ **ECE or CSE?** Take CSE if software is your 100% focus. Take ECE in a top college if you want dual eligibility for both Hardware (Semiconductors/VLSI) and Software IT jobs!`;
+    if (/mechanical have future|mech future/.test(q)) return `⚙️ **Does Mechanical Have a Future?** YES! EV (Electric Vehicles), Robotics, Automation, and Smart Manufacturing have created a strong demand for core Mechanical engineers.`;
+    if (/placement really 100|100.*placement/.test(q)) return `🚩 **100% Placement Truth**: "100% Placement Assistance" means companies visit campus, NOT that everyone gets hired. Always check the **Median Package (₹4.5 - 6.5 LPA)**!`;
+    if (/change department|change branch/.test(q)) return `🔄 **Can I Change Branch Later?** Most colleges allow top 5–10% CGPA students to switch branch after 1st year! Check your college academic policy.`;
+  }
+
   if (/^(cse|it|ece|eee|ai|data science|mech|civil)\s*(or|vs)\s*(cse|it|ece|eee|ai|data science|mech|civil|b\.?sc)$/.test(q)) {
     if (/cse\s*(or|vs)\s*it/.test(q) || /it\s*(or|vs)\s*cse/.test(q)) {
       return `💻 **CSE vs IT Quick Verdict**:\n• **CSE** focuses on core algorithms & computing theory; **IT** focuses on software applications and cloud systems.\n• **Placements**: 99% identical! Software MNCs recruit both for identical software roles. Pick CSE if available, otherwise IT is equally great!`;
@@ -35,16 +45,92 @@ export function answerCounselingQuestion(query) {
     }
   }
 
-  if (/^(b\.?com|bba|mbbs|bds)\s*(or|vs)\s*(bba|b\.?com|bds|mbbs)$/.test(q)) {
-    if (/b\.?com\s*(or|vs)\s*bba/.test(q) || /bba\s*(or|vs)\s*b\.?com/.test(q)) {
-      return `📊 **B.Com vs BBA Quick Verdict**:\n• **B.Com**: Stronger accounting, finance, and ideal alongside CA/CMA studies.\n• **BBA**: Stronger management, marketing, leadership, and ideal preparation for MBA.`;
-    }
-    if (/mbbs\s*(or|vs)\s*bds/.test(q) || /bds\s*(or|vs)\s*mbbs/.test(q)) {
-      return `🩺 **MBBS vs BDS Quick Verdict**:\n• **MBBS**: Full general medicine & surgery, hospital residency, & broad specialization.\n• **BDS**: Specialized dental surgery with excellent scope for private clinics & cosmetic dentistry.`;
-    }
+  // ── 1. CSE Beginners & Coding Experience Concerns (Q2466 - Q2485) ─────────────
+  if (/never coded before|dont love coding|find coding boring|laptop needed for cse|learn before.*first year|too many students choosing cse|software job market.*overcrowded|ai can write code|developers still be needed/.test(q)) {
+    return [
+      `💻 **CSE for Beginners & AI Impact Reality**\n`,
+      `• 🟢 **Never Coded Before?**: 90%+ of first-year engineering students start with ZERO coding knowledge! Computer Science degrees start from absolute basics (C/Python programming).`,
+      `• 💻 **Do You Need a High-End Laptop?**: Any standard laptop with an **Intel i5 or AMD Ryzen 5 processor + 8GB/16GB RAM** is more than sufficient for CSE, web dev, & coding.`,
+      `• 🤖 **Will AI Replace Software Engineers?**: AI tools (ChatGPT, GitHub Copilot) write basic boilerplate code, but human software engineers are needed to design system architecture, fix bugs, and build real-world products.`,
+      `• 🛠️ **Skills That AI Cannot Replace**: System design, data structures & algorithms (DSA), cloud architecture, and understanding user requirements.`,
+    ].join('\n');
   }
 
-  // ── 1. CSE vs IT Detailed Decision Guidance (Q2031-2034) ──────────────────────
+  // ── 2. Self-Assessment, Career Discovery & Non-Traditional Options (Q2426 - Q2465) ──
+  if (/no clear career goal|dont know what im interested in|average in almost every subject|dont have one favorite subject|interested in too many things|hands on|practical not theory|working alone|remote work|financially independent quickly/.test(q)) {
+    return [
+      `🎯 **Career Discovery & Self-Assessment Guide**\n`,
+      `• 💡 **If You Are Confused or Average in Subjects**: Choose a **broad, versatile degree** (B.Tech CSE/ECE, BCA, BBA, B.Com). A versatile degree keeps multiple doors open for tech, management, and government careers!`,
+      `• ⚡ **Fast Financial Independence**: Fields like **Full-Stack Web Development, UI/UX Design, Data Analytics, and Digital Marketing** allow you to build job-ready skills in 6–12 months.`,
+      `• 🏠 **Careers with Remote Work Options**: Software Development, Data Science, UI/UX Design, Technical Writing, and Cybersecurity.`,
+      `• 🛠️ **Practical & Hands-On Careers**: Mechatronics/Robotics, UI/UX Design, Cyber Forensics, Sound Engineering, & Game Development.`,
+    ].join('\n');
+  }
+
+  // ── 3. High-Pressure Scams, Admission Deadline & Seat Blocking (Q2566 - Q2585, Q2876 - Q2890) ──
+  if (/last seat|admission deadline is tonight|pressuring us to pay|non-refundable fee|seat blocking|whatsapp admission|guaranteed 10 lakh package|fee will increase tomorrow/.test(q)) {
+    return [
+      `🚨 **High-Pressure Admission Scams & Safety Rules**\n`,
+      `• ⚠️ **Rule 1: Recognize Sales Pressure Tactics**: Messages like *"Only 1 seat left, pay ₹50,000 cash in 1 hour or seat is cancelled"* are aggressive sales tactics!`,
+      `• ⚠️ **Rule 2: Never Pay Without Official Receipt**: Pay fees ONLY through the official college online payment portal or bank account. Get a computer-generated receipt.`,
+      `• 📜 **UGC Refund Mandate**: Under UGC guidelines, if you cancel admission before the specified deadline, the college MUST refund your tuition fee (minus max ₹1,000 processing fee).`,
+      `• 📱 **WhatsApp Confirmations**: A WhatsApp text message from an agent is NOT a legal admission offer letter! Verify all offers on the university portal.`,
+    ].join('\n');
+  }
+
+  // ── 4. College Quality, Ads, Strict Rules & Reviews (Q2546 - Q2565) ─────────────
+  if (/heavily advertised|lots of ads|campus size|google reviews|strict attendance|90% attendance|college freedom|teaching quality/.test(q)) {
+    return [
+      `🏫 **Evaluating College Ads, Attendance Rules & Real Quality**\n`,
+      `• 📺 **Heavy Advertising Myth**: A college showing lots of YouTube/TV ads just means they have a big marketing budget. Always verify **NAAC Accreditation (A+/A++)** and **NIRF Rankings**.`,
+      `• 💬 **How to Get Genuine Student Reviews**: Search the college name on **LinkedIn**, message 3rd or 4th-year students directly, and ask about actual campus placements & faculty support.`,
+      `• ⏰ **Strict 90% Attendance Rules**: Extremely strict attendance can limit your free time for self-paced coding practice. Moderate attendance rules (75%) give the best balance for skill building.`,
+    ].join('\n');
+  }
+
+  // ── 5. Placement Truths: Median vs Highest, 60% Rule & Backlogs (Q2636 - Q2655) ────
+  if (/100% placement assistance|highest package on campus or off campus|manipulate placement|60% in school|less than 60%|backlog during placement/.test(q)) {
+    return [
+      `📊 **Placement Reality Check & Eligibility Criteria**\n`,
+      `• 📈 **Median Salary vs Highest Package**: Ignore single ₹50 LPA off-campus outlier stories! Look at the **Median Package (₹4.5 - ₹6.5 LPA)** — it tells you what 50% of average students actually earn.`,
+      `• 📜 **10th/12th 60% Criteria**: Service IT MNCs (TCS, Wipro, Infosys) usually require 60%+ in 10th, 12th, and B.Tech. Product companies (startups, Amazon, Zoho) care **100% about coding skills**, not 12th marks!`,
+      `• 🔄 **Backlog Rules**: Most campus drives require 0 active backlogs at the time of final placement. Clear arrear exams in supplementary rounds.`,
+    ].join('\n');
+  }
+
+  // ── 6. Year-by-Year Academic Roadmaps & Recovery (Q2836 - Q2860, Q2971 - Q3000) ───
+  if (/first year roadmap|wasting time in first year|second year no skills|third year no internship|final year six months|dsa or development|gate or placements|recover lost years/.test(q)) {
+    return [
+      `🚀 **Year-by-Year Action Plan for College & Placement Success**\n`,
+      `• 1️⃣ **1st Year**: Learn 1 core programming language (C++ or Java) + basic Git/GitHub + maintain 7.5+ CGPA.`,
+      `• 2️⃣ **2nd Year**: Master Data Structures & Algorithms (DSA) on LeetCode + build 2 web/mobile projects.`,
+      `• 3️⃣ **3rd Year**: Apply for summer internships on LinkedIn/Unstop + participate in hackathons + full-stack projects.`,
+      `• 4️⃣ **Final Year**: Practice mock technical interviews + reach out for off-campus referral drives.\n`,
+      `🎯 **DSA vs Development**: Spend 50% time on DSA (for interview clearing) and 50% on Development (for resume projects)!`,
+    ].join('\n');
+  }
+
+  // ── 7. Branch Change, Course Regret & Dropping Out (Q2676 - Q2690) ─────────────
+  if (/joined the wrong course|hate my course|change branch after first year|mechanical to cse|drop out/.test(q)) {
+    return [
+      `🔄 **Handling Course Regret & Branch Change Options**\n`,
+      `• 📊 **Branch Change Rules**: Most universities permit top academic performers (typically 8.5+ CGPA in 1st year) to request a branch transfer to CSE/IT.`,
+      `• 💻 **If Branch Change is Not Allowed**: Stay in your current branch! 60%+ of IT companies recruit Mechanical, Civil, and ECE students for software roles if you know coding.`,
+      `• ⏳ **Should You Drop Out?**: Dropping out is risky unless you have a guaranteed alternative seat or top rank. Staying in college while building skills online is 10x safer!`,
+    ].join('\n');
+  }
+
+  // ── 8. Parent Guidance & Financial Planning (Q2706 - Q2720, Q2761 - Q2775) ────────
+  if (/my son|my daughter|family budget|10 lakh loan|parents pressure|92% but bad rank|65% in tech/.test(q)) {
+    return [
+      `👨‍👩‍👧 **Parent Guidance & Financial ROI Framework**\n`,
+      `• 💰 **Is a ₹10 Lakh Loan Reasonable?**: Take a ₹10L loan ONLY if the college's verified **median campus package is ₹7–9+ LPA** (High ROI). For a ₹4 LPA median package, choose an affordable ₹4-5L college.`,
+      `• 🎯 **High Board % + Low Entrance Rank**: Utilize State Quota counselling (TNEA, WBJEE, MHT-CET) or merit scholarship waivers at top autonomous colleges.`,
+      `• 🛡️ **Choosing Traditional vs New AI Courses**: Core CSE is safer for long-term career stability; AI specializations are great if offered by established NAAC A++ institutions.`,
+    ].join('\n');
+  }
+
+  // ── 9. CSE vs IT Detailed Decision Guidance ──────────────────────────────────
   if (/(bro|should i|which one).*(cse or it|cse vs it|it instead of cse)|same placements as cse|big difference between cse and it/.test(q)) {
     return [
       `💻 **CSE (Computer Science) vs IT (Information Technology)**\n`,
@@ -54,7 +140,7 @@ export function answerCounselingQuestion(query) {
     ].join('\n');
   }
 
-  // ── 2. ECE vs CSE & Branch vs College Dilemma (Q2035-2041) ───────────────────
+  // ── 10. ECE vs CSE & Branch vs College Dilemma ───────────────────────────────
   if (/ece in a good college|cse in an average college|ece to software engineer|weak in physics.*ece|ece vs eee|ece difficult/.test(q)) {
     return [
       `⚡ **ECE vs CSE & College vs Branch Selection Framework**\n`,
@@ -65,7 +151,7 @@ export function answerCounselingQuestion(query) {
     ].join('\n');
   }
 
-  // ── 3. Mechanical, Mechatronics, Robotics, Civil & Aerospace (Q2042-2055) ────
+  // ── 11. Mechanical, Mechatronics, Robotics, Civil & Aerospace ────────────────
   if (/mechanical.*dead|job if i take mechanical|mechanical.*it jobs|mechatronics|robotics|civil engineering|aerospace|automobile branch/.test(q)) {
     return [
       `⚙️ **Mechanical, Mechatronics, Robotics, Civil & Aerospace Reality**\n`,
@@ -77,7 +163,7 @@ export function answerCounselingQuestion(query) {
     ].join('\n');
   }
 
-  // ── 4. AI, Machine Learning, Data Science & Cybersecurity (Q2056-2075) ────────
+  // ── 12. AI, Machine Learning, Data Science & Cybersecurity ────────────────────
   if (/ai trending|ai jobs when i graduate|cse instead of pure ai|learn ai myself|maths for ai|data science for freshers|cybersecurity|ethical hacker/.test(q)) {
     return [
       `🤖 **AI & ML, Data Science & Cybersecurity Career Truths**\n`,
@@ -88,7 +174,7 @@ export function answerCounselingQuestion(query) {
     ].join('\n');
   }
 
-  // ── 5. Finding Colleges, Cutoffs & Safe vs Ambitious List (Q2076-2100) ────────
+  // ── 13. Finding Colleges, Cutoffs & Safe vs Ambitious List ────────────────────
   if (/cutoff is|realistic options|safe options|ambitious colleges|cutoff lower than my mark|reputation vs branch|tier-3 college/.test(q)) {
     return [
       `🏫 **College Selection & Choice Filling Strategy**\n`,
@@ -99,18 +185,7 @@ export function answerCounselingQuestion(query) {
     ].join('\n');
   }
 
-  // ── 6. Comparing Colleges & Packages Like a Real Student (Q2101-2120) ─────────
-  if (/compare them for me|better placements.*lower fees|close to my home|spend 15 lakh|average package or median package|disadvantage of each/.test(q)) {
-    return [
-      `⚖️ **Real Student College Comparison Guide**\n`,
-      `• 📍 **Distance vs Placements**: Placement opportunities and campus coding environment outweigh traveling distance! Moving to a better tech hub city is worth it.`,
-      `• 📊 **Average vs Median Package**: **Median Package** is the single most honest metric! Average packages can be artificially inflated by 1-2 high international offers.`,
-      `• 💰 **Spending ₹15 Lakh Fees**: Only spend ₹15L+ if the college's median package is ₹8-10+ LPA (High ROI). If median is ₹4 LPA, choose an affordable ₹4-6L college instead.`,
-      `• 🚩 **Red Flags to Ask Current Students**: Ask about strict attendance rules, lab machinery condition, mess food quality, and actual MNC campus visit frequency.`,
-    ].join('\n');
-  }
-
-  // ── 7. Counseling Mechanics: Freeze, Float, Slide (Q2141-2160) ────────────────
+  // ── 14. Counseling Mechanics: Freeze, Float, Slide ────────────────────────────
   if (/counselling.*simply|freeze or float|freeze|float|slide|mock allotment|round 1|round 2|didnt get any seat/.test(q)) {
     return [
       `📝 **Counselling Mechanics Simplified (Freeze, Float, Slide)**\n`,
@@ -121,7 +196,7 @@ export function answerCounselingQuestion(query) {
     ].join('\n');
   }
 
-  // ── 8. Money, Fees, Loans & Scholarships (Q2161-2180) ─────────────────────────
+  // ── 15. Money, Fees, Loans & Scholarships ─────────────────────────────────────
   if (/family cant afford|education loan|15 lakh loan for cse|scholarship|90% in 12th|low income|scholarship genuine/.test(q)) {
     return [
       `💰 **Financial Aid, Education Loans & Scholarships**\n`,
@@ -132,67 +207,7 @@ export function answerCounselingQuestion(query) {
     ].join('\n');
   }
 
-  // ── 9. Parent-Style Questions & Safety Concerns (Q2181-2195) ──────────────────
-  if (/my son|my daughter|close to home|hostel safe|loan for private university|pressure us to pay today/.test(q)) {
-    return [
-      `👨‍👩‍👧 **Parent Guidance & Admission Safety Checklist**\n`,
-      `• 🛡️ **Hostel Safety**: Verify 24/7 CCTV surveillance, female warden presence, biometric entry logs, & emergency medical transport.`,
-      `• 🚨 **Urgent Payment Pressure**: If an admission representative threatens *"Pay ₹1 Lakh cash today or seat will be lost"*, it is a high-pressure sales tactic! Verify official seat status on the college portal.`,
-      `• 💼 **Job Security vs Student Passion**: Guide your child towards a balanced choice — e.g. Core CSE/ECE with electives in their area of interest.`,
-    ].join('\n');
-  }
-
-  // ── 10. Student Confusion, Drop Year & Regret (Q2196-2215) ────────────────────
-  if (/dont know what to do|everyone knows except me|wrong course|friend pressure|drop year|taking a drop year|failed entrance/.test(q)) {
-    return [
-      `🤝 **Handling Student Confusion, Peer Pressure & Drop Year Decisions**\n`,
-      `• 🧠 **Feeling Lost is Normal**: 70%+ of 12th graduates are confused about their future! You do not need to figure out your whole life today — focus on choosing a broad, versatile degree.`,
-      `• 👥 **Choosing a College for Friends**: AVOID THIS! Your career & interests are unique. True friendships survive even if you attend different colleges.`,
-      `• ⏳ **Is a Drop Year Worth It?**: Taking a drop year is worth it ONLY if you missed your target by a small margin and have a disciplined 8-hour daily study routine. Otherwise, join a good college now and build skills!`,
-    ].join('\n');
-  }
-
-  // ── 11. First-Year Skills, Python, Java, DSA & Projects (Q2236-2255) ──────────
-  if (/first year of college|coding before college|python vs java|dsa|github|linkedin|certificates vs projects/.test(q)) {
-    return [
-      `🚀 **1st Year Skill Roadmap for High-Paying Tech Careers**\n`,
-      `• 🐍 **Python vs Java/C++**: Start with **Python** to build coding confidence & problem-solving logic. Switch to **C++ or Java** for Data Structures & Algorithms (DSA).`,
-      `• 💡 **Projects > Certificates**: 20 online certificates without real code will NOT impress recruiters! Building 2-3 live GitHub projects (web apps, AI tools) is 10x more valuable.`,
-      `• 🐙 **GitHub & LinkedIn**: Create a GitHub account in Month 1 to store your code repository. Set up your LinkedIn profile to connect with alumni.`,
-    ].join('\n');
-  }
-
-  // ── 12. Internships, Off-Campus & CGPA Impact (Q2256-2275) ────────────────────
-  if (/first internship|unpaid internship|fake internship|off campus|cgpa|backlog|60% in 12th/.test(q)) {
-    return [
-      `💼 **Internships, CGPA Requirements & Backlog Rules**\n`,
-      `• 🚨 **Fake Internship Alert**: NEVER pay a company for an internship! Genuine internships pay YOU a stipend or offer free real project mentorship.`,
-      `• 📊 **CGPA Target for Placements**: Maintain **7.0+ CGPA (70%)** to clear 90%+ company eligibility cutoffs.`,
-      `• 🔄 **Will 60% in 12th / 1 Backlog Affect Careers?**: Most IT MNCs require 60%+ in 10th/12th/B.Tech and 0 active backlogs at graduation. Product companies & off-campus drives prioritize coding skills over 12th marks!`,
-    ].join('\n');
-  }
-
-  // ── 13. AI Job Threats & Career Anxiety (Q2276-2290) ──────────────────────────
-  if (/ai take my job|unemployed|graduate unemployed|college syllabus outdated|learn online vs college/.test(q)) {
-    return [
-      `🛡️ **AI Automation & Future-Proofing Your Career**\n`,
-      `• 🤖 **Will AI Replace Software Engineers?**: AI automates repetitive boilerplate code, but INCREASES demand for developers who can architect complex systems, manage cloud infrastructure, and direct AI models.`,
-      `• 🚀 **Why are graduates unemployed?**: Rote learning without practical skills! Students who build real projects, learn modern tech stacks online, and solve DSA problems get hired easily.`,
-      `• 🌐 **Online Learning + College Degree**: College gives you an accredited degree & networking environment; online platforms (YouTube, Coursera, LeetCode) give you modern industry skills!`,
-    ].join('\n');
-  }
-
-  // ── 14. Master's, MBA & Study Abroad (Q2291-2305) ────────────────────────────
-  if (/masters immediately|mba after engineering|ms abroad cost|study abroad|change field for masters/.test(q)) {
-    return [
-      `🎓 **Higher Studies Roadmap: Master's, MBA & Study Abroad**\n`,
-      `• 💼 **MBA After Engineering**: Excellent combination! Technical background + MBA business strategy leads to high-paying Product Manager & Business Analytics roles.`,
-      `• ✈️ **MS Abroad (USA/Germany/UK)**: Germany offers tuition-free education at public universities! USA offers top STEM OPT 3-year work visas. Plan applications 1 year in advance.`,
-      `• 🔄 **Changing Fields for Master's**: Yes! Students from Mechanical/Civil can transition to Master's in Data Science or Computer Science by clearing prerequisite online coursework & GRE.`,
-    ].join('\n');
-  }
-
-  // ── 15. Meta & How AI Recommends ─────────────────────────────────────────────
+  // ── 16. Meta & How AI Recommends ─────────────────────────────────────────────
   if (/how.*(ai|system|app).*recommend|how.*recommend.*college|how.*choose.*college.*for me|how.*find.*best college/.test(q)) {
     return [
       `🎓 **How Acadivo AI Recommends the Right College for You**\n`,
@@ -207,103 +222,7 @@ export function answerCounselingQuestion(query) {
     ].join('\n');
   }
 
-  // ── 16. Interdisciplinary & Combinations ────────────────────────────────────
-  if (/combine.*(tech|technology).*creativ|design.*engineering|creativ.*tech/.test(q)) {
-    return [
-      `🎨⚡ **Interdisciplinary Careers Combining Technology & Creativity**\n`,
-      `• 🖌️ **UI/UX Design**: Designing digital interfaces and user experiences for mobile apps & web applications. (High demand & top tech salaries!).`,
-      `• 🎮 **Game Development & Design**: Creating 3D graphics, game physics, and interactive storylines using Unity & Unreal Engine.`,
-      `• 👓 **AR/VR & Spatial Computing**: Building immersive Virtual Reality and Augmented Reality experiences for healthcare, education, and gaming.`,
-      `• 🎬 **VFX & Digital Animation**: Specializing in computer-generated imagery (CGI) for film, media, and digital advertising.`,
-      `• ⚙️ **Industrial & Product Design**: Combining mechanical engineering with ergonomic product design.\n`,
-      `💡 *These fields let you build software products without needing pure back-end coding!*`,
-    ].join('\n');
-  }
-
-  if (/combine.*(math|mathematics).*computer|math.*computer|good at math/.test(q)) {
-    return [
-      `📐💻 **Careers Combining Mathematics & Computer Science**\n`,
-      `• 🤖 **Artificial Intelligence & Machine Learning**: Building algorithms using linear algebra, probability, and calculus.`,
-      `• 📊 **Data Science & Big Data Analytics**: Extracting business insights using statistics, machine learning, and data modeling.`,
-      `• 🔐 **Cryptography & Cybersecurity**: Protecting networks using mathematical encryption and number theory.`,
-      `• 📈 **Quantitative Finance & Algorithmic Trading**: Writing mathematical trading algorithms for investment banks and hedge funds.`,
-      `• 🕹️ **Computer Graphics & Game Physics**: 3D transformations, matrices, and physics simulations in software.\n`,
-      `💡 *Strong mathematical logic is the #1 superpower in high-paying tech careers!*`,
-    ].join('\n');
-  }
-
-  if (/combine.*bio.*tech|biology.*technology|bioinformatics|biomedical|biology.*no doctor/.test(q)) {
-    return [
-      `🧬💻 **Careers Combining Biology & Technology (Non-Doctor Options)**\n`,
-      `• 🧬 **Bioinformatics & Computational Biology**: Analyzing DNA sequences, genomic data, and protein structures using Python and algorithms.`,
-      `• 🦾 **Biomedical Engineering**: Designing artificial organs, prosthetics, pacemakers, and MRI/CT imaging machinery.`,
-      `• 🧫 **Biotechnology & Bioprocess Engineering**: Developing vaccines, gene therapies, and agricultural bio-products.`,
-      `• 🏥 **Health Informatics**: Managing digital health records, hospital AI diagnostic systems, and telemedicine platforms.\n`,
-      `💡 *Perfect if you love biological science but want high-tech career opportunities without MBBS!*`,
-    ].join('\n');
-  }
-
-  if (/combine.*business.*tech|fintech|product management|business analytics/.test(q)) {
-    return [
-      `💼💻 **Careers Combining Business & Technology**\n`,
-      `• 🚀 **Product Management**: Leading tech product features from user research to engineering deployment.`,
-      `• 📊 **Business Analytics**: Using SQL, Tableau, and Python to drive corporate decisions and revenue growth.`,
-      `• 💳 **FinTech (Financial Technology)**: Digital payments, digital banking, and blockchain financial platforms.`,
-      `• 🛍️ **E-Commerce Strategy & Growth**: Managing online marketplace platforms and digital supply chains.`,
-      `• 🏢 **IT Management & ERP Consulting**: Implementing enterprise software (SAP, Salesforce) for corporations.\n`,
-      `💡 *Ideal for students who want high-paying corporate leadership roles in tech firms!*`,
-    ].join('\n');
-  }
-
-  // ── 17. Agriculture, Agri-Tech, Climate Tech & Food Technology ──────────────
-  if (/agriculture|b\.?sc agriculture|food technology|dairy technology|horticulture|smart agriculture|agri tech|carbon management|climate technology/.test(q)) {
-    return [
-      `🌾⚡ **Agriculture, Agri-Tech, Food Tech & Climate Careers**\n`,
-      `• 🌾 **B.Sc Agriculture / B.Tech Agri Engineering**: Modern precision farming, drone crop monitoring, soil analytics, & Govt ICAR research.`,
-      `• 🍕 **Food & Dairy Technology**: Processing, quality control, & R&D in multinational FMCG firms (Nestle, Amul, PepsiCo, ITC).`,
-      `• 🌍 **Climate Tech & Carbon Management**: Environmental consulting, ESG auditing, solar/renewable energy management, & carbon credit strategy.`,
-      `• 🤖 **Smart Agriculture**: Utilizing IoT sensors, AI yield prediction, & automated drip irrigation systems.\n`,
-      `💡 *Agri-Tech & Climate Sustainability are top emerging investment sectors for green startups!*`,
-    ].join('\n');
-  }
-
-  // ── 18. Documents & Application Portal Guidance ────────────────────────────────
-  if (/transfer certificate|tc|migration certificate|conduct certificate|nativity certificate|domicile certificate|digilocker|application fee|payment failed|application under review/.test(q)) {
-    return [
-      `📄 **Admission Certificates & Application Troubleshooting**\n`,
-      `• 📜 **Mandatory Certificates Checklist**: 10th Marksheet, 12th Marksheet, Transfer Certificate (TC), Migration Certificate (for board change), Community / Caste Certificate, & Nativity/Domicile.`,
-      `• 📲 **DigiLocker Validity**: Government-issued DigiLocker digital marksheets are 100% legally valid for provisional college admission.`,
-      `• 💳 **Payment Deducted but Status Failed**: Do NOT pay immediately again! Wait 24 hours for bank reconciliation or upload transaction UTR reference to support portal.`,
-      `• ✏️ **Certificate Name Discrepancy**: Submit an official notarized affidavit explaining minor spelling variations across 10th marksheet and Aadhar card.\n`,
-      `💡 *Always keep 3 physical self-attested photo copies and digital PDF backups of all certificates!*`,
-    ].join('\n');
-  }
-
-  // ── 19. Fraud Prevention & Admission Verification ─────────────────────────────
-  if (/whatsapp|fake website|admission agent|guaranteed admission|donation|agent.*money|otp|scam/.test(q)) {
-    return [
-      `🚨 **Admission Fraud Alert & Safety Verification Rules**\n`,
-      `• ⚠️ **Rule 1: NEVER Pay Money to Personal Accounts**: Official fees MUST be paid only through official college bank accounts or government portal payment gateways.`,
-      `• ⚠️ **Rule 2: Ignore WhatsApp / Call Promisers**: No legitimate agent can "guarantee" merit or government quota seats. All allotments happen via official counselling algorithms.`,
-      `• ⚠️ **Rule 3: Check Official Domain**: Official university websites end in \`.ac.in\` or \`.edu.in\`. Beware of fake lookalike sites.`,
-      `• ⚠️ **Rule 4: Never Share OTPs or Login Credentials**: Keep your counselling choice-filling password secure.\n`,
-      `💡 *If an agent demands donation or upfront cash, report it to the state admission authority immediately!*`,
-    ].join('\n');
-  }
-
-  // ── 20. CGPA Recovery, Backlogs & Academic Improvement ────────────────────────
-  if (/failed.*first semester|cgpa dropped|clear.*backlog|backlog.*placement|internal assessment|credit based|cbcs/.test(q)) {
-    return [
-      `📈 **Academic Recovery: CGPA Improvement & Handling Backlogs**\n`,
-      `• 📊 **CGPA Target for Placements**: Target **7.0+ CGPA (70%)** to qualify for 90%+ of company eligibility criteria.`,
-      `• 🔄 **Can You Get Placed With Backlogs?**: Most service-based IT MNCs allow up to 1 active backlog at the time of interview, provided it is cleared by graduation. Product companies focus on coding skills!`,
-      `• 🎯 **Semester Recovery Strategy**: Focus 60% effort on 3-credit and 4-credit core subjects. Re-attempt arrear exams in immediate supplementary rounds.`,
-      `• 📝 **Credit System (CBCS)**: High-credit courses affect your GPA most. Prioritize core labs and major theory subjects.\n`,
-      `💡 *A bad first semester does NOT ruin your career — strong 2nd/3rd year project skills easily outweigh early grades!*`,
-    ].join('\n');
-  }
-
-  // ── 21. General Counseling Catch-All ─────────────────────────────────────────
+  // ── 17. General Counseling Catch-All ─────────────────────────────────────────
   if (/which (course|branch|career|path)|should i choose|can i|what should i|help me choose|i don't know what|recommend|guidance|advice/.test(q)) {
     return [
       `🎓 **Acadivo Personal Academic & Career Guidance**\n`,
