@@ -350,7 +350,7 @@ export default function HomeScreen({ navigation }) {
   };
 
   return (
-    <LinearGradient colors={['#eff6ff', '#dbeafe']} style={styles.container}>
+    <LinearGradient colors={['#faf5ff', '#f3e8ff', '#f8fafc']} style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
       <ScrollView
         style={{ flex: 1 }}
@@ -503,38 +503,38 @@ const styles = StyleSheet.create({
   logoBadge: {
     width: 72, height: 72, borderRadius: 36,
     backgroundColor: '#ffffff', alignItems: 'center', justifyContent: 'center',
-    borderWidth: 2, borderColor: '#2563eb', marginBottom: 14,
-    shadowColor: '#2563eb', shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.15, shadowRadius: 16, elevation: 8,
+    borderWidth: 2.5, borderColor: '#7c3aed', marginBottom: 14,
+    shadowColor: '#7c3aed', shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25, shadowRadius: 18, elevation: 8,
   },
   logoText: { fontSize: 36 },
   appTitle: { fontSize: 28, fontWeight: '900', color: '#0f172a', letterSpacing: -1, marginBottom: 6 },
-  appTitleBlue: { color: '#2563eb' },
+  appTitleBlue: { color: '#7c3aed' },
   appTagline: { fontSize: 13, color: '#64748b', textAlign: 'center', fontWeight: '500' },
 
   // Card
   card: {
     backgroundColor: '#ffffff', borderRadius: 24, padding: 20,
-    borderWidth: 1, borderColor: 'rgba(219,234,254,0.5)',
-    shadowColor: '#1e3a8a', shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.1, shadowRadius: 24, elevation: 8,
+    borderWidth: 1, borderColor: 'rgba(124,58,237,0.15)',
+    shadowColor: '#7c3aed', shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.08, shadowRadius: 24, elevation: 8,
   },
   cardHeading: { fontSize: 16, fontWeight: '800', color: '#0f172a', marginBottom: 18, lineHeight: 22 },
 
   // Dropdown
   dropdown: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#f8fafc', borderRadius: 14, paddingHorizontal: 14, paddingVertical: 15, borderWidth: 1.5, borderColor: '#e2e8f0' },
-  dropdownOpen: { borderColor: '#2563eb', borderBottomLeftRadius: 0, borderBottomRightRadius: 0, backgroundColor: '#ffffff' },
+  dropdownOpen: { borderColor: '#7c3aed', borderBottomLeftRadius: 0, borderBottomRightRadius: 0, backgroundColor: '#ffffff' },
   dropdownSelected: { color: '#0f172a', fontSize: 15, fontWeight: '700', flex: 1 },
   dropdownPlaceholder: { color: '#94a3b8', fontSize: 14, flex: 1, fontWeight: '500' },
 
-  dropdownPanel: { backgroundColor: '#ffffff', borderWidth: 1.5, borderTopWidth: 0, borderColor: '#2563eb', borderBottomLeftRadius: 14, borderBottomRightRadius: 14, overflow: 'hidden' },
+  dropdownPanel: { backgroundColor: '#ffffff', borderWidth: 1.5, borderTopWidth: 0, borderColor: '#7c3aed', borderBottomLeftRadius: 14, borderBottomRightRadius: 14, overflow: 'hidden' },
   searchBox: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 11, borderBottomWidth: 1, borderBottomColor: '#f1f5f9' },
   searchInput: { flex: 1, color: '#0f172a', fontSize: 14, padding: 0, fontWeight: '500' },
   stateList: { maxHeight: 240 },
   stateItem: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: '#f8fafc' },
-  stateItemSelected: { backgroundColor: '#eff6ff' },
+  stateItemSelected: { backgroundColor: '#f5f3ff' },
   stateItemText: { color: '#475569', fontSize: 14, fontWeight: '500' },
-  stateItemTextSelected: { color: '#2563eb', fontWeight: '800' },
+  stateItemTextSelected: { color: '#7c3aed', fontWeight: '800' },
 
   // Selected chip
   selectedChip: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#f0fdf4', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8, marginTop: 14, borderWidth: 1, borderColor: '#bbf7d0', alignSelf: 'flex-start' },
@@ -543,9 +543,9 @@ const styles = StyleSheet.create({
   // Next Button
   nextBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
-    backgroundColor: '#2563eb', borderRadius: 16, paddingVertical: 16, marginTop: 18,
-    shadowColor: '#2563eb', shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.25, shadowRadius: 12, elevation: 6,
+    backgroundColor: '#7c3aed', borderRadius: 16, paddingVertical: 16, marginTop: 18,
+    shadowColor: '#7c3aed', shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3, shadowRadius: 14, elevation: 6,
   },
   nextBtnDisabled: { backgroundColor: '#cbd5e1' },
   nextBtnText: { color: '#ffffff', fontSize: 16, fontWeight: '900', letterSpacing: 0.2 },

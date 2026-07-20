@@ -14,10 +14,9 @@ export default function ForgotPasswordScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null); // { type:'error'|'success', text }
   const [sent,    setSent]    = useState(false);
-  const [focusedField, setFocusedField] = useState(null);
 
   // Animation values
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const fadeAnim    = useRef(new Animated.Value(0)).current;
   const slideUpAnim = useRef(new Animated.Value(50)).current;
 
   React.useEffect(() => {
@@ -56,9 +55,18 @@ export default function ForgotPasswordScreen({ navigation }) {
 
   return (
     <LinearGradient colors={['#eff6ff', '#dbeafe']} style={styles.container}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={0}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scroll}
+          keyboardShouldPersistTaps="always"
+          keyboardDismissMode="none"
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+        >
           <Animated.View style={[styles.contentWrapper, { opacity: fadeAnim, transform: [{ translateY: slideUpAnim }] }]}>
             {/* Back button */}
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn} activeOpacity={0.7}>
@@ -84,18 +92,19 @@ export default function ForgotPasswordScreen({ navigation }) {
               {!sent ? (
                 /* ── Email input ── */
                 <>
-                  <Field label="Email Address" icon="mail-outline" isFocused={focusedField === 'email'}>
+                  {/* Field manages its OWN focus state — no parent re-render on focus */}
+                  <Field label="Email Address" icon="mail-outline">
                     <TextInput
                       style={styles.input}
                       placeholder="your@email.com"
                       placeholderTextColor="#94a3b8"
                       value={email}
                       onChangeText={setEmail}
-                      onFocus={() => setFocusedField('email')}
-                      onBlur={() => { setFocusedField(null); }}
                       keyboardType="email-address"
                       autoCapitalize="none"
                       autoCorrect={false}
+                      autoComplete="email"
+                      returnKeyType="done"
                       editable={!loading}
                     />
                   </Field>
@@ -194,16 +203,37 @@ export default function ForgotPasswordScreen({ navigation }) {
   );
 }
 
-/* ── Small helper component ──────────────────────────────────────────────── */
-function Field({ label, icon, children, style = {}, isFocused }) {
+/* ── Field component: owns its own focus state → NO parent re-render on focus ── */
+function Field({ label, icon, children, style = {} }) {
+  const [isFocused, setIsFocused] = useState(false);
+
+  // Clone children and inject onFocus/onBlur so focus stays local
+  const child = React.Children.only(children);
+  const enhancedChild = React.cloneElement(child, {
+    onFocus: (e) => {
+      setIsFocused(true);
+      child.props.onFocus && child.props.onFocus(e);
+    },
+    onBlur: (e) => {
+      setIsFocused(false);
+      child.props.onBlur && child.props.onBlur(e);
+    },
+  });
+
   return (
     <View style={style}>
       <View style={localS.fieldLabel}>
         <Ionicons name={icon} size={15} color={isFocused ? "#2563eb" : "#64748b"} />
         <Text style={[localS.labelText, isFocused && { color: '#2563eb', fontWeight: '700' }]}>{label}</Text>
       </View>
-      <View style={[localS.inputWrap, isFocused && { borderColor: '#2563eb', backgroundColor: '#ffffff', shadowColor: '#2563eb', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 8, elevation: 4 }]}>
-        {children}
+      <View style={[
+        localS.inputWrap,
+        isFocused && {
+          borderColor: '#2563eb',
+          backgroundColor: '#ffffff',
+        },
+      ]}>
+        {enhancedChild}
       </View>
     </View>
   );
@@ -247,7 +277,7 @@ const styles = StyleSheet.create({
     borderWidth: 1, borderColor: 'rgba(219,234,254,0.5)',
   },
 
-  input: { flex: 1, height: '100%', fontSize: 15, color: '#0f172a', fontWeight: '500' },
+  input: { flex: 1, height: 54, fontSize: 15, color: '#0f172a', fontWeight: '500', textAlignVertical: 'center' },
 
   // Success state
   successBox:   { alignItems: 'center', paddingVertical: 8 },

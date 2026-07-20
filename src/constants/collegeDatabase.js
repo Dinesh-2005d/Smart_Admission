@@ -1,6 +1,6 @@
 // src/constants/collegeDatabase.js
-import collegesData from './colleges_compressed.json';
-import { EXTRA_COLLEGES } from './extraColleges';
+// NOTE: Heavy data (20MB JSON) is NOT imported at module load.
+// It is loaded lazily on first use to avoid blocking the JS thread at startup.
 
 const getCompanies = (dept, tier) => {
   const top = {
@@ -531,60 +531,89 @@ const normalizeLocation = (rawLocation, fullStateName) => {
   return loc;
 };
 
-const PARSED_COLLEGES = collegesData
-  .filter(c => {
-    // Skip completely junk rows: name must be a real string, state must be somewhat valid
-    if (!c[0] || typeof c[0] !== 'string' || c[0].length < 3) return false;
-    if (!c[2] || typeof c[2] !== 'string') return false;
-    // Skip rows where the state looks like a number/year/URL
-    const raw = c[2].trim();
-    if (/^\d{4}$/.test(raw)) return false;       // year like "2008"
-    if (raw === '-' || raw === 'Unknown' || raw.length < 2) return false;
-    if (raw.startsWith('http') || raw.startsWith('www')) return false;
-    return true;
-  })
-  .map(c => {
-    const normState = normalizeState(c[2]);
-    const rawDept   = c[3] || 'arts_science';
-    const dept      = guessDeptFromName(c[0], rawDept);
-    const ratingVal = typeof c[5] === 'number' ? c[5] : 4.0;
-    const packageInfo = getPackageDetails(dept, ratingVal);
-    const normLocation = normalizeLocation(c[1], normState);
-    
-    // Boost placement rate for top-rated colleges to reflect real-world data
-    let placement = typeof c[6] === 'number' ? c[6] : 70;
-    if (ratingVal >= 4.8 && placement < 96) placement = 96 + Math.floor(Math.random() * 3); // 96-98%
-    else if (ratingVal >= 4.5 && placement < 90) placement = 90 + Math.floor(Math.random() * 5); // 90-94%
-    else if (ratingVal >= 4.2 && placement < 80) placement = 80 + Math.floor(Math.random() * 8); // 80-87%
-    
-    return {
-      name:           c[0],
-      location:       normLocation,
-      state:          normState,
-      department:     dept,
-      type:           TYPE_OVERRIDES[c[0]] || (c[4] === 'Government' ? 'Government' : 'Private'),
-      gender:         'Co-Education',
-      rating:         ratingVal,
-      placementRate:  placement,
-      minPercentage:  typeof c[7] === 'number' ? c[7] : 50,
-      annualFee:      'Contact College',
-      topCompanies:   getCompanies(dept, 'mid'),
-      hostelAvailable: c[8] === 1,
-      naacGrade:      getNaacGrade(c[0], ratingVal),
-      established:    getEstablishedYear(c[0]),
-      description:    generateDescription(c[0], c[4], dept, normLocation, normState, ratingVal),
-      courses:        DEPT_COURSES[dept] || ['Various Courses'],
-      highlight:      '',
-      mapQuery:       `${c[0]} ${normLocation} ${normState}`,
-      domain:         c[9] || '',
-      avgPackage:     packageInfo.avgPackage,
-      highestPackage: packageInfo.highestPackage,
-    };
-  });
+// ── Lazy database builder ─────────────────────────────────────────────────────
+// The 20MB JSON and its transformation are deferred until the first data query.
+// This keeps the JS thread free at startup so the Login screen appears immediately.
+let _cachedDatabase = null;
 
+const buildDatabase = () => {
+  if (_cachedDatabase) return _cachedDatabase;
 
-// Combine ALL sources: curated top colleges + gap-filling extras + all parsed colleges
-export const COLLEGE_DATABASE = [...TOP_COLLEGES, ...EXTRA_COLLEGES, ...PARSED_COLLEGES];
+  // Load JSON lazily (only runs once, on first real query)
+  const collegesData = require('./colleges_compressed.json');
+  const { EXTRA_COLLEGES } = require('./extraColleges');
+
+  const PARSED_COLLEGES = collegesData
+    .filter(c => {
+      if (!c[0] || typeof c[0] !== 'string' || c[0].length < 3) return false;
+      if (!c[2] || typeof c[2] !== 'string') return false;
+      const raw = c[2].trim();
+      if (/^\d{4}$/.test(raw)) return false;
+      if (raw === '-' || raw === 'Unknown' || raw.length < 2) return false;
+      if (raw.startsWith('http') || raw.startsWith('www')) return false;
+      return true;
+    })
+    .map(c => {
+      const normState = normalizeState(c[2]);
+      const rawDept   = c[3] || 'arts_science';
+      const dept      = guessDeptFromName(c[0], rawDept);
+      const ratingVal = typeof c[5] === 'number' ? c[5] : 4.0;
+      const packageInfo = getPackageDetails(dept, ratingVal);
+      const normLocation = normalizeLocation(c[1], normState);
+
+      let placement = typeof c[6] === 'number' ? c[6] : 70;
+      if (ratingVal >= 4.8 && placement < 96) placement = 96 + Math.floor(Math.random() * 3);
+      else if (ratingVal >= 4.5 && placement < 90) placement = 90 + Math.floor(Math.random() * 5);
+      else if (ratingVal >= 4.2 && placement < 80) placement = 80 + Math.floor(Math.random() * 8);
+
+      return {
+        name:           c[0],
+        location:       normLocation,
+        state:          normState,
+        department:     dept,
+        type:           TYPE_OVERRIDES[c[0]] || (c[4] === 'Government' ? 'Government' : 'Private'),
+        gender:         'Co-Education',
+        rating:         ratingVal,
+        placementRate:  placement,
+        minPercentage:  typeof c[7] === 'number' ? c[7] : 50,
+        annualFee:      'Contact College',
+        topCompanies:   getCompanies(dept, 'mid'),
+        hostelAvailable: c[8] === 1,
+        naacGrade:      getNaacGrade(c[0], ratingVal),
+        established:    getEstablishedYear(c[0]),
+        description:    generateDescription(c[0], c[4], dept, normLocation, normState, ratingVal),
+        courses:        DEPT_COURSES[dept] || ['Various Courses'],
+        highlight:      '',
+        mapQuery:       `${c[0]} ${normLocation} ${normState}`,
+        domain:         c[9] || '',
+        avgPackage:     packageInfo.avgPackage,
+        highestPackage: packageInfo.highestPackage,
+      };
+    });
+
+  // Combine: curated top colleges + gap-filling extras + all parsed colleges
+  _cachedDatabase = [...TOP_COLLEGES, ...EXTRA_COLLEGES, ...PARSED_COLLEGES];
+  return _cachedDatabase;
+};
+
+// Backward-compatible export: COLLEGE_DATABASE is a Proxy that builds lazily on first access.
+// All existing code using COLLEGE_DATABASE continues to work unchanged.
+export const COLLEGE_DATABASE = new Proxy([], {
+  get(_, prop) {
+    const db = buildDatabase();
+    if (prop === 'length') return db.length;
+    if (prop === Symbol.iterator) return db[Symbol.iterator].bind(db);
+    if (prop === 'filter') return db.filter.bind(db);
+    if (prop === 'map') return db.map.bind(db);
+    if (prop === 'slice') return db.slice.bind(db);
+    if (prop === 'find') return db.find.bind(db);
+    if (prop === 'some') return db.some.bind(db);
+    if (prop === 'forEach') return db.forEach.bind(db);
+    if (prop === 'reduce') return db.reduce.bind(db);
+    if (typeof prop === 'string' && !isNaN(prop)) return db[prop];
+    return db[prop];
+  },
+});
 
 /**
  * Returns colleges for a student.
@@ -719,4 +748,51 @@ export const getAllCollegesInState = (targetState) => {
     .filter(c => stateMatches(c.state, targetState))
     .sort(sortFunc);
 };
+
+/**
+ * Update college in memory & persistent localStorage
+ */
+export const updateCollegeInMemory = (collegeData) => {
+  if (!collegeData) return;
+  const targetId = collegeData.id || collegeData.name?.toLowerCase().replace(/[^a-z0-9]/g, '_');
+
+  const idx = COLLEGE_DATABASE.findIndex(c =>
+    c.id === targetId ||
+    (c.name && c.name.toLowerCase() === (collegeData.name || '').toLowerCase())
+  );
+
+  if (idx !== -1) {
+    COLLEGE_DATABASE[idx] = { ...COLLEGE_DATABASE[idx], ...collegeData, id: targetId };
+  } else {
+    COLLEGE_DATABASE.unshift({ id: targetId, ...collegeData });
+  }
+
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const storedRaw = window.localStorage.getItem('acadivo_custom_colleges');
+      const storedMap = storedRaw ? JSON.parse(storedRaw) : {};
+      storedMap[targetId] = collegeData;
+      window.localStorage.setItem('acadivo_custom_colleges', JSON.stringify(storedMap));
+    } catch (_e) {}
+  }
+};
+
+// Auto-hydrate saved local edits on module load
+if (typeof window !== 'undefined' && window.localStorage) {
+  try {
+    const storedRaw = window.localStorage.getItem('acadivo_custom_colleges');
+    if (storedRaw) {
+      const storedMap = JSON.parse(storedRaw);
+      Object.keys(storedMap).forEach(key => {
+        const item = storedMap[key];
+        const idx = COLLEGE_DATABASE.findIndex(c => c.id === key || (c.name && c.name.toLowerCase() === (item.name || '').toLowerCase()));
+        if (idx !== -1) {
+          COLLEGE_DATABASE[idx] = { ...COLLEGE_DATABASE[idx], ...item, id: key };
+        } else {
+          COLLEGE_DATABASE.unshift({ id: key, ...item });
+        }
+      });
+    }
+  } catch (_e) {}
+}
 

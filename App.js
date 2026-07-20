@@ -119,7 +119,7 @@ function NavItem({ icon, iconFocused, label, focused, onPress, badge, collapsed 
           <Ionicons
             name={focused ? iconFocused : icon}
             size={20}
-            color={focused ? '#2563eb' : '#64748b'}
+            color={focused ? '#8b5cf6' : '#64748b'}
           />
           {badge > 0 && (
             <View style={ds.navBadge}>
@@ -137,7 +137,7 @@ function NavItem({ icon, iconFocused, label, focused, onPress, badge, collapsed 
 
         {/* Arrow indicator */}
         {!collapsed && focused && (
-          <Ionicons name="chevron-forward" size={14} color="#2563eb" style={{ marginLeft: 'auto' }} />
+          <Ionicons name="chevron-forward" size={14} color="#8b5cf6" style={{ marginLeft: 'auto' }} />
         )}
       </Animated.View>
     </TouchableOpacity>
@@ -215,83 +215,7 @@ function DesktopSidebar({ tabs, activeTab, setActiveTab, collapsed, user, onNavi
             </View>
           ))}
 
-          {/* ── ChatGPT-style Recents ────────────────────────────── */}
-          {!collapsed && user?.uid && (
-            <View style={ds.recentsSection}>
-              <View style={ds.recentsSectionHeader}>
-                <Text style={ds.recentsSectionTitle}>RECENTS</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    chatCtx.clearActive?.();
-                    setActiveTab('AI');
-                  }}
-                  style={ds.newChatBtn}
-                >
-                  <Ionicons name="add" size={13} color="#7c6fff" />
-                  <Text style={ds.newChatBtnText}>New</Text>
-                </TouchableOpacity>
-              </View>
-
-              {chatCtx.loading && (
-                <View style={{ paddingHorizontal: 12, paddingVertical: 6 }}>
-                  <ActivityIndicator size="small" color="#334155" />
-                </View>
-              )}
-
-              {!chatCtx.loading && recentSessions.length === 0 && (
-                <Text style={ds.recentsEmpty}>No chats yet</Text>
-              )}
-
-              {recentSessions.map(session => (
-                <TouchableOpacity
-                  key={session.id}
-                  style={[
-                    ds.recentItem,
-                    chatCtx.activeSessionId === session.id && ds.recentItemActive,
-                  ]}
-                  onPress={async () => {
-                    await chatCtx.loadSession(session.id);
-                    setActiveTab('AI');
-                  }}
-                  activeOpacity={0.75}
-                >
-                  <Ionicons name="chatbubble-outline" size={12} color="#475569" style={{ marginRight: 6, flexShrink: 0 }} />
-                  <Text style={ds.recentItemText} numberOfLines={1}>
-                    {session.title || 'Chat'}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-
-              {/* Recent searches divider */}
-              {recentSearches.length > 0 && (
-                <>
-                  <View style={[ds.divider, { marginTop: 8, marginBottom: 4 }]} />
-                  <Text style={ds.recentSearchLabel}>RECENT SEARCHES</Text>
-                  {recentSearches.map((s, i) => (
-                    <TouchableOpacity
-                      key={s.id || i}
-                      style={ds.recentItem}
-                      onPress={() => onNavigate('AI', { searchItem: s })}
-                      activeOpacity={0.75}
-                    >
-                      <Ionicons name="search-outline" size={12} color="#475569" style={{ marginRight: 6, flexShrink: 0 }} />
-                      <Text style={ds.recentItemText} numberOfLines={1}>{s.query || ''}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </>
-              )}
-            </View>
-          )}
-
-          {/* Collapsed mode: just an AI icon shortcut */}
-          {collapsed && user?.uid && (
-            <TouchableOpacity
-              style={{ alignItems: 'center', marginVertical: 8 }}
-              onPress={() => setActiveTab('AI')}
-            >
-              <Ionicons name="chatbubbles-outline" size={20} color="#475569" />
-            </TouchableOpacity>
-          )}
+          <View style={{ height: 20 }} />
 
           <View style={{ height: 20 }} />
         </ScrollView>
@@ -693,7 +617,7 @@ const ds = StyleSheet.create({
   },
   navAccent: {
     position: 'absolute', left: 0, top: 8, bottom: 8,
-    width: 3, borderRadius: 2, backgroundColor: '#3b82f6',
+    width: 3, borderRadius: 2, backgroundColor: '#8b5cf6',
   },
   navIconWrap: {
     width: 36, height: 36, borderRadius: 10,
@@ -701,12 +625,12 @@ const ds = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.06)',
     position: 'relative',
   },
-  navIconWrapActive: { backgroundColor: 'rgba(59,130,246,0.18)' },
+  navIconWrapActive: { backgroundColor: 'rgba(139,92,246,0.22)' },
   navLabel:       { fontSize: 14, color: '#94a3b8', fontWeight: '600', flex: 1 },
-  navLabelActive: { color: '#e2e8f0', fontWeight: '700' },
+  navLabelActive: { color: '#ffffff', fontWeight: '700' },
   navBadge: {
     position: 'absolute', top: -4, right: -4,
-    backgroundColor: '#3b82f6', borderRadius: 8,
+    backgroundColor: '#8b5cf6', borderRadius: 8,
     minWidth: 16, height: 16, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 3,
   },
   navBadgeText: { color: '#fff', fontSize: 9, fontWeight: '800' },
@@ -720,7 +644,7 @@ const ds = StyleSheet.create({
   },
   logoutAvatar: {
     width: 34, height: 34, borderRadius: 10,
-    backgroundColor: '#2563eb', alignItems: 'center', justifyContent: 'center',
+    backgroundColor: '#7c3aed', alignItems: 'center', justifyContent: 'center',
   },
   logoutAvatarText: { color: '#fff', fontWeight: '800', fontSize: 15 },
   logoutName:  { color: '#e2e8f0', fontSize: 13, fontWeight: '700' },

@@ -11,26 +11,10 @@ import { useAuth } from '../context/AuthContext';
 import CollegeLogo from '../components/CollegeLogo';
 
 function AnimatedCard({ index, children }) {
-  const animatedValue = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    Animated.timing(animatedValue, {
-      toValue: 1,
-      duration: 400,
-      delay: Math.min(index * 50, 400),
-      useNativeDriver: true,
-    }).start();
-  }, [index]);
-
-  const translateY = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [30, 0],
-  });
-
   return (
-    <Animated.View style={{ opacity: animatedValue, transform: [{ translateY }] }}>
+    <View style={{ marginBottom: 2 }}>
       {children}
-    </Animated.View>
+    </View>
   );
 }
 
@@ -42,6 +26,7 @@ export default function SearchScreen({ navigation }) {
   const { issaved, toggleSave } = useSavedColleges();
   const { history: searchHistory, loadHistory } = useSearchHistory();
   const { user } = useAuth();
+  const searchTimer = useRef(null);
 
   useEffect(() => {
     if (user?.uid) {
@@ -52,13 +37,21 @@ export default function SearchScreen({ navigation }) {
   const handleSearch = (text) => {
     setQuery(text);
     setPage(1);
-    if (text.trim().length > 0) {
-      setSearched(true);
-      setResults(searchColleges(text.trim()));
-    } else {
+
+    if (searchTimer.current) {
+      clearTimeout(searchTimer.current);
+    }
+
+    if (!text.trim()) {
       setSearched(false);
       setResults([]);
+      return;
     }
+
+    searchTimer.current = setTimeout(() => {
+      setSearched(true);
+      setResults(searchColleges(text.trim()));
+    }, 120);
   };
 
   const getTypeColor = (type) => {
@@ -234,41 +227,41 @@ const styles = StyleSheet.create({
   headerTitle: { color: '#0f172a', fontSize: 20, fontWeight: '800' },
   headerSub: { color: '#475569', fontSize: 12, marginTop: 2 },
   searchRow: { paddingHorizontal: 16, paddingBottom: 8 },
-  searchBox: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#f8f9fa', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 10, borderWidth: 1, borderColor: '#e2e8f0' },
-  searchInput: { flex: 1, color: '#0f172a', fontSize: 14 },
+  searchBox: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#f8fafc', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 10, borderWidth: 1.5, borderColor: '#cbd5e1' },
+  searchInput: { flex: 1, color: '#0f172a', fontSize: 14, fontWeight: '500' },
   container: { flex: 1 },
   contentContainer: { paddingHorizontal: 16, paddingBottom: 40 },
-  suggestLabel: { color: '#334155', fontSize: 13, fontWeight: '700', marginBottom: 12, marginTop: 8 },
+  suggestLabel: { color: '#0f172a', fontSize: 13, fontWeight: '800', marginBottom: 12, marginTop: 8 },
   tagsWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 20 },
-  quickTag: { backgroundColor: '#eff6ff', borderRadius: 20, paddingHorizontal: 14, paddingVertical: 7, borderWidth: 1, borderColor: '#bfdbfe' },
-  quickTagText: { color: '#1d4ed8', fontSize: 12, fontWeight: '600' },
-  suggestionRow: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#f8f9fa' },
-  suggestionText: { color: '#0ea5e9', fontSize: 13, flex: 1 },
+  quickTag: { backgroundColor: '#f5f3ff', borderRadius: 20, paddingHorizontal: 14, paddingVertical: 7, borderWidth: 1, borderColor: '#ddd6fe' },
+  quickTagText: { color: '#7c3aed', fontSize: 12, fontWeight: '700' },
+  suggestionRow: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#f1f5f9' },
+  suggestionText: { color: '#7c3aed', fontSize: 13, flex: 1, fontWeight: '600' },
   emptyBox: { alignItems: 'center', paddingVertical: 40, gap: 8 },
   emptyEmoji: { fontSize: 48 },
   emptyTitle: { color: '#0f172a', fontSize: 16, fontWeight: '700' },
   emptyText: { color: '#475569', fontSize: 13 },
-  resultCount: { color: '#475569', fontSize: 13, marginBottom: 12, textAlign: 'center' },
-  collegeCard: { backgroundColor: '#f8f9fa', borderRadius: 16, padding: 14, marginBottom: 12, borderWidth: 1, borderColor: '#e2e8f0' },
+  resultCount: { color: '#64748b', fontSize: 13, marginBottom: 12, textAlign: 'center', fontWeight: '600' },
+  collegeCard: { backgroundColor: '#ffffff', borderRadius: 16, padding: 14, marginBottom: 12, borderWidth: 1, borderColor: '#e2e8f0', shadowColor: '#7c3aed', shadowOpacity: 0.04, shadowRadius: 8, elevation: 2 },
   cardHeader: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 10 },
   iconCircle: { width: 42, height: 42, borderRadius: 21, backgroundColor: '#0f172a', alignItems: 'center', justifyContent: 'center' },
   iconText: { fontSize: 20 },
   cardInfo: { flex: 1 },
-  collegeName: { color: '#0f172a', fontSize: 14, fontWeight: '700', marginBottom: 2 },
+  collegeName: { color: '#0f172a', fontSize: 14, fontWeight: '800', marginBottom: 2 },
   collegeLocation: { color: '#475569', fontSize: 12 },
   typeTag: { borderRadius: 8, paddingHorizontal: 8, paddingVertical: 4, borderWidth: 1 },
-  typeText: { fontSize: 11, fontWeight: '600' },
+  typeText: { fontSize: 11, fontWeight: '700' },
   statsRow: { flexDirection: 'row', gap: 12, marginBottom: 8 },
-  stat: { color: '#334155', fontSize: 12 },
-  deptBadge: { color: '#2563eb', fontSize: 11, fontWeight: '600', marginBottom: 10 },
+  stat: { color: '#334155', fontSize: 12, fontWeight: '600' },
+  deptBadge: { color: '#7c3aed', fontSize: 11, fontWeight: '800', marginBottom: 10 },
   // Footer row with Save button
-  cardFooter: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderTopWidth: 1, borderTopColor: '#e2e8f0', paddingTop: 10, marginTop: 2 },
-  viewDetailText: { color: '#475569', fontSize: 12, fontWeight: '600' },
-  saveBtn: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#eff6ff', borderWidth: 1, borderColor: '#2563eb', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 6 },
-  saveBtnActive: { backgroundColor: '#2563eb', borderColor: '#2563eb' },
-  saveBtnText: { color: '#2563eb', fontSize: 12, fontWeight: '700' },
-  loadMoreBtn: { backgroundColor: '#e2e8f0', borderRadius: 12, paddingVertical: 14, alignItems: 'center', marginTop: 8, marginBottom: 20 },
-  loadMoreText: { color: '#0f172a', fontSize: 13, fontWeight: '700' },
+  cardFooter: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderTopWidth: 1, borderTopColor: '#f1f5f9', paddingTop: 10, marginTop: 2 },
+  viewDetailText: { color: '#7c3aed', fontSize: 12, fontWeight: '700' },
+  saveBtn: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#f5f3ff', borderWidth: 1, borderColor: '#7c3aed', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 6 },
+  saveBtnActive: { backgroundColor: '#7c3aed', borderColor: '#7c3aed' },
+  saveBtnText: { color: '#7c3aed', fontSize: 12, fontWeight: '700' },
+  loadMoreBtn: { backgroundColor: '#f5f3ff', borderWidth: 1, borderColor: '#ddd6fe', borderRadius: 12, paddingVertical: 14, alignItems: 'center', marginTop: 8, marginBottom: 20 },
+  loadMoreText: { color: '#7c3aed', fontSize: 13, fontWeight: '800' },
 
   // Recent Searches list styles
   historyWrap: {

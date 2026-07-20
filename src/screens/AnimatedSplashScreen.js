@@ -45,7 +45,7 @@ export default function AnimatedSplashScreen({ onFinish }) {
       }),
     ]).start();
 
-    // Fade out and finish after 2.5 seconds
+    // Fade out and finish after 1.0 second (animations done by ~1.2s; 1s is plenty visible)
     const timer = setTimeout(() => {
       Animated.timing(fadeAnim, {
         toValue: 0,
@@ -54,7 +54,7 @@ export default function AnimatedSplashScreen({ onFinish }) {
       }).start(() => {
         onFinish();
       });
-    }, 2500);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [fadeAnim, scaleAnim, rotateAnim, slideUpAnim, onFinish, fontsLoaded]);

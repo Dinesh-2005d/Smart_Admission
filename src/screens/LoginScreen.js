@@ -13,6 +13,7 @@ export default function LoginScreen({ navigation }) {
 
   const [mode,        setMode]        = useState('signin');
   const [name,        setName]        = useState('');
+
   const [email,       setEmail]       = useState('');
   const [password,    setPassword]    = useState('');
   const [confirmPass, setConfirmPass] = useState('');
@@ -43,10 +44,11 @@ export default function LoginScreen({ navigation }) {
     ]).start();
   }, [fadeAnim, slideUpAnim]);
 
-  const emailOk   = /\S+@\S+\.\S+/.test(email.trim());
-  const passOk    = password.length >= 6;
-  const nameOk    = name.trim().length >= 2;
-  const confirmOk = password === confirmPass;
+  const emailOk    = /\S+@\S+\.\S+/.test(email.trim());
+  const passOk     = password.length >= 6;
+  const nameOk     = name.trim().length >= 2;
+
+  const confirmOk  = password === confirmPass;
 
   const touch = (field) => setTouched(t => ({ ...t, [field]: true }));
 
@@ -72,6 +74,7 @@ export default function LoginScreen({ navigation }) {
     setLocalErr('');
     setTouched({});
     setName('');
+
     setPassword('');
     setConfirmPass('');
   };
@@ -235,7 +238,6 @@ export default function LoginScreen({ navigation }) {
         </View>
       </Animated.View>
 
-      <Text style={styles.footer}>🇮🇳 Free for all Indian students · 118,000+ Colleges</Text>
     </ScrollView>
   );
 

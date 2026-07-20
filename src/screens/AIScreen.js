@@ -1,9 +1,12 @@
 /**
- * AIScreen.js — AntyGravity AI v3.0 (Clean Rebuild)
+ * AIScreen.js — Acadivo AI v4.0 (Web Crawl + Sentiment)
  *
- * A clean, reliable AI chat powered by Groq (Llama 3.3 70B).
+ * A fully self-contained AI chat powered by:
+ *   🌐 Web Crawling   — DuckDuckGo + Wikipedia (no API key needed)
+ *   🧠 Sentiment AI   — AFINN-165 pure-JS analysis
+ *   💬 Local AI       — Intent-based offline fallback
  * Two tabs:
- *   💬 Chat    — Live Groq AI conversation (ChatGPT-style)
+ *   💬 Chat    — Live crawl-powered AI conversation
  *   📜 History — Chat sessions + Search history (Firebase synced)
  */
 
@@ -21,8 +24,14 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { useSearchHistory } from '../context/SearchHistoryContext';
 import { useAuth }          from '../context/AuthContext';
-import { crawlWeb }         from '../utils/webCrawler';
-import { analyzeText, getSentimentColor, getSentimentEmoji } from '../utils/sentimentAnalyzer';
+import {
+  generateSmartResponse,
+  crawlWeb,
+  analyzeText,
+  getSentimentColor,
+  getSentimentEmoji,
+  resetLocalAIContext,
+} from '../utils/crawlWebAI';
 
 import Constants from 'expo-constants';
 import {
@@ -33,116 +42,141 @@ import { db } from '../config/firebase';
 
 const { width: SW } = Dimensions.get('window');
 
-// ─── Groq direct API ─────────────────────────────────────────────────────────
-const GROQ_URL   = 'https://api.groq.com/openai/v1/chat/completions';
-const GROQ_MODEL = 'llama-3.3-70b-versatile';
+// ─── AI Engine: Web Crawl + Sentiment (no API key required) ──────────────────
+// All responses come from generateSmartResponse() in crawlWebAI.js
+// which chains: crawlWeb() → analyzeText() → synthesize answer
 
-const getApiKey = () => {
-  const k = process.env.EXPO_PUBLIC_GROQ_API_KEY;
-  if (k && k !== 'YOUR_GROQ_API_KEY' && k.trim()) return k.trim();
-  try {
-    const k2 = Constants?.expoConfig?.extra?.EXPO_PUBLIC_GROQ_API_KEY;
-    if (k2 && k2 !== 'YOUR_GROQ_API_KEY' && k2.trim()) return k2.trim();
-  } catch {}
-  return null;
-};
+// ─── Dual Storage (Local Storage + Firebase) for Chat Sessions ───────────────
+const getStorageKey = (email) =>
+  `acadivo_chat_sessions_${(email || 'guest').toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
 
-const SYSTEM_PROMPT = `You are AntyGravity AI — a brilliant, friendly AI assistant for Indian college admissions and career guidance, built into the Acadivo Smart Admission platform. You are powered by Llama 3.3 70B.
-
-Your expertise:
-• Indian colleges, universities, and entrance exams (JEE, NEET, GATE, CAT, CLAT, CUET)
-• Course details, fees, placements, rankings, scholarships, hostels
-• Career guidance after any degree
-• College comparisons and personalized recommendations
-
-Rules:
-1. Always give helpful, accurate answers. Never say "I don't know" without offering an alternative.
-2. Be warm, conversational, and friendly — like a knowledgeable senior.
-3. Use bullet points (•) and **bold** for key info.
-4. Keep responses 100-400 words.
-5. Always end with a follow-up question or offer to help more.
-6. When users mention marks/percentage, recommend matching colleges.
-
-Sign off as "AntyGravity AI" when introducing yourself.`;
-
-const callGroq = async (messages) => {
-  const apiKey = getApiKey();
-  if (!apiKey) throw new Error('NO_KEY');
-
-  const res = await fetch(GROQ_URL, {
-    method:  'POST',
-    headers: {
-      'Content-Type':  'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model:       GROQ_MODEL,
-      messages:    [{ role: 'system', content: SYSTEM_PROMPT }, ...messages],
-      max_tokens:  1500,
-      temperature: 0.7,
-    }),
-  });
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err?.error?.message || `HTTP ${res.status}`);
+const getLocalSessions = (email) => {
+  if (Platform.OS === 'web' && typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const key = getStorageKey(email);
+      const raw = window.localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
   }
-
-  const data = await res.json();
-  return data.choices?.[0]?.message?.content?.trim() || 'Sorry, I could not generate a response.';
+  return [];
 };
 
-// ─── Firestore chat sessions ──────────────────────────────────────────────────
-const sessionsRef = (email) =>
-  email ? collection(db, 'chatHistory', email, 'sessions') : null;
+const setLocalSessions = (email, sessions) => {
+  if (Platform.OS === 'web' && typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const key = getStorageKey(email);
+      window.localStorage.setItem(key, JSON.stringify(sessions));
+    } catch { /* ignore */ }
+  }
+};
 
 const saveChatSession = async (email, title, messages) => {
-  if (!email) return null;
-  const ref = sessionsRef(email);
-  if (!ref) return null;
-  const safeTitle = (title || 'Chat').slice(0, 60);
-  const docRef = await addDoc(ref, {
-    title:     safeTitle,
-    userEmail: email,
+  const sid = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+  const safeTitle = (title || 'Chat Session').slice(0, 60);
+  const now = new Date().toISOString();
+
+  const newSess = {
+    id: sid,
+    title: safeTitle,
+    userEmail: email || 'guest',
     messages,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  });
-  return docRef.id;
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  // 1. Save to Local Storage immediately
+  const localList = getLocalSessions(email);
+  const updatedList = [newSess, ...localList.filter(s => s.id !== sid)];
+  setLocalSessions(email, updatedList);
+
+  // 2. Silently attempt Firebase write
+  if (email && db) {
+    try {
+      const ref = collection(db, 'chatHistory', email, 'sessions');
+      await addDoc(ref, {
+        title: safeTitle,
+        userEmail: email,
+        messages,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      }).catch(() => {});
+    } catch { /* silent */ }
+  }
+
+  return sid;
 };
 
 const updateChatSession = async (email, sessionId, messages) => {
-  if (!email || !sessionId) return;
-  try {
-    await updateDoc(doc(db, 'chatHistory', email, 'sessions', sessionId), {
-      messages,
-      updatedAt: serverTimestamp(),
-    });
-  } catch (e) {
-    console.warn('updateChatSession error:', e.message);
+  if (!sessionId) return;
+  const now = new Date().toISOString();
+
+  // 1. Update in Local Storage immediately
+  const localList = getLocalSessions(email);
+  const updatedList = localList.map(s => {
+    if (s.id === sessionId) {
+      return { ...s, messages, updatedAt: now };
+    }
+    return s;
+  });
+  setLocalSessions(email, updatedList);
+
+  // 2. Silently attempt Firebase update
+  if (email && db) {
+    try {
+      const docRef = doc(db, 'chatHistory', email, 'sessions', sessionId);
+      await updateDoc(docRef, {
+        messages,
+        updatedAt: serverTimestamp(),
+      }).catch(() => {});
+    } catch { /* silent */ }
   }
 };
 
 const loadChatSessions = async (email) => {
-  if (!email) return [];
-  const ref = sessionsRef(email);
-  if (!ref) return [];
+  const localList = getLocalSessions(email);
+
+  if (!email || !db) return localList;
+
   try {
-    const q    = fsQuery(ref, orderBy('updatedAt', 'desc'), limit(30));
+    const ref = collection(db, 'chatHistory', email, 'sessions');
+    const q = fsQuery(ref, orderBy('updatedAt', 'desc'), limit(50));
     const snap = await getDocs(q);
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const remoteList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    if (remoteList.length > 0) {
+      const map = new Map();
+      localList.forEach(s => map.set(s.id, s));
+      remoteList.forEach(s => map.set(s.id, { ...map.get(s.id), ...s }));
+      const merged = Array.from(map.values()).sort((a, b) => {
+        const timeA = a.updatedAt?.toDate ? a.updatedAt.toDate().getTime() : new Date(a.updatedAt || 0).getTime();
+        const timeB = b.updatedAt?.toDate ? b.updatedAt.toDate().getTime() : new Date(b.updatedAt || 0).getTime();
+        return timeB - timeA;
+      });
+      setLocalSessions(email, merged);
+      return merged;
+    }
   } catch (e) {
     console.warn('loadChatSessions error:', e.message);
-    return [];
   }
+
+  return localList;
 };
 
 const deleteChatSession = async (email, sessionId) => {
-  if (!email || !sessionId) return;
-  try {
-    await deleteDoc(doc(db, 'chatHistory', email, 'sessions', sessionId));
-  } catch (e) {
-    console.warn('deleteChatSession error:', e.message);
+  if (!sessionId) return;
+
+  // 1. Delete from Local Storage immediately
+  const localList = getLocalSessions(email);
+  const updatedList = localList.filter(s => s.id !== sessionId);
+  setLocalSessions(email, updatedList);
+
+  // 2. Silently attempt Firebase delete
+  if (email && db) {
+    try {
+      await deleteDoc(doc(db, 'chatHistory', email, 'sessions', sessionId)).catch(() => {});
+    } catch { /* silent */ }
   }
 };
 
@@ -275,11 +309,29 @@ function Bubble({ msg }) {
             <LinearGradient colors={['#7c6fff50', '#7c6fff28']} style={s.aiAvatar}>
               <Text style={{ fontSize: 11 }}>🤖</Text>
             </LinearGradient>
-            <Text style={s.aiName}>AntyGravity AI</Text>
-            {msg.isReal && (
+            <Text style={s.aiName}>Acadivo AI</Text>
+            {msg.isCrawled && (
               <View style={s.livePill}>
                 <View style={s.liveDot} />
-                <Text style={s.liveText}>LIVE</Text>
+                <Text style={s.liveText}>WEB</Text>
+              </View>
+            )}
+            {msg.isReal && !msg.isCrawled && (
+              <View style={[s.livePill, { backgroundColor: '#7c6fff22' }]}>
+                <View style={[s.liveDot, { backgroundColor: '#7c6fff' }]} />
+                <Text style={[s.liveText, { color: '#7c6fff' }]}>AI</Text>
+              </View>
+            )}
+            {msg.sentiment && (
+              <View style={[
+                s.livePill,
+                { backgroundColor: getSentimentColor(msg.sentiment.label) + '22',
+                  borderWidth: 1, borderColor: getSentimentColor(msg.sentiment.label) + '50' }
+              ]}>
+                <Text style={{ fontSize: 9 }}>{getSentimentEmoji(msg.sentiment.label)}</Text>
+                <Text style={[s.liveText, { color: getSentimentColor(msg.sentiment.label) }]}>
+                  {msg.sentiment.label}
+                </Text>
               </View>
             )}
           </View>
@@ -324,7 +376,7 @@ export default function AIScreen({ route, navigation }) {
   const scrollRef = useRef(null);
   const inputRef  = useRef(null);
 
-  // Groq conversation history (for multi-turn context)
+  // Conversation history for multi-turn context (role + content)
   const groqHistory = useRef([]);
 
   // ── Scroll to bottom ───────────────────────────────────────────
@@ -332,12 +384,10 @@ export default function AIScreen({ route, navigation }) {
     setTimeout(() => scrollRef.current?.scrollToEnd?.({ animated: true }), 100);
   }, [messages.length, loading]);
 
-  // ── Load chat sessions on history tab ─────────────────────────
+  // ── Load chat sessions on mount & tab change ─────────────────────
   useEffect(() => {
-    if (tab === 'history' && user?.email) {
-      loadSessions();
-    }
-    if ((tab === 'history') && user?.email) {
+    loadSessions();
+    if (tab === 'history') {
       searchHistCtx.loadHistory?.();
     }
   }, [tab, user?.email]);
@@ -345,7 +395,8 @@ export default function AIScreen({ route, navigation }) {
   const loadSessions = async () => {
     setSessLoading(true);
     try {
-      const list = await loadChatSessions(user?.email);
+      const email = user?.email || 'guest';
+      const list = await loadChatSessions(email);
       setSessions(list);
     } catch (e) {
       console.warn('loadSessions failed:', e.message);
@@ -391,43 +442,40 @@ export default function AIScreen({ route, navigation }) {
     setMessages([userMsg]);
     groqHistory.current = [{ role: 'user', content: promptText }];
 
-    // Background: crawl and save search history
+    // Get AI response via Web Crawl + Sentiment pipeline
     try {
-      const crawl = await crawlWeb(collegeName);
-      const sent  = analyzeText(crawl.combinedText || collegeName);
-      await searchHistCtx.addSearch?.(collegeName, crawl.results, sent);
-    } catch {}
+      const result = await generateSmartResponse(groqHistory.current, collegeObj);
+      const { text: reply, sentiment, sources, isCrawled } = result;
 
-    // Get AI response
-    try {
-      const reply = await callGroq(groqHistory.current);
-      const aiMsg = { id: `a-${Date.now()}`, role: 'assistant', text: reply, time: nowStr(), isReal: true };
+      const aiMsg = {
+        id: `a-${Date.now()}`, role: 'assistant', text: reply,
+        time: nowStr(), isReal: true, isCrawled,
+        sentiment, sources,
+      };
       groqHistory.current.push({ role: 'assistant', content: reply });
       const finalMsgs = [userMsg, aiMsg];
       setMessages(finalMsgs);
 
-      // Save to Firestore + update local sessions list
-      const email = user?.email;
-      if (email) {
+      // Background: save search history (silent — never blocks UI)
+      try {
+        const crawl = await crawlWeb(collegeName);
+        const sent  = sentiment || analyzeText(crawl.combinedText || collegeName);
+        await searchHistCtx.addSearch?.(collegeName, crawl.results, sent);
+      } catch { /* silent */ }
+
+      // Save session (dual storage: LocalStorage + Firebase)
+      try {
+        const email = user?.email || 'guest';
         const title = collegeName.length > 60 ? collegeName.slice(0, 57) + '…' : collegeName;
-        const sid = await saveChatSession(email, promptText, finalMsgs);
+        const sid = await saveChatSession(email, title, finalMsgs);
         if (sid) {
           setSessionId(sid);
-          const newSess = {
-            id:        sid,
-            title,
-            userEmail: email,
-            messages:  finalMsgs,
-            createdAt: { toDate: () => new Date() },
-            updatedAt: { toDate: () => new Date() },
-          };
-          setSessions(prev => [newSess, ...prev]);
+          await loadSessions();
         }
-      }
+      } catch { /* silent */ }
+
     } catch (e) {
-      setError(e.message === 'NO_KEY'
-        ? 'Groq API key not configured. Please add EXPO_PUBLIC_GROQ_API_KEY to your .env file.'
-        : `AI error: ${e.message}`);
+      setError(`AI error: ${e.message}`);
     } finally {
       setLoading(false);
     }
@@ -448,47 +496,42 @@ export default function AIScreen({ route, navigation }) {
     groqHistory.current = [...groqHistory.current, { role: 'user', content: text }];
 
     try {
-      const reply = await callGroq(groqHistory.current);
-      const aiMsg = { id: `a-${Date.now()}`, role: 'assistant', text: reply, time: nowStr(), isReal: true };
+      // ── Local DB + Sentiment AI pipeline ────────────────────────
+      const result = await generateSmartResponse(groqHistory.current);
+      const { text: reply, sentiment, sources, isCrawled } = result;
+
+      const aiMsg = {
+        id: `a-${Date.now()}`, role: 'assistant', text: reply,
+        time: nowStr(), isReal: true, isCrawled,
+        sentiment, sources,
+      };
       groqHistory.current.push({ role: 'assistant', content: reply });
 
       const finalMessages = [...newMessages, aiMsg];
-      setMessages(finalMessages);
+      setMessages(finalMessages);  // ← show answer immediately
 
-      // Save / update Firestore session
-      const email = user?.email;
-      if (email) {
+      // Save / update session (dual storage: LocalStorage + Firebase)
+      try {
+        const email = user?.email || 'guest';
         if (sessionId) {
-          // Update existing session — also update local sessions list
           await updateChatSession(email, sessionId, finalMessages);
           setSessions(prev => prev.map(s =>
             s.id === sessionId
-              ? { ...s, messages: finalMessages, updatedAt: { toDate: () => new Date() } }
+              ? { ...s, messages: finalMessages, updatedAt: new Date().toISOString() }
               : s
           ));
         } else {
-          // Create new session
           const title = text.length > 60 ? text.slice(0, 57) + '…' : text;
-          const sid = await saveChatSession(email, text, finalMessages);
+          const sid = await saveChatSession(email, title, finalMessages);
           if (sid) {
             setSessionId(sid);
-            // Optimistically add to sessions list immediately
-            const newSess = {
-              id:        sid,
-              title,
-              userEmail: email,
-              messages:  finalMessages,
-              createdAt: { toDate: () => new Date() },
-              updatedAt: { toDate: () => new Date() },
-            };
-            setSessions(prev => [newSess, ...prev]);
+            await loadSessions();
           }
         }
-      }
+      } catch { /* silent */ }
+
     } catch (e) {
-      setError(e.message === 'NO_KEY'
-        ? 'Groq API key not configured. Add EXPO_PUBLIC_GROQ_API_KEY to your .env file.'
-        : `Failed to get AI response: ${e.message}. Check your internet connection.`);
+      setError(`AI error: ${e.message}`);
     } finally {
       setLoading(false);
     }
@@ -501,6 +544,17 @@ export default function AIScreen({ route, navigation }) {
     setSessionId(null);
     setInput('');
     setError(null);
+    resetLocalAIContext(); // reset localAI conversation context
+  };
+
+  // ── Handle Enter key on Web ──────────────────────────────────────
+  const handleKeyPress = (e) => {
+    if (e.nativeEvent.key === 'Enter' && !e.nativeEvent.shiftKey) {
+      if (Platform.OS === 'web' && e.preventDefault) {
+        e.preventDefault();
+      }
+      handleSend();
+    }
   };
 
   // ── Resume a past session ──────────────────────────────────────
@@ -539,13 +593,12 @@ export default function AIScreen({ route, navigation }) {
 
   // ── Welcome message ────────────────────────────────────────────
   const WELCOME = {
-    id: 'welcome', role: 'assistant', isReal: !!getApiKey(),
+    id: 'welcome', role: 'assistant', isReal: true,
     time: nowStr(),
-    text: `👋 Hi${user?.name ? ', **' + user.name + '**' : ''}! I'm **AntyGravity AI** — your personal college guidance assistant.\n\nI can help you with:\n• 🎓 **College recommendations** based on your marks, stream, and location\n• 📊 **Course & fee comparisons** across top colleges\n• 🏆 **Entrance exam guidance** — JEE, NEET, GATE, CAT, CLAT\n• 💼 **Career advice** after any degree\n• 🏠 **Hostel, scholarship & admission info**\n\nPowered by **Llama 3.3 70B** via Groq AI. Ask me anything! 🚀`,
+    text: `👋 Hi${user?.name ? ', **' + user.name + '**' : ''}! I'm **Acadivo AI** — your personal college guidance assistant.\n\nI can help you with:\n• 🎓 **College recommendations** based on your marks, stream, and location\n• 📊 **Course & fee comparisons** across top colleges\n• 🏆 **Entrance exam guidance** — JEE, NEET, GATE, CAT, CLAT\n• 💼 **Career advice** after any degree\n• 🏠 **Hostel, scholarship & admission info**\n\nPowered by **🌐 Web Crawl + 🧠 Sentiment AI** — no API key needed! Ask me anything! 🚀`,
   };
 
   const displayMessages = messages.length > 0 ? messages : [WELCOME];
-  const isGroqReady = !!getApiKey();
 
   // ════════════════════════════════════════════════════════════════
   // RENDER
@@ -558,9 +611,9 @@ export default function AIScreen({ route, navigation }) {
       <LinearGradient colors={['#0d0d14', '#13131e']} style={s.header}>
         <View style={s.headerRow}>
           <View style={{ flex: 1 }}>
-            <Text style={s.headerTitle}>🤖 AntyGravity AI</Text>
+            <Text style={s.headerTitle}>🎓 Acadivo AI</Text>
             <Text style={s.headerSub}>
-              {isGroqReady ? '🟢 Groq Llama 3.3 70B · Live AI' : '🔴 API Key Missing'} · Smart Admission
+              🟢 Acadivo AI · Smart Admission Assistant
             </Text>
           </View>
           {user && (
@@ -666,7 +719,9 @@ export default function AIScreen({ route, navigation }) {
               placeholderTextColor="#44445a"
               multiline
               maxLength={600}
+              onKeyPress={handleKeyPress}
               onSubmitEditing={() => handleSend()}
+              returnKeyType="send"
               blurOnSubmit={false}
               editable={!loading}
             />
@@ -730,7 +785,7 @@ export default function AIScreen({ route, navigation }) {
                 <View style={h.empty}>
                   <Text style={h.emptyEmoji}>💬</Text>
                   <Text style={h.emptyTitle}>No conversations yet</Text>
-                  <Text style={h.emptyText}>Start chatting with AntyGravity AI to build your history.</Text>
+                  <Text style={h.emptyText}>Start chatting with Acadivo AI to build your history.</Text>
                   <TouchableOpacity style={h.startBtn} onPress={() => { setTab('chat'); handleNewChat(); }}>
                     <Ionicons name="add-circle-outline" size={16} color="#fff" />
                     <Text style={h.startBtnText}>Start a Conversation</Text>
@@ -758,9 +813,10 @@ export default function AIScreen({ route, navigation }) {
                     </View>
                     <TouchableOpacity
                       onPress={() => handleDeleteSession(sess.id)}
+                      style={h.deleteBtn}
                       hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                     >
-                      <Ionicons name="trash-outline" size={16} color="#44445a" />
+                      <Ionicons name="trash-outline" size={16} color="#ef4444" />
                     </TouchableOpacity>
                   </TouchableOpacity>
                 );
@@ -816,9 +872,10 @@ export default function AIScreen({ route, navigation }) {
                     </View>
                     <TouchableOpacity
                       onPress={() => searchHistCtx.deleteSearch?.(item.id)}
+                      style={h.deleteBtn}
                       hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                     >
-                      <Ionicons name="trash-outline" size={16} color="#44445a" />
+                      <Ionicons name="trash-outline" size={16} color="#ef4444" />
                     </TouchableOpacity>
                   </View>
                 );
@@ -922,11 +979,12 @@ const h = StyleSheet.create({
   startBtnText: { fontSize: 14, fontWeight: '700', color: '#fff' },
 
   // History cards
-  card:       { flexDirection: 'row', alignItems: 'flex-start', backgroundColor: '#16161f', borderRadius: 14, padding: 14, marginBottom: 10, borderWidth: 1, borderColor: '#2a2a3e', gap: 12 },
+  card:       { flexDirection: 'row', alignItems: 'center', backgroundColor: '#16161f', borderRadius: 14, padding: 14, marginBottom: 10, borderWidth: 1, borderColor: '#2a2a3e', gap: 12 },
   cardIcon:   { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
   cardTitle:  { fontSize: 14, fontWeight: '700', color: '#e2e8f0', lineHeight: 20 },
   cardMeta:   { fontSize: 11, color: '#64748b', marginTop: 3 },
   cardSources:{ fontSize: 11, color: '#475569', marginTop: 4 },
+  deleteBtn:  { width: 32, height: 32, borderRadius: 16, backgroundColor: '#ef444415', justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#ef444435' },
 
   // Sentiment badge on search cards
   sentBadge:  { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 10, borderWidth: 1 },
