@@ -6,6 +6,8 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { searchColleges } from '../constants/collegeDatabase';
 import { useSavedColleges } from '../context/SavedCollegesContext';
+import { useSearchHistory } from '../context/SearchHistoryContext';
+import { useAuth } from '../context/AuthContext';
 import CollegeLogo from '../components/CollegeLogo';
 
 function AnimatedCard({ index, children }) {
@@ -38,6 +40,14 @@ export default function SearchScreen({ navigation }) {
   const [searched, setSearched] = useState(false);
   const [page, setPage] = useState(1);
   const { issaved, toggleSave } = useSavedColleges();
+  const { history: searchHistory, loadHistory } = useSearchHistory();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user?.uid) {
+      loadHistory?.();
+    }
+  }, [user?.uid]);
 
   const handleSearch = (text) => {
     setQuery(text);
@@ -87,6 +97,39 @@ export default function SearchScreen({ navigation }) {
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
         {!searched && (
           <View>
+            {/* Recent Searches (Gmail-Synced) */}
+            {searchHistory && searchHistory.length > 0 && (
+              <View style={{ marginBottom: 20 }}>
+                <Text style={styles.suggestLabel}>🕒 Recent Searches (Gmail-Synced)</Text>
+                <View style={styles.historyWrap}>
+                  {searchHistory.slice(0, 5).map((item, idx) => (
+                    <TouchableOpacity
+                      key={item.id || idx}
+                      style={styles.historyItem}
+                      onPress={() => handleSearch(item.query)}
+                      activeOpacity={0.7}
+                    >
+                      <Ionicons name="time-outline" size={14} color="#64748b" style={{ marginRight: 6 }} />
+                      <Text style={styles.historyText} numberOfLines={1}>{item.query}</Text>
+                      {item.sentimentLabel && (
+                        <View style={[
+                          styles.sentimentPill, 
+                          { backgroundColor: item.sentimentNormalized >= 2.0 ? '#22c55e20' : item.sentimentNormalized >= 0 ? '#eab30820' : '#ef444420' }
+                        ]}>
+                          <Text style={[
+                            styles.sentimentPillText, 
+                            { color: item.sentimentNormalized >= 2.0 ? '#15803d' : item.sentimentNormalized >= 0 ? '#a16207' : '#b91c1c' }
+                          ]}>
+                            {item.sentimentLabel}
+                          </Text>
+                        </View>
+                      )}
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            )}
+
             <Text style={styles.suggestLabel}>🔥 Popular Searches</Text>
             <View style={styles.tagsWrap}>
               {['Engineering', 'Medical', 'Management', 'Government', 'Private', 'Education', 'Law', 'Pharmacy', 'Commerce'].map((s) => (
@@ -226,4 +269,36 @@ const styles = StyleSheet.create({
   saveBtnText: { color: '#2563eb', fontSize: 12, fontWeight: '700' },
   loadMoreBtn: { backgroundColor: '#e2e8f0', borderRadius: 12, paddingVertical: 14, alignItems: 'center', marginTop: 8, marginBottom: 20 },
   loadMoreText: { color: '#0f172a', fontSize: 13, fontWeight: '700' },
+
+  // Recent Searches list styles
+  historyWrap: {
+    gap: 8,
+    marginBottom: 10,
+  },
+  historyItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f8fafc',
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  historyText: {
+    color: '#334155',
+    fontSize: 13,
+    fontWeight: '500',
+    flex: 1,
+  },
+  sentimentPill: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
+    marginLeft: 10,
+  },
+  sentimentPillText: {
+    fontSize: 10,
+    fontWeight: '700',
+  },
 });

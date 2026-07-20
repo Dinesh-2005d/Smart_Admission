@@ -369,10 +369,13 @@ export default function AIScreen({ route, navigation }) {
     }
   }, [sQuery, searchHistCtx]);
 
+  const lastTriggeredCollegeRef = useRef(null);
+
   // ── Handle incoming search triggers from other screens ──────────────────────
   useEffect(() => {
-    if (route?.params?.collegeName) {
-      const targetCollege = route.params.collegeName;
+    const targetCollege = route?.params?.collegeName;
+    if (targetCollege && lastTriggeredCollegeRef.current !== targetCollege) {
+      lastTriggeredCollegeRef.current = targetCollege;
       setActiveTab('chat');
       
       const triggerAutoChat = async () => {
