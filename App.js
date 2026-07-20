@@ -43,6 +43,8 @@ import { AuthProvider, useAuth } from './src/context/AuthContext';
 import { SavedCollegesProvider, useSavedColleges } from './src/context/SavedCollegesContext';
 import { SearchHistoryProvider } from './src/context/SearchHistoryContext';
 import { ChatHistoryProvider } from './src/context/ChatHistoryContext';
+import { useChatHistory } from './src/context/ChatHistoryContext';
+import { useSearchHistory } from './src/context/SearchHistoryContext';
 
 const Stack = createNativeStackNavigator();
 const SIDEBAR_W = 240;
@@ -145,25 +147,32 @@ function NavItem({ icon, iconFocused, label, focused, onPress, badge, collapsed 
 // ─── Desktop Sidebar ─────────────────────────────────────────────────────────
 function DesktopSidebar({ tabs, activeTab, setActiveTab, collapsed, user }) {
   const slideAnim = useRef(new Animated.Value(-SIDEBAR_W)).current;
+  const chatCtx   = useChatHistory();
+  const { history: searchHistory } = useSearchHistory();
 
   useEffect(() => {
     Animated.spring(slideAnim, {
-      toValue: 0,
-      tension: 80,
-      friction: 12,
-      useNativeDriver: true,
+      toValue: 0, tension: 80, friction: 12, useNativeDriver: true,
     }).start();
   }, []);
+
+  // Load sessions when sidebar mounts (or user signs in)
+  useEffect(() => {
+    if (user?.uid) chatCtx.loadSessions();
+  }, [user?.uid]);
 
   const navGroups = [
     {
       title: 'Navigation',
-      items: tabs.filter(t => !['Admin'].includes(t.name)),
+      items: tabs.filter(t => !['Admin', 'AdminColleges'].includes(t.name)),
     },
     ...(tabs.some(t => t.name === 'Admin')
-      ? [{ title: 'Administration', items: tabs.filter(t => t.name === 'Admin') }]
+      ? [{ title: 'Administration', items: tabs.filter(t => ['Admin', 'AdminColleges'].includes(t.name)) }]
       : []),
   ];
+
+  const recentSessions = chatCtx.sessions.slice(0, 12);
+  const recentSearches = (searchHistory || []).slice(0, 5);
 
   return (
     <Animated.View style={[ds.sidebar, { width: collapsed ? 68 : SIDEBAR_W, transform: [{ translateX: slideAnim }] }]}>
@@ -184,7 +193,7 @@ function DesktopSidebar({ tabs, activeTab, setActiveTab, collapsed, user }) {
 
         <View style={ds.divider} />
 
-        {/* Nav groups */}
+        {/* Nav groups + Recents in a scrollable area */}
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
           {navGroups.map(group => (
             <View key={group.title} style={ds.navGroup}>
@@ -205,6 +214,86 @@ function DesktopSidebar({ tabs, activeTab, setActiveTab, collapsed, user }) {
               ))}
             </View>
           ))}
+
+          {/* ── ChatGPT-style Recents ────────────────────────────── */}
+          {!collapsed && user?.uid && (
+            <View style={ds.recentsSection}>
+              <View style={ds.recentsSectionHeader}>
+                <Text style={ds.recentsSectionTitle}>RECENTS</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    chatCtx.clearActive?.();
+                    setActiveTab('AI');
+                  }}
+                  style={ds.newChatBtn}
+                >
+                  <Ionicons name="add" size={13} color="#7c6fff" />
+                  <Text style={ds.newChatBtnText}>New</Text>
+                </TouchableOpacity>
+              </View>
+
+              {chatCtx.loading && (
+                <View style={{ paddingHorizontal: 12, paddingVertical: 6 }}>
+                  <ActivityIndicator size="small" color="#334155" />
+                </View>
+              )}
+
+              {!chatCtx.loading && recentSessions.length === 0 && (
+                <Text style={ds.recentsEmpty}>No chats yet</Text>
+              )}
+
+              {recentSessions.map(session => (
+                <TouchableOpacity
+                  key={session.id}
+                  style={[
+                    ds.recentItem,
+                    chatCtx.activeSessionId === session.id && ds.recentItemActive,
+                  ]}
+                  onPress={async () => {
+                    await chatCtx.loadSession(session.id);
+                    setActiveTab('AI');
+                  }}
+                  activeOpacity={0.75}
+                >
+                  <Ionicons name="chatbubble-outline" size={12} color="#475569" style={{ marginRight: 6, flexShrink: 0 }} />
+                  <Text style={ds.recentItemText} numberOfLines={1}>
+                    {session.title || 'Chat'}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+
+              {/* Recent searches divider */}
+              {recentSearches.length > 0 && (
+                <>
+                  <View style={[ds.divider, { marginTop: 8, marginBottom: 4 }]} />
+                  <Text style={ds.recentSearchLabel}>RECENT SEARCHES</Text>
+                  {recentSearches.map((s, i) => (
+                    <TouchableOpacity
+                      key={s.id || i}
+                      style={ds.recentItem}
+                      onPress={() => setActiveTab('AI')}
+                      activeOpacity={0.75}
+                    >
+                      <Ionicons name="search-outline" size={12} color="#475569" style={{ marginRight: 6, flexShrink: 0 }} />
+                      <Text style={ds.recentItemText} numberOfLines={1}>{s.query || ''}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </>
+              )}
+            </View>
+          )}
+
+          {/* Collapsed mode: just an AI icon shortcut */}
+          {collapsed && user?.uid && (
+            <TouchableOpacity
+              style={{ alignItems: 'center', marginVertical: 8 }}
+              onPress={() => setActiveTab('AI')}
+            >
+              <Ionicons name="chatbubbles-outline" size={20} color="#475569" />
+            </TouchableOpacity>
+          )}
+
+          <View style={{ height: 20 }} />
         </ScrollView>
 
         <View style={ds.divider} />
@@ -692,6 +781,73 @@ const ds = StyleSheet.create({
 
   // Content
   contentArea: { flex: 1, backgroundColor: '#f1f5f9' },
+
+  // ── ChatGPT-style Recents sidebar ─────────────────────────────────────────
+  recentsSection: {
+    marginTop: 4,
+    marginHorizontal: 10,
+  },
+  recentsSectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 2,
+    marginBottom: 4,
+    marginTop: 8,
+  },
+  recentsSectionTitle: {
+    color: '#475569',
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.8,
+  },
+  newChatBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    backgroundColor: 'rgba(124,111,255,0.15)',
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  newChatBtnText: {
+    color: '#7c6fff',
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  recentsEmpty: {
+    color: '#334155',
+    fontSize: 11,
+    fontStyle: 'italic',
+    paddingHorizontal: 4,
+    paddingVertical: 6,
+  },
+  recentItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 7,
+    borderRadius: 8,
+    marginBottom: 1,
+  },
+  recentItemActive: {
+    backgroundColor: 'rgba(37,99,235,0.12)',
+  },
+  recentItemText: {
+    color: '#94a3b8',
+    fontSize: 12,
+    fontWeight: '500',
+    flex: 1,
+  },
+  recentSearchLabel: {
+    color: '#334155',
+    fontSize: 9,
+    fontWeight: '700',
+    letterSpacing: 0.6,
+    paddingHorizontal: 4,
+    marginBottom: 2,
+    marginTop: 4,
+  },
 });
 
 // ─── Auth Navigator ──────────────────────────────────────────────────────────
