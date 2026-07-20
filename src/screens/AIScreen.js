@@ -100,8 +100,10 @@ const saveChatSession = async (email, title, messages) => {
   if (!email) return null;
   const ref = sessionsRef(email);
   if (!ref) return null;
+  const safeTitle = (title || 'Chat').slice(0, 60);
   const docRef = await addDoc(ref, {
-    title:     title.length > 60 ? title.slice(0, 57) + '…' : title,
+    title:     safeTitle,
+    userEmail: email,
     messages,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
@@ -111,24 +113,37 @@ const saveChatSession = async (email, title, messages) => {
 
 const updateChatSession = async (email, sessionId, messages) => {
   if (!email || !sessionId) return;
-  await updateDoc(doc(db, 'chatHistory', email, 'sessions', sessionId), {
-    messages,
-    updatedAt: serverTimestamp(),
-  });
+  try {
+    await updateDoc(doc(db, 'chatHistory', email, 'sessions', sessionId), {
+      messages,
+      updatedAt: serverTimestamp(),
+    });
+  } catch (e) {
+    console.warn('updateChatSession error:', e.message);
+  }
 };
 
 const loadChatSessions = async (email) => {
   if (!email) return [];
   const ref = sessionsRef(email);
   if (!ref) return [];
-  const q    = fsQuery(ref, orderBy('updatedAt', 'desc'), limit(30));
-  const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  try {
+    const q    = fsQuery(ref, orderBy('updatedAt', 'desc'), limit(30));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch (e) {
+    console.warn('loadChatSessions error:', e.message);
+    return [];
+  }
 };
 
 const deleteChatSession = async (email, sessionId) => {
   if (!email || !sessionId) return;
-  await deleteDoc(doc(db, 'chatHistory', email, 'sessions', sessionId));
+  try {
+    await deleteDoc(doc(db, 'chatHistory', email, 'sessions', sessionId));
+  } catch (e) {
+    console.warn('deleteChatSession error:', e.message);
+  }
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -388,13 +403,26 @@ export default function AIScreen({ route, navigation }) {
       const reply = await callGroq(groqHistory.current);
       const aiMsg = { id: `a-${Date.now()}`, role: 'assistant', text: reply, time: nowStr(), isReal: true };
       groqHistory.current.push({ role: 'assistant', content: reply });
-      setMessages([userMsg, aiMsg]);
+      const finalMsgs = [userMsg, aiMsg];
+      setMessages(finalMsgs);
 
-      // Save to Firestore
+      // Save to Firestore + update local sessions list
       const email = user?.email;
       if (email) {
-        const sid = await saveChatSession(email, promptText, [userMsg, aiMsg]);
-        setSessionId(sid);
+        const title = collegeName.length > 60 ? collegeName.slice(0, 57) + '…' : collegeName;
+        const sid = await saveChatSession(email, promptText, finalMsgs);
+        if (sid) {
+          setSessionId(sid);
+          const newSess = {
+            id:        sid,
+            title,
+            userEmail: email,
+            messages:  finalMsgs,
+            createdAt: { toDate: () => new Date() },
+            updatedAt: { toDate: () => new Date() },
+          };
+          setSessions(prev => [newSess, ...prev]);
+        }
       }
     } catch (e) {
       setError(e.message === 'NO_KEY'
@@ -431,10 +459,30 @@ export default function AIScreen({ route, navigation }) {
       const email = user?.email;
       if (email) {
         if (sessionId) {
-          await updateChatSession(email, sessionId, finalMessages).catch(() => {});
+          // Update existing session — also update local sessions list
+          await updateChatSession(email, sessionId, finalMessages);
+          setSessions(prev => prev.map(s =>
+            s.id === sessionId
+              ? { ...s, messages: finalMessages, updatedAt: { toDate: () => new Date() } }
+              : s
+          ));
         } else {
-          const sid = await saveChatSession(email, text, finalMessages).catch(() => null);
-          if (sid) setSessionId(sid);
+          // Create new session
+          const title = text.length > 60 ? text.slice(0, 57) + '…' : text;
+          const sid = await saveChatSession(email, text, finalMessages);
+          if (sid) {
+            setSessionId(sid);
+            // Optimistically add to sessions list immediately
+            const newSess = {
+              id:        sid,
+              title,
+              userEmail: email,
+              messages:  finalMessages,
+              createdAt: { toDate: () => new Date() },
+              updatedAt: { toDate: () => new Date() },
+            };
+            setSessions(prev => [newSess, ...prev]);
+          }
         }
       }
     } catch (e) {
@@ -845,16 +893,17 @@ const s = StyleSheet.create({
 });
 
 const h = StyleSheet.create({
-  topRow:     { paddingHorizontal: 16, paddingTop: 16, paddingBottom: 4 },
-  title:      { fontSize: 18, fontWeight: '800', color: '#fff' },
-  sub:        { fontSize: 11, color: '#64748b', marginTop: 3, marginBottom: 10 },
+  topRow:       { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8 },
+  title:        { fontSize: 18, fontWeight: '800', color: '#fff', flex: 1 },
+  sub:          { fontSize: 11, color: '#64748b', marginTop: 1 },
+  refreshBtn:   { width: 36, height: 36, borderRadius: 18, backgroundColor: '#7c6fff18', justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#7c6fff30' },
 
   // Sub-tabs
-  subTabRow:  { flexDirection: 'row', paddingHorizontal: 16, gap: 10, marginBottom: 10 },
-  subTab:     { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: '#16161f', borderWidth: 1, borderColor: '#2a2a3e' },
-  subTabActive:{ borderColor: '#7c6fff60', backgroundColor: '#7c6fff18' },
+  subTabRow:    { flexDirection: 'row', paddingHorizontal: 16, gap: 10, marginBottom: 10, flexWrap: 'wrap' },
+  subTab:       { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: '#16161f', borderWidth: 1, borderColor: '#2a2a3e' },
+  subTabActive: { borderColor: '#7c6fff60', backgroundColor: '#7c6fff18' },
   subTabActiveBlue: { borderColor: '#60a5fa60', backgroundColor: '#60a5fa18' },
-  subTabText: { fontSize: 12.5, color: '#64748b', fontWeight: '600' },
+  subTabText:   { fontSize: 12.5, color: '#64748b', fontWeight: '600' },
   subTabTextActive: { color: '#7c6fff', fontWeight: '700' },
   subTabTextBlue:   { color: '#60a5fa', fontWeight: '700' },
 
