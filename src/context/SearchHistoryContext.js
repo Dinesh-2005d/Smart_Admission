@@ -38,8 +38,8 @@ export function SearchHistoryProvider({ children }) {
   /** Returns the Firestore subcollection ref for this user's queries */
   const queriesRef = useCallback(() => {
     if (!user?.uid) return null;
-    return collection(db, 'searchHistory', user.uid, 'queries');
-  }, [user?.uid]);
+    return collection(db, 'searchHistory', user.email || user.uid, 'queries');
+  }, [user?.uid, user?.email]);
 
   /**
    * Save a new search to Firestore and prepend to local state.
@@ -119,12 +119,12 @@ export function SearchHistoryProvider({ children }) {
     if (!user?.uid) return;
     setError(null);
     try {
-      await deleteDoc(doc(db, 'searchHistory', user.uid, 'queries', id));
+      await deleteDoc(doc(db, 'searchHistory', user.email || user.uid, 'queries', id));
       setHistory(prev => prev.filter(h => h.id !== id));
     } catch (e) {
       setError('Failed to delete: ' + e.message);
     }
-  }, [user?.uid]);
+  }, [user?.uid, user?.email]);
 
   /**
    * Clear ALL search history for the current user.
