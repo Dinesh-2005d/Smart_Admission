@@ -106,7 +106,7 @@ export default function SearchScreen({ navigation }) {
                     <TouchableOpacity
                       key={item.id || idx}
                       style={styles.historyItem}
-                      onPress={() => handleSearch(item.query)}
+                      onPress={() => navigation.navigate('AI', { searchItem: item })}
                       activeOpacity={0.7}
                     >
                       <Ionicons name="time-outline" size={14} color="#64748b" style={{ marginRight: 6 }} />

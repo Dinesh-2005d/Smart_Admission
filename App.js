@@ -145,7 +145,7 @@ function NavItem({ icon, iconFocused, label, focused, onPress, badge, collapsed 
 }
 
 // ─── Desktop Sidebar ─────────────────────────────────────────────────────────
-function DesktopSidebar({ tabs, activeTab, setActiveTab, collapsed, user }) {
+function DesktopSidebar({ tabs, activeTab, setActiveTab, collapsed, user, onNavigate }) {
   const slideAnim = useRef(new Animated.Value(-SIDEBAR_W)).current;
   const chatCtx   = useChatHistory();
   const { history: searchHistory } = useSearchHistory();
@@ -271,7 +271,7 @@ function DesktopSidebar({ tabs, activeTab, setActiveTab, collapsed, user }) {
                     <TouchableOpacity
                       key={s.id || i}
                       style={ds.recentItem}
-                      onPress={() => setActiveTab('AI')}
+                      onPress={() => onNavigate('AI', { searchItem: s })}
                       activeOpacity={0.75}
                     >
                       <Ionicons name="search-outline" size={12} color="#475569" style={{ marginRight: 6, flexShrink: 0 }} />
@@ -525,6 +525,7 @@ function MainTabs() {
           setActiveTab={handleTabChange}
           collapsed={collapsed}
           user={user}
+          onNavigate={handleNavigate}
         />
       )}
 

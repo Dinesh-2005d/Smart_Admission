@@ -308,6 +308,7 @@ export default function AIScreen({ route, navigation }) {
 
   // ── Tab state ─────────────────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState('chat');
+  const [historyType, setHistoryType] = useState('chat'); // 'chat' | 'search'
 
   // ── Chat state ────────────────────────────────────────────────────────────
   const [inputText,   setInputText]   = useState('');
@@ -430,6 +431,27 @@ export default function AIScreen({ route, navigation }) {
       navigation?.setParams({ collegeName: null, college: null });
     }
   }, [route?.params?.collegeName, route?.params?.college, chatCtx, searchHistCtx, navigation]);
+
+  // ── Handle search history items passed from other screens ───────────────────
+  useEffect(() => {
+    const item = route?.params?.searchItem;
+    if (item) {
+      setActiveTab('analyse');
+      setSQuery(item.query || '');
+      setCrawlResult({ results: item.crawlResults || [] });
+      setSentiment({
+        label: item.sentimentLabel || 'Neutral',
+        score: item.sentimentScore || 0,
+        normalizedScore: item.sentimentNormalized || 0,
+        keywords: item.sentimentKeywords || [],
+        positive: item.positiveWords || [],
+        negative: item.negativeWords || [],
+      });
+      setCrawlError(null);
+      setCrawling(false);
+      navigation?.setParams({ searchItem: null });
+    }
+  }, [route?.params?.searchItem, navigation]);
 
   // ── Send a message ────────────────────────────────────────────────────────
   const handleSend = useCallback(async (overrideText) => {
@@ -666,55 +688,131 @@ export default function AIScreen({ route, navigation }) {
       )}
 
       {/* ════════════════════════════════════════════════════════════════
-          HISTORY TAB
+          HISTORY TAB (Chats + Searches Segmented)
       ════════════════════════════════════════════════════════════════ */}
       {activeTab === 'history' && (
-        <ScrollView style={hs.root} contentContainerStyle={hs.content} showsVerticalScrollIndicator={false}>
-          <View style={hs.headerRow}>
-            <Text style={hs.title}>💬 Chat History</Text>
-            <Text style={hs.subtitle}>{chatCtx.sessions.length} conversations · synced across devices</Text>
+        <View style={{ flex: 1, backgroundColor: '#0d0d14' }}>
+          <View style={[hs.headerRow, { paddingHorizontal: 14, paddingTop: 14 }]}>
+            <Text style={hs.title}>📜 AI History</Text>
+            <Text style={hs.subtitle}>Your AI conversations and web searches synced via Gmail</Text>
           </View>
 
-          {chatCtx.loading && (
-            <View style={hs.center}>
-              <ActivityIndicator size="large" color="#7c6fff" />
-              <Text style={hs.loadingText}>Loading conversations…</Text>
-            </View>
-          )}
-
-          {!chatCtx.loading && chatCtx.sessions.length === 0 && (
-            <View style={hs.emptyBox}>
-              <Text style={hs.emptyEmoji}>💬</Text>
-              <Text style={hs.emptyTitle}>No conversations yet</Text>
-              <Text style={hs.emptyText}>Your AI chat history will appear here, synced across all your devices.</Text>
-              <TouchableOpacity style={hs.startBtn} onPress={() => { setActiveTab('chat'); handleNewChat(); }}>
-                <Ionicons name="add-circle-outline" size={16} color="#fff" />
-                <Text style={hs.startBtnText}>Start a Conversation</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-
-          {chatCtx.sessions.map(session => (
-            <TouchableOpacity
-              key={session.id}
-              style={hs.sessionCard}
-              onPress={() => handleResumeSession(session)}
-              activeOpacity={0.85}
+          {/* Sub-tab navigation */}
+          <View style={hs.subTabHeader}>
+            <TouchableOpacity 
+              style={[hs.subTabBtn, historyType === 'chat' && hs.subTabBtnActive]} 
+              onPress={() => setHistoryType('chat')}
+              activeOpacity={0.8}
             >
-              <View style={hs.sessionIcon}>
-                <Ionicons name="chatbubbles-outline" size={20} color="#7c6fff" />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={hs.sessionTitle} numberOfLines={2}>{session.title || 'Chat'}</Text>
-                <Text style={hs.sessionDate}>{fmt(session.updatedAt)} · {(session.messages || []).length} messages</Text>
-              </View>
-              <TouchableOpacity onPress={() => handleDeleteSession(session.id)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-                <Ionicons name="trash-outline" size={16} color="#44445a" />
-              </TouchableOpacity>
+              <Ionicons name="chatbubbles-outline" size={15} color={historyType === 'chat' ? '#7c6fff' : '#64748b'} />
+              <Text style={[hs.subTabLabel, historyType === 'chat' && hs.subTabLabelActive]}>Chats ({chatCtx.sessions.length})</Text>
             </TouchableOpacity>
-          ))}
-          <View style={{ height: 40 }} />
-        </ScrollView>
+            <TouchableOpacity 
+              style={[hs.subTabBtn, historyType === 'search' && hs.subTabBtnActive]} 
+              onPress={() => setHistoryType('search')}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="search-outline" size={15} color={historyType === 'search' ? '#60a5fa' : '#64748b'} />
+              <Text style={[hs.subTabLabel, historyType === 'search' && hs.subTabLabelActive]}>Searches ({(searchHistCtx.history || []).length})</Text>
+            </TouchableOpacity>
+          </View>
+
+          {historyType === 'chat' ? (
+            <ScrollView style={hs.root} contentContainerStyle={hs.content} showsVerticalScrollIndicator={false}>
+              {chatCtx.loading && (
+                <View style={hs.center}>
+                  <ActivityIndicator size="large" color="#7c6fff" />
+                  <Text style={hs.loadingText}>Loading conversations…</Text>
+                </View>
+              )}
+
+              {!chatCtx.loading && chatCtx.sessions.length === 0 && (
+                <View style={hs.emptyBox}>
+                  <Text style={hs.emptyEmoji}>💬</Text>
+                  <Text style={hs.emptyTitle}>No conversations yet</Text>
+                  <Text style={hs.emptyText}>Your AI chat history will appear here, synced across all your devices.</Text>
+                  <TouchableOpacity style={hs.startBtn} onPress={() => { setActiveTab('chat'); handleNewChat(); }}>
+                    <Ionicons name="add-circle-outline" size={16} color="#fff" />
+                    <Text style={hs.startBtnText}>Start a Conversation</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+
+              {chatCtx.sessions.map(session => (
+                <TouchableOpacity
+                  key={session.id}
+                  style={hs.sessionCard}
+                  onPress={() => handleResumeSession(session)}
+                  activeOpacity={0.85}
+                >
+                  <View style={hs.sessionIcon}>
+                    <Ionicons name="chatbubbles-outline" size={20} color="#7c6fff" />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={hs.sessionTitle} numberOfLines={2}>{session.title || 'Chat'}</Text>
+                    <Text style={hs.sessionDate}>{fmt(session.updatedAt)} · {(session.messages || []).length} messages</Text>
+                  </View>
+                  <TouchableOpacity onPress={() => handleDeleteSession(session.id)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+                    <Ionicons name="trash-outline" size={16} color="#44445a" />
+                  </TouchableOpacity>
+                </TouchableOpacity>
+              ))}
+              <View style={{ height: 40 }} />
+            </ScrollView>
+          ) : (
+            <ScrollView style={hs.root} contentContainerStyle={hs.content} showsVerticalScrollIndicator={false}>
+              {searchHistCtx.loading && (
+                <View style={hs.center}>
+                  <ActivityIndicator size="large" color="#60a5fa" />
+                  <Text style={hs.loadingText}>Loading search history…</Text>
+                </View>
+              )}
+
+              {!searchHistCtx.loading && (searchHistCtx.history || []).length === 0 && (
+                <View style={hs.emptyBox}>
+                  <Text style={hs.emptyEmoji}>🔍</Text>
+                  <Text style={hs.emptyTitle}>No searches yet</Text>
+                  <Text style={hs.emptyText}>Use the Analyse tab to search topics and track sentiment trends.</Text>
+                </View>
+              )}
+
+              {(searchHistCtx.history || []).map(item => (
+                <TouchableOpacity
+                  key={item.id}
+                  style={hs.sessionCard}
+                  onPress={() => {
+                    setSQuery(item.query || '');
+                    setCrawlResult({ results: item.crawlResults || [] });
+                    setSentiment({
+                      label: item.sentimentLabel || 'Neutral',
+                      score: item.sentimentScore || 0,
+                      normalizedScore: item.sentimentNormalized || 0,
+                      keywords: item.sentimentKeywords || [],
+                      positive: item.positiveWords || [],
+                      negative: item.negativeWords || [],
+                    });
+                    setActiveTab('analyse');
+                  }}
+                  activeOpacity={0.85}
+                >
+                  <View style={hs.sessionIcon}>
+                    <Ionicons name="search-outline" size={20} color="#60a5fa" />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={hs.sessionTitle} numberOfLines={2}>{item.query}</Text>
+                    <Text style={hs.sessionDate}>
+                      {fmt(item.timestamp)} · Sentiment: {item.sentimentLabel || 'Neutral'} ({(item.sentimentNormalized || 0).toFixed(1)})
+                    </Text>
+                  </View>
+                  <TouchableOpacity onPress={() => searchHistCtx.deleteSearch?.(item.id)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+                    <Ionicons name="trash-outline" size={16} color="#44445a" />
+                  </TouchableOpacity>
+                </TouchableOpacity>
+              ))}
+              <View style={{ height: 40 }} />
+            </ScrollView>
+          )}
+        </View>
       )}
 
       {/* ════════════════════════════════════════════════════════════════
@@ -989,6 +1087,13 @@ const hs = StyleSheet.create({
   sessionIcon: { width: 38, height: 38, borderRadius: 19, backgroundColor: '#20202e', alignItems: 'center', justifyContent: 'center' },
   sessionTitle:{ color: '#eeeef8', fontSize: 13, fontWeight: '700', marginBottom: 3 },
   sessionDate: { color: '#44445a', fontSize: 11 },
+
+  // subTab headers inside History Screen
+  subTabHeader: { flexDirection: 'row', backgroundColor: '#16161f', borderRadius: 12, padding: 4, marginBottom: 14, marginHorizontal: 14, borderWidth: 1, borderColor: '#26263a' },
+  subTabBtn:    { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 8, borderRadius: 8 },
+  subTabBtnActive: { backgroundColor: '#20202e', borderWidth: 1, borderColor: '#2e2e42' },
+  subTabLabel:  { color: '#64748b', fontSize: 12, fontWeight: '600' },
+  subTabLabelActive: { color: '#eeeef8', fontWeight: '700' },
 });
 
 // Analyse / Trends styles
