@@ -1,11 +1,13 @@
 /**
- * groqAI.js — Acadivo AI v4.0
+ * groqAI.js — Acadivo AI v5.0
  * Real AI via Groq API (Llama 3.3 70B — fastest, most capable).
  *
- * Features:
+ * v5.0 Upgrades:
+ *  ✅ Firestore admin-managed college database (priority source)
+ *  ✅ Personalized responses based on user search + chat history
+ *  ✅ Cutoff / eligibility matching ("my marks are 85%")
  *  ✅ Full conversation history (multi-turn like ChatGPT)
- *  ✅ Deep college knowledge from in-app DB
- *  ✅ Handles ALL questions — general knowledge, education, career, anything
+ *  ✅ Deep college knowledge from in-app DB + Firestore DB
  *  ✅ Graceful fallback to localAI when no network
  *  ✅ EAS build support via Constants.expoConfig.extra
  *  ✅ Smart image request handling
@@ -15,39 +17,63 @@
 import Constants from 'expo-constants';
 import { generateAIResponse } from './localAI';
 import { COLLEGE_DATABASE } from '../constants/collegeDatabase';
+import { collection, getDocs, query, where, orderBy, limit } from 'firebase/firestore';
+import { db } from '../config/firebase';
 
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const GROQ_MODEL   = 'llama-3.3-70b-versatile'; // Latest & best quality Llama model
+const GROQ_MODEL   = 'llama-3.3-70b-versatile';
 
-// ── Conversation history store (keeps last 20 messages for context) ──────────
+// ── Conversation history store (per-component; reset when session changes) ────
 let conversationHistory = [];
 
 export const resetConversation = () => { conversationHistory = []; };
 
-// ── Get API Key (supports both .env for dev and Constants.expoConfig.extra for EAS) ──
-const getApiKey = () => {
-  // 1. Try process.env (works in dev / expo start)
-  const envKey = process.env.EXPO_PUBLIC_GROQ_API_KEY;
-  if (envKey && envKey !== 'YOUR_GROQ_API_KEY' && envKey.trim() !== '') {
-    return envKey.trim();
-  }
+/**
+ * Seed the in-memory history from a loaded Firestore session.
+ * Call this when the user resumes a previous chat session.
+ */
+export const seedConversation = (messages = []) => {
+  conversationHistory = messages
+    .filter(m => m.role === 'user' || m.role === 'assistant')
+    .map(m => ({ role: m.role, content: m.text || m.content || '' }))
+    .slice(-20);
+};
 
-  // 2. Try Constants.expoConfig.extra (works in EAS builds)
+// ── Get API Key ───────────────────────────────────────────────────────────────
+const getApiKey = () => {
+  const envKey = process.env.EXPO_PUBLIC_GROQ_API_KEY;
+  if (envKey && envKey !== 'YOUR_GROQ_API_KEY' && envKey.trim() !== '') return envKey.trim();
   try {
     const extraKey = Constants?.expoConfig?.extra?.EXPO_PUBLIC_GROQ_API_KEY;
-    if (extraKey && extraKey !== 'YOUR_GROQ_API_KEY' && extraKey.trim() !== '') {
-      return extraKey.trim();
-    }
-  } catch (e) {
-    // Constants might not be available in some environments
-  }
-
+    if (extraKey && extraKey !== 'YOUR_GROQ_API_KEY' && extraKey.trim() !== '') return extraKey.trim();
+  } catch {}
   return null;
 };
 
-// ── College search helper ─────────────────────────────────────────────────────
-const findCollegesInApp = (query, limit = 6) => {
-  const q = query.toLowerCase();
+// ── Firestore college fetch ───────────────────────────────────────────────────
+let _firestoreCollegesCache     = null;
+let _firestoreCollegesCachedAt  = 0;
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+export const fetchFirestoreColleges = async () => {
+  const now = Date.now();
+  if (_firestoreCollegesCache && (now - _firestoreCollegesCachedAt) < CACHE_TTL_MS) {
+    return _firestoreCollegesCache;
+  }
+  try {
+    const snap = await getDocs(collection(db, 'colleges'));
+    const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    _firestoreCollegesCache    = list;
+    _firestoreCollegesCachedAt = now;
+    return list;
+  } catch {
+    return _firestoreCollegesCache || [];
+  }
+};
+
+// ── College search (local DB + Firestore DB combined) ─────────────────────────
+const findCollegesInApp = (userQuery, extraColleges = [], limitCount = 6) => {
+  const q = userQuery.toLowerCase();
 
   const wantsWomen   = /\b(women|girls|female|ladies|all.?women|all.?girls)\b/.test(q);
   const wantsMen     = /\b(men|boys|male|all.?men|all.?boys)\b/.test(q) && !wantsWomen;
@@ -55,137 +81,141 @@ const findCollegesInApp = (query, limit = 6) => {
   const wantsPrivate = /\b(private|deemed|autonomous)\b/.test(q) && !wantsGovt;
   const wantsHostel  = /\b(hostel|accommodation|staying|boarding|residential)\b/.test(q);
   const wantsTop     = /\b(top|best|highest|ranked|premier|iit|nit|aiims|tier.?1)\b/.test(q);
+  const wantsScholarship = /\b(scholarship|free|funded|stipend)\b/.test(q);
 
   const DEPT_MAP = {
-    engineering    : /\b(engineer|tech|btech|iit|nit|cse|ece|mech|civil|it|computer|electrical)\b/,
-    medical        : /\b(medical|mbbs|neet|doctor|medicine|bds|dental|aiims|surgery)\b/,
-    management     : /\b(mba|management|business|bba|commerce|mba)\b/,
-    law            : /\b(law|llb|legal|advocate|clat|bar)\b/,
-    agriculture    : /\b(agri|agriculture|farming|horticulture|bsc agri|icar)\b/,
-    pharmacy       : /\b(pharmacy|pharma|bpharm|drug)\b/,
-    nursing        : /\b(nursing|nurse|bsc nursing|midwife)\b/,
-    architecture   : /\b(architect|architecture|planning|design|b\.arch)\b/,
-    arts_science   : /\b(arts|science|bsc|ba|humanities|liberal)\b/,
-    commerce       : /\b(commerce|bcom|accounts|finance|ca|cs)\b/,
-    hotel_management: /\b(hotel|hospitality|catering|tourism|ihmct)\b/,
-    polytechnic    : /\b(polytechnic|diploma|iti|vocational)\b/,
-    paramedical    : /\b(paramedical|physiotherapy|radiology|lab tech)\b/,
-    teacher_training: /\b(b\.ed|bed|teacher|teaching|education|d\.el\.ed)\b/,
+    engineering:     /\b(engineer|tech|btech|iit|nit|cse|ece|mech|civil|it|computer|electrical|ai|artificial)\b/,
+    medical:         /\b(medical|mbbs|neet|doctor|medicine|bds|dental|aiims|surgery)\b/,
+    management:      /\b(mba|management|business|bba|commerce)\b/,
+    law:             /\b(law|llb|legal|advocate|clat|bar)\b/,
+    agriculture:     /\b(agri|agriculture|farming|horticulture|icar)\b/,
+    pharmacy:        /\b(pharmacy|pharma|bpharm|drug)\b/,
+    nursing:         /\b(nursing|nurse|bsc nursing|midwife)\b/,
+    architecture:    /\b(architect|architecture|planning|design|b\.arch)\b/,
+    arts_science:    /\b(arts|science|bsc|ba|humanities|liberal)\b/,
+    commerce:        /\b(commerce|bcom|accounts|finance|ca|cs)\b/,
+    hotel_management:/\b(hotel|hospitality|catering|tourism|ihmct)\b/,
+    polytechnic:     /\b(polytechnic|diploma|iti|vocational)\b/,
+    paramedical:     /\b(paramedical|physiotherapy|radiology|lab tech)\b/,
+    teacher_training:/\b(b\.ed|bed|teacher|teaching|education|d\.el\.ed)\b/,
   };
+
   let targetDept = null;
   for (const [dept, regex] of Object.entries(DEPT_MAP)) {
     if (regex.test(q)) { targetDept = dept; break; }
   }
 
   const STATE_KEYWORDS = [
-    'tamil nadu','maharashtra','karnataka','delhi','kerala','gujarat',
-    'rajasthan','uttar pradesh','west bengal','telangana','andhra pradesh',
-    'punjab','haryana','bihar','odisha','assam','madhya pradesh',
-    'chhattisgarh','jharkhand','uttarakhand','himachal pradesh','goa',
-    'manipur','meghalaya','tripura','nagaland','mizoram','sikkim',
-    'arunachal','jammu','kashmir','puducherry','chandigarh',
-    'chennai','mumbai','bangalore','bengaluru','hyderabad','pune',
-    'kolkata','jaipur','lucknow','bhopal','coimbatore','vellore','kochi',
-    'ahmedabad','surat','patna','raipur','bhubaneswar','imphal','shillong',
-    'agartala','kohima','aizawl','gangtok','itanagar','shimla','dehradun',
+    'tamil nadu', 'maharashtra', 'karnataka', 'delhi', 'kerala', 'gujarat',
+    'rajasthan', 'uttar pradesh', 'west bengal', 'telangana', 'andhra pradesh',
+    'punjab', 'haryana', 'bihar', 'odisha', 'assam', 'madhya pradesh',
+    'chennai', 'mumbai', 'bangalore', 'bengaluru', 'hyderabad', 'pune',
+    'kolkata', 'jaipur', 'lucknow', 'bhopal', 'coimbatore', 'vellore', 'kochi',
+    'ahmedabad', 'surat', 'patna', 'raipur', 'bhubaneswar', 'shimla', 'dehradun',
   ];
   let targetState = null;
   for (const s of STATE_KEYWORDS) {
     if (q.includes(s)) { targetState = s; break; }
   }
 
-  const scoreMatch = q.match(/(\d{2,3})\s*(%|percent|marks|score)/);
+  const scoreMatch = q.match(/(\d{2,3})\s*(%|percent|marks|score|cutoff)/);
   const minPct = scoreMatch ? parseInt(scoreMatch[1]) : null;
 
-  // NAAC filter
   const wantsNAACa = /naac.*a\+|a\+.*naac/.test(q);
 
-  let pool = [...COLLEGE_DATABASE];
+  // Combine local + Firestore colleges, Firestore takes priority
+  const allColleges = [
+    ...extraColleges.map(c => ({ ...c, _isFirestore: true })),
+    ...COLLEGE_DATABASE,
+  ];
 
-  if (wantsWomen)   pool = pool.filter(c => /women|girls/i.test(c.gender));
-  if (wantsMen)     pool = pool.filter(c => /men|boys/i.test(c.gender) && !/women|girls/i.test(c.gender));
-  if (wantsGovt)    pool = pool.filter(c => c.type === 'Government');
-  if (wantsPrivate) pool = pool.filter(c => c.type === 'Private');
-  if (targetDept)   pool = pool.filter(c => c.department === targetDept);
-  if (targetState)  pool = pool.filter(c => (c.state + ' ' + c.location).toLowerCase().includes(targetState));
-  if (wantsHostel)  pool = pool.filter(c => c.hostelAvailable);
-  if (minPct)       pool = pool.filter(c => c.minPercentage <= minPct);
-  if (wantsNAACa)   pool = pool.filter(c => ['A+', 'A++'].includes(c.naacGrade));
+  let pool = [...allColleges];
 
-  pool.sort((a, b) => (wantsTop || true) ? b.rating - a.rating : 0);
+  if (wantsWomen)      pool = pool.filter(c => /women|girls/i.test(c.gender || ''));
+  if (wantsMen)        pool = pool.filter(c => /men|boys/i.test(c.gender || '') && !/women|girls/i.test(c.gender || ''));
+  if (wantsGovt)       pool = pool.filter(c => c.type === 'Government');
+  if (wantsPrivate)    pool = pool.filter(c => c.type === 'Private' || c.type === 'Deemed' || c.type === 'Autonomous');
+  if (targetDept)      pool = pool.filter(c => c.department === targetDept);
+  if (targetState)     pool = pool.filter(c => ((c.state || '') + ' ' + (c.location || '')).toLowerCase().includes(targetState));
+  if (wantsHostel)     pool = pool.filter(c => c.hostelAvailable);
+  if (wantsScholarship)pool = pool.filter(c => c.scholarshipAvailable);
+  if (minPct)          pool = pool.filter(c => (c.minPercentage || 0) <= minPct);
+  if (wantsNAACa)      pool = pool.filter(c => ['A+', 'A++'].includes(c.naacGrade));
 
-  return pool.slice(0, limit);
+  // Firestore colleges appear first (admin curated), then sort by rating
+  pool.sort((a, b) => {
+    if (a._isFirestore && !b._isFirestore) return -1;
+    if (!a._isFirestore && b._isFirestore) return 1;
+    return (b.rating || 0) - (a.rating || 0);
+  });
+
+  return pool.slice(0, limitCount);
 };
 
 const formatCollegesForAI = (colleges) => {
-  if (!colleges.length) return 'No matching colleges found in the app database.';
+  if (!colleges.length) return 'No matching colleges found in the database.';
   return colleges.map((c, i) =>
-    `${i + 1}. **${c.name}** — ${c.location}, ${c.state}\n` +
+    `${i + 1}. **${c.name}** — ${c.location}, ${c.state}` +
+    (c._isFirestore ? ' 🔵 [Admin Curated]' : '') + '\n' +
     `   • Type: ${c.type} | Dept: ${c.department} | NAAC: ${c.naacGrade || 'N/A'}\n` +
     `   • Rating: ${c.rating}/5 | Placement: ${c.placementRate}% | Fee: ₹${c.annualFee || 'N/A'}/yr\n` +
-    `   • Hostel: ${c.hostelAvailable ? '✅ Yes' : '❌ No'} | Min%: ${c.minPercentage}%`
+    `   • Hostel: ${c.hostelAvailable ? '✅ Yes' : '❌ No'} | Min%: ${c.minPercentage}%` +
+    (c.description ? `\n   • About: ${c.description.slice(0, 100)}` : '') +
+    (c.courses?.length ? `\n   • Courses: ${(Array.isArray(c.courses) ? c.courses : [c.courses]).slice(0, 4).join(', ')}` : '')
   ).join('\n\n');
 };
 
 // ── Master system prompt ──────────────────────────────────────────────────────
-const buildSystemPrompt = (college, departmentLabel, suggestedColleges, hasCollegeContext) => `
-You are **Acadivo AI** — a highly intelligent, versatile AI assistant built into the Acadivo college finder app. You are powered by Llama 3 70B.
+const buildSystemPrompt = ({
+  college,
+  departmentLabel,
+  suggestedColleges,
+  hasCollegeContext,
+  personalizationContext,
+  firestoreCollegesCount,
+}) => `
+You are **Acadivo AI** — a highly intelligent, versatile AI assistant and College Guidance Expert built into the Acadivo app. You are powered by Llama 3.3 70B.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🎯 YOUR CORE IDENTITY:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-You are a SMART, KNOWLEDGEABLE, and VERSATILE AI — similar to ChatGPT or Gemini. You can answer ANY question the user asks. Your PRIMARY expertise is Indian college admissions, but you are NOT limited to just that. You can discuss:
-- General knowledge, science, history, geography, math
-- Technology, programming, current affairs
-- Career advice, life guidance, study tips
-- And literally anything else a student might ask
+You are a SMART, KNOWLEDGEABLE, and VERSATILE AI — your PRIMARY expertise is Indian college admissions and career guidance. You can handle:
+- Natural language college queries ("Which engineering colleges in Chennai accept 85%?")
+- Fee structure, hostel, placement, scholarship questions
+- Eligibility and cutoff matching
+- College comparisons and personalized recommendations
+- Entrance exams: JEE, NEET, CLAT, GATE, CAT, CUET, etc.
+- Career guidance after any degree
+- General knowledge, tech, science
 
-You should behave like a brilliant, friendly senior mentor who happens to be an expert on Indian colleges.
+You behave like a brilliant, caring senior mentor who is an expert on Indian colleges.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🧠 CRITICAL RULES FOR ANSWERING:
+🧠 CRITICAL RULES:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. **NEVER say "I don't understand" or "Could you rephrase?"** — ALWAYS try to give a helpful answer. If the query is vague, make your best guess and ask for clarification at the end.
-2. **NEVER refuse to answer a question** — even if it's not about education. Answer it helpfully, then optionally mention you can also help with college questions.
-3. **Understand short/informal messages** — Users might type broken English, short phrases, or casual language. Interpret the intent, don't reject it.
-4. **Context-aware follow-ups** — If the user previously asked about hostel and then says "give image" or "show photo", understand they want hostel images. Always use conversation history to understand context.
-5. **Be conversational** — Don't be robotic. Respond naturally like a human mentor would.
+1. NEVER say "I don't understand" — ALWAYS give a helpful answer and ask for clarification if needed.
+2. NEVER refuse any question — answer helpfully, then offer more college help.
+3. Understand short/informal messages — interpret intent, don't reject.
+4. Context-aware follow-ups — use full conversation history to understand context.
+5. Be conversational and warm — like a knowledgeable friend.
+6. When user mentions their marks/cutoff/percentage, use it to recommend matching colleges.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🖼️ IMAGE / PHOTO REQUESTS:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-This is VERY IMPORTANT. When the user asks for images, photos, or pictures in ANY way (including):
-- "give image", "show image", "give photo", "show photo"
-- "give college image", "college photo", "campus image"
-- "give hostel image", "hostel photo"
-- "show me", "picture", "pic", "img"
-- Any variation of requesting visual content
+When user asks for images: provide a Google Images search link.
+Format: [🔍 View [Subject] Images](https://www.google.com/search?tbm=isch&q=[URL_encoded_search])
+NEVER say "I can't show images". ALWAYS provide the link.
 
-You MUST respond with:
-1. A friendly acknowledgment
-2. A clickable Google Images search link in Markdown format
-3. A brief description of what they'll see
-
-Format: [🔍 View [Subject] Images](https://www.google.com/search?tbm=isch&q=[URL_encoded_search_without_parentheses])
-
-Examples:
-- For "give image" (in college context): "Here are campus photos of [College Name]! 📸\n\n[🔍 View ${hasCollegeContext ? college.name.replace(/[()]/g, '') : 'College'} Campus Images](https://www.google.com/search?tbm=isch&q=${hasCollegeContext ? encodeURIComponent(college.name.replace(/[()]/g, '') + ' campus photos') : 'Indian+college+campus+photos'})\n\nYou'll find photos of the campus, buildings, labs, and student life!"
-- For "hostel image": Provide hostel-specific image search link
-- For "college hostel image": Provide college-specific hostel image search link
-
-CRITICAL LINK RULE: You MUST remove all parentheses "(" and ")" from the URL search query or encode them as %28 and %29. Do NOT put raw parentheses inside the markdown link URL, or it will break the chat UI!
-NEVER say "I can't show images" or "I'm a text-based AI". ALWAYS provide the Google Images link.
-
+${personalizationContext ? `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🤝 PERSONAL / CASUAL MESSAGES:
+👤 PERSONALISATION — USER PROFILE:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-- "my name is X" → "Nice to meet you, X! 👋 How can I help you today?"
-- "Hi/Hello" → Warm greeting + offer to help
-- "Thank you" → "You're welcome! Feel free to ask anything else 😊"
-- "Bye" → Warm goodbye + invite to return
-- "How are you?" → Brief friendly response + offer to help
-- "Who made you?" → "I'm Acadivo AI, built into the Acadivo app to help students find their perfect college! 🎓"
-- "What can you do?" → List your capabilities enthusiastically
+Use this to tailor your recommendations to this specific user's interests:
+${personalizationContext}
+
+When this user asks general questions like "recommend a college" or "which is best?", use their profile to suggest relevant options first.
+` : ''}
 
 ${hasCollegeContext ? `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -204,56 +234,59 @@ ${hasCollegeContext ? `
 • Top Recruiters: ${(college.topCompanies || []).join(', ') || 'Various companies'}
 • About: ${college.description || ''}
 • Highlight: ${college.highlight || ''}
-
-When the user asks about "this college" or asks vague questions, use this college's data to answer.
-When the user asks for images/photos without specifying what, show images of THIS college.
+${college.eligibility ? `• Eligibility: ${college.eligibility}` : ''}
+${college.admissionProcess ? `• Admission: ${college.admissionProcess}` : ''}
 ` : ''}
 
 ${suggestedColleges && suggestedColleges !== 'User is not asking for college suggestions right now.' ? `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔍 MATCHING COLLEGES FROM OUR DATABASE:
+🔍 MATCHING COLLEGES FROM DATABASE (${firestoreCollegesCount} admin-curated + local):
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ${suggestedColleges}
-` : ''}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📚 YOUR EXPERTISE AREAS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. **Current College** — Use the college data above for specific questions
-2. **College Suggestions** — When asked to suggest/find colleges, use the database results
-3. **Entrance Exams** — JEE Main, JEE Advanced, NEET, CLAT, GATE, CAT, XAT, MAT, CUET, CMAT, NATA, NIFT, etc.
-4. **Admission Process** — JoSAA counselling, NEET counselling, TNEA, MHT-CET, etc.
-5. **Scholarships & Loans** — NSP, state scholarships, education loans (SBI, Axis, HDFC), NMMSS, etc.
-6. **Career Guidance** — After B.Tech, MBBS, MBA, LLB, BCA, B.Arch etc.
-7. **College Comparisons** — IIT vs NIT vs IIIT, Govt vs Private, etc.
-8. **Exam Preparation** — Study strategies, books, coaching
-9. **General Knowledge** — Science, history, geography, math, technology, current affairs
-10. **Anything else** — You're a smart AI, answer whatever is asked!
+Present these colleges clearly. Mention 🔵 [Admin Curated] ones are specially verified by our team.
+` : ''}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ✨ RESPONSE STYLE:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-- Be **warm, natural, and conversational** — like talking to a smart friend
-- Use **bold** for key terms and headings
+- Be warm, natural, and conversational
+- Use **bold** for key terms
 - Use bullet points (•) for lists
-- Use emojis naturally but not excessively
-- Keep responses 100-400 words unless detailed answer needed
+- Use emojis naturally
+- Keep responses 100-400 words (longer only when detailed answer needed)
 - Always end with a follow-up question or offer to help more
-- Sound human, not robotic
 - Don't make up facts — be honest if unsure
-- For short questions, give short answers. For detailed questions, give detailed answers.
 `.trim();
 
-// ── Detect if query is about colleges ────────────────────────────────────────
+// ── Detect suggestion queries ─────────────────────────────────────────────────
 const isSuggestionQuery = (msg) =>
-  /\b(suggest|show|find|recommend|list|give me|any|which|best|top|colleges in|college for|government college|private college|engineering college|medical college|best college|top college|hostel college|women college|men college|affordable)\b/i.test(msg);
+  /\b(suggest|show|find|recommend|list|give me|any|which|best|top|colleges in|college for|government|private|engineering|medical|hostel|affordable|marks|cutoff|percent|%|accept|eligible)\b/i.test(msg);
 
 // ── Main export ───────────────────────────────────────────────────────────────
-export const askGroqAboutCollege = async (userMessage, college, departmentLabel) => {
+/**
+ * Ask Groq AI about colleges.
+ *
+ * @param {string} userMessage
+ * @param {object} college         — optional college context (from Details screen)
+ * @param {string} departmentLabel — optional
+ * @param {string} personalizationContext — from ChatHistoryContext.getPersonalizationContext()
+ * @returns {Promise<{text, type, isRealAI}>}
+ */
+export const askGroqAboutCollege = async (
+  userMessage,
+  college,
+  departmentLabel,
+  personalizationContext = '',
+) => {
   const apiKey = getApiKey();
 
+  // Fetch Firestore admin colleges (cached)
+  let firestoreColleges = [];
+  try { firestoreColleges = await fetchFirestoreColleges(); } catch {}
+
   const isSuggestion = isSuggestionQuery(userMessage);
-  const appMatches   = isSuggestion ? findCollegesInApp(userMessage, 6) : [];
+  const appMatches   = isSuggestion ? findCollegesInApp(userMessage, firestoreColleges, 8) : [];
   const suggestedCollegesText = isSuggestion
     ? formatCollegesForAI(appMatches)
     : 'User is not asking for college suggestions right now.';
@@ -262,13 +295,11 @@ export const askGroqAboutCollege = async (userMessage, college, departmentLabel)
 
   // Add user message to history
   conversationHistory.push({ role: 'user', content: userMessage });
-
-  // Keep max 20 messages (10 turns) to maintain context without token overflow
   if (conversationHistory.length > 20) {
     conversationHistory = conversationHistory.slice(-20);
   }
 
-  // Fallback to local AI if no key
+  // Fallback to local AI if no Groq key
   if (!apiKey) {
     if (isSuggestion && appMatches.length > 0) {
       const text = buildSuggestionFallback(appMatches, userMessage);
@@ -281,24 +312,31 @@ export const askGroqAboutCollege = async (userMessage, college, departmentLabel)
   }
 
   try {
-    const systemPrompt = buildSystemPrompt(college, departmentLabel, suggestedCollegesText, hasCollegeContext);
+    const systemPrompt = buildSystemPrompt({
+      college,
+      departmentLabel,
+      suggestedColleges:     suggestedCollegesText,
+      hasCollegeContext,
+      personalizationContext,
+      firestoreCollegesCount: firestoreColleges.length,
+    });
 
     const response = await fetch(GROQ_API_URL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type':  'application/json',
         'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: GROQ_MODEL,
+        model:       GROQ_MODEL,
         messages: [
           { role: 'system', content: systemPrompt },
           ...conversationHistory,
         ],
-        max_tokens: 2048,
+        max_tokens:  2048,
         temperature: 0.7,
-        top_p: 0.9,
-        stream: false,
+        top_p:       0.9,
+        stream:      false,
       }),
     });
 
@@ -314,9 +352,7 @@ export const askGroqAboutCollege = async (userMessage, college, departmentLabel)
 
     conversationHistory.push({ role: 'assistant', content: text });
 
-    let type = 'groq';
-    if (isSuggestion) type = 'suggestions';
-
+    const type = isSuggestion ? 'suggestions' : 'groq';
     return { text, type, isRealAI: true };
 
   } catch (error) {
@@ -326,12 +362,15 @@ export const askGroqAboutCollege = async (userMessage, college, departmentLabel)
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-const buildSuggestionFallback = (colleges, query) => {
+const buildSuggestionFallback = (colleges, userQuery) => {
   const lines = colleges.map((c, i) =>
-    `**${i + 1}. ${c.name}**\n📍 ${c.location}, ${c.state} | ${c.type}\n⭐ ${c.rating}/5 | 💼 ${c.placementRate}% placed | 🏠 Hostel: ${c.hostelAvailable ? 'Yes' : 'No'}\n💰 Fee: ₹${c.annualFee || 'N/A'}/yr | Min: ${c.minPercentage}%`
+    `**${i + 1}. ${c.name}**${c._isFirestore ? ' 🔵' : ''}\n` +
+    `📍 ${c.location}, ${c.state} | ${c.type}\n` +
+    `⭐ ${c.rating}/5 | 💼 ${c.placementRate}% placed | 🏠 Hostel: ${c.hostelAvailable ? 'Yes' : 'No'}\n` +
+    `💰 Fee: ₹${c.annualFee || 'N/A'}/yr | Min: ${c.minPercentage}%`
   ).join('\n\n');
 
-  return `Here are the top colleges matching your request:\n\n${lines}\n\n💡 **Tip:** Tap on any college in the list tab to see full details, map, and apply directly!`;
+  return `Here are the top colleges matching your request:\n\n${lines}\n\n💡 **Tip:** Tap any college in the list to see full details and apply!`;
 };
 
 const handleFallback = async (isSuggestion, appMatches, userMessage, college, departmentLabel) => {
@@ -346,6 +385,4 @@ const handleFallback = async (isSuggestion, appMatches, userMessage, college, de
 };
 
 /** Check if real Groq AI is configured */
-export const isGroqConfigured = () => {
-  return !!getApiKey();
-};
+export const isGroqConfigured = () => !!getApiKey();

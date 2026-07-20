@@ -35,12 +35,14 @@ const AllCollegesScreen    = lazy(() => import('./src/screens/AllCollegesScreen'
 const CollegeChatScreen    = lazy(() => import('./src/screens/CollegeChatScreen'));
 const ForgotPasswordScreen = lazy(() => import('./src/screens/ForgotPasswordScreen'));
 const AdminPanelScreen     = lazy(() => import('./src/screens/AdminPanelScreen'));
+const AdminCollegesScreen  = lazy(() => import('./src/screens/AdminCollegesScreen'));
 const SavedCollegesScreen  = lazy(() => import('./src/screens/SavedCollegesScreen'));
 const ReportScreen         = lazy(() => import('./src/screens/ReportScreen'));
 const AIScreen             = lazy(() => import('./src/screens/AIScreen'));
 import { AuthProvider, useAuth } from './src/context/AuthContext';
 import { SavedCollegesProvider, useSavedColleges } from './src/context/SavedCollegesContext';
 import { SearchHistoryProvider } from './src/context/SearchHistoryContext';
+import { ChatHistoryProvider } from './src/context/ChatHistoryContext';
 
 const Stack = createNativeStackNavigator();
 const SIDEBAR_W = 240;
@@ -364,8 +366,11 @@ function MainTabs() {
     { name: 'Search',  label: 'Search Colleges', icon: 'search-outline',           iconFocused: 'search',           screen: SearchScreen },
     { name: 'Compare', label: 'Compare',         icon: 'git-compare-outline',      iconFocused: 'git-compare',      screen: CompareScreen },
     { name: 'Saved',   label: 'Saved Colleges',  icon: 'bookmark-outline',         iconFocused: 'bookmark',         screen: SavedCollegesScreen, badge: savedColleges.length },
-    { name: 'AI',      label: 'AI Dashboard',    icon: 'sparkles-outline',         iconFocused: 'sparkles',         screen: AIScreen },
-    ...(isAdmin ? [{ name: 'Admin', label: 'Admin Panel', icon: 'shield-checkmark-outline', iconFocused: 'shield-checkmark', screen: AdminPanelScreen }] : []),
+    { name: 'AI',      label: 'AI Advisor',      icon: 'sparkles-outline',         iconFocused: 'sparkles',         screen: AIScreen },
+    ...(isAdmin ? [
+      { name: 'Admin',          label: 'Admin Panel',      icon: 'shield-checkmark-outline', iconFocused: 'shield-checkmark', screen: AdminPanelScreen },
+      { name: 'AdminColleges',  label: 'Manage Colleges',  icon: 'school-outline',           iconFocused: 'school',           screen: AdminCollegesScreen },
+    ] : []),
   ];
 
   // Navigate: if name is a tab → switch tab (clear stack).
@@ -750,7 +755,9 @@ export default function App() {
       <SavedCollegesProvider>
         <AuthProvider>
           <SearchHistoryProvider>
-            <AppNavigator />
+            <ChatHistoryProvider>
+              <AppNavigator />
+            </ChatHistoryProvider>
           </SearchHistoryProvider>
         </AuthProvider>
       </SavedCollegesProvider>

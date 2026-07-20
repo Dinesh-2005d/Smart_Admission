@@ -1,15 +1,17 @@
 /**
- * AIScreen.js
- * AI-powered Dashboard: Web Crawling + NLP Sentiment Analysis + Search History
+ * AIScreen.js — Acadivo AI Advisor v2.0
  *
- * Features:
- *  • Live web crawl via DuckDuckGo & Wikipedia
- *  • AFINN-based sentiment analysis with score gauge
- *  • Keyword chips (positive/negative)
- *  • Persistent search history stored in Firestore
- *  • Searchable, deletable history list
- *  • Sentiment trend sparkline (last 10 searches)
- *  • Side-by-side comparison mode (select 2 searches)
+ * A 4-tab AI-powered guidance platform:
+ *   💬 Chat    — Full AI conversation with session management
+ *   📜 History — Past chat sessions (Firestore synced)
+ *   📊 Analyse — Web crawl + NLP sentiment analysis
+ *   📈 Trends  — Sentiment trend chart + stats
+ *
+ * Powered by:
+ *   • Groq API (Llama 3.3 70B) + Firestore admin colleges
+ *   • Personalization from search + chat history
+ *   • AFINN sentiment analysis (offline)
+ *   • DuckDuckGo + Wikipedia web crawling
  */
 
 import React, {
@@ -18,90 +20,133 @@ import React, {
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
   TextInput, ActivityIndicator, Animated, Platform,
-  Dimensions, StatusBar, Alert, Linking,
+  Dimensions, StatusBar, Alert, Linking, KeyboardAvoidingView,
+  Keyboard,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Speech from 'expo-speech';
+
+import { askGroqAboutCollege, resetConversation, seedConversation, isGroqConfigured } from '../utils/groqAI';
 import { crawlWeb }           from '../utils/webCrawler';
 import { analyzeText, getSentimentColor, getSentimentEmoji } from '../utils/sentimentAnalyzer';
+import { useChatHistory }     from '../context/ChatHistoryContext';
 import { useSearchHistory }   from '../context/SearchHistoryContext';
 import { useAuth }            from '../context/AuthContext';
 
 const { width: SCREEN_W } = Dimensions.get('window');
 
-// ── Animated pulse loader ────────────────────────────────────────────────────
-function PulseLoader() {
-  const anim = useRef(new Animated.Value(0.4)).current;
+// ══════════════════════════════════════════════════════════════════════════════
+// SHARED HELPERS
+// ══════════════════════════════════════════════════════════════════════════════
+
+const fmt = (d) => {
+  if (!d) return '';
+  const date = d?.toDate ? d.toDate() : new Date(d);
+  return date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }) +
+    ' ' + date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+};
+
+const now = () => new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+
+// ── Quick chips for chat ──────────────────────────────────────────────────────
+const QUICK_CHIPS = [
+  { icon: 'school-outline',        label: 'Best engineering colleges in Chennai' },
+  { icon: 'medkit-outline',        label: 'Government medical colleges Tamil Nadu' },
+  { icon: 'cash-outline',          label: 'Low fee colleges with good placement' },
+  { icon: 'home-outline',          label: 'Colleges with hostel facilities' },
+  { icon: 'trophy-outline',        label: 'IIT vs NIT — which is better?' },
+  { icon: 'document-text-outline', label: 'How to apply for JEE Advanced?' },
+  { icon: 'ribbon-outline',        label: 'Colleges with NAAC A+ grade' },
+  { icon: 'card-outline',          label: 'Education loan options in India' },
+  { icon: 'flash-outline',         label: 'How to prepare for NEET 2025?' },
+  { icon: 'business-outline',      label: 'MBA colleges with best placements' },
+];
+
+// ── Typing dots ───────────────────────────────────────────────────────────────
+function TypingDots() {
+  const anims = [
+    useRef(new Animated.Value(0)).current,
+    useRef(new Animated.Value(0)).current,
+    useRef(new Animated.Value(0)).current,
+  ];
+  const nd = Platform.OS !== 'web';
   useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(anim, { toValue: 1,   duration: 700, useNativeDriver: true }),
-        Animated.timing(anim, { toValue: 0.4, duration: 700, useNativeDriver: true }),
-      ])
-    ).start();
+    const loops = anims.map((a, i) =>
+      Animated.loop(Animated.sequence([
+        Animated.delay(i * 150),
+        Animated.timing(a, { toValue: 1, duration: 350, useNativeDriver: nd }),
+        Animated.timing(a, { toValue: 0, duration: 350, useNativeDriver: nd }),
+        Animated.delay(450 - i * 150),
+      ]))
+    );
+    loops.forEach(l => l.start());
+    return () => loops.forEach(l => l.stop());
   }, []);
   return (
-    <Animated.View style={[styles.pulseBar, { opacity: anim }]} />
-  );
-}
-
-// ── Sentiment Gauge ──────────────────────────────────────────────────────────
-function SentimentGauge({ score }) {
-  // score is -5..+5; map to 0..100
-  const pct = ((score + 5) / 10) * 100;
-  const clampedPct = Math.max(0, Math.min(100, pct));
-
-  const color = score >= 2
-    ? '#10b981'
-    : score >= 0
-    ? '#34d399'
-    : score >= -2
-    ? '#f59e0b'
-    : '#ef4444';
-
-  return (
-    <View style={styles.gaugeContainer}>
-      <View style={styles.gaugeTrack}>
-        <View style={[styles.gaugeFill, { width: `${clampedPct}%`, backgroundColor: color }]} />
-        {/* Center line */}
-        <View style={styles.gaugeMidLine} />
-      </View>
-      <View style={styles.gaugeLabels}>
-        <Text style={styles.gaugeLabelNeg}>−5</Text>
-        <Text style={styles.gaugeLabelNeu}>0</Text>
-        <Text style={styles.gaugeLabelPos}>+5</Text>
-      </View>
+    <View style={{ flexDirection: 'row', alignItems: 'center', height: 22, paddingHorizontal: 4 }}>
+      {anims.map((a, i) => (
+        <Animated.View key={i} style={{
+          width: 7, height: 7, borderRadius: 4,
+          backgroundColor: '#7c6fff',
+          marginHorizontal: 3,
+          opacity: a.interpolate({ inputRange: [0, 1], outputRange: [0.3, 1] }),
+          transform: [{ translateY: a.interpolate({ inputRange: [0, 1], outputRange: [0, -5] }) }],
+        }} />
+      ))}
     </View>
   );
 }
 
-// ── Sparkline Trend Chart ─────────────────────────────────────────────────────
-function SparklineTrend({ data }) {
-  if (!data || data.length < 2) {
-    return (
-      <View style={styles.sparklineEmpty}>
-        <Text style={styles.sparklineEmptyText}>Complete at least 2 searches to see trends</Text>
-      </View>
-    );
-  }
+// ── Rich text renderer ────────────────────────────────────────────────────────
+function RichText({ text, isUser }) {
+  const base = isUser ? '#ffffff' : '#eeeef8';
+  const bold = isUser ? '#ffffff' : '#7c6fff';
 
-  const MAX_BARS  = 10;
-  const trimmed   = data.slice(-MAX_BARS);
-  const maxAbs    = 5; // gauge is −5..+5
-  const BAR_H     = 60;
+  const parseRichText = (str) => {
+    const parts = str.split(/(\[.*?\]\(.*?\))|(\*\*.*?\*\*)/);
+    return parts.map((part, i) => {
+      if (!part) return null;
+      if (part.startsWith('[') && part.includes('](') && part.endsWith(')')) {
+        const textMatch = part.match(/\[(.*?)\]/);
+        const urlMatch  = part.match(/\((.*?)\)/);
+        if (textMatch && urlMatch) {
+          return (
+            <Text key={i}
+              style={{ color: '#4da6ff', textDecorationLine: 'underline', fontWeight: '600' }}
+              onPress={() => Linking.openURL(urlMatch[1]).catch(() => {})}
+            >{textMatch[1]}</Text>
+          );
+        }
+      }
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <Text key={i} style={{ fontWeight: '800', color: bold }}>{part.slice(2, -2)}</Text>;
+      }
+      return <Text key={i}>{part}</Text>;
+    });
+  };
 
+  const lines = (text || '').split('\n');
   return (
-    <View style={styles.sparklineContainer}>
-      {trimmed.map((entry, i) => {
-        const norm = (entry.sentimentNormalized || 0);
-        const pct  = (norm + maxAbs) / (2 * maxAbs); // 0..1
-        const barH = Math.max(4, pct * BAR_H);
-        const col  = getSentimentColor(entry.sentimentLabel || 'Neutral');
+    <View>
+      {lines.map((line, i) => {
+        const trimmed   = line.trim();
+        const isBullet  = /^[•\-\*]\s/.test(trimmed);
+        const isNum     = /^\d+\.\s/.test(trimmed);
+        const isDivider = /^={3,}|^─{3,}/.test(trimmed);
+        const isEmpty   = trimmed === '';
+        if (isDivider) return <View key={i} style={{ height: 1, backgroundColor: '#26263a', marginVertical: 5 }} />;
+        if (isEmpty && i > 0) return <View key={i} style={{ height: 5 }} />;
+        const content = isBullet ? trimmed.replace(/^[•\-\*]\s/, '') : isNum ? trimmed.replace(/^\d+\.\s/, '') : line;
         return (
-          <View key={entry.id || i} style={styles.sparklineBar}>
-            <View style={[styles.sparklineBarFill, { height: barH, backgroundColor: col }]} />
-            <Text style={styles.sparklineBarLabel} numberOfLines={1}>
-              {(entry.query || '').slice(0, 5)}…
+          <View key={i} style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: (isBullet || isNum) ? 2 : 0, paddingLeft: (isBullet || isNum) ? 4 : 0 }}>
+            {(isBullet || isNum) && (
+              <Text style={{ color: '#7c6fff', fontWeight: '800', marginRight: 4, fontSize: 12 }}>
+                {isBullet ? '•' : trimmed.match(/^\d+/)[0] + '.'}
+              </Text>
+            )}
+            <Text style={{ flex: 1, color: base, fontSize: 13, lineHeight: 20 }}>
+              {parseRichText(content)}
             </Text>
           </View>
         );
@@ -110,127 +155,139 @@ function SparklineTrend({ data }) {
   );
 }
 
-// ── Source Card ──────────────────────────────────────────────────────────────
-function SourceCard({ item, index }) {
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+// ── Message bubble ────────────────────────────────────────────────────────────
+function MessageBubble({ msg }) {
+  const isUser = msg.role === 'user';
+  const slideX = useRef(new Animated.Value(isUser ? 24 : -24)).current;
+  const fade   = useRef(new Animated.Value(0)).current;
+  const nd = Platform.OS !== 'web';
+
   useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 400,
-      delay: index * 80,
-      useNativeDriver: true,
-    }).start();
+    Animated.parallel([
+      Animated.timing(fade,  { toValue: 1, duration: 280, useNativeDriver: nd }),
+      Animated.spring(slideX, { toValue: 0, tension: 90, friction: 12, useNativeDriver: nd }),
+    ]).start();
   }, []);
 
-  const handleLink = () => {
-    if (item.url) {
-      Linking.openURL(item.url).catch(() => {});
-    }
+  const handleSpeak = async () => {
+    const isSpeaking = await Speech.isSpeakingAsync().catch(() => false);
+    if (isSpeaking) { Speech.stop(); return; }
+    const cleanText = (msg.text || '').replace(/[*_#]/g, '');
+    Speech.speak(cleanText, { language: 'en-IN', rate: 0.95, pitch: 1.1 });
   };
 
-  return (
-    <Animated.View style={[styles.sourceCard, { opacity: fadeAnim }]}>
-      <View style={styles.sourceCardHeader}>
-        <View style={styles.sourceIconWrap}>
-          <Ionicons name="globe-outline" size={14} color="#60a5fa" />
-        </View>
-        <Text style={styles.sourceCardSource}>{item.source}</Text>
-        {item.url ? (
-          <TouchableOpacity onPress={handleLink} style={styles.sourceLinkBtn}>
-            <Ionicons name="open-outline" size={13} color="#60a5fa" />
+  const typeColor = {
+    suggestions: '#20d068', hostel: '#38bdf8', fees: '#f59e0b',
+    groq: '#7c6fff', welcome: '#7c6fff',
+  }[msg.type] || '#7c6fff';
+
+  const bubble = (
+    <>
+      {!isUser && (
+        <View style={cs.aiMeta}>
+          <LinearGradient colors={[typeColor + '50', typeColor + '28']} style={cs.aiAvatar}>
+            <Text style={{ fontSize: 12 }}>🤖</Text>
+          </LinearGradient>
+          <Text style={[cs.aiName, { color: typeColor }]}>
+            {msg.isRealAI ? 'Acadivo AI' : 'College AI'}
+          </Text>
+          {msg.isRealAI && (
+            <View style={cs.livePill}>
+              <View style={cs.liveDot} />
+              <Text style={cs.liveLabel}>LIVE AI</Text>
+            </View>
+          )}
+          <TouchableOpacity onPress={handleSpeak} style={{ marginLeft: 6 }}>
+            <Ionicons name="volume-medium" size={14} color={typeColor} />
           </TouchableOpacity>
-        ) : null}
-      </View>
-      <Text style={styles.sourceCardTitle} numberOfLines={2}>{item.title}</Text>
-      <Text style={styles.sourceCardSnippet} numberOfLines={4}>{item.snippet}</Text>
-    </Animated.View>
-  );
-}
-
-// ── History Row ──────────────────────────────────────────────────────────────
-function HistoryRow({ item, onPress, onDelete, selected, onSelect, compareMode }) {
-  const date = item.timestamp?.toDate?.() || new Date();
-  const dateStr = date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: '2-digit' });
-  const timeStr = date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-  const color   = getSentimentColor(item.sentimentLabel || 'Neutral');
-
-  return (
-    <TouchableOpacity
-      style={[
-        styles.historyRow,
-        selected && styles.historyRowSelected,
-      ]}
-      onPress={() => compareMode ? onSelect(item) : onPress(item)}
-      activeOpacity={0.85}
-    >
-      {compareMode && (
-        <View style={[styles.compareCheckbox, selected && { backgroundColor: '#2563eb', borderColor: '#2563eb' }]}>
-          {selected && <Ionicons name="checkmark" size={12} color="#fff" />}
         </View>
       )}
-      <View style={styles.historyRowLeft}>
-        <Text style={styles.historyRowEmoji}>{getSentimentEmoji(item.sentimentLabel)}</Text>
-      </View>
-      <View style={styles.historyRowMid}>
-        <Text style={styles.historyRowQuery} numberOfLines={1}>{item.query}</Text>
-        <Text style={styles.historyRowDate}>{dateStr} · {timeStr}</Text>
-      </View>
-      <View style={styles.historyRowRight}>
-        <View style={[styles.historyRowBadge, { borderColor: color, backgroundColor: color + '20' }]}>
-          <Text style={[styles.historyRowBadgeText, { color }]}>
-            {item.sentimentLabel}
-          </Text>
+      {isUser ? (
+        <LinearGradient colors={['#8b83ff', '#6c63ff']} style={[cs.bubble, cs.userBubble]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
+          <Text style={{ color: '#fff', fontSize: 13, lineHeight: 20 }}>{msg.text}</Text>
+        </LinearGradient>
+      ) : (
+        <View style={[cs.bubble, cs.aiBubble, { borderColor: typeColor + '35' }]}>
+          <RichText text={msg.text} isUser={false} />
         </View>
-        <Text style={[styles.historyRowScore, { color }]}>
-          {item.sentimentNormalized >= 0 ? '+' : ''}{(item.sentimentNormalized || 0).toFixed(1)}
-        </Text>
+      )}
+      <Text style={[cs.timestamp, isUser && { textAlign: 'right' }]}>{msg.time}</Text>
+    </>
+  );
+
+  if (Platform.OS === 'web') {
+    return (
+      <View style={{ width: '100%', alignItems: isUser ? 'flex-end' : 'flex-start', marginBottom: 6 }}>
+        <Animated.View style={{ opacity: fade, transform: [{ translateX: slideX }], maxWidth: isUser ? 320 : 480 }}>
+          {bubble}
+        </Animated.View>
       </View>
-      <TouchableOpacity
-        style={styles.historyDeleteBtn}
-        onPress={() => onDelete(item.id)}
-        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-      >
-        <Ionicons name="trash-outline" size={15} color="#64748b" />
-      </TouchableOpacity>
-    </TouchableOpacity>
+    );
+  }
+  return (
+    <View style={{ flexDirection: 'row', justifyContent: isUser ? 'flex-end' : 'flex-start', marginBottom: 6, width: '100%' }}>
+      <Animated.View style={{ opacity: fade, transform: [{ translateX: slideX }], maxWidth: isUser ? '72%' : '88%', flex: isUser ? 0 : 1 }}>
+        {bubble}
+      </Animated.View>
+    </View>
   );
 }
 
-// ── Compare Panel ────────────────────────────────────────────────────────────
-function ComparePanel({ items }) {
-  if (items.length !== 2) return null;
-  const [a, b] = items;
-  const colorA = getSentimentColor(a.sentimentLabel);
-  const colorB = getSentimentColor(b.sentimentLabel);
+// ── Pulse loader (sentiment tab) ──────────────────────────────────────────────
+function PulseLoader() {
+  const anim = useRef(new Animated.Value(0.4)).current;
+  useEffect(() => {
+    Animated.loop(Animated.sequence([
+      Animated.timing(anim, { toValue: 1,   duration: 700, useNativeDriver: true }),
+      Animated.timing(anim, { toValue: 0.4, duration: 700, useNativeDriver: true }),
+    ])).start();
+  }, []);
+  return <Animated.View style={[as.pulseBar, { opacity: anim }]} />;
+}
+
+// ── Sentiment gauge ───────────────────────────────────────────────────────────
+function SentimentGauge({ score }) {
+  const pct   = Math.max(0, Math.min(100, ((score + 5) / 10) * 100));
+  const color = score >= 2 ? '#10b981' : score >= 0 ? '#34d399' : score >= -2 ? '#f59e0b' : '#ef4444';
   return (
-    <View style={styles.comparePanel}>
-      <Text style={styles.comparePanelTitle}>📊 Comparison</Text>
-      <View style={styles.compareCols}>
-        {[a, b].map((item, i) => {
-          const color = i === 0 ? colorA : colorB;
-          return (
-            <View key={item.id} style={[styles.compareCol, { borderColor: color + '60' }]}>
-              <Text style={styles.compareColQuery} numberOfLines={2}>{item.query}</Text>
-              <Text style={[styles.compareColScore, { color }]}>
-                {getSentimentEmoji(item.sentimentLabel)} {item.sentimentLabel}
-              </Text>
-              <Text style={[styles.compareColNum, { color }]}>
-                Score: {item.sentimentNormalized >= 0 ? '+' : ''}{(item.sentimentNormalized || 0).toFixed(1)}
-              </Text>
-              {item.positiveWords?.length > 0 && (
-                <Text style={styles.compareColWords}>
-                  ✅ {item.positiveWords.slice(0, 3).join(', ')}
-                </Text>
-              )}
-              {item.negativeWords?.length > 0 && (
-                <Text style={styles.compareColWordsNeg}>
-                  ❌ {item.negativeWords.slice(0, 3).join(', ')}
-                </Text>
-              )}
-            </View>
-          );
-        })}
+    <View style={as.gaugeContainer}>
+      <View style={as.gaugeTrack}>
+        <View style={[as.gaugeFill, { width: `${pct}%`, backgroundColor: color }]} />
+        <View style={as.gaugeMidLine} />
       </View>
+      <View style={as.gaugeLabels}>
+        <Text style={[as.gaugeLabel, { color: '#ef4444' }]}>−5</Text>
+        <Text style={[as.gaugeLabel, { color: '#94a3b8' }]}>0</Text>
+        <Text style={[as.gaugeLabel, { color: '#10b981' }]}>+5</Text>
+      </View>
+    </View>
+  );
+}
+
+// ── Sparkline trend chart ─────────────────────────────────────────────────────
+function SparklineTrend({ data }) {
+  if (!data || data.length < 2) {
+    return (
+      <View style={as.sparklineEmpty}>
+        <Text style={as.sparklineEmptyText}>Complete at least 2 searches to see trends</Text>
+      </View>
+    );
+  }
+  const trimmed = data.slice(-10);
+  return (
+    <View style={as.sparklineContainer}>
+      {trimmed.map((entry, i) => {
+        const norm = entry.sentimentNormalized || 0;
+        const pct  = (norm + 5) / 10;
+        const barH = Math.max(4, pct * 60);
+        const col  = getSentimentColor(entry.sentimentLabel || 'Neutral');
+        return (
+          <View key={entry.id || i} style={as.sparklineBar}>
+            <View style={[as.sparklineBarFill, { height: barH, backgroundColor: col }]} />
+            <Text style={as.sparklineBarLabel} numberOfLines={1}>{(entry.query || '').slice(0, 5)}…</Text>
+          </View>
+        );
+      })}
     </View>
   );
 }
@@ -238,529 +295,541 @@ function ComparePanel({ items }) {
 // ════════════════════════════════════════════════════════════════════════════
 // MAIN SCREEN
 // ════════════════════════════════════════════════════════════════════════════
-
 export default function AIScreen() {
-  const { user }      = useAuth();
-  const {
-    history, loading: histLoading, addSearch, loadHistory, deleteSearch, clearHistory,
-  } = useSearchHistory();
+  const { user }         = useAuth();
+  const chatCtx          = useChatHistory();
+  const searchHistCtx    = useSearchHistory();
+  const groqActive       = isGroqConfigured();
 
-  const [query,       setQuery]       = useState('');
+  // ── Tab state ─────────────────────────────────────────────────────────────
+  const [activeTab, setActiveTab] = useState('chat');
+
+  // ── Chat state ────────────────────────────────────────────────────────────
+  const [inputText,   setInputText]   = useState('');
+  const [thinking,    setThinking]    = useState(false);
+  const [chatError,   setChatError]   = useState(null);
+  const scrollRef = useRef(null);
+  const inputRef  = useRef(null);
+
+  // ── Sentiment / Analyse state ─────────────────────────────────────────────
+  const [sQuery,      setSQuery]      = useState('');
   const [crawling,    setCrawling]    = useState(false);
   const [crawlError,  setCrawlError]  = useState(null);
-  const [crawlResult, setCrawlResult] = useState(null);   // { results, combinedText }
-  const [sentiment,   setSentiment]   = useState(null);   // analyzeText output
-  const [activeTab,   setActiveTab]   = useState('search'); // 'search' | 'history' | 'trends'
-  const [histFilter,  setHistFilter]  = useState('');
-  const [compareMode, setCompareMode] = useState(false);
-  const [compareItems,setCompareItems]= useState([]);
-  const [selectedHist,setSelectedHist]= useState(null);   // history item shown in result view
+  const [crawlResult, setCrawlResult] = useState(null);
+  const [sentiment,   setSentiment]   = useState(null);
+  const [selectedHist,setSelectedHist]= useState(null);
+  const sScrollRef = useRef(null);
 
-  const inputRef  = useRef(null);
-  const scrollRef = useRef(null);
-
-  // Load history on mount & when user changes
+  // ── Load history on mount ──────────────────────────────────────────────────
   useEffect(() => {
-    if (user?.uid) loadHistory();
+    if (user?.uid) {
+      chatCtx.loadSessions();
+      searchHistCtx.loadHistory?.();
+    }
   }, [user?.uid]);
 
-  // ── Handle Search ─────────────────────────────────────────────────────────
-  const handleSearch = useCallback(async () => {
-    const q = query.trim();
-    if (!q) return;
-    setCrawling(true);
-    setCrawlError(null);
-    setCrawlResult(null);
-    setSentiment(null);
-    setSelectedHist(null);
+  // Scroll chat to bottom when messages change
+  useEffect(() => {
+    setTimeout(() => scrollRef.current?.scrollToEnd?.({ animated: true }), 100);
+  }, [chatCtx.messages.length, thinking]);
+
+  // ── Send a message ────────────────────────────────────────────────────────
+  const handleSend = useCallback(async (overrideText) => {
+    const text = (overrideText || inputText).trim();
+    if (!text || thinking) return;
+    setInputText('');
+    Keyboard.dismiss();
+    setChatError(null);
+    setThinking(true);
+
+    // Ensure we have an active session
+    let sessionId = chatCtx.activeSessionId;
+    if (!sessionId) {
+      sessionId = await chatCtx.createSession(text);
+      if (!sessionId) { setThinking(false); return; }
+      resetConversation();
+    }
+
+    // Optimistically add user message to UI
+    const userMsg = { id: Date.now() + 'u', role: 'user', text, time: now(), type: 'user' };
+    await chatCtx.addMessage(sessionId, userMsg);
 
     try {
-      // Step 1: Crawl
-      const crawl = await crawlWeb(q);
+      // Build personalization context
+      const personalization = await chatCtx.getPersonalizationContext(
+        searchHistCtx.history || []
+      );
 
-      // Step 2: Analyse sentiment
+      const response = await askGroqAboutCollege(text, null, null, personalization);
+
+      const aiMsg = {
+        id:       Date.now() + 'a',
+        role:     'assistant',
+        text:     response.text,
+        time:     now(),
+        type:     response.type || 'groq',
+        isRealAI: response.isRealAI,
+      };
+      await chatCtx.addMessage(sessionId, aiMsg);
+    } catch (e) {
+      setChatError('AI response failed. Please check your connection and try again.');
+    } finally {
+      setThinking(false);
+    }
+  }, [inputText, thinking, chatCtx, searchHistCtx.history]);
+
+  // ── New chat session ──────────────────────────────────────────────────────
+  const handleNewChat = useCallback(async () => {
+    chatCtx.clearActive();
+    resetConversation();
+    setInputText('');
+    setChatError(null);
+  }, [chatCtx]);
+
+  // ── Resume a session ──────────────────────────────────────────────────────
+  const handleResumeSession = useCallback(async (session) => {
+    await chatCtx.loadSession(session.id);
+    resetConversation();
+    seedConversation(session.messages || []);
+    setActiveTab('chat');
+  }, [chatCtx]);
+
+  // ── Delete session ─────────────────────────────────────────────────────────
+  const handleDeleteSession = useCallback((id) => {
+    if (Platform.OS === 'web') {
+      if (window.confirm('Delete this conversation?')) chatCtx.deleteSession(id);
+    } else {
+      Alert.alert('Delete Chat', 'Delete this conversation?', [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Delete', style: 'destructive', onPress: () => chatCtx.deleteSession(id) },
+      ]);
+    }
+  }, [chatCtx]);
+
+  // ── Sentiment search ───────────────────────────────────────────────────────
+  const handleSentimentSearch = useCallback(async () => {
+    const q = sQuery.trim();
+    if (!q) return;
+    setCrawling(true); setCrawlError(null); setCrawlResult(null); setSentiment(null); setSelectedHist(null);
+    try {
+      const crawl      = await crawlWeb(q);
       const sentResult = analyzeText(crawl.combinedText || q);
-
       setCrawlResult(crawl);
       setSentiment(sentResult);
-
-      // Step 3: Save to Firestore
-      await addSearch(q, crawl.results, sentResult);
-
-      // Scroll to results
-      scrollRef.current?.scrollTo({ y: 0, animated: true });
+      await searchHistCtx.addSearch?.(q, crawl.results, sentResult);
+      sScrollRef.current?.scrollTo?.({ y: 0, animated: true });
     } catch (e) {
-      setCrawlError(e.message || 'Search failed. Check your internet connection.');
+      setCrawlError(e.message || 'Search failed. Check internet connection.');
     } finally {
       setCrawling(false);
     }
-  }, [query, addSearch]);
-
-  // ── Load a history item into the result view ───────────────────────────────
-  const handleHistoryPress = useCallback((item) => {
-    setSelectedHist(item);
-    setSentiment({
-      label:           item.sentimentLabel,
-      normalizedScore: item.sentimentNormalized,
-      score:           item.sentimentScore,
-      keywords:        item.sentimentKeywords || [],
-      positive:        item.positiveWords || [],
-      negative:        item.negativeWords || [],
-    });
-    setCrawlResult({ results: item.crawlResults || [] });
-    setQuery(item.query);
-    setActiveTab('search');
-    scrollRef.current?.scrollTo({ y: 0, animated: true });
-  }, []);
-
-  // ── Delete with confirmation ──────────────────────────────────────────────
-  const handleDelete = useCallback((id) => {
-    if (Platform.OS === 'web') {
-      if (window.confirm('Delete this search record?')) deleteSearch(id);
-    } else {
-      Alert.alert('Delete', 'Delete this search record?', [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Delete', style: 'destructive', onPress: () => deleteSearch(id) },
-      ]);
-    }
-  }, [deleteSearch]);
-
-  const handleClearAll = useCallback(() => {
-    if (Platform.OS === 'web') {
-      if (window.confirm('Clear ALL search history? This cannot be undone.')) clearHistory();
-    } else {
-      Alert.alert('Clear History', 'Delete all search records? This cannot be undone.', [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Clear All', style: 'destructive', onPress: clearHistory },
-      ]);
-    }
-  }, [clearHistory]);
-
-  // ── Compare mode helpers ───────────────────────────────────────────────────
-  const handleCompareSelect = useCallback((item) => {
-    setCompareItems(prev => {
-      const exists = prev.find(p => p.id === item.id);
-      if (exists) return prev.filter(p => p.id !== item.id);
-      if (prev.length >= 2) return [prev[1], item];
-      return [...prev, item];
-    });
-  }, []);
-
-  // ── Filtered history ──────────────────────────────────────────────────────
-  const filteredHistory = histFilter.trim()
-    ? history.filter(h => h.query?.toLowerCase().includes(histFilter.toLowerCase()))
-    : history;
-
-  // ────────────────────────────────────────────────────────────────────────
-  // RENDER
-  // ────────────────────────────────────────────────────────────────────────
+  }, [sQuery, searchHistCtx]);
 
   const sentimentColor = sentiment ? getSentimentColor(sentiment.label) : '#60a5fa';
 
-  return (
-    <View style={styles.root}>
-      <StatusBar barStyle="light-content" backgroundColor="#0f172a" />
+  // ─────────────────────────────────────────────────────────────────────────
+  // Welcome message (shown when no session active)
+  const WELCOME_MSG = {
+    id: 'welcome', role: 'assistant', text:
+      `👋 Hi${user?.name ? ', **' + user.name + '**' : ''}! I'm **Acadivo AI**, your personal college guidance expert.\n\nI can help you with:\n• Finding colleges that match your marks/cutoff\n• Comparing colleges, fees, placements\n• Admission processes for JEE, NEET, CLAT, CAT\n• Scholarships, hostel facilities, career guidance\n• Any question about Indian higher education\n\nJust ask me anything! 🎓`,
+    time: now(), type: 'welcome', isRealAI: !!groqActive,
+  };
 
-      {/* ── Top gradient header ── */}
-      <LinearGradient colors={['#0f172a', '#1e293b']} style={styles.header}>
-        <View style={styles.headerTop}>
-          <View>
-            <Text style={styles.headerTitle}>🤖 AI Dashboard</Text>
-            <Text style={styles.headerSub}>Web Crawl · Sentiment · History</Text>
+  const displayMessages = chatCtx.activeSessionId
+    ? chatCtx.messages
+    : [WELCOME_MSG];
+
+  // ════════════════════════════════════════════════════════════════════════
+  // RENDER
+  // ════════════════════════════════════════════════════════════════════════
+  return (
+    <View style={cs.root}>
+      <StatusBar barStyle="light-content" backgroundColor="#0d0d14" />
+
+      {/* ── Top header ── */}
+      <LinearGradient colors={['#0d0d14', '#16161f']} style={cs.header}>
+        <View style={cs.headerRow}>
+          <View style={{ flex: 1 }}>
+            <Text style={cs.headerTitle}>🤖 AI Advisor</Text>
+            <Text style={cs.headerSub}>
+              {groqActive ? '✅ Groq AI Active' : '⚡ Local AI'} · Personalized Guidance
+            </Text>
           </View>
           {user && (
-            <View style={styles.userBadge}>
-              <Text style={styles.userBadgeText}>{(user.name || 'U').charAt(0).toUpperCase()}</Text>
+            <View style={cs.userBadge}>
+              <Text style={cs.userBadgeText}>{(user.name || 'U').charAt(0).toUpperCase()}</Text>
             </View>
           )}
         </View>
 
-        {/* ── Tab bar ── */}
-        <View style={styles.tabBar}>
+        {/* Tab bar */}
+        <View style={cs.tabBar}>
           {[
-            { key: 'search',  label: '🔍 Search',  },
-            { key: 'history', label: '📜 History', badge: history.length },
-            { key: 'trends',  label: '📈 Trends',  },
+            { key: 'chat',    label: '💬 Chat',    badge: 0 },
+            { key: 'history', label: '📜 History',  badge: chatCtx.sessions.length },
+            { key: 'analyse', label: '🔍 Analyse',  badge: 0 },
+            { key: 'trends',  label: '📈 Trends',   badge: 0 },
           ].map(tab => (
             <TouchableOpacity
               key={tab.key}
-              style={[styles.tabBtn, activeTab === tab.key && styles.tabBtnActive]}
+              style={[cs.tabBtn, activeTab === tab.key && cs.tabBtnActive]}
               onPress={() => setActiveTab(tab.key)}
             >
-              <Text style={[styles.tabBtnText, activeTab === tab.key && styles.tabBtnTextActive]}>
+              <Text style={[cs.tabBtnText, activeTab === tab.key && cs.tabBtnTextActive]}>
                 {tab.label}
               </Text>
               {tab.badge > 0 && (
-                <View style={styles.tabBadge}>
-                  <Text style={styles.tabBadgeText}>{tab.badge > 99 ? '99+' : tab.badge}</Text>
-                </View>
+                <View style={cs.tabBadge}><Text style={cs.tabBadgeText}>{tab.badge > 99 ? '99+' : tab.badge}</Text></View>
               )}
             </TouchableOpacity>
           ))}
         </View>
       </LinearGradient>
 
-      <ScrollView
-        ref={scrollRef}
-        style={styles.body}
-        contentContainerStyle={styles.bodyContent}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
+      {/* ════════════════════════════════════════════════════════════════
+          CHAT TAB
+      ════════════════════════════════════════════════════════════════ */}
+      {activeTab === 'chat' && (
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+        >
+          {/* Chat toolbar */}
+          <View style={cs.chatToolbar}>
+            <TouchableOpacity style={cs.newChatBtn} onPress={handleNewChat}>
+              <Ionicons name="add-circle-outline" size={16} color="#7c6fff" />
+              <Text style={cs.newChatBtnText}>New Chat</Text>
+            </TouchableOpacity>
+            {chatCtx.activeSessionId && (
+              <Text style={cs.sessionLabel} numberOfLines={1}>
+                {chatCtx.sessions.find(s => s.id === chatCtx.activeSessionId)?.title || 'Chat'}
+              </Text>
+            )}
+          </View>
 
-        {/* ══════════════════════════════════════════════════════════════
-            SEARCH TAB
-        ══════════════════════════════════════════════════════════════ */}
-        {activeTab === 'search' && (
-          <>
-            {/* Search bar */}
-            <View style={styles.searchCard}>
-              <View style={styles.searchRow}>
-                <View style={styles.searchInputWrap}>
-                  <Ionicons name="search" size={18} color="#60a5fa" style={{ marginRight: 8 }} />
-                  <TextInput
-                    ref={inputRef}
-                    style={styles.searchInput}
-                    placeholder="Enter a topic, college, or keyword…"
-                    placeholderTextColor="#475569"
-                    value={query}
-                    onChangeText={setQuery}
-                    onSubmitEditing={handleSearch}
-                    returnKeyType="search"
-                    editable={!crawling}
-                  />
-                  {query.length > 0 && (
-                    <TouchableOpacity onPress={() => { setQuery(''); setCrawlResult(null); setSentiment(null); }}>
-                      <Ionicons name="close-circle" size={18} color="#475569" />
-                    </TouchableOpacity>
-                  )}
+          {/* Messages */}
+          <ScrollView
+            ref={scrollRef}
+            style={cs.messageList}
+            contentContainerStyle={cs.messageListContent}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
+            {displayMessages.map(msg => (
+              <MessageBubble key={msg.id || msg.text?.slice(0, 10)} msg={msg} />
+            ))}
+
+            {thinking && (
+              <View style={{ alignItems: 'flex-start', marginBottom: 6 }}>
+                <View style={[cs.bubble, cs.aiBubble]}>
+                  <TypingDots />
                 </View>
-                <TouchableOpacity
-                  style={[styles.searchBtn, crawling && styles.searchBtnDisabled]}
-                  onPress={handleSearch}
-                  disabled={crawling || !query.trim()}
-                  activeOpacity={0.8}
-                >
-                  {crawling
-                    ? <ActivityIndicator size="small" color="#fff" />
-                    : <Ionicons name="sparkles" size={18} color="#fff" />
-                  }
-                </TouchableOpacity>
               </View>
+            )}
 
-              {/* Quick topic chips */}
-              {!sentiment && !crawling && (
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsScroll}>
-                  {['IIT Bombay', 'Anna University', 'AIIMS Delhi', 'IIM Ahmedabad',
-                    'NIT Trichy', 'VIT Vellore', 'SRM University', 'Saveetha'].map(s => (
+            {chatError && (
+              <View style={cs.errorRow}>
+                <Ionicons name="warning-outline" size={14} color="#f87171" />
+                <Text style={cs.errorText}>{chatError}</Text>
+              </View>
+            )}
+
+            {/* Quick chips (show when no active session or few messages) */}
+            {displayMessages.length <= 1 && !thinking && (
+              <View style={cs.chipsSection}>
+                <Text style={cs.chipsLabel}>Try asking:</Text>
+                <View style={cs.chipsWrap}>
+                  {QUICK_CHIPS.map(chip => (
                     <TouchableOpacity
-                      key={s}
-                      style={styles.quickChip}
-                      onPress={() => { setQuery(s); }}
+                      key={chip.label}
+                      style={cs.chip}
+                      onPress={() => handleSend(chip.label)}
                     >
-                      <Text style={styles.quickChipText}>{s}</Text>
+                      <Ionicons name={chip.icon} size={13} color="#7c6fff" />
+                      <Text style={cs.chipText}>{chip.label}</Text>
                     </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              )}
-            </View>
-
-            {/* Loading shimmer */}
-            {crawling && (
-              <View style={styles.loadingCard}>
-                <ActivityIndicator size="large" color="#60a5fa" style={{ marginBottom: 12 }} />
-                <Text style={styles.loadingTitle}>🕷️ Crawling the web…</Text>
-                <Text style={styles.loadingSubtitle}>Fetching data from DuckDuckGo & Wikipedia</Text>
-                <PulseLoader />
-                <PulseLoader />
-                <PulseLoader />
-              </View>
-            )}
-
-            {/* Error */}
-            {crawlError && (
-              <View style={styles.errorCard}>
-                <Ionicons name="warning-outline" size={32} color="#f87171" />
-                <Text style={styles.errorTitle}>Crawl Failed</Text>
-                <Text style={styles.errorText}>{crawlError}</Text>
-                <TouchableOpacity style={styles.retryBtn} onPress={handleSearch}>
-                  <Text style={styles.retryBtnText}>↩ Retry</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-
-            {/* ── Sentiment Result ── */}
-            {sentiment && !crawling && (
-              <>
-                {/* Sentiment Score Card */}
-                <LinearGradient
-                  colors={['#1e293b', '#0f172a']}
-                  style={styles.sentimentCard}
-                >
-                  <View style={styles.sentimentTop}>
-                    <View>
-                      <Text style={styles.sentimentQuery} numberOfLines={2}>"{query}"</Text>
-                      {selectedHist && (
-                        <Text style={styles.sentimentHistNote}>📂 From history</Text>
-                      )}
-                    </View>
-                    <View style={[styles.sentimentBadge, { backgroundColor: sentimentColor + '30', borderColor: sentimentColor }]}>
-                      <Text style={[styles.sentimentBadgeEmoji]}>
-                        {getSentimentEmoji(sentiment.label)}
-                      </Text>
-                      <Text style={[styles.sentimentBadgeText, { color: sentimentColor }]}>
-                        {sentiment.label}
-                      </Text>
-                    </View>
-                  </View>
-
-                  <Text style={[styles.sentimentScoreText, { color: sentimentColor }]}>
-                    {sentiment.normalizedScore >= 0 ? '+' : ''}
-                    {(sentiment.normalizedScore || 0).toFixed(1)}
-                  </Text>
-                  <Text style={styles.sentimentScoreLabel}>Sentiment Score (−5 to +5)</Text>
-                  <SentimentGauge score={sentiment.normalizedScore || 0} />
-
-                  {/* Keyword chips */}
-                  {(sentiment.positive?.length > 0 || sentiment.negative?.length > 0) && (
-                    <View style={styles.keywordsSection}>
-                      <Text style={styles.keywordsTitle}>Key Signals</Text>
-                      <View style={styles.keywordsRow}>
-                        {sentiment.positive?.slice(0, 5).map(w => (
-                          <View key={w} style={styles.kwPositive}>
-                            <Text style={styles.kwPositiveText}>+{w}</Text>
-                          </View>
-                        ))}
-                        {sentiment.negative?.slice(0, 5).map(w => (
-                          <View key={w} style={styles.kwNegative}>
-                            <Text style={styles.kwNegativeText}>−{w}</Text>
-                          </View>
-                        ))}
-                      </View>
-                    </View>
-                  )}
-
-                  {/* AI Recommendation */}
-                  <View style={styles.aiRecommendBox}>
-                    <Ionicons name="bulb-outline" size={16} color="#fbbf24" />
-                    <Text style={styles.aiRecommendText}>
-                      {sentiment.normalizedScore >= 2
-                        ? 'Highly regarded topic! Strong positive signals detected in web sources.'
-                        : sentiment.normalizedScore >= 0
-                        ? 'Generally positive perception. Good for further research.'
-                        : sentiment.normalizedScore >= -2
-                        ? 'Mixed or neutral sentiment. Consider cross-referencing multiple sources.'
-                        : 'Caution: negative signals detected. Verify with official sources.'}
-                    </Text>
-                  </View>
-                </LinearGradient>
-
-                {/* Web Sources */}
-                {crawlResult?.results?.length > 0 && (
-                  <View style={styles.sourcesSection}>
-                    <View style={styles.sectionHeader}>
-                      <Ionicons name="globe-outline" size={16} color="#60a5fa" />
-                      <Text style={styles.sectionTitle}>Web Sources ({crawlResult.results.length})</Text>
-                    </View>
-                    {crawlResult.results.map((item, i) => (
-                      <SourceCard key={i} item={item} index={i} />
-                    ))}
-                  </View>
-                )}
-
-                {(!crawlResult?.results || crawlResult.results.length === 0) && (
-                  <View style={styles.noSourcesBox}>
-                    <Ionicons name="cloud-offline-outline" size={32} color="#475569" />
-                    <Text style={styles.noSourcesText}>
-                      No live web sources fetched (offline mode). Sentiment based on query text only.
-                    </Text>
-                  </View>
-                )}
-              </>
-            )}
-
-            {/* Empty state */}
-            {!sentiment && !crawling && !crawlError && (
-              <View style={styles.emptyState}>
-                <Text style={styles.emptyStateEmoji}>🤖</Text>
-                <Text style={styles.emptyStateTitle}>AI-Powered Analysis</Text>
-                <Text style={styles.emptyStateText}>
-                  Search any topic to crawl the web, analyze sentiment using NLP,
-                  and save results to your personal AI history.
-                </Text>
-                <View style={styles.featureList}>
-                  {[
-                    { icon: 'globe-outline',      text: 'Web crawling via DuckDuckGo & Wikipedia' },
-                    { icon: 'analytics-outline',  text: 'AFINN NLP sentiment analysis' },
-                    { icon: 'time-outline',        text: 'Search history saved to Firebase' },
-                    { icon: 'trending-up-outline', text: 'Sentiment trend tracking' },
-                  ].map(f => (
-                    <View key={f.text} style={styles.featureItem}>
-                      <Ionicons name={f.icon} size={18} color="#60a5fa" />
-                      <Text style={styles.featureText}>{f.text}</Text>
-                    </View>
                   ))}
                 </View>
               </View>
             )}
-          </>
-        )}
 
-        {/* ══════════════════════════════════════════════════════════════
-            HISTORY TAB
-        ══════════════════════════════════════════════════════════════ */}
-        {activeTab === 'history' && (
-          <>
-            {/* History header controls */}
-            <View style={styles.historyControls}>
-              <View style={styles.historySearchBox}>
-                <Ionicons name="search-outline" size={15} color="#475569" style={{ marginRight: 6 }} />
+            <View style={{ height: 20 }} />
+          </ScrollView>
+
+          {/* Input bar */}
+          <View style={cs.inputBar}>
+            <TextInput
+              ref={inputRef}
+              style={cs.textInput}
+              value={inputText}
+              onChangeText={setInputText}
+              placeholder="Ask about any college, exam, career…"
+              placeholderTextColor="#44445a"
+              multiline
+              maxLength={500}
+              onSubmitEditing={() => handleSend()}
+              blurOnSubmit={false}
+              editable={!thinking}
+            />
+            <TouchableOpacity
+              style={[cs.sendBtn, (!inputText.trim() || thinking) && cs.sendBtnDisabled]}
+              onPress={() => handleSend()}
+              disabled={!inputText.trim() || thinking}
+            >
+              {thinking
+                ? <ActivityIndicator size="small" color="#fff" />
+                : <Ionicons name="send" size={17} color="#fff" />
+              }
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
+      )}
+
+      {/* ════════════════════════════════════════════════════════════════
+          HISTORY TAB
+      ════════════════════════════════════════════════════════════════ */}
+      {activeTab === 'history' && (
+        <ScrollView style={hs.root} contentContainerStyle={hs.content} showsVerticalScrollIndicator={false}>
+          <View style={hs.headerRow}>
+            <Text style={hs.title}>💬 Chat History</Text>
+            <Text style={hs.subtitle}>{chatCtx.sessions.length} conversations · synced across devices</Text>
+          </View>
+
+          {chatCtx.loading && (
+            <View style={hs.center}>
+              <ActivityIndicator size="large" color="#7c6fff" />
+              <Text style={hs.loadingText}>Loading conversations…</Text>
+            </View>
+          )}
+
+          {!chatCtx.loading && chatCtx.sessions.length === 0 && (
+            <View style={hs.emptyBox}>
+              <Text style={hs.emptyEmoji}>💬</Text>
+              <Text style={hs.emptyTitle}>No conversations yet</Text>
+              <Text style={hs.emptyText}>Your AI chat history will appear here, synced across all your devices.</Text>
+              <TouchableOpacity style={hs.startBtn} onPress={() => { setActiveTab('chat'); handleNewChat(); }}>
+                <Ionicons name="add-circle-outline" size={16} color="#fff" />
+                <Text style={hs.startBtnText}>Start a Conversation</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {chatCtx.sessions.map(session => (
+            <TouchableOpacity
+              key={session.id}
+              style={hs.sessionCard}
+              onPress={() => handleResumeSession(session)}
+              activeOpacity={0.85}
+            >
+              <View style={hs.sessionIcon}>
+                <Ionicons name="chatbubbles-outline" size={20} color="#7c6fff" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={hs.sessionTitle} numberOfLines={2}>{session.title || 'Chat'}</Text>
+                <Text style={hs.sessionDate}>{fmt(session.updatedAt)} · {(session.messages || []).length} messages</Text>
+              </View>
+              <TouchableOpacity onPress={() => handleDeleteSession(session.id)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+                <Ionicons name="trash-outline" size={16} color="#44445a" />
+              </TouchableOpacity>
+            </TouchableOpacity>
+          ))}
+          <View style={{ height: 40 }} />
+        </ScrollView>
+      )}
+
+      {/* ════════════════════════════════════════════════════════════════
+          ANALYSE TAB (Web Crawl + Sentiment)
+      ════════════════════════════════════════════════════════════════ */}
+      {activeTab === 'analyse' && (
+        <ScrollView
+          ref={sScrollRef}
+          style={{ flex: 1, backgroundColor: '#f1f5f9' }}
+          contentContainerStyle={{ padding: 14 }}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Search bar */}
+          <View style={as.searchCard}>
+            <View style={as.searchRow}>
+              <View style={as.searchInputWrap}>
+                <Ionicons name="search" size={18} color="#60a5fa" style={{ marginRight: 8 }} />
                 <TextInput
-                  style={styles.historySearchInput}
-                  placeholder="Filter searches…"
+                  style={as.searchInput}
+                  placeholder="Enter a college, topic, or keyword…"
                   placeholderTextColor="#475569"
-                  value={histFilter}
-                  onChangeText={setHistFilter}
+                  value={sQuery}
+                  onChangeText={setSQuery}
+                  onSubmitEditing={handleSentimentSearch}
+                  returnKeyType="search"
+                  editable={!crawling}
                 />
+                {sQuery.length > 0 && (
+                  <TouchableOpacity onPress={() => { setSQuery(''); setCrawlResult(null); setSentiment(null); }}>
+                    <Ionicons name="close-circle" size={18} color="#475569" />
+                  </TouchableOpacity>
+                )}
               </View>
               <TouchableOpacity
-                style={[styles.compareModeBtn, compareMode && styles.compareModeBtnActive]}
-                onPress={() => { setCompareMode(c => !c); setCompareItems([]); }}
+                style={[as.searchBtn, (crawling || !sQuery.trim()) && as.searchBtnDisabled]}
+                onPress={handleSentimentSearch}
+                disabled={crawling || !sQuery.trim()}
               >
-                <Ionicons name="git-compare-outline" size={15} color={compareMode ? '#fff' : '#60a5fa'} />
-                <Text style={[styles.compareModeBtnText, compareMode && { color: '#fff' }]}>
-                  {compareMode ? 'Exit Compare' : 'Compare'}
-                </Text>
+                {crawling ? <ActivityIndicator size="small" color="#fff" /> : <Ionicons name="sparkles" size={18} color="#fff" />}
               </TouchableOpacity>
             </View>
-
-            {/* Compare panel */}
-            {compareMode && compareItems.length > 0 && (
-              <ComparePanel items={compareItems} />
+            {!sentiment && !crawling && (
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 10 }}>
+                {['IIT Bombay', 'Anna University', 'AIIMS Delhi', 'VIT Vellore', 'IIM Ahmedabad', 'NIT Trichy'].map(s => (
+                  <TouchableOpacity key={s} style={as.quickChip} onPress={() => setSQuery(s)}>
+                    <Text style={as.quickChipText}>{s}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
             )}
+          </View>
 
-            {/* Clear all button */}
-            {history.length > 0 && (
-              <TouchableOpacity style={styles.clearAllBtn} onPress={handleClearAll}>
-                <Ionicons name="trash-outline" size={14} color="#f87171" />
-                <Text style={styles.clearAllText}>Clear All History</Text>
+          {crawling && (
+            <View style={as.loadingCard}>
+              <ActivityIndicator size="large" color="#60a5fa" style={{ marginBottom: 12 }} />
+              <Text style={as.loadingTitle}>🕷️ Crawling the web…</Text>
+              <Text style={as.loadingSub}>Fetching data from DuckDuckGo & Wikipedia</Text>
+              <PulseLoader /><PulseLoader /><PulseLoader />
+            </View>
+          )}
+
+          {crawlError && (
+            <View style={as.errorCard}>
+              <Ionicons name="warning-outline" size={32} color="#f87171" />
+              <Text style={as.errorTitle}>Crawl Failed</Text>
+              <Text style={as.errorDesc}>{crawlError}</Text>
+              <TouchableOpacity style={as.retryBtn} onPress={handleSentimentSearch}>
+                <Text style={as.retryBtnText}>↩ Retry</Text>
               </TouchableOpacity>
-            )}
+            </View>
+          )}
 
-            {/* Loading */}
-            {histLoading && (
-              <View style={styles.histLoadingBox}>
-                <ActivityIndicator size="large" color="#60a5fa" />
-                <Text style={styles.histLoadingText}>Loading history…</Text>
-              </View>
-            )}
-
-            {/* No history */}
-            {!histLoading && filteredHistory.length === 0 && (
-              <View style={styles.histEmptyBox}>
-                <Text style={styles.histEmptyEmoji}>📭</Text>
-                <Text style={styles.histEmptyTitle}>
-                  {histFilter ? 'No matching searches' : 'No search history yet'}
+          {sentiment && !crawling && (
+            <>
+              <LinearGradient colors={['#1e293b', '#0f172a']} style={as.sentimentCard}>
+                <View style={as.sentimentTop}>
+                  <Text style={as.sentimentQuery} numberOfLines={2}>"{sQuery}"</Text>
+                  <View style={[as.sentimentBadge, { backgroundColor: sentimentColor + '30', borderColor: sentimentColor }]}>
+                    <Text style={{ fontSize: 16 }}>{getSentimentEmoji(sentiment.label)}</Text>
+                    <Text style={[as.sentimentBadgeText, { color: sentimentColor }]}>{sentiment.label}</Text>
+                  </View>
+                </View>
+                <Text style={[as.sentimentScore, { color: sentimentColor }]}>
+                  {sentiment.normalizedScore >= 0 ? '+' : ''}{(sentiment.normalizedScore || 0).toFixed(1)}
                 </Text>
-                <Text style={styles.histEmptyText}>
-                  {histFilter
-                    ? 'Try a different filter keyword.'
-                    : 'Your searches will appear here after you use the AI Search tab.'}
-                </Text>
-              </View>
-            )}
+                <Text style={as.sentimentScoreLabel}>Sentiment Score (−5 to +5)</Text>
+                <SentimentGauge score={sentiment.normalizedScore || 0} />
+                {(sentiment.positive?.length > 0 || sentiment.negative?.length > 0) && (
+                  <View style={{ marginTop: 12 }}>
+                    <Text style={as.kwTitle}>Key Signals</Text>
+                    <View style={as.kwRow}>
+                      {sentiment.positive?.slice(0, 5).map(w => (
+                        <View key={w} style={as.kwPos}><Text style={as.kwPosText}>+{w}</Text></View>
+                      ))}
+                      {sentiment.negative?.slice(0, 5).map(w => (
+                        <View key={w} style={as.kwNeg}><Text style={as.kwNegText}>−{w}</Text></View>
+                      ))}
+                    </View>
+                  </View>
+                )}
+                <View style={as.aiRec}>
+                  <Ionicons name="bulb-outline" size={16} color="#fbbf24" />
+                  <Text style={as.aiRecText}>
+                    {sentiment.normalizedScore >= 2 ? 'Highly regarded topic! Strong positive signals detected.' :
+                     sentiment.normalizedScore >= 0 ? 'Generally positive perception. Good for further research.' :
+                     sentiment.normalizedScore >= -2 ? 'Mixed sentiment. Cross-reference multiple sources.' :
+                     'Caution: negative signals detected. Verify with official sources.'}
+                  </Text>
+                </View>
+              </LinearGradient>
 
-            {/* History list */}
-            {filteredHistory.map(item => (
-              <HistoryRow
-                key={item.id}
-                item={item}
-                onPress={handleHistoryPress}
-                onDelete={handleDelete}
-                selected={compareItems.some(c => c.id === item.id)}
-                onSelect={handleCompareSelect}
-                compareMode={compareMode}
-              />
-            ))}
-          </>
-        )}
-
-        {/* ══════════════════════════════════════════════════════════════
-            TRENDS TAB
-        ══════════════════════════════════════════════════════════════ */}
-        {activeTab === 'trends' && (
-          <>
-            <LinearGradient colors={['#1e293b', '#0f172a']} style={styles.trendsCard}>
-              <Text style={styles.trendsTitle}>📈 Sentiment Trend</Text>
-              <Text style={styles.trendsSub}>Last {Math.min(history.length, 10)} searches</Text>
-              <SparklineTrend data={history} />
-            </LinearGradient>
-
-            {/* Stats summary */}
-            {history.length > 0 && (() => {
-              const scores = history.map(h => h.sentimentNormalized || 0);
-              const avg    = scores.reduce((a, b) => a + b, 0) / scores.length;
-              const maxS   = Math.max(...scores);
-              const minS   = Math.min(...scores);
-              const posCount = history.filter(h => (h.sentimentNormalized || 0) >= 0).length;
-              return (
-                <View style={styles.statsGrid}>
-                  {[
-                    { label: 'Total Searches', value: history.length,         icon: 'search',             color: '#60a5fa' },
-                    { label: 'Avg Score',       value: avg.toFixed(1),        icon: 'analytics',          color: '#34d399' },
-                    { label: 'Best Score',      value: '+' + maxS.toFixed(1), icon: 'trending-up',        color: '#10b981' },
-                    { label: 'Worst Score',     value: minS.toFixed(1),       icon: 'trending-down',      color: '#f87171' },
-                    { label: 'Positive Searches', value: posCount,            icon: 'thumbs-up',          color: '#34d399' },
-                    { label: 'Negative Searches', value: history.length - posCount, icon: 'thumbs-down', color: '#f87171' },
-                  ].map(stat => (
-                    <View key={stat.label} style={styles.statCard}>
-                      <Ionicons name={stat.icon + '-outline'} size={22} color={stat.color} />
-                      <Text style={[styles.statValue, { color: stat.color }]}>{stat.value}</Text>
-                      <Text style={styles.statLabel}>{stat.label}</Text>
+              {crawlResult?.results?.length > 0 && (
+                <View style={{ marginBottom: 14 }}>
+                  <View style={as.sectionHeader}>
+                    <Ionicons name="globe-outline" size={16} color="#60a5fa" />
+                    <Text style={as.sectionTitle}>Web Sources ({crawlResult.results.length})</Text>
+                  </View>
+                  {crawlResult.results.map((item, i) => (
+                    <View key={i} style={as.sourceCard}>
+                      <View style={as.sourceCardHeader}>
+                        <Text style={as.sourceCardSource}>{item.source}</Text>
+                        {item.url ? (
+                          <TouchableOpacity onPress={() => Linking.openURL(item.url).catch(() => {})}>
+                            <Ionicons name="open-outline" size={13} color="#60a5fa" />
+                          </TouchableOpacity>
+                        ) : null}
+                      </View>
+                      <Text style={as.sourceCardTitle} numberOfLines={2}>{item.title}</Text>
+                      <Text style={as.sourceCardSnippet} numberOfLines={3}>{item.snippet}</Text>
                     </View>
                   ))}
                 </View>
-              );
-            })()}
+              )}
+            </>
+          )}
 
-            {/* Recent sentiment history mini list */}
-            {history.length > 0 && (
-              <View style={styles.recentList}>
-                <Text style={styles.recentListTitle}>Recent Searches</Text>
-                {history.slice(0, 5).map(item => {
-                  const color = getSentimentColor(item.sentimentLabel || 'Neutral');
-                  return (
-                    <TouchableOpacity
-                      key={item.id}
-                      style={styles.recentRow}
-                      onPress={() => handleHistoryPress(item)}
-                    >
-                      <Text style={styles.recentRowEmoji}>{getSentimentEmoji(item.sentimentLabel)}</Text>
-                      <Text style={styles.recentRowQuery} numberOfLines={1}>{item.query}</Text>
-                      <Text style={[styles.recentRowScore, { color }]}>
-                        {(item.sentimentNormalized || 0) >= 0 ? '+' : ''}
-                        {(item.sentimentNormalized || 0).toFixed(1)}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
+          {!sentiment && !crawling && !crawlError && (
+            <View style={as.emptyState}>
+              <Text style={{ fontSize: 56, marginBottom: 12 }}>🔍</Text>
+              <Text style={as.emptyTitle}>Web Crawl + Sentiment Analysis</Text>
+              <Text style={as.emptyText}>Search any college or topic to crawl the web, analyze sentiment with NLP, and save results to your history.</Text>
+            </View>
+          )}
+
+          <View style={{ height: 40 }} />
+        </ScrollView>
+      )}
+
+      {/* ════════════════════════════════════════════════════════════════
+          TRENDS TAB
+      ════════════════════════════════════════════════════════════════ */}
+      {activeTab === 'trends' && (
+        <ScrollView style={{ flex: 1, backgroundColor: '#f1f5f9' }} contentContainerStyle={{ padding: 14 }} showsVerticalScrollIndicator={false}>
+          <LinearGradient colors={['#1e293b', '#0f172a']} style={as.trendsCard}>
+            <Text style={as.trendsTitle}>📈 Sentiment Trend</Text>
+            <Text style={as.trendsSub}>Last {Math.min((searchHistCtx.history || []).length, 10)} searches</Text>
+            <SparklineTrend data={searchHistCtx.history || []} />
+          </LinearGradient>
+
+          {(searchHistCtx.history || []).length > 0 ? (() => {
+            const hist   = searchHistCtx.history || [];
+            const scores = hist.map(h => h.sentimentNormalized || 0);
+            const avg    = scores.reduce((a, b) => a + b, 0) / scores.length;
+            return (
+              <View style={as.statsGrid}>
+                {[
+                  { label: 'Total Searches', value: hist.length,           icon: 'search',        color: '#60a5fa' },
+                  { label: 'Avg Score',       value: avg.toFixed(1),       icon: 'analytics',     color: '#34d399' },
+                  { label: 'Best Score',       value: '+' + Math.max(...scores).toFixed(1), icon: 'trending-up', color: '#10b981' },
+                  { label: 'Worst Score',      value: Math.min(...scores).toFixed(1), icon: 'trending-down', color: '#f87171' },
+                  { label: 'Chat Sessions',    value: chatCtx.sessions.length, icon: 'chatbubbles', color: '#a78bfa' },
+                  { label: 'Positive',         value: scores.filter(s => s >= 0).length, icon: 'thumbs-up', color: '#34d399' },
+                ].map(stat => (
+                  <View key={stat.label} style={as.statCard}>
+                    <Ionicons name={stat.icon + '-outline'} size={22} color={stat.color} />
+                    <Text style={[as.statValue, { color: stat.color }]}>{stat.value}</Text>
+                    <Text style={as.statLabel}>{stat.label}</Text>
+                  </View>
+                ))}
               </View>
-            )}
+            );
+          })() : null}
 
-            {history.length === 0 && (
-              <View style={styles.histEmptyBox}>
-                <Text style={styles.histEmptyEmoji}>📊</Text>
-                <Text style={styles.histEmptyTitle}>No trend data yet</Text>
-                <Text style={styles.histEmptyText}>
-                  Complete a few searches in the AI Search tab to start tracking sentiment trends.
-                </Text>
-              </View>
-            )}
-          </>
-        )}
-
-        <View style={{ height: 40 }} />
-      </ScrollView>
+          {(searchHistCtx.history || []).length === 0 && (
+            <View style={as.emptyState}>
+              <Text style={{ fontSize: 52, marginBottom: 10 }}>📊</Text>
+              <Text style={as.emptyTitle}>No trend data yet</Text>
+              <Text style={as.emptyText}>Use the Analyse tab to search topics and start tracking sentiment trends.</Text>
+            </View>
+          )}
+          <View style={{ height: 40 }} />
+        </ScrollView>
+      )}
     </View>
   );
 }
@@ -769,185 +838,141 @@ export default function AIScreen() {
 // STYLES
 // ════════════════════════════════════════════════════════════════════════════
 
-const styles = StyleSheet.create({
-  root:        { flex: 1, backgroundColor: '#0f172a' },
+// Chat styles
+const cs = StyleSheet.create({
+  root:       { flex: 1, backgroundColor: '#0d0d14' },
+  header:     { paddingTop: Platform.OS === 'ios' ? 44 : 10, paddingBottom: 0 },
+  headerRow:  { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingBottom: 10 },
+  headerTitle:{ color: '#eeeef8', fontSize: 20, fontWeight: '800' },
+  headerSub:  { color: '#44445a', fontSize: 11, marginTop: 2 },
+  userBadge:  { width: 34, height: 34, borderRadius: 17, backgroundColor: '#7c6fff', alignItems: 'center', justifyContent: 'center' },
+  userBadgeText:{ color: '#fff', fontWeight: '800', fontSize: 14 },
 
-  // ── Header ─────────────────────────────────────────────────────────────────
-  header:      { paddingTop: Platform.OS === 'ios' ? 44 : 12, paddingBottom: 0 },
-  headerTop:   { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingBottom: 12 },
-  headerTitle: { color: '#f8fafc', fontSize: 20, fontWeight: '800' },
-  headerSub:   { color: '#64748b', fontSize: 12, marginTop: 2 },
-  userBadge:   { width: 36, height: 36, borderRadius: 18, backgroundColor: '#2563eb', alignItems: 'center', justifyContent: 'center' },
-  userBadgeText: { color: '#fff', fontWeight: '800', fontSize: 15 },
+  tabBar:          { flexDirection: 'row', paddingHorizontal: 8 },
+  tabBtn:          { flex: 1, alignItems: 'center', paddingVertical: 10, borderBottomWidth: 2, borderBottomColor: 'transparent', flexDirection: 'row', justifyContent: 'center', gap: 4 },
+  tabBtnActive:    { borderBottomColor: '#7c6fff' },
+  tabBtnText:      { color: '#44445a', fontSize: 11, fontWeight: '600' },
+  tabBtnTextActive:{ color: '#8888a8', fontWeight: '700' },
+  tabBadge:        { backgroundColor: '#ef4444', borderRadius: 7, paddingHorizontal: 5, paddingVertical: 1 },
+  tabBadgeText:    { color: '#fff', fontSize: 9, fontWeight: '700' },
 
-  // ── Tab bar ─────────────────────────────────────────────────────────────────
-  tabBar:        { flexDirection: 'row', paddingHorizontal: 12, paddingBottom: 0 },
-  tabBtn:        { flex: 1, alignItems: 'center', paddingVertical: 10, flexDirection: 'row', justifyContent: 'center', gap: 4, borderBottomWidth: 2, borderBottomColor: 'transparent' },
-  tabBtnActive:  { borderBottomColor: '#2563eb' },
-  tabBtnText:    { color: '#64748b', fontSize: 12, fontWeight: '600' },
-  tabBtnTextActive: { color: '#60a5fa', fontWeight: '700' },
-  tabBadge:      { backgroundColor: '#ef4444', borderRadius: 8, paddingHorizontal: 5, paddingVertical: 1 },
-  tabBadgeText:  { color: '#fff', fontSize: 9, fontWeight: '700' },
+  chatToolbar:   { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 8, backgroundColor: '#16161f', borderBottomWidth: 1, borderBottomColor: '#26263a' },
+  newChatBtn:    { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 12, paddingVertical: 6, backgroundColor: '#20202e', borderRadius: 10, borderWidth: 1, borderColor: '#2e2e42' },
+  newChatBtnText:{ color: '#7c6fff', fontSize: 12, fontWeight: '600' },
+  sessionLabel:  { flex: 1, color: '#8888a8', fontSize: 11, marginLeft: 10 },
 
-  // ── Body ────────────────────────────────────────────────────────────────────
-  body:        { flex: 1, backgroundColor: '#f1f5f9' },
-  bodyContent: { padding: 14 },
+  messageList:       { flex: 1, backgroundColor: '#0d0d14' },
+  messageListContent:{ paddingHorizontal: 12, paddingTop: 12, paddingBottom: 10 },
 
-  // ── Search card ──────────────────────────────────────────────────────────────
-  searchCard:     { backgroundColor: '#fff', borderRadius: 16, padding: 14, marginBottom: 14, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 8, elevation: 3 },
-  searchRow:      { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  searchInputWrap:{ flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: '#f8fafc', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 10, borderWidth: 1, borderColor: '#e2e8f0' },
-  searchInput:    { flex: 1, color: '#0f172a', fontSize: 14 },
-  searchBtn:      { width: 44, height: 44, borderRadius: 12, backgroundColor: '#2563eb', alignItems: 'center', justifyContent: 'center' },
+  aiMeta:     { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 },
+  aiAvatar:   { width: 22, height: 22, borderRadius: 11, alignItems: 'center', justifyContent: 'center' },
+  aiName:     { fontSize: 11, fontWeight: '700' },
+  livePill:   { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#1a1a2e', borderRadius: 8, paddingHorizontal: 6, paddingVertical: 2 },
+  liveDot:    { width: 5, height: 5, borderRadius: 3, backgroundColor: '#20d068' },
+  liveLabel:  { color: '#20d068', fontSize: 9, fontWeight: '800' },
+
+  bubble:     { borderRadius: 16, padding: 12, marginBottom: 2, maxWidth: '100%' },
+  userBubble: { borderBottomRightRadius: 4 },
+  aiBubble:   { backgroundColor: '#1c1c28', borderWidth: 1, borderBottomLeftRadius: 4 },
+  timestamp:  { color: '#44445a', fontSize: 10, marginTop: 2, marginBottom: 4 },
+
+  errorRow:  { flexDirection: 'row', alignItems: 'center', gap: 6, padding: 10, backgroundColor: '#2d1111', borderRadius: 10, marginBottom: 8 },
+  errorText: { color: '#f87171', fontSize: 12, flex: 1 },
+
+  chipsSection:{ marginTop: 10, marginBottom: 6 },
+  chipsLabel:  { color: '#44445a', fontSize: 11, fontWeight: '600', marginBottom: 8 },
+  chipsWrap:   { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  chip:        { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#20202e', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 7, borderWidth: 1, borderColor: '#2e2e42' },
+  chipText:    { color: '#8888a8', fontSize: 12 },
+
+  inputBar:   { flexDirection: 'row', alignItems: 'flex-end', gap: 8, padding: 10, backgroundColor: '#16161f', borderTopWidth: 1, borderTopColor: '#26263a' },
+  textInput:  { flex: 1, backgroundColor: '#20202e', borderRadius: 16, paddingHorizontal: 14, paddingVertical: 10, color: '#eeeef8', fontSize: 14, maxHeight: 100, borderWidth: 1, borderColor: '#2e2e42' },
+  sendBtn:    { width: 42, height: 42, borderRadius: 21, backgroundColor: '#7c6fff', alignItems: 'center', justifyContent: 'center' },
+  sendBtnDisabled: { backgroundColor: '#26263a' },
+});
+
+// History styles
+const hs = StyleSheet.create({
+  root:        { flex: 1, backgroundColor: '#0d0d14' },
+  content:     { padding: 14 },
+  headerRow:   { marginBottom: 16 },
+  title:       { color: '#eeeef8', fontSize: 18, fontWeight: '800' },
+  subtitle:    { color: '#44445a', fontSize: 12, marginTop: 3 },
+  center:      { alignItems: 'center', paddingVertical: 30, gap: 10 },
+  loadingText: { color: '#44445a', fontSize: 13 },
+  emptyBox:    { alignItems: 'center', paddingVertical: 50, gap: 10 },
+  emptyEmoji:  { fontSize: 52 },
+  emptyTitle:  { color: '#8888a8', fontSize: 16, fontWeight: '700' },
+  emptyText:   { color: '#44445a', fontSize: 13, textAlign: 'center', paddingHorizontal: 30 },
+  startBtn:    { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#7c6fff', borderRadius: 12, paddingHorizontal: 20, paddingVertical: 10, marginTop: 10 },
+  startBtnText:{ color: '#fff', fontWeight: '700', fontSize: 13 },
+  sessionCard: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: '#16161f', borderRadius: 14, padding: 14, marginBottom: 8, borderWidth: 1, borderColor: '#26263a' },
+  sessionIcon: { width: 38, height: 38, borderRadius: 19, backgroundColor: '#20202e', alignItems: 'center', justifyContent: 'center' },
+  sessionTitle:{ color: '#eeeef8', fontSize: 13, fontWeight: '700', marginBottom: 3 },
+  sessionDate: { color: '#44445a', fontSize: 11 },
+});
+
+// Analyse / Trends styles
+const as = StyleSheet.create({
+  pulseBar:    { height: 12, borderRadius: 6, backgroundColor: '#334155', width: '100%', marginTop: 8 },
+  searchCard:  { backgroundColor: '#fff', borderRadius: 16, padding: 14, marginBottom: 14, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 8, elevation: 3 },
+  searchRow:   { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  searchInputWrap: { flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: '#f8fafc', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 10, borderWidth: 1, borderColor: '#e2e8f0' },
+  searchInput: { flex: 1, color: '#0f172a', fontSize: 14 },
+  searchBtn:   { width: 44, height: 44, borderRadius: 12, backgroundColor: '#7c6fff', alignItems: 'center', justifyContent: 'center' },
   searchBtnDisabled: { backgroundColor: '#94a3b8' },
-  chipsScroll:    { marginTop: 12 },
-  quickChip:      { backgroundColor: '#eff6ff', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 6, marginRight: 8, borderWidth: 1, borderColor: '#bfdbfe' },
-  quickChipText:  { color: '#1d4ed8', fontSize: 12, fontWeight: '600' },
-
-  // ── Loading ──────────────────────────────────────────────────────────────────
-  loadingCard:     { backgroundColor: '#1e293b', borderRadius: 16, padding: 24, alignItems: 'center', marginBottom: 14 },
-  loadingTitle:    { color: '#f8fafc', fontSize: 16, fontWeight: '700', marginBottom: 4 },
-  loadingSubtitle: { color: '#64748b', fontSize: 12, marginBottom: 16 },
-  pulseBar:        { height: 12, borderRadius: 6, backgroundColor: '#334155', width: '100%', marginTop: 8 },
-
-  // ── Error ────────────────────────────────────────────────────────────────────
-  errorCard:  { backgroundColor: '#fff', borderRadius: 16, padding: 24, alignItems: 'center', marginBottom: 14, borderWidth: 1, borderColor: '#fecaca' },
-  errorTitle: { color: '#dc2626', fontSize: 16, fontWeight: '700', marginTop: 8, marginBottom: 4 },
-  errorText:  { color: '#475569', fontSize: 13, textAlign: 'center', marginBottom: 16 },
-  retryBtn:   { backgroundColor: '#fef2f2', borderRadius: 10, paddingHorizontal: 20, paddingVertical: 10, borderWidth: 1, borderColor: '#fecaca' },
-  retryBtnText: { color: '#dc2626', fontWeight: '700', fontSize: 13 },
-
-  // ── Sentiment card ────────────────────────────────────────────────────────────
-  sentimentCard:      { borderRadius: 20, padding: 20, marginBottom: 14 },
-  sentimentTop:       { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12, gap: 10 },
-  sentimentQuery:     { color: '#94a3b8', fontSize: 13, fontStyle: 'italic', flex: 1 },
-  sentimentHistNote:  { color: '#475569', fontSize: 11, marginTop: 2 },
-  sentimentBadge:     { flexDirection: 'row', alignItems: 'center', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 6, borderWidth: 1, gap: 4 },
-  sentimentBadgeEmoji:{ fontSize: 16 },
+  quickChip:   { backgroundColor: '#eff6ff', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 6, marginRight: 8, borderWidth: 1, borderColor: '#bfdbfe' },
+  quickChipText: { color: '#1d4ed8', fontSize: 12, fontWeight: '600' },
+  loadingCard: { backgroundColor: '#1e293b', borderRadius: 16, padding: 24, alignItems: 'center', marginBottom: 14 },
+  loadingTitle:{ color: '#f8fafc', fontSize: 16, fontWeight: '700', marginBottom: 4 },
+  loadingSub:  { color: '#64748b', fontSize: 12, marginBottom: 16 },
+  errorCard:   { backgroundColor: '#fff', borderRadius: 16, padding: 24, alignItems: 'center', marginBottom: 14, borderWidth: 1, borderColor: '#fecaca' },
+  errorTitle:  { color: '#dc2626', fontSize: 16, fontWeight: '700', marginTop: 8, marginBottom: 4 },
+  errorDesc:   { color: '#475569', fontSize: 13, textAlign: 'center', marginBottom: 16 },
+  retryBtn:    { backgroundColor: '#fef2f2', borderRadius: 10, paddingHorizontal: 20, paddingVertical: 10 },
+  retryBtnText:{ color: '#dc2626', fontWeight: '700', fontSize: 13 },
+  sentimentCard: { borderRadius: 20, padding: 20, marginBottom: 14 },
+  sentimentTop:  { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12, gap: 10 },
+  sentimentQuery:{ color: '#94a3b8', fontSize: 13, fontStyle: 'italic', flex: 1 },
+  sentimentBadge:{ flexDirection: 'row', alignItems: 'center', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 6, borderWidth: 1, gap: 4 },
   sentimentBadgeText: { fontSize: 12, fontWeight: '700' },
-  sentimentScoreText: { fontSize: 42, fontWeight: '900', textAlign: 'center', marginBottom: 2 },
-  sentimentScoreLabel:{ color: '#475569', fontSize: 11, textAlign: 'center', marginBottom: 14 },
-
-  // ── Gauge ───────────────────────────────────────────────────────────────────
-  gaugeContainer: { marginBottom: 16 },
-  gaugeTrack:     { height: 12, backgroundColor: '#334155', borderRadius: 6, overflow: 'hidden', position: 'relative' },
-  gaugeFill:      { height: '100%', borderRadius: 6, position: 'absolute', left: 0 },
-  gaugeMidLine:   { position: 'absolute', left: '50%', top: 0, bottom: 0, width: 2, backgroundColor: '#475569' },
-  gaugeLabels:    { flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 },
-  gaugeLabelNeg:  { color: '#ef4444', fontSize: 10, fontWeight: '700' },
-  gaugeLabelNeu:  { color: '#94a3b8', fontSize: 10 },
-  gaugeLabelPos:  { color: '#10b981', fontSize: 10, fontWeight: '700' },
-
-  // ── Keywords ─────────────────────────────────────────────────────────────────
-  keywordsSection: { marginBottom: 14 },
-  keywordsTitle:   { color: '#94a3b8', fontSize: 11, fontWeight: '700', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 },
-  keywordsRow:     { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
-  kwPositive:      { backgroundColor: '#064e3b', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4 },
-  kwPositiveText:  { color: '#34d399', fontSize: 11, fontWeight: '600' },
-  kwNegative:      { backgroundColor: '#450a0a', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4 },
-  kwNegativeText:  { color: '#f87171', fontSize: 11, fontWeight: '600' },
-
-  // ── AI Recommendation ────────────────────────────────────────────────────────
-  aiRecommendBox:  { flexDirection: 'row', alignItems: 'flex-start', gap: 8, backgroundColor: '#1e3a5f', borderRadius: 12, padding: 12 },
-  aiRecommendText: { color: '#93c5fd', fontSize: 12, flex: 1, lineHeight: 18 },
-
-  // ── Sources ──────────────────────────────────────────────────────────────────
-  sourcesSection: { marginBottom: 14 },
-  sectionHeader:  { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10 },
-  sectionTitle:   { color: '#1e293b', fontSize: 14, fontWeight: '700' },
-  sourceCard:     { backgroundColor: '#fff', borderRadius: 14, padding: 14, marginBottom: 10, borderWidth: 1, borderColor: '#e2e8f0' },
-  sourceCardHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 },
-  sourceIconWrap: { width: 22, height: 22, borderRadius: 11, backgroundColor: '#eff6ff', alignItems: 'center', justifyContent: 'center' },
-  sourceCardSource: { color: '#2563eb', fontSize: 11, fontWeight: '600', flex: 1 },
-  sourceLinkBtn:  { padding: 2 },
-  sourceCardTitle: { color: '#0f172a', fontSize: 14, fontWeight: '700', marginBottom: 4 },
-  sourceCardSnippet: { color: '#475569', fontSize: 12, lineHeight: 18 },
-
-  // ── No sources ────────────────────────────────────────────────────────────────
-  noSourcesBox:  { backgroundColor: '#f8fafc', borderRadius: 14, padding: 20, alignItems: 'center', gap: 8, marginBottom: 14 },
-  noSourcesText: { color: '#475569', fontSize: 13, textAlign: 'center' },
-
-  // ── Empty state ───────────────────────────────────────────────────────────────
-  emptyState:      { alignItems: 'center', paddingVertical: 30, paddingHorizontal: 20 },
-  emptyStateEmoji: { fontSize: 64, marginBottom: 12 },
-  emptyStateTitle: { color: '#0f172a', fontSize: 20, fontWeight: '800', marginBottom: 8, textAlign: 'center' },
-  emptyStateText:  { color: '#475569', fontSize: 13, textAlign: 'center', lineHeight: 20, marginBottom: 24 },
-  featureList:     { width: '100%', gap: 12 },
-  featureItem:     { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: '#fff', borderRadius: 12, padding: 12 },
-  featureText:     { color: '#334155', fontSize: 13 },
-
-  // ── History controls ──────────────────────────────────────────────────────────
-  historyControls:     { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 10 },
-  historySearchBox:    { flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 10, paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: '#e2e8f0' },
-  historySearchInput:  { flex: 1, color: '#0f172a', fontSize: 13 },
-  compareModeBtn:      { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 12, paddingVertical: 9, borderRadius: 10, borderWidth: 1, borderColor: '#60a5fa', backgroundColor: '#fff' },
-  compareModeBtnActive:{ backgroundColor: '#2563eb', borderColor: '#2563eb' },
-  compareModeBtnText:  { color: '#60a5fa', fontSize: 12, fontWeight: '600' },
-
-  // ── Compare panel ─────────────────────────────────────────────────────────────
-  comparePanel:      { backgroundColor: '#fff', borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: '#e2e8f0' },
-  comparePanelTitle: { color: '#0f172a', fontSize: 14, fontWeight: '800', marginBottom: 12 },
-  compareCols:       { flexDirection: 'row', gap: 12 },
-  compareCol:        { flex: 1, borderRadius: 12, padding: 12, borderWidth: 1, backgroundColor: '#f8fafc' },
-  compareColQuery:   { color: '#0f172a', fontSize: 12, fontWeight: '700', marginBottom: 6 },
-  compareColScore:   { fontSize: 13, fontWeight: '700', marginBottom: 4 },
-  compareColNum:     { fontSize: 18, fontWeight: '900', marginBottom: 6 },
-  compareColWords:   { color: '#10b981', fontSize: 11 },
-  compareColWordsNeg:{ color: '#f87171', fontSize: 11 },
-
-  // ── Clear all ─────────────────────────────────────────────────────────────────
-  clearAllBtn:  { flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-end', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, backgroundColor: '#fff1f2', borderWidth: 1, borderColor: '#fecaca', marginBottom: 10 },
-  clearAllText: { color: '#f87171', fontSize: 12, fontWeight: '600' },
-
-  // ── History loading ───────────────────────────────────────────────────────────
-  histLoadingBox:  { alignItems: 'center', paddingVertical: 30, gap: 10 },
-  histLoadingText: { color: '#64748b', fontSize: 13 },
-
-  // ── History empty ─────────────────────────────────────────────────────────────
-  histEmptyBox:   { alignItems: 'center', paddingVertical: 40, gap: 8 },
-  histEmptyEmoji: { fontSize: 48 },
-  histEmptyTitle: { color: '#0f172a', fontSize: 16, fontWeight: '700' },
-  histEmptyText:  { color: '#475569', fontSize: 13, textAlign: 'center', paddingHorizontal: 20 },
-
-  // ── History row ───────────────────────────────────────────────────────────────
-  historyRow:         { backgroundColor: '#fff', borderRadius: 14, padding: 14, marginBottom: 8, flexDirection: 'row', alignItems: 'center', gap: 10, borderWidth: 1, borderColor: '#e2e8f0' },
-  historyRowSelected: { borderColor: '#2563eb', backgroundColor: '#eff6ff' },
-  historyRowLeft:     { width: 32, alignItems: 'center' },
-  historyRowEmoji:    { fontSize: 22 },
-  historyRowMid:      { flex: 1 },
-  historyRowQuery:    { color: '#0f172a', fontSize: 14, fontWeight: '700', marginBottom: 3 },
-  historyRowDate:     { color: '#94a3b8', fontSize: 11 },
-  historyRowRight:    { alignItems: 'flex-end', gap: 4 },
-  historyRowBadge:    { borderRadius: 10, paddingHorizontal: 8, paddingVertical: 3, borderWidth: 1 },
-  historyRowBadgeText:{ fontSize: 10, fontWeight: '700' },
-  historyRowScore:    { fontSize: 14, fontWeight: '900' },
-  historyDeleteBtn:   { padding: 4 },
-  compareCheckbox:    { width: 22, height: 22, borderRadius: 11, borderWidth: 2, borderColor: '#cbd5e1', alignItems: 'center', justifyContent: 'center' },
-
-  // ── Trends card ───────────────────────────────────────────────────────────────
-  trendsCard:  { borderRadius: 20, padding: 20, marginBottom: 14 },
-  trendsTitle: { color: '#f8fafc', fontSize: 16, fontWeight: '800', marginBottom: 2 },
-  trendsSub:   { color: '#64748b', fontSize: 12, marginBottom: 16 },
-
-  // ── Sparkline ─────────────────────────────────────────────────────────────────
+  sentimentScore:{ fontSize: 42, fontWeight: '900', textAlign: 'center', marginBottom: 2 },
+  sentimentScoreLabel: { color: '#475569', fontSize: 11, textAlign: 'center', marginBottom: 14 },
+  gaugeContainer:{ marginBottom: 16 },
+  gaugeTrack:    { height: 12, backgroundColor: '#334155', borderRadius: 6, overflow: 'hidden', position: 'relative' },
+  gaugeFill:     { height: '100%', borderRadius: 6, position: 'absolute', left: 0 },
+  gaugeMidLine:  { position: 'absolute', left: '50%', top: 0, bottom: 0, width: 2, backgroundColor: '#475569' },
+  gaugeLabels:   { flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 },
+  gaugeLabel:    { fontSize: 10, fontWeight: '700' },
+  kwTitle:       { color: '#94a3b8', fontSize: 11, fontWeight: '700', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 },
+  kwRow:         { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  kwPos:         { backgroundColor: '#064e3b', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4 },
+  kwPosText:     { color: '#34d399', fontSize: 11, fontWeight: '600' },
+  kwNeg:         { backgroundColor: '#450a0a', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4 },
+  kwNegText:     { color: '#f87171', fontSize: 11, fontWeight: '600' },
+  aiRec:         { flexDirection: 'row', alignItems: 'flex-start', gap: 8, backgroundColor: '#1e3a5f', borderRadius: 12, padding: 12, marginTop: 14 },
+  aiRecText:     { color: '#93c5fd', fontSize: 12, flex: 1, lineHeight: 18 },
+  sectionHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10 },
+  sectionTitle:  { color: '#1e293b', fontSize: 14, fontWeight: '700' },
+  sourceCard:    { backgroundColor: '#fff', borderRadius: 14, padding: 14, marginBottom: 10, borderWidth: 1, borderColor: '#e2e8f0' },
+  sourceCardHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 },
+  sourceCardSource: { color: '#2563eb', fontSize: 11, fontWeight: '600' },
+  sourceCardTitle:  { color: '#0f172a', fontSize: 14, fontWeight: '700', marginBottom: 4 },
+  sourceCardSnippet:{ color: '#475569', fontSize: 12, lineHeight: 18 },
+  emptyState:    { alignItems: 'center', paddingVertical: 40, paddingHorizontal: 20 },
+  emptyTitle:    { color: '#0f172a', fontSize: 18, fontWeight: '800', marginBottom: 8, textAlign: 'center' },
+  emptyText:     { color: '#475569', fontSize: 13, textAlign: 'center', lineHeight: 20 },
+  trendsCard:    { borderRadius: 20, padding: 20, marginBottom: 14 },
+  trendsTitle:   { color: '#f8fafc', fontSize: 16, fontWeight: '800', marginBottom: 2 },
+  trendsSub:     { color: '#64748b', fontSize: 12, marginBottom: 16 },
   sparklineContainer: { flexDirection: 'row', alignItems: 'flex-end', gap: 6, height: 80 },
-  sparklineBar:       { flex: 1, alignItems: 'center', justifyContent: 'flex-end', gap: 4 },
-  sparklineBarFill:   { width: '100%', borderRadius: 4 },
-  sparklineBarLabel:  { color: '#475569', fontSize: 8, textAlign: 'center' },
-  sparklineEmpty:     { paddingVertical: 24, alignItems: 'center' },
+  sparklineBar:  { flex: 1, alignItems: 'center', justifyContent: 'flex-end', gap: 4 },
+  sparklineBarFill: { width: '100%', borderRadius: 4 },
+  sparklineBarLabel: { color: '#475569', fontSize: 8, textAlign: 'center' },
+  sparklineEmpty:{ paddingVertical: 24, alignItems: 'center' },
   sparklineEmptyText: { color: '#475569', fontSize: 12, textAlign: 'center' },
-
-  // ── Stats grid ────────────────────────────────────────────────────────────────
-  statsGrid:  { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 14 },
-  statCard:   { flex: 1, minWidth: '28%', backgroundColor: '#fff', borderRadius: 14, padding: 14, alignItems: 'center', gap: 4, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 4, elevation: 2 },
-  statValue:  { fontSize: 22, fontWeight: '900' },
-  statLabel:  { color: '#64748b', fontSize: 10, textAlign: 'center' },
-
-  // ── Recent list ───────────────────────────────────────────────────────────────
-  recentList:      { backgroundColor: '#fff', borderRadius: 16, padding: 16, marginBottom: 14 },
-  recentListTitle: { color: '#0f172a', fontSize: 14, fontWeight: '700', marginBottom: 12 },
-  recentRow:       { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#f1f5f9' },
-  recentRowEmoji:  { fontSize: 18 },
-  recentRowQuery:  { flex: 1, color: '#334155', fontSize: 13 },
-  recentRowScore:  { fontSize: 14, fontWeight: '700' },
+  statsGrid:     { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 14 },
+  statCard:      { flex: 1, minWidth: '28%', backgroundColor: '#fff', borderRadius: 14, padding: 14, alignItems: 'center', gap: 4, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 4, elevation: 2 },
+  statValue:     { fontSize: 22, fontWeight: '900' },
+  statLabel:     { color: '#64748b', fontSize: 10, textAlign: 'center' },
 });
