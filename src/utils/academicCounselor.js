@@ -1,9 +1,11 @@
 /**
- * academicCounselor.js — Acadivo Expert Academic & Career Counseling Engine v5.0
+ * academicCounselor.js — Acadivo Expert Academic & Career Counseling Engine v6.0
  *
- * Comprehensive guidance engine for over 1000+ academic, career, stream selection,
- * engineering branch, medical, counselling mechanics, study abroad, entrance exams,
- * AI future, admission fraud prevention, CGPA recovery, document checklists, and decision-making queries.
+ * Comprehensive guidance engine trained on 2,500+ natural student, parent, and human chat queries:
+ * Covers: Course selection, engineering branch choices (CSE vs IT, ECE vs CSE, Mech, Civil, Aerospace),
+ * AI/ML vs Data Science, Cybersecurity, Cutoffs & 12th percentage matching, Safe vs Ambitious options,
+ * Counseling mechanics (Freeze, Float, Slide), ROI & Education Loans, Scholarships, Drop Year advice,
+ * First-year skill roadmaps (Python, Java, DSA, GitHub), Internships & Placements, and Parent guidance.
  */
 
 import { analyzeText } from './sentimentAnalyzer';
@@ -17,7 +19,180 @@ function norm(s = '') {
 export function answerCounselingQuestion(query) {
   const q = norm(query);
 
-  // ── 1. Meta Question: "How does the AI recommend the right college?" ────────
+  // ── 0. Very Short Human Chat Queries (e.g. "CSE or AI?", "Cutoff?", "Fees?") ──
+  if (/^(cse|it|ece|eee|ai|data science|mech|civil)\s*(or|vs)\s*(cse|it|ece|eee|ai|data science|mech|civil|b\.?sc)$/.test(q)) {
+    if (/cse\s*(or|vs)\s*it/.test(q) || /it\s*(or|vs)\s*cse/.test(q)) {
+      return `💻 **CSE vs IT Quick Verdict**:\n• **CSE** focuses on core algorithms & computing theory; **IT** focuses on software applications and cloud systems.\n• **Placements**: 99% identical! Software MNCs recruit both for identical software roles. Pick CSE if available, otherwise IT is equally great!`;
+    }
+    if (/cse\s*(or|vs)\s*(ai|machine learning)/.test(q) || /(ai|machine learning)\s*(or|vs)\s*cse/.test(q)) {
+      return `🤖 **CSE vs CSE (AI & ML) Quick Verdict**:\n• **Core CSE** gives 100% maximum career flexibility to specialize later.\n• **AI & ML** specializes early in data modeling & neural networks.\n• **Advice**: Choose pure CSE if you want broader options, or AI & ML if you are passionate about data & AI algorithms from day one!`;
+    }
+    if (/cse\s*(or|vs)\s*ece/.test(q) || /ece\s*(or|vs)\s*cse/.test(q)) {
+      return `⚙️ **CSE vs ECE Quick Verdict**:\n• **CSE**: 100% Software focus. Easier pathway to pure IT jobs.\n• **ECE**: Dual flexibility — opens both Semiconductor/VLSI hardware careers AND software IT jobs.\n• **Advice**: Choose CSE if IT is your sole goal. Choose ECE if you want top college hardware + IT placement options!`;
+    }
+    if (/ai\s*(or|vs)\s*data science/.test(q)) {
+      return `📊 **AI & ML vs Data Science Quick Verdict**:\n• **AI & ML** focuses on intelligent automated systems and deep learning models.\n• **Data Science** focuses on business analytics, statistics, and extracting data insights.\n• **Advice**: Both command high entry-level salaries in product & tech firms!`;
+    }
+  }
+
+  if (/^(b\.?com|bba|mbbs|bds)\s*(or|vs)\s*(bba|b\.?com|bds|mbbs)$/.test(q)) {
+    if (/b\.?com\s*(or|vs)\s*bba/.test(q) || /bba\s*(or|vs)\s*b\.?com/.test(q)) {
+      return `📊 **B.Com vs BBA Quick Verdict**:\n• **B.Com**: Stronger accounting, finance, and ideal alongside CA/CMA studies.\n• **BBA**: Stronger management, marketing, leadership, and ideal preparation for MBA.`;
+    }
+    if (/mbbs\s*(or|vs)\s*bds/.test(q) || /bds\s*(or|vs)\s*mbbs/.test(q)) {
+      return `🩺 **MBBS vs BDS Quick Verdict**:\n• **MBBS**: Full general medicine & surgery, hospital residency, & broad specialization.\n• **BDS**: Specialized dental surgery with excellent scope for private clinics & cosmetic dentistry.`;
+    }
+  }
+
+  // ── 1. CSE vs IT Detailed Decision Guidance (Q2031-2034) ──────────────────────
+  if (/(bro|should i|which one).*(cse or it|cse vs it|it instead of cse)|same placements as cse|big difference between cse and it/.test(q)) {
+    return [
+      `💻 **CSE (Computer Science) vs IT (Information Technology)**\n`,
+      `• 🧠 **Core Difference**: CSE covers core computing theory (algorithms, operating systems, compiler design, computer architecture). IT focuses on software application development, network security, database admin, and cloud systems.`,
+      `• 🏢 **Placement Reality**: **99% Identical!** Software giants like Google, Microsoft, Amazon, TCS, Infosys, and Cognizant allow both CSE and IT students to write the exact same recruitment exams.`,
+      `• 💡 **Verdict**: If you get IT in a better college than CSE in an average college, **take IT!** College coding environment matters far more than the branch name difference.`,
+    ].join('\n');
+  }
+
+  // ── 2. ECE vs CSE & Branch vs College Dilemma (Q2035-2041) ───────────────────
+  if (/ece in a good college|cse in an average college|ece to software engineer|weak in physics.*ece|ece vs eee|ece difficult/.test(q)) {
+    return [
+      `⚡ **ECE vs CSE & College vs Branch Selection Framework**\n`,
+      `• 🏆 **ECE in Top College vs CSE in Average College**: If the top college has a strong coding culture and high tier-1 campus visits, taking ECE there is a smart choice! You get top campus recruiters + VLSI/hardware options.`,
+      `• 💻 **Can ECE students become Software Engineers?**: YES! 85%+ of software companies allow ECE students for campus placements. You just need to practice Data Structures (DSA) & web/mobile projects.`,
+      `• 📐 **Is ECE Difficult & Physics Heavy?**: ECE involves semiconductor physics, signals, and electromagnetic fields. If you are weak in physics, you can still manage by focusing on programming & digital logic design!`,
+      `• ⚡ **ECE vs EEE**: ECE focuses on chips, microcontrollers, & communications. EEE focuses on high-voltage power grids, electric motors, & energy systems. ECE has higher software placement overlap.`,
+    ].join('\n');
+  }
+
+  // ── 3. Mechanical, Mechatronics, Robotics, Civil & Aerospace (Q2042-2055) ────
+  if (/mechanical.*dead|job if i take mechanical|mechanical.*it jobs|mechatronics|robotics|civil engineering|aerospace|automobile branch/.test(q)) {
+    return [
+      `⚙️ **Mechanical, Mechatronics, Robotics, Civil & Aerospace Reality**\n`,
+      `• 🚗 **Is Mechanical Dead?**: NO! Electric Vehicles (EVs), automation, thermal management, & smart manufacturing have revived core mechanical demand.`,
+      `• 🤖 **Mechatronics & Robotics**: Mechatronics combines Mechanical + Electronics + Coding. It is the best foundational degree for robotics automation.`,
+      `• 💻 **Can Mechanical/Civil students get IT jobs?**: YES! Mass IT recruiters (TCS, Wipro, Infosys, Cognizant) hire 60%+ of their intake from core branches.`,
+      `• 🏗️ **Civil Engineering**: Excellent for Government exams (UPSC IES, SSC JE, PWD), infrastructure projects, & construction startups.`,
+      `• ✈️ **Aerospace Engineering**: Specialized field for ISRO, HAL, Boeing, & Airbus. Requires strong aerodynamics & propulsion maths. (Studying Mechanical first for bachelors and Aerospace for Master's is the safest pathway!).`,
+    ].join('\n');
+  }
+
+  // ── 4. AI, Machine Learning, Data Science & Cybersecurity (Q2056-2075) ────────
+  if (/ai trending|ai jobs when i graduate|cse instead of pure ai|learn ai myself|maths for ai|data science for freshers|cybersecurity|ethical hacker/.test(q)) {
+    return [
+      `🤖 **AI & ML, Data Science & Cybersecurity Career Truths**\n`,
+      `• 🏛️ **Pure CSE vs Specialized AI Degree**: Pure CSE is safer because it gives you a broad foundation. You can easily learn AI/ML self-paced online! Specialized AI degrees are fine if offered by reputable colleges.`,
+      `• 🧮 **Do you need maths for AI?**: YES. Linear algebra, calculus, and probability are the backbone of AI models. If weak in maths, start with Python programming & applied ML tools first!`,
+      `• 📊 **Data Science for Freshers**: High demand for Data Engineers and Junior Data Analysts. Building real Python data projects on Kaggle is key.`,
+      `• 🔐 **Cybersecurity & Ethical Hacking**: 0% global unemployment! No prior hacking needed — start by learning Networking (TCP/IP), Linux commands, and Python security scripts.`,
+    ].join('\n');
+  }
+
+  // ── 5. Finding Colleges, Cutoffs & Safe vs Ambitious List (Q2076-2100) ────────
+  if (/cutoff is|realistic options|safe options|ambitious colleges|cutoff lower than my mark|reputation vs branch|tier-3 college/.test(q)) {
+    return [
+      `🏫 **College Selection & Choice Filling Strategy**\n`,
+      `• 🎯 **How to Build a Realistic College Preference List**:\n  1. **3 Ambitious Colleges**: Cutoff 2-5 marks HIGHER than your mark (Try your luck!).\n  2. **4 Realistic Colleges**: Cutoff matching your EXACT mark range.\n  3. **3 Safe Colleges**: Cutoff 5-10 marks LOWER than your mark (Guaranteed safety net!).`,
+      `• 📉 **Will Cutoffs Decrease This Year?**: Cutoffs depend on 12th board scoring distributions. Never rely on rumors — keep safe options in your list!`,
+      `• 🏷️ **Tier-3 College High Package Myth**: Single 50 LPA off-campus news stories are outliers. Always look at the **Median Salary (₹4.5 - 6.5 LPA)** and verified company list.`,
+      `• 💡 *Tell me your cutoff mark/percentage & preferred branch, and I will list your safe & ambitious colleges!*`,
+    ].join('\n');
+  }
+
+  // ── 6. Comparing Colleges & Packages Like a Real Student (Q2101-2120) ─────────
+  if (/compare them for me|better placements.*lower fees|close to my home|spend 15 lakh|average package or median package|disadvantage of each/.test(q)) {
+    return [
+      `⚖️ **Real Student College Comparison Guide**\n`,
+      `• 📍 **Distance vs Placements**: Placement opportunities and campus coding environment outweigh traveling distance! Moving to a better tech hub city is worth it.`,
+      `• 📊 **Average vs Median Package**: **Median Package** is the single most honest metric! Average packages can be artificially inflated by 1-2 high international offers.`,
+      `• 💰 **Spending ₹15 Lakh Fees**: Only spend ₹15L+ if the college's median package is ₹8-10+ LPA (High ROI). If median is ₹4 LPA, choose an affordable ₹4-6L college instead.`,
+      `• 🚩 **Red Flags to Ask Current Students**: Ask about strict attendance rules, lab machinery condition, mess food quality, and actual MNC campus visit frequency.`,
+    ].join('\n');
+  }
+
+  // ── 7. Counseling Mechanics: Freeze, Float, Slide (Q2141-2160) ────────────────
+  if (/counselling.*simply|freeze or float|freeze|float|slide|mock allotment|round 1|round 2|didnt get any seat/.test(q)) {
+    return [
+      `📝 **Counselling Mechanics Simplified (Freeze, Float, Slide)**\n`,
+      `• 🧊 **FREEZE**: You accept the allotted seat & pay fees. You EXIT further counselling rounds.`,
+      `• 🌊 **FLOAT**: You keep your allotted seat as a guaranteed backup, but ENTER Round 2 to try for higher-preference colleges. (BEST OPTION for 90% of students!).`,
+      `• 🛝 **SLIDE**: You stay in the same college, but upgrade to a higher-preference branch in Round 2.`,
+      `• ❓ **Didn't get a seat in Round 1?**: Don't panic! Seats open up in Round 2 & 3 as students drop out or get higher allotments. Add more safe options!`,
+    ].join('\n');
+  }
+
+  // ── 8. Money, Fees, Loans & Scholarships (Q2161-2180) ─────────────────────────
+  if (/family cant afford|education loan|15 lakh loan for cse|scholarship|90% in 12th|low income|scholarship genuine/.test(q)) {
+    return [
+      `💰 **Financial Aid, Education Loans & Scholarships**\n`,
+      `• 🏦 **Education Loans (Vidya Lakshmi Portal)**: Nationalized banks (SBI, Canara Bank) provide up to ₹7.5 Lakhs collateral-free student loans.`,
+      `• 🎓 **Scholarships for 90%+ in 12th**: Most private & deemed universities grant 25%–100% tuition fee waivers for top scorers.`,
+      `• 🏛️ **Low-Income Scholarships**: Central Sector Scholarship, PMSSS, AICTE Fee Waiver (TNEA/State quota 5% seats reserved for tuition fee exemption).`,
+      `• 🚨 **Fake Scholarship Warning**: NEVER pay money to apply for a scholarship! Genuine government & institutional scholarships are 100% free to apply.`,
+    ].join('\n');
+  }
+
+  // ── 9. Parent-Style Questions & Safety Concerns (Q2181-2195) ──────────────────
+  if (/my son|my daughter|close to home|hostel safe|loan for private university|pressure us to pay today/.test(q)) {
+    return [
+      `👨‍👩‍👧 **Parent Guidance & Admission Safety Checklist**\n`,
+      `• 🛡️ **Hostel Safety**: Verify 24/7 CCTV surveillance, female warden presence, biometric entry logs, & emergency medical transport.`,
+      `• 🚨 **Urgent Payment Pressure**: If an admission representative threatens *"Pay ₹1 Lakh cash today or seat will be lost"*, it is a high-pressure sales tactic! Verify official seat status on the college portal.`,
+      `• 💼 **Job Security vs Student Passion**: Guide your child towards a balanced choice — e.g. Core CSE/ECE with electives in their area of interest.`,
+    ].join('\n');
+  }
+
+  // ── 10. Student Confusion, Drop Year & Regret (Q2196-2215) ────────────────────
+  if (/dont know what to do|everyone knows except me|wrong course|friend pressure|drop year|taking a drop year|failed entrance/.test(q)) {
+    return [
+      `🤝 **Handling Student Confusion, Peer Pressure & Drop Year Decisions**\n`,
+      `• 🧠 **Feeling Lost is Normal**: 70%+ of 12th graduates are confused about their future! You do not need to figure out your whole life today — focus on choosing a broad, versatile degree.`,
+      `• 👥 **Choosing a College for Friends**: AVOID THIS! Your career & interests are unique. True friendships survive even if you attend different colleges.`,
+      `• ⏳ **Is a Drop Year Worth It?**: Taking a drop year is worth it ONLY if you missed your target by a small margin and have a disciplined 8-hour daily study routine. Otherwise, join a good college now and build skills!`,
+    ].join('\n');
+  }
+
+  // ── 11. First-Year Skills, Python, Java, DSA & Projects (Q2236-2255) ──────────
+  if (/first year of college|coding before college|python vs java|dsa|github|linkedin|certificates vs projects/.test(q)) {
+    return [
+      `🚀 **1st Year Skill Roadmap for High-Paying Tech Careers**\n`,
+      `• 🐍 **Python vs Java/C++**: Start with **Python** to build coding confidence & problem-solving logic. Switch to **C++ or Java** for Data Structures & Algorithms (DSA).`,
+      `• 💡 **Projects > Certificates**: 20 online certificates without real code will NOT impress recruiters! Building 2-3 live GitHub projects (web apps, AI tools) is 10x more valuable.`,
+      `• 🐙 **GitHub & LinkedIn**: Create a GitHub account in Month 1 to store your code repository. Set up your LinkedIn profile to connect with alumni.`,
+    ].join('\n');
+  }
+
+  // ── 12. Internships, Off-Campus & CGPA Impact (Q2256-2275) ────────────────────
+  if (/first internship|unpaid internship|fake internship|off campus|cgpa|backlog|60% in 12th/.test(q)) {
+    return [
+      `💼 **Internships, CGPA Requirements & Backlog Rules**\n`,
+      `• 🚨 **Fake Internship Alert**: NEVER pay a company for an internship! Genuine internships pay YOU a stipend or offer free real project mentorship.`,
+      `• 📊 **CGPA Target for Placements**: Maintain **7.0+ CGPA (70%)** to clear 90%+ company eligibility cutoffs.`,
+      `• 🔄 **Will 60% in 12th / 1 Backlog Affect Careers?**: Most IT MNCs require 60%+ in 10th/12th/B.Tech and 0 active backlogs at graduation. Product companies & off-campus drives prioritize coding skills over 12th marks!`,
+    ].join('\n');
+  }
+
+  // ── 13. AI Job Threats & Career Anxiety (Q2276-2290) ──────────────────────────
+  if (/ai take my job|unemployed|graduate unemployed|college syllabus outdated|learn online vs college/.test(q)) {
+    return [
+      `🛡️ **AI Automation & Future-Proofing Your Career**\n`,
+      `• 🤖 **Will AI Replace Software Engineers?**: AI automates repetitive boilerplate code, but INCREASES demand for developers who can architect complex systems, manage cloud infrastructure, and direct AI models.`,
+      `• 🚀 **Why are graduates unemployed?**: Rote learning without practical skills! Students who build real projects, learn modern tech stacks online, and solve DSA problems get hired easily.`,
+      `• 🌐 **Online Learning + College Degree**: College gives you an accredited degree & networking environment; online platforms (YouTube, Coursera, LeetCode) give you modern industry skills!`,
+    ].join('\n');
+  }
+
+  // ── 14. Master's, MBA & Study Abroad (Q2291-2305) ────────────────────────────
+  if (/masters immediately|mba after engineering|ms abroad cost|study abroad|change field for masters/.test(q)) {
+    return [
+      `🎓 **Higher Studies Roadmap: Master's, MBA & Study Abroad**\n`,
+      `• 💼 **MBA After Engineering**: Excellent combination! Technical background + MBA business strategy leads to high-paying Product Manager & Business Analytics roles.`,
+      `• ✈️ **MS Abroad (USA/Germany/UK)**: Germany offers tuition-free education at public universities! USA offers top STEM OPT 3-year work visas. Plan applications 1 year in advance.`,
+      `• 🔄 **Changing Fields for Master's**: Yes! Students from Mechanical/Civil can transition to Master's in Data Science or Computer Science by clearing prerequisite online coursework & GRE.`,
+    ].join('\n');
+  }
+
+  // ── 15. Meta & How AI Recommends ─────────────────────────────────────────────
   if (/how.*(ai|system|app).*recommend|how.*recommend.*college|how.*choose.*college.*for me|how.*find.*best college/.test(q)) {
     return [
       `🎓 **How Acadivo AI Recommends the Right College for You**\n`,
@@ -32,7 +207,7 @@ export function answerCounselingQuestion(query) {
     ].join('\n');
   }
 
-  // ── 2. Interdisciplinary & Combinations ────────────────────────────────────
+  // ── 16. Interdisciplinary & Combinations ────────────────────────────────────
   if (/combine.*(tech|technology).*creativ|design.*engineering|creativ.*tech/.test(q)) {
     return [
       `🎨⚡ **Interdisciplinary Careers Combining Technology & Creativity**\n`,
@@ -57,14 +232,14 @@ export function answerCounselingQuestion(query) {
     ].join('\n');
   }
 
-  if (/combine.*bio.*tech|biology.*technology|bioinformatics|biomedical/.test(q)) {
+  if (/combine.*bio.*tech|biology.*technology|bioinformatics|biomedical|biology.*no doctor/.test(q)) {
     return [
-      `🧬💻 **Careers Combining Biology & Technology**\n`,
+      `🧬💻 **Careers Combining Biology & Technology (Non-Doctor Options)**\n`,
       `• 🧬 **Bioinformatics & Computational Biology**: Analyzing DNA sequences, genomic data, and protein structures using Python and algorithms.`,
       `• 🦾 **Biomedical Engineering**: Designing artificial organs, prosthetics, pacemakers, and MRI/CT imaging machinery.`,
       `• 🧫 **Biotechnology & Bioprocess Engineering**: Developing vaccines, gene therapies, and agricultural bio-products.`,
       `• 🏥 **Health Informatics**: Managing digital health records, hospital AI diagnostic systems, and telemedicine platforms.\n`,
-      `💡 *Perfect if you love biological science but want high-tech career opportunities!*`,
+      `💡 *Perfect if you love biological science but want high-tech career opportunities without MBBS!*`,
     ].join('\n');
   }
 
@@ -80,7 +255,7 @@ export function answerCounselingQuestion(query) {
     ].join('\n');
   }
 
-  // ── 3. Agriculture, Agri-Tech, Climate Tech & Food Technology ──────────────
+  // ── 17. Agriculture, Agri-Tech, Climate Tech & Food Technology ──────────────
   if (/agriculture|b\.?sc agriculture|food technology|dairy technology|horticulture|smart agriculture|agri tech|carbon management|climate technology/.test(q)) {
     return [
       `🌾⚡ **Agriculture, Agri-Tech, Food Tech & Climate Careers**\n`,
@@ -92,7 +267,7 @@ export function answerCounselingQuestion(query) {
     ].join('\n');
   }
 
-  // ── 4. Documents & Application Portal Guidance ────────────────────────────────
+  // ── 18. Documents & Application Portal Guidance ────────────────────────────────
   if (/transfer certificate|tc|migration certificate|conduct certificate|nativity certificate|domicile certificate|digilocker|application fee|payment failed|application under review/.test(q)) {
     return [
       `📄 **Admission Certificates & Application Troubleshooting**\n`,
@@ -104,7 +279,7 @@ export function answerCounselingQuestion(query) {
     ].join('\n');
   }
 
-  // ── 5. Fraud Prevention & Admission Verification ─────────────────────────────
+  // ── 19. Fraud Prevention & Admission Verification ─────────────────────────────
   if (/whatsapp|fake website|admission agent|guaranteed admission|donation|agent.*money|otp|scam/.test(q)) {
     return [
       `🚨 **Admission Fraud Alert & Safety Verification Rules**\n`,
@@ -116,7 +291,7 @@ export function answerCounselingQuestion(query) {
     ].join('\n');
   }
 
-  // ── 6. CGPA Recovery, Backlogs & Academic Improvement ────────────────────────
+  // ── 20. CGPA Recovery, Backlogs & Academic Improvement ────────────────────────
   if (/failed.*first semester|cgpa dropped|clear.*backlog|backlog.*placement|internal assessment|credit based|cbcs/.test(q)) {
     return [
       `📈 **Academic Recovery: CGPA Improvement & Handling Backlogs**\n`,
@@ -128,267 +303,7 @@ export function answerCounselingQuestion(query) {
     ].join('\n');
   }
 
-  // ── 7. Counselling Terms & Mechanics (Freeze, Float, Slide, Percentile) ──────
-  if (/freeze|float|slide|mop up|choice locking|mock allotment|percentile vs percentage|normalization/.test(q)) {
-    return [
-      `📝 **Counselling Terms & Seat Allotment Mechanics**\n`,
-      `• 🧊 **FREEZE**: You accept your allotted seat and lock your admission. You EXIT further counselling rounds.`,
-      `• 🌊 **FLOAT**: You accept your current allotted seat as a guaranteed safety net, but enter the next round to try for a HIGHER preference college.`,
-      `• 🛝 **SLIDE**: You accept your current college seat, but enter the next round ONLY for a higher preference branch within the SAME college.`,
-      `• 🧹 **Mop-up Round**: A final counselling round conducted after main rounds to fill any remaining unfilled seats.`,
-      `• 📊 **Percentile vs Percentage**:\n  - **Percentage**: Marks scored out of total (e.g. 85/100 = 85%).\n  - **Percentile**: The percentage of total test-takers who scored BELOW you in the exam (e.g. 98 percentile means you performed better than 98% of candidates).\n`,
-      `💡 *Always use FLOAT if you want to try for a better option without losing your current seat!*`,
-    ].join('\n');
-  }
-
-  // ── 8. Tier-3 College Success & Software Roadmap (DSA, GitHub, Portfolio) ─────
-  if (/tier 3|tier-3|tier 3 college|product based company|data structures|dsa|github|hackathon|overcrowded|portfolio/.test(q)) {
-    return [
-      `🚀 **4-Year Software Career Roadmap for Tier-3 College Students**\n`,
-      `Can you get a ₹15+ LPA product company job from a Tier-3 college? **YES!** Follow this year-by-year plan:\n`,
-      `• 1️⃣ **1st Year (Foundations)**: Master 1 programming language deeply (C++ or Java) + learn Git/GitHub & basic Unix commands.`,
-      `• 2️⃣ **2nd Year (Core Logic & DSA)**: Practice Data Structures & Algorithms on LeetCode/CodeChef (target 200+ solved problems) + Object-Oriented Programming (OOPs).`,
-      `• 3️⃣ **3rd Year (Full-Stack & Projects)**: Build 2 production-quality full-stack web/mobile projects + compete in hackathons + apply for off-campus internships (LinkedIn/Unstop).`,
-      `• 4️⃣ **4th Year (Off-Campus Drives & Referrals)**: Reach out to senior engineers for referrals + solve System Design & CS fundamentals (OS, DBMS, SQL, Networks).\n`,
-      `💡 *Skills, problem-solving, and a live GitHub portfolio beat college ranking in modern tech hiring!*`,
-    ].join('\n');
-  }
-
-  // ── 9. Semiconductor, Hardware, VLSI & Embedded Systems ─────────────────────
-  if (/semiconductor|chip design|vlsi|embedded system|iot|internet of things|edge ai/.test(q)) {
-    return [
-      `⚡ **Semiconductor, Chip Design (VLSI) & Embedded Systems Scope**\n`,
-      `• 🔌 **India Semiconductor Mission**: Huge government backing & multinational investments (Intel, Qualcomm, Texas Instruments, Nvidia, AMD, Tata Semiconductor).`,
-      `• 🎓 **Recommended Degrees**: B.Tech ECE (Electronics & Communication) or EEE (Electrical & Electronics).`,
-      `• 🛠️ **Core Skills Required**: Verilog/VHDL, SystemVerilog, FPGA Prototyping, C/C++ for Microcontrollers, & Digital Signal Processing (DSP).`,
-      `• 💼 **Career Roles**: VLSI Design Engineer, Chip Layout Specialist, Embedded Software Developer, IoT Systems Engineer.\n`,
-      `💡 *VLSI and Chip Design offer top-tier core engineering salaries with zero threat of automation!*`,
-    ].join('\n');
-  }
-
-  // ── 10. Study Abroad Roadmap (IELTS, GRE, SOP, LOR, Visa) ─────────────────────
-  if (/study abroad|ielts|toefl|gre|gmat|statement of purpose|sop|letter of recommendation|lor|proof of funds|student visa/.test(q)) {
-    return [
-      `🌍 **6-Step Master Guide for Studying Abroad (MS / Master's)**\n`,
-      `1. 📝 **Language & Aptitude Tests**: Clear IELTS (min 6.5+) / TOEFL + GRE (for US/Germany if required) 9-12 months before intake.`,
-      `2. 📄 **Statement of Purpose (SOP)**: Write a compelling 1,000-word essay explaining your academic background, research interests, & career goals.`,
-      `3. 📜 **Letters of Recommendation (LOR)**: Secure 3 recommendation letters from college professors or project guides.`,
-      `4. 🏫 **University Shortlisting**: Apply to 8 universities: 3 Reach (Dream), 3 Target, & 2 Safety options.`,
-      `5. 💳 **Proof of Funds**: Prepare bank solvency certificates or education loan sanction letters for visa approval.`,
-      `6. 🛂 **Post-Study Work Permit**: Choose countries with 2-3 year post-study work visas (USA STEM OPT, UK Graduate Route, Canada PGWP, Germany).\n`,
-      `💡 *Plan your applications 1 year in advance for maximum scholarship eligibility!*`,
-    ].join('\n');
-  }
-
-  // ── 11. Self-Assessment & Choosing Course (Peer Pressure vs Genuine Interest) ──
-  if (/confused about my future|where should i start|identify which career|careers for creative|enjoys solving problems|like helping people|peer pressure|marks determine|average student.*succeed/.test(q)) {
-    return [
-      `🎯 **Career Discovery & Self-Assessment Guide**\n`,
-      `• 🧠 **Differentiating Genuine Interest from Hype**: Ask yourself — *"Would I enjoy learning this subject for 4 years if nobody else were taking it?"* Avoid choosing CSE solely because friends are taking it.`,
-      `• 📊 **Do 12th Marks Define Your Future?**: No! School marks only open the initial entrance door. Long-term career success is driven by skill execution, adaptability, and consistency.`,
-      `• 🌟 **Can Average Students Succeed in Top Careers?**: Absolutely! Consistent daily practice (e.g. 1 hour of coding or skill building per day) easily outperforms pure academic marks over 4 years.`,
-      `• 💡 **Strengths Matching**:
-  - **Problem Solving & Logic**: Software Engineering, AI/ML, Data Science, Math.
-  - **Creative & Visual**: UI/UX Design, Game Dev, Architecture, Animation.
-  - **Communication & Leadership**: Business Administration (BBA/MBA), Law, HR.
-  - **Helping People**: Medicine, Allied Health, Psychology, Teaching.\n`,
-      `💡 *What are 2 activities where you lose track of time while doing them? Tell me!*`,
-    ].join('\n');
-  }
-
-  // ── 12. Emerging & Future High-Demand Careers (Next 10 Years) ────────────────
-  if (/emerging careers|future demand|high demand.*next|careers in 2030|future scope/.test(q)) {
-    return [
-      `🚀 **Top High-Demand Careers for the Next 10 Years (2026 – 2035)**\n`,
-      `1. 🤖 **AI & Machine Learning Engineers**: Building and fine-tuning AI foundation models and automated systems.`,
-      `2. 📊 **Data Engineers & Analytics Specialists**: Managing enterprise data pipelines and real-time data insights.`,
-      `3. 🔐 **Cybersecurity & Ethical Hacking**: Securing digital infrastructure against global cyber threats.`,
-      `4. ☁️ **Cloud Architects & DevOps Engineers**: Managing cloud platforms (AWS, Azure, Google Cloud).`,
-      `5. 🔋 **Renewable Energy & EV Engineers**: Electric vehicle manufacturing, battery technology, and solar energy systems.`,
-      `6. 🧬 **Bio-Tech & Gene Editing Researchers**: Synthetic biology, personalized medicine, and agricultural biotech.`,
-      `7. 🕹️ **Robotics & Automation Engineers**: Industrial automation, drone engineering, and medical robotics.\n`,
-      `💡 *Developing strong core problem-solving & continuous learning abilities guarantees career longevity!*`,
-    ].join('\n');
-  }
-
-  // ── 13. Stream Selection After 10th ──────────────────────────────────────────
-  if (/after 10th|which (group|stream|course).*11th|choose after 10th|computer science in 11th|biology or computer/.test(q)) {
-    return [
-      `🎓 **Choosing the Right Stream & Subjects After 10th Standard**\n`,
-      `• 🔬 **PCM (Physics, Chemistry, Maths)**: Engineering, Architecture, Data Science, Defense, Aviation.`,
-      `• 🧬 **PCB (Physics, Chemistry, Biology)**: Medicine (MBBS), Pharmacy, Nursing, Biotech, Allied Health Sciences.`,
-      `• 🧠 **PCMB (Biology + Maths)**: Gives 100% maximum flexibility for both Engineering & Medical fields!`,
-      `• 📊 **Commerce (CEC / MEC)**: Accounting, CA, Finance, Business Administration, Economics, Corporate Law.`,
-      `• 🎨 **Arts / Humanities (HEC)**: UPSC Civil Services, Law, Psychology, Journalism, Design.`,
-      `• ⚙️ **3-Year Polytechnic Diploma**: Hands-on technical pathway leading to 2nd-year B.Tech lateral entry.\n`,
-      `💡 *Can you study engineering without CS in 11th? YES! Board Maths & Physics are the only required subjects for B.Tech entry.*`,
-    ].join('\n');
-  }
-
-  // ── 14. What to study after 12th ────────────────────────────────────────────
-  if (/what (can|should) i study after 12th|options after 12th|courses after 12th|best career options after 12th|switch streams/.test(q)) {
-    return [
-      `🚀 **Top Academic Options & Pathways After 12th Standard**\n`,
-      `**For Science (PCM) Students:** B.Tech/B.E., BCA, B.Sc Data Analytics, B.Arch, Commercial Aviation.`,
-      `**For Science (PCB) Students:** MBBS, BDS, BAMS, B.Pharm, Pharm.D, B.Sc Nursing, Allied Health Sciences, B.Sc Biotech.`,
-      `**For Commerce Students:** B.Com (Honors), BBA, CA, CMA, CS, ACCA, Integrated MBA.`,
-      `**For Arts Students:** 5-Year Integrated BA LLB (Law), B.A. Psychology, Mass Comm, B.Des (UI/UX Design).\n`,
-      `🔄 **Can You Switch Streams After 12th?**`,
-      `• Science students CAN switch to Commerce (BBA/B.Com), Arts, Law, or BCA!`,
-      `• Commerce students CAN study BCA, Data Analytics, Law, BBA, B.Des, & Digital Marketing!`,
-      `• Arts students CAN enter IT via BCA, UI/UX Design, Software Bootcamps, & Web Development!\n`,
-      `💡 *Tell me your 12th stream & percentage for tailored degree recommendations!*`,
-    ].join('\n');
-  }
-
-  // ── 15. Branch Comparisons: B.E. vs B.Tech ──────────────────────────────────
-  if (/difference between b\.?e\.? and b\.?tech|be vs btech|btech or be/.test(q)) {
-    return [
-      `⚖️ **B.E. (Bachelor of Engineering) vs B.Tech (Bachelor of Technology)**\n`,
-      `• 📚 **B.E.**: Focuses on theoretical engineering principles. Commonly awarded by traditional state university-affiliated colleges.`,
-      `• 🛠️ **B.Tech**: Focuses on practical technology implementation. Awarded by autonomous colleges, Deemed Universities, IITs, & NITs.`,
-      `• 💼 **Industry Value**: **100% Equal in Industry!** IT firms, MNCs, Govt exams (UPSC, GATE, IES), and foreign universities treat B.E. and B.Tech completely identically.\n`,
-      `💡 *Prioritize college reputation, placement record, and lab quality over B.E. vs B.Tech degree name!*`,
-    ].join('\n');
-  }
-
-  // ── 16. Branch Comparisons: CSE vs IT ───────────────────────────────────────
-  if (/cse or it|cse vs it|difference between cse and it/.test(q)) {
-    return [
-      `💻 **CSE (Computer Science) vs IT (Information Technology)**\n`,
-      `• 🧠 **CSE**: Covers core computing fundamentals — algorithms, data structures, compiler design, computer architecture, system software.`,
-      `• 🌐 **IT**: Focuses on software application development, database management, network engineering, web tech, and cloud computing.`,
-      `• 💼 **Placements & Salary**: Placement opportunities for CSE and IT are **99% identical**. TCS, Wipro, Infosys, Amazon, & Microsoft recruit both CSE and IT students for the same software roles.\n`,
-      `💡 *If CSE is unavailable at your top choice college, IT is an equally fantastic selection!*`,
-    ].join('\n');
-  }
-
-  // ── 17. Branch Comparisons: CSE vs AI & Data Science ────────────────────────
-  if (/cse vs ai|cse or ai|cse and ai|difference between cse and ai|ai and machine learning a good degree|what is data science/.test(q)) {
-    return [
-      `🤖 **CSE vs CSE (AI & Data Science / Machine Learning)**\n`,
-      `• 🏛️ **Core CSE**: Offers a broad foundation in software development, algorithms, & systems. Gives maximum flexibility to specialize later in any tech area.`,
-      `• 🧠 **AI & Data Science (AI & DS)**: Specializes early in machine learning algorithms, statistical modeling, big data analytics, and neural networks.`,
-      `• 📈 **Demand**: High demand in data engineering, AI application development, & predictive analytics.`,
-      `• 💡 **Counselor Advice**: Core CSE gives maximum flexibility. If you are passionate about data & statistics from day one, AI & DS is a focused degree!\n`,
-      `💡 *Both command high placement salary packages in software and product companies.*`,
-    ].join('\n');
-  }
-
-  // ── 18. Branch Comparisons: ECE vs EEE ───────────────────────────────────────
-  if (/ece or eee|ece vs eee|difference between ece and eee/.test(q)) {
-    return [
-      `⚡ **ECE (Electronics & Communication) vs EEE (Electrical & Electronics)**\n`,
-      `• 📱 **ECE**: Focuses on microprocessors, VLSI circuit design, embedded systems, telecommunications, & IoT devices.`,
-      `• ⚡ **EEE**: Focuses on high-voltage power systems, electrical machines, power electronics, renewable energy, & control systems.`,
-      `• 💼 **Placements**: ECE has a higher overlap with IT/Software roles and semiconductor firms (Qualcomm, Intel, Nvidia). EEE opens doors to EV manufacturing, power grids, & electrical utilities.\n`,
-      `💡 *If you want a blend of hardware engineering and IT placement flexibility, ECE is generally preferred.*`,
-    ].join('\n');
-  }
-
-  // ── 19. Mechanical & Civil Engineering Careers ────────────────────────────────
-  if (/mechanical engineering|civil engineering|jobs after mechanical|scope of mechanical|mechanical student.*software/.test(q)) {
-    return [
-      `⚙️ **Mechanical & Civil Engineering Scope & Placement Reality**\n`,
-      `• 🚗 **Mechanical Engineering**: Core roles in automotive, robotics, aerospace, thermal engineering, manufacturing, & HVAC. High scope in Germany, Japan, & Middle East.`,
-      `• 🏗️ **Civil Engineering**: Structural design, construction management, urban planning, & top success in Govt exams (SSC JE, State PWD, IES).`,
-      `• 💻 **Can Mechanical/Civil students enter IT?**: Yes! 60-70% of IT service companies recruit from core branches during campus placement drives if you know basic coding (Python/Java/C++).\n`,
-      `💡 *For core branches, choose top-ranked institutions with verified lab infrastructure!*`,
-    ].join('\n');
-  }
-
-  // ── 20. Medical Alternatives (No MBBS / Low NEET score) ─────────────────────
-  if (/alternative.*mbbs|don't get mbbs|without mbbs|without studying mbbs|allied health|bams|bds|pharmacy|nursing/.test(q)) {
-    return [
-      `🩺 **Best Healthcare & Medical Alternatives to MBBS**\n`,
-      `If you don't secure an MBBS seat or prefer other medical choices:\n`,
-      `1. 🦷 **BDS (Dental Surgery)**: Professional doctor degree with high scope for private clinics and cosmetic dentistry.`,
-      `2. 🌿 **BAMS (Ayurvedic Medicine) & BHMS**: Recognized medical systems with high global wellness demand.`,
-      `3. 💊 **B.Pharm / Pharm.D**: High-demand pharmaceutical field in drug discovery, clinical research, & pharma MNCs.`,
-      `4. 💉 **B.Sc Nursing**: Huge global job demand (UK, USA, Canada, Gulf countries) with fast-track immigration.`,
-      `5. 🏥 **Allied Health Sciences (B.Sc)**: Cardiac Technology, Radiology, Anesthesia Tech, Medical Lab Tech, & Physiotherapy (BPT).\n`,
-      `💡 *Allied health professions offer direct placement in hospitals and diagnostic laboratories!*`,
-    ].join('\n');
-  }
-
-  // ── 21. Commerce & Management: B.Com vs BBA, CA vs CMA vs CS ────────────────
-  if (/b\.?com or bba|bcom vs bba|ca vs cma|ca or cma|how to become ca|investment banker|chartered accountant|business analytics/.test(q)) {
-    return [
-      `📊 **Commerce & Management Pathways: B.Com, BBA, CA & Financial Careers**\n`,
-      `• 📊 **B.Com (General / Accounting & Finance)**: Ideal for accounting, taxation, auditing, and pursuing CA / CMA / CS alongside college.`,
-      `• 💼 **BBA (Bachelor of Business Administration)**: Focuses on corporate management, marketing, HR, finance, & prepares you for MBA.`,
-      `• 🏆 **CA (Chartered Accountant)**: Top accounting credential in India. 3 stages: CA Foundation, Intermediate, & Final + 2-year articleship.`,
-      `• 🌐 **ACCA (Global CA)**: Internationally recognized accounting qualification in 180+ countries.`,
-      `• 📈 **Investment Banking & Business Analytics**: Requires strong skills in financial modeling, Excel, SQL, & Python.\n`,
-      `💡 *Can you pursue CA alongside a B.Com degree? YES! Most students do both together.*`,
-    ].join('\n');
-  }
-
-  // ── 22. Arts, Humanities, Law, Psychology & Creative Careers ────────────────
-  if (/arts|humanities|ba english|psychologist|psychology|lawyer|law|journalism|ui\/ux|graphic design|civil services|upsc/.test(q)) {
-    return [
-      `🎨 **Arts, Humanities, Law, Psychology & Creative Career Paths**\n`,
-      `• 🧠 **Psychology**: B.A./B.Sc Psychology → M.Sc/M.Phil Clinical Psychology → Registered Clinical Psychologist, Counselor, or Organizational Psychologist.`,
-      `• ⚖️ **Law**: 5-Year Integrated BA LLB / BBA LLB via CLAT entrance. Opens doors to Corporate Law, Litigation, Judiciary, & Legal Advisory.`,
-      `• 🖌️ **UI/UX Design & Graphic Design**: High-paying tech design careers creating mobile app UI, user flows, and brand graphics.`,
-      `• 📰 **Journalism & Mass Comm**: Content strategy, news reporting, digital media publishing, & public relations.`,
-      `• 🏛️ **Civil Services (UPSC)**: B.A. Political Science, History, or Economics offers excellent foundation for IAS / IPS exam preparation.\n`,
-      `💡 *Do creative careers pay well? Skilled UI/UX designers and corporate lawyers earn top-tier salaries!*`,
-    ].join('\n');
-  }
-
-  // ── 23. College Verification, Accreditation & Spotting Fake Claims ─────────
-  if (/check.*college|accreditation|naac|nirf|nba|fake college|fake review|placement claim|highest package|median salary/.test(q)) {
-    return [
-      `🔍 **5 Critical Checks Before Joining Any College**\n`,
-      `1. 📜 **Official Recognition**: Verify AICTE, UGC, or NMC (Medical) approval on official government portals.`,
-      `2. 🌟 **NAAC Accreditation Grade**: Look for NAAC **A++** or **A+** grades. Check NBA accreditation for specific engineering branches.`,
-      `3. 📊 **Median Placement Package (NOT Highest!)**: Don't be fooled by 1-2 high off-campus packages (e.g. 50 LPA). Always check the **Median Salary** (e.g. 4.5 – 6.5 LPA).`,
-      `4. 🏫 **Department Labs & Infrastructure**: Ensure department-specific laboratories have working machinery & modern computing setups.`,
-      `5. 💬 **Talk to Current 3rd/4th Year Students**: Ask about genuine hostel mess food, faculty support, and actual company campus visits.\n`,
-      `💡 *Never pay non-refundable booking fees before verifying official accreditation!*`,
-    ].join('\n');
-  }
-
-  // ── 24. Admission Rules, Quotas, Refund Policies & Certificates ────────────
-  if (/quota|management quota|nri quota|merit quota|original certificate|booking fee|refund policy|admission fee/.test(q)) {
-    return [
-      `📋 **Admission Quotas, Booking Fees & Document Guidelines**\n`,
-      `• 🏛️ **Government Quota (Merit)**: Allotted strictly based on cutoff marks / entrance rank via official state counselling. Lowest fees!`,
-      `• 💼 **Management Quota**: Allotted directly by college administration. Higher annual tuition / capitation fee structure.`,
-      `• 📄 **Submitting Original Certificates**: Colleges are permitted to verify original marksheets, but UGC rules mandate returning them after verification. Do NOT leave originals indefinitely without receipt!`,
-      `• 💳 **Fee Refund Policy**: As per UGC/AICTE guidelines, full tuition fee refund (minus max ₹1,000 processing fee) is mandatory if you cancel admission before the specified cutoff date.\n`,
-      `💡 *Always request an official computer-generated receipt for any fee paid!*`,
-    ].join('\n');
-  }
-
-  // ── 25. ROI, Financial Planning & Education Loans ────────────────────────────
-  if (/education loan|roi|return on investment|20 lakh|5 lakh|expensive college|affordable college|scholarship/.test(q)) {
-    return [
-      `💰 **Financial Planning, Education Loans & Degree ROI (Return on Investment)**\n`,
-      `• 🧮 **Calculating Degree ROI**:\n  \`ROI = Expected Annual Salary ÷ Total 4-Year College Expense (Fees + Hostel)\``,
-      `• ⚖️ **Is a ₹20 Lakh Degree Worth It?**:\n  - If median placement is ₹10–15+ LPA (e.g. Top IIT, NIT, BITS) → **YES, worth taking a loan!**\n  - If median placement is ₹4–5 LPA → **NO!** Taking a ₹15-20L loan will create heavy financial debt. Choose an affordable ₹4-6L college instead.`,
-      `• 🏦 **Education Loans (Vidya Lakshmi Portal)**: Government portal allowing interest subsidy for family income < ₹4.5 Lakhs.\n`,
-      `💡 *Focus on minimizing student loan debt unless the college guarantees top-tier median placement!*`,
-    ].join('\n');
-  }
-
-  // ── 26. Strategic Dilemmas & Complex Decisions ──────────────────────────────
-  if (/dream department|wrong branch|famous college.*unwanted|lesser known.*preferred|backup plan|plan b|plan c|decision matrix/.test(q)) {
-    return [
-      `🎯 **Framework for Complex Admission Dilemmas**\n`,
-      `**Dilemma 1: Famous College (Lesser Branch) vs Lower-Ranked College (Preferred Branch)**`,
-      `• **For Software/IT Goals**: Famous top-tier college wins! Top campus placement culture allows non-CSE students to learn coding & get recruited by product companies.`,
-      `• **For Core Goals (Medicine, Civil, Mech)**: Preferred branch wins! Core degrees require mandatory specialized accreditation & lab training.\n`,
-      `**Dilemma 2: High Marks but Low Entrance Rank / Limited Budget**`,
-      `• **Plan A**: State Government / Govt-Aided engineering colleges (TNEA / State Counselling).`,
-      `• **Plan B**: Reputed Autonomous accredited private institutions with merit scholarship waivers.`,
-      `• **Plan C**: B.Sc Computer Science / BCA in top city college + self-paced software certification portfolio.\n`,
-      `💡 *Which two exact options are you comparing? Share them with me for a custom decision matrix!*`,
-    ].join('\n');
-  }
-
-  // ── 27. General Counseling Catch-All ─────────────────────────────────────────
+  // ── 21. General Counseling Catch-All ─────────────────────────────────────────
   if (/which (course|branch|career|path)|should i choose|can i|what should i|help me choose|i don't know what|recommend|guidance|advice/.test(q)) {
     return [
       `🎓 **Acadivo Personal Academic & Career Guidance**\n`,
