@@ -2,37 +2,37 @@
   {
     "name": "Security — should reject login for invalid credentials",
     "status": "failed",
-    "duration": 20097,
-    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20018ms"
+    "duration": 20252,
+    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20183ms"
   },
   {
     "name": "Security — should prevent access to protected routes/dashboard for unauthenticated users",
     "status": "passed",
-    "duration": 2630,
+    "duration": 2732,
     "error": null
   },
   {
     "name": "Security — should not execute XSS script payloads submitted in login fields",
     "status": "failed",
-    "duration": 20250,
-    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20187ms"
+    "duration": 20205,
+    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20159ms"
   },
   {
     "name": "Security — should enforce session termination and clean storage upon logout",
     "status": "failed",
-    "duration": 20083,
-    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20029ms"
+    "duration": 20062,
+    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20019ms"
   },
   {
     "name": "Security — should confirm Firebase authentication rejects empty credentials",
     "status": "failed",
-    "duration": 20250,
-    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20201ms"
+    "duration": 20203,
+    "error": "Waiting for element to be located By(css selector, *[id=\"landing-signin-btn\"])\nWait timed out after 20158ms"
   },
   {
     "name": "Security — should not expose sensitive API keys or secrets in page HTML source",
     "status": "passed",
-    "duration": 57,
+    "duration": 46,
     "error": null
   }
 ]
