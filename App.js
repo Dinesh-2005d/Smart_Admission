@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, Suspense, lazy } from 'react';
 import {
   TouchableOpacity, Text, View, ActivityIndicator, Platform,
   StyleSheet, Animated, ScrollView, Dimensions, useWindowDimensions
@@ -20,22 +20,27 @@ if (Platform.OS === 'web') {
   `;
   document.head.appendChild(style);
 }
+// ── Eager imports (shown at startup or immediately after login) ────────────────
 import HomeScreen           from './src/screens/HomeScreen';
-import SearchScreen         from './src/screens/SearchScreen';
-import CompareScreen        from './src/screens/CompareScreen';
-import DetailsScreen        from './src/screens/DetailsScreen';
-import MarksEntryScreen     from './src/screens/MarksEntryScreen';
-import CollegeListScreen    from './src/screens/CollegeListScreen';
-import AllCollegesScreen    from './src/screens/AllCollegesScreen';
-import CollegeChatScreen    from './src/screens/CollegeChatScreen';
 import AnimatedSplashScreen from './src/screens/AnimatedSplashScreen';
 import LoginScreen          from './src/screens/LoginScreen';
-import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen';
-import AdminPanelScreen     from './src/screens/AdminPanelScreen';
-import SavedCollegesScreen  from './src/screens/SavedCollegesScreen';
-import ReportScreen         from './src/screens/ReportScreen';
+
+// ── Lazy imports (loaded only when user navigates to them) ────────────────────
+const SearchScreen         = lazy(() => import('./src/screens/SearchScreen'));
+const CompareScreen        = lazy(() => import('./src/screens/CompareScreen'));
+const DetailsScreen        = lazy(() => import('./src/screens/DetailsScreen'));
+const MarksEntryScreen     = lazy(() => import('./src/screens/MarksEntryScreen'));
+const CollegeListScreen    = lazy(() => import('./src/screens/CollegeListScreen'));
+const AllCollegesScreen    = lazy(() => import('./src/screens/AllCollegesScreen'));
+const CollegeChatScreen    = lazy(() => import('./src/screens/CollegeChatScreen'));
+const ForgotPasswordScreen = lazy(() => import('./src/screens/ForgotPasswordScreen'));
+const AdminPanelScreen     = lazy(() => import('./src/screens/AdminPanelScreen'));
+const SavedCollegesScreen  = lazy(() => import('./src/screens/SavedCollegesScreen'));
+const ReportScreen         = lazy(() => import('./src/screens/ReportScreen'));
+const AIScreen             = lazy(() => import('./src/screens/AIScreen'));
 import { AuthProvider, useAuth } from './src/context/AuthContext';
 import { SavedCollegesProvider, useSavedColleges } from './src/context/SavedCollegesContext';
+import { SearchHistoryProvider } from './src/context/SearchHistoryContext';
 
 const Stack = createNativeStackNavigator();
 const SIDEBAR_W = 240;
@@ -359,6 +364,7 @@ function MainTabs() {
     { name: 'Search',  label: 'Search Colleges', icon: 'search-outline',           iconFocused: 'search',           screen: SearchScreen },
     { name: 'Compare', label: 'Compare',         icon: 'git-compare-outline',      iconFocused: 'git-compare',      screen: CompareScreen },
     { name: 'Saved',   label: 'Saved Colleges',  icon: 'bookmark-outline',         iconFocused: 'bookmark',         screen: SavedCollegesScreen, badge: savedColleges.length },
+    { name: 'AI',      label: 'AI Dashboard',    icon: 'sparkles-outline',         iconFocused: 'sparkles',         screen: AIScreen },
     ...(isAdmin ? [{ name: 'Admin', label: 'Admin Panel', icon: 'shield-checkmark-outline', iconFocused: 'shield-checkmark', screen: AdminPanelScreen }] : []),
   ];
 
@@ -435,10 +441,16 @@ function MainTabs() {
           isMobile={isMobile}
         />
         <View style={ds.contentArea}>
-          <CurrentScreen
-            navigation={fakeNav}
-            route={currentRoute}
-          />
+          <Suspense fallback={
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f1f5f9' }}>
+              <ActivityIndicator size="large" color="#2563eb" />
+            </View>
+          }>
+            <CurrentScreen
+              navigation={fakeNav}
+              route={currentRoute}
+            />
+          </Suspense>
         </View>
         {isMobile && (
           <MobileBottomBar
@@ -692,29 +704,35 @@ function AppNavigator() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerStyle:      { backgroundColor: '#ffffff' },
-          headerTintColor:  '#2563eb',
-          headerTitleStyle: { fontWeight: 'bold' },
-        }}
-      >
-        {user ? (
-          <>
-            <Stack.Screen name="MainTabs"    component={MainTabs}          options={{ headerShown: false }} />
-            <Stack.Screen name="MarksEntry"  component={MarksEntryScreen}  options={{ title: 'Select Department' }} />
-            <Stack.Screen name="CollegeList" component={CollegeListScreen} options={{ title: 'College Results' }} />
-            <Stack.Screen name="AllColleges" component={AllCollegesScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="Details"     component={DetailsScreen}     options={{ title: 'College Details' }} />
-            <Stack.Screen name="CollegeChat" component={CollegeChatScreen} options={{ headerShown: false }} />
-          </>
-        ) : (
-          <>
-            <Stack.Screen name="Login"          component={LoginScreen}         options={{ headerShown: false }} />
-            <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ headerShown: false }} />
-          </>
-        )}
-      </Stack.Navigator>
+      <Suspense fallback={
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f0f4ff' }}>
+          <ActivityIndicator size="large" color="#2563eb" />
+        </View>
+      }>
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle:      { backgroundColor: '#ffffff' },
+            headerTintColor:  '#2563eb',
+            headerTitleStyle: { fontWeight: 'bold' },
+          }}
+        >
+          {user ? (
+            <>
+              <Stack.Screen name="MainTabs"    component={MainTabs}          options={{ headerShown: false }} />
+              <Stack.Screen name="MarksEntry"  component={MarksEntryScreen}  options={{ title: 'Select Department' }} />
+              <Stack.Screen name="CollegeList" component={CollegeListScreen} options={{ title: 'College Results' }} />
+              <Stack.Screen name="AllColleges" component={AllCollegesScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="Details"     component={DetailsScreen}     options={{ title: 'College Details' }} />
+              <Stack.Screen name="CollegeChat" component={CollegeChatScreen} options={{ headerShown: false }} />
+            </>
+          ) : (
+            <>
+              <Stack.Screen name="Login"          component={LoginScreen}         options={{ headerShown: false }} />
+              <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ headerShown: false }} />
+            </>
+          )}
+        </Stack.Navigator>
+      </Suspense>
     </NavigationContainer>
   );
 }
@@ -731,7 +749,9 @@ export default function App() {
     <SafeAreaProvider>
       <SavedCollegesProvider>
         <AuthProvider>
-          <AppNavigator />
+          <SearchHistoryProvider>
+            <AppNavigator />
+          </SearchHistoryProvider>
         </AuthProvider>
       </SavedCollegesProvider>
     </SafeAreaProvider>
