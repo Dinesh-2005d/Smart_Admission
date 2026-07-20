@@ -37,9 +37,21 @@ const INTENTS = [
   },
   {
     name: 'greeting',
-    keywords: ['hi', 'hello', 'hey', 'greetings', 'morning', 'afternoon', 'evening', 'sup', 'hola', 'namaste', 'vanakkam'],
-    patterns: [/^(hi|hello|hey|greetings|hola|namaste|vanakkam|yo|sup)\b/i, /good\s+(morning|afternoon|evening|night)/i],
-    weight: 5,
+    keywords: ['hi', 'hello', 'hey', 'greetings', 'morning', 'afternoon', 'evening', 'sup', 'hola', 'namaste', 'vanakkam', 'helo', 'hlo', 'hii', 'hiii'],
+    patterns: [/^(hi|hello|hey|greetings|hola|namaste|vanakkam|yo|sup|helo|hlo|hii|hiii)\b/i, /good\s+(morning|afternoon|evening|night)/i],
+    weight: 8,
+  },
+  {
+    name: 'how_are_you',
+    keywords: ['how', 'are', 'you', 'doing', 'feeling', 'going'],
+    patterns: [/how\s+(are|r)\s+(you|u)/i, /how\s+are\s+you\s+doing/i, /how\s+do\s+you\s+do/i, /how\s+is\s+it\s+going/i],
+    weight: 8,
+  },
+  {
+    name: 'help_me',
+    keywords: ['help', 'need', 'assist', 'assistance', 'guide', 'guidance'],
+    patterns: [/can\s+(you|u)\s+help\s+me/i, /i\s+need\s+help/i, /help\s+me/i, /can\s+(you|u)\s+guide\s+me/i],
+    weight: 8,
   },
   {
     name: 'farewell',
@@ -381,9 +393,24 @@ class LocalAIEngine {
       // ── Greetings ──────────────────────────────────────────────────────────
       case 'greeting':
         return pickRandom([
-          `Hello there! 👋 Welcome to **Acadivo AI**! I'm your personal college assistant. How can I help you today?\n\nYou can ask me about:\n• 🏛️ College details & facilities\n• 💰 Fees & scholarships\n• 📊 Placements & career\n• 📸 Campus photos\n• 📋 Admissions & eligibility\n\nAsk me anything! 😊`,
-          `Hey! 😊 Great to have you here! I'm **Acadivo AI** — your smart college assistant.\n\nI can help with fees, placements, courses, hostel info, campus photos, and much more! What would you like to know?`,
-          `Hi there! 👋 I'm your AI college counsellor at **Acadivo**. Ask me about ${name} or any college-related topic — I'm here to help! 🎓`,
+          `Hello there! 👋 Welcome to **Acadivo AI**! I'm your personal academic and college counselor. How can I help you today?\n\nYou can ask me about:\n• 🏛️ College details, cutoffs & ratings\n• 🎓 Degree courses (Engineering, Medical, Commerce, Law, etc.)\n• 💰 Fee structures & scholarships\n• 💼 Placements, career options & salaries\n• 📋 Admissions & counseling guidance\n\nAsk me anything! 😊`,
+          `Hey! 😊 Great to have you here! I'm **Acadivo AI** — your smart academic & college advisor.\n\nI can help with fees, cutoffs, course comparisons, placements, hostel info, and career planning! What would you like to know today?`,
+          `Hi there! 👋 I'm your AI academic counsellor at **Acadivo**. Ask me about any course, college, cutoff, or career path — I'm here to guide you! 🎓`,
+        ]);
+
+      // ── How Are You ────────────────────────────────────────────────────────
+      case 'how_are_you':
+        return pickRandom([
+          `I'm doing fantastic, thank you for asking! 😊 I'm always energized and ready to help you with college admissions, degree options, cutoffs, and career guidance!\n\nHow can I assist you today? 🎓`,
+          `I'm great and ready to help! 🚀 How are you doing? Tell me what college, branch, or course you'd like to explore today!`,
+          `Doing awesome! 😊 Happy to help you with your college search or academic decision. What's on your mind?`,
+        ]);
+
+      // ── Help Me ────────────────────────────────────────────────────────────
+      case 'help_me':
+        return pickRandom([
+          `I would love to help you! 🎓\n\nI can assist you with:\n• 🏛️ Finding top engineering, medical, arts, law, & commerce colleges\n• 📊 Checking 12th cutoffs & admission eligibility\n• 💰 Fee structures & scholarships\n• 💼 Career options, high-paying jobs & placement stats\n\nWhat specific topic would you like help with? 😊`,
+          `I'm right here to guide you every step of the way! 💡 Tell me your 12th stream or what field you are interested in, and I will show you the best options!`,
         ]);
 
       // ── Farewell ───────────────────────────────────────────────────────────

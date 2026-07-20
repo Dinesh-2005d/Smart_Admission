@@ -110,8 +110,12 @@ function isConversational(text) {
   const t = text.trim().toLowerCase();
   return [
     // Greetings
-    /^(hi|hello|hey|hola|namaste|vanakkam|sup|hai)\b/,
+    /^(hi|hello|hey|hola|namaste|vanakkam|sup|hai|helo|hlo|hii|hiii|hiee)\b/,
     /^good\s+(morning|afternoon|evening|night)/,
+    /how\s+(are|r)\s+(you|u)/,
+    /how\s+are\s+you\s+doing/,
+    /can\s+(you|u)\s+help\s+(me)?/,
+    /i\s+need\s+help/,
     // Farewells
     /\b(bye|goodbye|see\s*you|tata|cya|good\s*night|take\s*care)\b/,
     // Thanks
@@ -260,7 +264,7 @@ function handleUnwantedOrOffTopicQuestion(query) {
   const q = query.trim().toLowerCase();
 
   // Allow academic, college, degree, exam, branch, career, cutoff, and student queries
-  const isAcademicQuery = /college|university|institute|school|course|degree|btech|b\.e|mbbs|bds|bca|mca|mba|placement|fee|cutoff|tnea|jee|neet|gate|clat|scholarship|hostel|campus|admission|engineering|medical|arts|commerce|science|department|faculty|career|salary|internship|syllabus|exam|rank|accreditation|naac|nirf|aictes|ugc|study|learn|dsa|coding|vlsi|ai|data science|psychology|law|student|cgpa|backlog|diploma|polytechnic|iti|sop|lor|ielts|toefl|gre|gmat|visa|12th|after|future|job|math|maths|physics|bio|biology|doctor|computer|coding|program|salary|pay|paid|work|abroad|country|company|govt|government|desk|travel|design|cars|electric|ev|gaming|game|cse|it|ece|eee|mech|mechanical|civil|aerospace|mechatronics|robotics|data science|hack|hacker|cyber|cybersecurity|realistic|safe|ambitious|reputation|tier|compare|distance|loan|roi|lakh|budget|parent|son|daughter|family|regret|wrong|friends|drop|year|skills|project|resume|github|linkedin|certificate|intern|internship|unemployed|masters|mtech|mba|compromise|checklist|plan|option|bro|value|trust|advice|guidance|what|which|how|can i|should i|laptop|overcrowded|scam|pressure|threat|refund|attendance|club|hackathon|roadmap|verdict|decision|priority|backup|regret|fomo|failing|worst case|decision tree/i.test(q);
+  const isAcademicQuery = /college|university|institute|school|course|degree|btech|b\.e|mbbs|bds|bca|mca|mba|placement|fee|cutoff|tnea|jee|neet|gate|clat|scholarship|hostel|campus|admission|engineering|medical|arts|commerce|science|department|faculty|career|salary|internship|syllabus|exam|rank|accreditation|naac|nirf|aictes|ugc|study|learn|dsa|coding|vlsi|ai|data science|psychology|law|student|cgpa|backlog|diploma|polytechnic|iti|sop|lor|ielts|toefl|gre|gmat|visa|12th|after|future|job|math|maths|physics|bio|biology|doctor|computer|coding|program|salary|pay|paid|work|abroad|country|company|govt|government|desk|travel|design|cars|electric|ev|gaming|game|cse|it|ece|eee|mech|mechanical|civil|aerospace|mechatronics|robotics|data science|hack|hacker|cyber|cybersecurity|realistic|safe|ambitious|reputation|tier|compare|distance|loan|roi|lakh|budget|parent|son|daughter|family|regret|wrong|friends|drop|year|skills|project|resume|github|linkedin|certificate|intern|internship|unemployed|masters|mtech|mba|compromise|checklist|plan|option|bro|value|trust|advice|guidance|what|which|how|can i|should i|laptop|overcrowded|scam|pressure|threat|refund|attendance|club|hackathon|roadmap|verdict|decision|priority|backup|regret|fomo|failing|worst case|decision tree|visit|nirf|city|tech hub|commute|upsc|psu|5 year|perspective|transfer|non-science|lateral|nursing|paramedical|radiology|mlt|operation theatre|cardiac|dialysis|clat|lawyer|judge|corporate law|bcom|bba|ca|acca|fintech|pharmacy|bpharm|pharmd|barch|architecture|nata|agriculture|icar|agritech|pgdm|cat|hotel management|hospitality|cruise|bed|tet|teacher|professor|introvert|extrovert|personality|i selected|lowest cost|non-patient|scared of blood|architect|interior design|daily work|workday|reality|step by step|checklist|regulations/i.test(q);
 
   if (isAcademicQuery) {
     return null; // Pass through to counseling / college DB / web crawl!
@@ -366,13 +370,7 @@ export async function generateSmartResponse(conversationHistory, college = null,
     return { text: metaReply, sentiment: null, sources: [], isCrawled: false, intent: 'meta' };
   }
 
-  // ── 1c. Off-topic / Unwanted / Math / Joke Handler ───────────────────────
-  const unwantedReply = handleUnwantedOrOffTopicQuestion(query);
-  if (unwantedReply) {
-    return { text: unwantedReply, sentiment: null, sources: [], isCrawled: false, intent: 'offtopic' };
-  }
-
-  // ── 1c. General Conversational Turns ──────────────────────────────────────
+  // ── 1c. General Conversational Turns (Greetings, Hi, Hello, How are you, Thanks, Bye) ──
   if (isConversational(query)) {
     const r = generateAIResponse(query, college, deptLabel);
     return { text: r.text, sentiment: null, sources: [], isCrawled: false, intent: r.type };
@@ -383,6 +381,12 @@ export async function generateSmartResponse(conversationHistory, college = null,
   if (counselingReply) {
     const sentiment = analyzeText(counselingReply);
     return { text: counselingReply, sentiment, sources: [], isCrawled: false, intent: 'counseling' };
+  }
+
+  // ── 1e. Off-topic / Unwanted / Math / Joke Handler ───────────────────────
+  const unwantedReply = handleUnwantedOrOffTopicQuestion(query);
+  if (unwantedReply) {
+    return { text: unwantedReply, sentiment: null, sources: [], isCrawled: false, intent: 'offtopic' };
   }
 
   // ── 2. Query local college database ──────────────────────────────────────
