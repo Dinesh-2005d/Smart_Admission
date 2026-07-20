@@ -333,6 +333,18 @@ export default function AIScreen() {
     }
   }, [user?.uid]);
 
+  // Reload whenever History / Analyse / Trends tab becomes active.
+  // This picks up sessions created from CollegeChatScreen or other screens.
+  useEffect(() => {
+    if (!user?.uid) return;
+    if (activeTab === 'history') {
+      chatCtx.loadSessions();
+    }
+    if (activeTab === 'analyse' || activeTab === 'trends') {
+      searchHistCtx.loadHistory?.();
+    }
+  }, [activeTab, user?.uid]);
+
   // Scroll chat to bottom when messages change
   useEffect(() => {
     setTimeout(() => scrollRef.current?.scrollToEnd?.({ animated: true }), 100);

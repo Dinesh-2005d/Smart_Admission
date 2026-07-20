@@ -61,6 +61,7 @@ export function SearchHistoryProvider({ children }) {
 
       const docData = {
         query:                query.trim(),
+        userEmail:            user.email || '',
         timestamp:            serverTimestamp(),
         sentimentLabel:       sentimentResult?.label        || 'Neutral',
         sentimentScore:       sentimentResult?.score        || 0,
@@ -88,7 +89,7 @@ export function SearchHistoryProvider({ children }) {
       setError('Failed to save search: ' + e.message);
       return null;
     }
-  }, [user?.uid, queriesRef]);
+  }, [user?.uid, user?.email, queriesRef]);
 
   /**
    * Load the last 50 searches from Firestore.
