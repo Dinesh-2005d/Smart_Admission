@@ -373,12 +373,47 @@ export default function AIScreen({ route, navigation }) {
   useEffect(() => {
     if (route?.params?.collegeName) {
       const targetCollege = route.params.collegeName;
-      setActiveTab('analyse');
-      setSQuery(targetCollege);
-      handleSentimentSearch(targetCollege);
+      setActiveTab('chat');
+      
+      const triggerAutoChat = async () => {
+        chatCtx.clearActive();
+        resetConversation();
+        setInputText('');
+        setChatError(null);
+        setThinking(true);
+        
+        const promptText = `Tell me about ${targetCollege}`;
+        const sessionId = await chatCtx.createSession(promptText);
+        if (!sessionId) {
+          setThinking(false);
+          return;
+        }
+        
+        const userMsg = { id: Date.now() + 'u', role: 'user', text: promptText, time: now(), type: 'user' };
+        await chatCtx.addMessage(sessionId, userMsg);
+        
+        try {
+          const response = await askGroqAboutCollege(promptText, null, null, '');
+          const aiMsg = {
+            id:       Date.now() + 'a',
+            role:     'assistant',
+            text:     response.text,
+            time:     now(),
+            type:     response.type || 'groq',
+            isRealAI: response.isRealAI,
+          };
+          await chatCtx.addMessage(sessionId, aiMsg);
+        } catch (e) {
+          setChatError('AI response failed. Please try again.');
+        } finally {
+          setThinking(false);
+        }
+      };
+
+      triggerAutoChat();
       navigation?.setParams({ collegeName: null });
     }
-  }, [route?.params?.collegeName, handleSentimentSearch, navigation]);
+  }, [route?.params?.collegeName, chatCtx, navigation]);
 
   // ── Send a message ────────────────────────────────────────────────────────
   const handleSend = useCallback(async (overrideText) => {
