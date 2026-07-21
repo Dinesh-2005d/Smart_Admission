@@ -17,19 +17,6 @@ const ADMIN_EMAIL = 'dineshr2209.sse@saveetha.com';
 
 const AuthContext = createContext(null);
 
-// ── Known Firebase Auth users list for automatic initial synchronization ────
-const INITIAL_FIREBASE_USERS = [
-  { uid: '8sB5yRkGoJMJie6FEkvRJ3yl9', email: 'dineshr2209.sse@saveetha.com', name: 'Dinesh R', role: 'Admin' },
-  { uid: 'MvSNo8zTdmgzPToo4Lh6egK2', email: 'dineshramesh2899@gmail.com', name: 'Jagan', role: 'Student' },
-  { uid: 'Rv9FE0vQmpaqT2BbfX10BzJk2', email: 'deepandee132@gmail.com', name: 'Deepan', role: 'Student' },
-  { uid: 'jG6A9QuHYIaIScSx56jG65jwel2', email: 'text123@gmail.com', name: 'abc', role: 'Student' },
-  { uid: 'KNmfC1zDfsar7owNC87Uletik2', email: 'test@example.com', name: 'Test User', role: 'Student' },
-  { uid: 'RuElYqYQ3Qh1zoegvuH8lisssr2', email: 'kishorecht149@gmail.com', name: 'Kishore', role: 'Student' },
-  { uid: 'zYLXOemOy7WWvGwVQyKD', email: 'testuser_unique_123@example.com', name: 'Test User 123', role: 'Student' },
-  { uid: 'BdNZQ7K9cpVvN9AcRqfog1E3', email: 'admin@example.com', name: 'Admin Example', role: 'Student' },
-  { uid: 'kALtztbcfNe60yXuelmeCrVgi2', email: 'shdgg36@gmail.com', name: 'Shdgg User', role: 'Student' },
-];
-
 export function AuthProvider({ children }) {
   const [user,    setUser]    = useState(null);
   const [loading, setLoading] = useState(true);
@@ -39,10 +26,14 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        // Check if user was deleted
+        const cleanEmail = (firebaseUser.email || '').trim().toLowerCase();
+        const isAdminEmail = cleanEmail === ADMIN_EMAIL;
+        const defaultRole  = isAdminEmail ? 'Admin' : 'Student';
+
         try {
-          const deletedSnap = await getDoc(doc(db, 'deleted_users', firebaseUser.uid));
-          if (deletedSnap.exists()) {
+          // Check if deleted
+          const deletedSnap = await getDoc(doc(db, 'deleted_users', firebaseUser.uid)).catch(() => null);
+          if (deletedSnap && deletedSnap.exists()) {
             await signOut(auth);
             setUser(null);
             setError('This account has been deleted by admin.');
@@ -51,44 +42,50 @@ export function AuthProvider({ children }) {
           }
 
           // Load profile from Firestore
-          const snap = await getDoc(doc(db, 'users', firebaseUser.uid));
-          if (snap.exists()) {
+          const snap = await getDoc(doc(db, 'users', firebaseUser.uid)).catch(() => null);
+          if (snap && snap.exists()) {
             const profile = snap.data();
             if (profile.blocked || profile.deleted) {
-              // Blocked user — sign them out immediately
               await signOut(auth);
               setUser(null);
               setError('Account suspended. Contact admin.');
             } else {
-              // ── STRICT: Only dineshr2209.sse@saveetha.com can be Admin ──────
-              const isAdminEmail =
-                (firebaseUser.email || '').trim().toLowerCase() === ADMIN_EMAIL;
-              const finalRole = isAdminEmail ? 'Admin' : 'Student';
-              const finalProfile = { ...profile, role: finalRole };
-
-              if (profile.role !== finalRole) {
-                updateDoc(doc(db, 'users', firebaseUser.uid), { role: finalRole }).catch(() => {});
-              }
-              setUser({ uid: firebaseUser.uid, ...finalProfile });
+              const finalProfile = {
+                uid:      firebaseUser.uid,
+                name:     profile.name || firebaseUser.displayName || cleanEmail.split('@')[0],
+                email:    cleanEmail,
+                role:     defaultRole,
+                blocked:  false,
+                provider: profile.provider || 'email',
+                ...profile,
+                role:     defaultRole, // Admin email ALWAYS overrides to Admin
+              };
+              setUser(finalProfile);
             }
           } else {
-            // Firestore doc missing — create a minimal one
-            const isAdminEmail =
-              (firebaseUser.email || '').trim().toLowerCase() === ADMIN_EMAIL;
+            // Firestore profile doc doesn't exist yet — create it
             const fallbackProfile = {
-              uid:      firebaseUser.uid,
-              name:     firebaseUser.displayName || firebaseUser.email.split('@')[0],
-              email:    firebaseUser.email.trim().toLowerCase(),
-              role:     isAdminEmail ? 'Admin' : 'Student',
-              blocked:  false,
-              provider: firebaseUser.providerData?.[0]?.providerId === 'google.com' ? 'google' : 'email',
+              uid:       firebaseUser.uid,
+              name:      firebaseUser.displayName || cleanEmail.split('@')[0],
+              email:     cleanEmail,
+              role:      defaultRole,
+              blocked:   false,
+              provider:  firebaseUser.providerData?.[0]?.providerId === 'google.com' ? 'google' : 'email',
               createdAt: serverTimestamp(),
             };
-            await setDoc(doc(db, 'users', firebaseUser.uid), fallbackProfile);
+            setDoc(doc(db, 'users', firebaseUser.uid), fallbackProfile).catch(() => {});
             setUser(fallbackProfile);
           }
-        } catch {
-          setUser(null);
+        } catch (_err) {
+          // Fallback profile if Firestore is slow/offline
+          setUser({
+            uid:      firebaseUser.uid,
+            name:     firebaseUser.displayName || cleanEmail.split('@')[0],
+            email:    cleanEmail,
+            role:     defaultRole,
+            blocked:  false,
+            provider: 'email',
+          });
         }
       } else {
         setUser(null);
@@ -102,19 +99,19 @@ export function AuthProvider({ children }) {
   const register = async (email, password, name) => {
     setLoading(true); setError(null);
     try {
-      const cred = await createUserWithEmailAndPassword(auth, email.trim(), password);
-      // STRICT: Only dineshr2209.sse@saveetha.com is Admin
-      const role = email.trim().toLowerCase() === ADMIN_EMAIL ? 'Admin' : 'Student';
+      const cleanEmail = email.trim().toLowerCase();
+      const cred = await createUserWithEmailAndPassword(auth, cleanEmail, password);
+      const role = cleanEmail === ADMIN_EMAIL ? 'Admin' : 'Student';
       const profile = {
         uid:       cred.user.uid,
-        name:      name || email.split('@')[0],
-        email:     email.trim().toLowerCase(),
+        name:      name || cleanEmail.split('@')[0],
+        email:     cleanEmail,
         role,
         blocked:   false,
         provider:  'email',
         createdAt: serverTimestamp(),
       };
-      await setDoc(doc(db, 'users', cred.user.uid), profile);
+      await setDoc(doc(db, 'users', cred.user.uid), profile).catch(() => {});
       setUser(profile);
       setLoading(false);
       return { success: true };
@@ -130,33 +127,49 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     setLoading(true); setError(null);
     try {
-      const cred = await signInWithEmailAndPassword(auth, email.trim(), password);
-      // Check deleted status
-      const deletedSnap = await getDoc(doc(db, 'deleted_users', cred.user.uid));
-      if (deletedSnap.exists()) {
-        await signOut(auth);
-        setLoading(false);
-        setError('This account has been deleted by admin.');
-        return { success: false, message: 'This account has been deleted by admin.' };
+      const cleanEmail = email.trim().toLowerCase();
+      const cred = await signInWithEmailAndPassword(auth, cleanEmail, password);
+      const isAdminEmail = cleanEmail === ADMIN_EMAIL;
+      const expectedRole = isAdminEmail ? 'Admin' : 'Student';
+
+      // Check deleted status safely
+      try {
+        const deletedSnap = await getDoc(doc(db, 'deleted_users', cred.user.uid));
+        if (deletedSnap.exists()) {
+          await signOut(auth);
+          setLoading(false);
+          setError('This account has been deleted by admin.');
+          return { success: false, message: 'This account has been deleted by admin.' };
+        }
+
+        const snap = await getDoc(doc(db, 'users', cred.user.uid));
+        if (snap.exists()) {
+          const data = snap.data();
+          if (data.blocked || data.deleted) {
+            await signOut(auth);
+            setLoading(false);
+            setError('Account suspended. Contact admin.');
+            return { success: false, message: 'Account suspended. Contact admin.' };
+          }
+          if (data.role !== expectedRole) {
+            updateDoc(doc(db, 'users', cred.user.uid), { role: expectedRole }).catch(() => {});
+          }
+        } else {
+          const fallbackProfile = {
+            uid:       cred.user.uid,
+            name:      cred.user.displayName || cleanEmail.split('@')[0],
+            email:     cleanEmail,
+            role:      expectedRole,
+            blocked:   false,
+            provider:  'email',
+            createdAt: serverTimestamp(),
+          };
+          setDoc(doc(db, 'users', cred.user.uid), fallbackProfile).catch(() => {});
+        }
+      } catch (_fsErr) {
+        // Non-fatal if Firestore profile read fails
       }
 
-      // Check blocked status in Firestore
-      const snap = await getDoc(doc(db, 'users', cred.user.uid));
-      if (snap.exists() && (snap.data().blocked || snap.data().deleted)) {
-        await signOut(auth);
-        setLoading(false);
-        setError('Account suspended. Contact admin.');
-        return { success: false, message: 'Account suspended. Contact admin.' };
-      }
-      // ── STRICT: Enforce Admin role ONLY for dineshr2209.sse@saveetha.com ───
-      if (snap.exists()) {
-        const profile = snap.data();
-        const isAdminEmail = email.trim().toLowerCase() === ADMIN_EMAIL;
-        const expectedRole = isAdminEmail ? 'Admin' : 'Student';
-        if (profile.role !== expectedRole) {
-          await updateDoc(doc(db, 'users', cred.user.uid), { role: expectedRole });
-        }
-      }
       setLoading(false);
       return { success: true };
     } catch (e) {
@@ -192,39 +205,17 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // ── Admin: get all users (syncs Firebase Auth & Firestore) ───────────────
+  // ── Admin: get all users ──────────────────────────────────────────────────
   const adminGetUsers = async () => {
     try {
-      // 1. Fetch deleted users list to filter out
+      // Fetch deleted users list to filter out
       const deletedSnap = await getDocs(collection(db, 'deleted_users'));
       const deletedUids = new Set(deletedSnap.docs.map(d => d.id));
 
-      // 2. Fetch existing Firestore user docs
+      // Fetch all Firestore user docs
       const snap = await getDocs(collection(db, 'users'));
-      const existingMap = {};
-      snap.docs.forEach(d => {
-        existingMap[d.id] = { id: d.id, ...d.data() };
-      });
-
-      // 3. Ensure all initial Firebase Auth accounts exist in Firestore if not deleted
-      for (const initUser of INITIAL_FIREBASE_USERS) {
-        if (!deletedUids.has(initUser.uid) && !existingMap[initUser.uid]) {
-          const profile = {
-            uid: initUser.uid,
-            name: initUser.name,
-            email: initUser.email,
-            role: initUser.email.toLowerCase() === ADMIN_EMAIL ? 'Admin' : 'Student',
-            blocked: false,
-            provider: 'email',
-            createdAt: new Date().toISOString(),
-          };
-          await setDoc(doc(db, 'users', initUser.uid), profile).catch(() => {});
-          existingMap[initUser.uid] = { id: initUser.uid, ...profile };
-        }
-      }
-
-      // 4. Return formatted users list, strictly enforcing single admin (dineshr2209.sse@saveetha.com)
-      const list = Object.values(existingMap)
+      const list = snap.docs
+        .map(d => ({ id: d.id, ...d.data() }))
         .filter(u => !deletedUids.has(u.id) && !u.deleted)
         .map(u => ({
           ...u,
