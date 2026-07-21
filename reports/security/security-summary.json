@@ -2,14 +2,14 @@
   "critical": 0,
   "high": 0,
   "medium": 0,
-  "low": 4,
-  "score": 4,
+  "low": 15,
+  "score": 15,
   "checksTotal": 30,
   "checksPassed": 30,
   "checksFailed": 0,
   "checksWarned": 0,
-  "buildNumber": "60",
-  "commitSha": "0291447",
+  "buildNumber": "61",
+  "commitSha": "00ba088",
   "branch": "main",
-  "executionDate": "2026-07-20 15:26:54 UTC"
+  "executionDate": "2026-07-21 10:04:59 UTC"
 }

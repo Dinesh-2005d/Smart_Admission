@@ -10,6 +10,66 @@
           "name": "Trivy",
           "rules": [
             {
+              "id": "CVE-2026-12590",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "body-parser: body-parser: Denial of Service via invalid limit option"
+              },
+              "fullDescription": {
+                "text": "Impact: In body-parser versions prior to 1.20.6 (1.x line) and 2.3.0 (2.x line), when the parser is configured with an invalid limit option value such as an unparseable string or NaN, bytes.parse returns null and the request body size check is silently skipped. Applications that rely on limit as their primary safeguard against oversized request bodies will accept arbitrarily large payloads, leading to excessive memory and CPU usage and denial of service. Patches: This issue is fixed in body-parser 1.20.6 and 2.3.0. After the fix, invalid limit values throw a clear error at parser construction time instead of silently disabling enforcement, while null and undefined continue to fall back to the default limit of 100kb. Workarounds: Validate the limit value before passing it to body-parser. For example, parse the value at startup and reject any configuration where the result is null or a non-finite number."
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-12590",
+              "help": {
+                "text": "Vulnerability CVE-2026-12590\nSeverity: LOW\nPackage: body-parser\nFixed Version: 1.20.6, 2.3.0\nLink: [CVE-2026-12590](https://avd.aquasec.com/nvd/cve-2026-12590)\nImpact: In body-parser versions prior to 1.20.6 (1.x line) and 2.3.0 (2.x line), when the parser is configured with an invalid limit option value such as an unparseable string or NaN, bytes.parse returns null and the request body size check is silently skipped. Applications that rely on limit as their primary safeguard against oversized request bodies will accept arbitrarily large payloads, leading to excessive memory and CPU usage and denial of service. Patches: This issue is fixed in body-parser 1.20.6 and 2.3.0. After the fix, invalid limit values throw a clear error at parser construction time instead of silently disabling enforcement, while null and undefined continue to fall back to the default limit of 100kb. Workarounds: Validate the limit value before passing it to body-parser. For example, parse the value at startup and reject any configuration where the result is null or a non-finite number.",
+                "markdown": "**Vulnerability CVE-2026-12590**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|LOW|body-parser|1.20.6, 2.3.0|[CVE-2026-12590](https://avd.aquasec.com/nvd/cve-2026-12590)|\n\nImpact: In body-parser versions prior to 1.20.6 (1.x line) and 2.3.0 (2.x line), when the parser is configured with an invalid limit option value such as an unparseable string or NaN, bytes.parse returns null and the request body size check is silently skipped. Applications that rely on limit as their primary safeguard against oversized request bodies will accept arbitrarily large payloads, leading to excessive memory and CPU usage and denial of service. Patches: This issue is fixed in body-parser 1.20.6 and 2.3.0. After the fix, invalid limit values throw a clear error at parser construction time instead of silently disabling enforcement, while null and undefined continue to fall back to the default limit of 100kb. Workarounds: Validate the limit value before passing it to body-parser. For example, parse the value at startup and reject any configuration where the result is null or a non-finite number."
+              },
+              "properties": {
+                "cvssv3_baseScore": 3.7,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L",
+                "precision": "very-high",
+                "security-severity": "3.7",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "LOW"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2026-13149",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "brace-expansion: Brace-expansion: Denial of Service due to exponential-time complexity"
+              },
+              "fullDescription": {
+                "text": "brace-expansion through 5.0.6 is vulnerable to denial of service. The expand() function exhibits exponential-time complexity in the number of consecutive non-expanding '{}' brace groups. An attacker who passes a crafted string to expand(), directly or transitively, can cause significant CPU consumption and event-loop blocking. The max option does not mitigate this, as it bounds the output size rather than the recursion work."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-13149",
+              "help": {
+                "text": "Vulnerability CVE-2026-13149\nSeverity: HIGH\nPackage: brace-expansion\nFixed Version: 5.0.7, 1.1.16, 2.1.2\nLink: [CVE-2026-13149](https://avd.aquasec.com/nvd/cve-2026-13149)\nbrace-expansion through 5.0.6 is vulnerable to denial of service. The expand() function exhibits exponential-time complexity in the number of consecutive non-expanding '{}' brace groups. An attacker who passes a crafted string to expand(), directly or transitively, can cause significant CPU consumption and event-loop blocking. The max option does not mitigate this, as it bounds the output size rather than the recursion work.",
+                "markdown": "**Vulnerability CVE-2026-13149**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|brace-expansion|5.0.7, 1.1.16, 2.1.2|[CVE-2026-13149](https://avd.aquasec.com/nvd/cve-2026-13149)|\n\nbrace-expansion through 5.0.6 is vulnerable to denial of service. The expand() function exhibits exponential-time complexity in the number of consecutive non-expanding '{}' brace groups. An attacker who passes a crafted string to expand(), directly or transitively, can cause significant CPU consumption and event-loop blocking. The max option does not mitigate this, as it bounds the output size rather than the recursion work."
+              },
+              "properties": {
+                "cvssv3_baseScore": 5.3,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+                "cvssv40_baseScore": 7.7,
+                "cvssv40_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N/E:P/S:N/AU:Y/R:U/V:D/RE:M/U:Amber",
+                "precision": "very-high",
+                "security-severity": "5.3",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "HIGH"
+                ]
+              }
+            },
+            {
               "id": "CVE-2026-55603",
               "name": "LanguageSpecificPackageVulnerability",
               "shortDescription": {
@@ -68,6 +128,35 @@
               }
             },
             {
+              "id": "CVE-2026-59869",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "js-yaml: js-yaml: Denial of Service via crafted YAML documents"
+              },
+              "fullDescription": {
+                "text": "js-yaml is a JavaScript YAML parser and dumper. From 3.0.0 before 3.15.0 and from 4.0.0 before 4.3.0, js-yaml can spend quadratic CPU time parsing a document whose size grows only linearly when a chain of mappings uses merge keys where each mapping merges the previous one. This issue is fixed in versions 3.15.0 and 4.3.0."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-59869",
+              "help": {
+                "text": "Vulnerability CVE-2026-59869\nSeverity: HIGH\nPackage: js-yaml\nFixed Version: 3.15.0, 4.3.0\nLink: [CVE-2026-59869](https://avd.aquasec.com/nvd/cve-2026-59869)\njs-yaml is a JavaScript YAML parser and dumper. From 3.0.0 before 3.15.0 and from 4.0.0 before 4.3.0, js-yaml can spend quadratic CPU time parsing a document whose size grows only linearly when a chain of mappings uses merge keys where each mapping merges the previous one. This issue is fixed in versions 3.15.0 and 4.3.0.",
+                "markdown": "**Vulnerability CVE-2026-59869**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|js-yaml|3.15.0, 4.3.0|[CVE-2026-59869](https://avd.aquasec.com/nvd/cve-2026-59869)|\n\njs-yaml is a JavaScript YAML parser and dumper. From 3.0.0 before 3.15.0 and from 4.0.0 before 4.3.0, js-yaml can spend quadratic CPU time parsing a document whose size grows only linearly when a chain of mappings uses merge keys where each mapping merges the previous one. This issue is fixed in versions 3.15.0 and 4.3.0."
+              },
+              "properties": {
+                "cvssv3_baseScore": 7.5,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                "precision": "very-high",
+                "security-severity": "7.5",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "HIGH"
+                ]
+              }
+            },
+            {
               "id": "GHSA-p6gq-j5cr-w38f",
               "name": "LanguageSpecificPackageVulnerability",
               "shortDescription": {
@@ -93,6 +182,186 @@
                   "vulnerability",
                   "security",
                   "HIGH"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2026-59877",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "protobufjs: Denial of Service via infinite loop in .proto option parsing"
+              },
+              "fullDescription": {
+                "text": "protobufjs compiles protobuf definitions into JavaScript (JS) functions. Prior to 7.6.5 and 8.6.6, protobufjs parsed option names by advancing through schema tokens until reaching an = token without checking for end of input, so a crafted .proto schema that opens an option declaration and ends prematurely can cause parse, Root.load, or Root.loadSync to loop indefinitely. This issue is fixed in versions 7.6.5 and 8.6.6."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-59877",
+              "help": {
+                "text": "Vulnerability CVE-2026-59877\nSeverity: MEDIUM\nPackage: protobufjs\nFixed Version: 7.6.5, 8.6.6\nLink: [CVE-2026-59877](https://avd.aquasec.com/nvd/cve-2026-59877)\nprotobufjs compiles protobuf definitions into JavaScript (JS) functions. Prior to 7.6.5 and 8.6.6, protobufjs parsed option names by advancing through schema tokens until reaching an = token without checking for end of input, so a crafted .proto schema that opens an option declaration and ends prematurely can cause parse, Root.load, or Root.loadSync to loop indefinitely. This issue is fixed in versions 7.6.5 and 8.6.6.",
+                "markdown": "**Vulnerability CVE-2026-59877**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|MEDIUM|protobufjs|7.6.5, 8.6.6|[CVE-2026-59877](https://avd.aquasec.com/nvd/cve-2026-59877)|\n\nprotobufjs compiles protobuf definitions into JavaScript (JS) functions. Prior to 7.6.5 and 8.6.6, protobufjs parsed option names by advancing through schema tokens until reaching an = token without checking for end of input, so a crafted .proto schema that opens an option declaration and ends prematurely can cause parse, Root.load, or Root.loadSync to loop indefinitely. This issue is fixed in versions 7.6.5 and 8.6.6."
+              },
+              "properties": {
+                "cvssv3_baseScore": 5.3,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+                "precision": "very-high",
+                "security-severity": "5.3",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "MEDIUM"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2026-13311",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "shell-quote: shell-quote/parse: shell-quote: Denial of Service due to inefficient input parsing"
+              },
+              "fullDescription": {
+                "text": "shell-quote prior to 1.8.5 finalizes parsed tokens in parse() using Array.prototype.concat as a reduce accumulator, which reallocates and copies the entire growing array on every iteration. As a result parse() runs in O(n^2) time relative to the number of input tokens. An attacker who can supply an attacker-controlled string to any code path that calls parse() (no shell metacharacters are required; plain space-separated words suffice) can block the single-threaded Node.js event loop for an extended period with a small input, resulting in a denial of service. There is no code execution or data disclosure; impact is to availability only. Fixed in 1.8.5."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-13311",
+              "help": {
+                "text": "Vulnerability CVE-2026-13311\nSeverity: HIGH\nPackage: shell-quote\nFixed Version: 1.9.0\nLink: [CVE-2026-13311](https://avd.aquasec.com/nvd/cve-2026-13311)\nshell-quote prior to 1.8.5 finalizes parsed tokens in parse() using Array.prototype.concat as a reduce accumulator, which reallocates and copies the entire growing array on every iteration. As a result parse() runs in O(n^2) time relative to the number of input tokens. An attacker who can supply an attacker-controlled string to any code path that calls parse() (no shell metacharacters are required; plain space-separated words suffice) can block the single-threaded Node.js event loop for an extended period with a small input, resulting in a denial of service. There is no code execution or data disclosure; impact is to availability only. Fixed in 1.8.5.",
+                "markdown": "**Vulnerability CVE-2026-13311**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|shell-quote|1.9.0|[CVE-2026-13311](https://avd.aquasec.com/nvd/cve-2026-13311)|\n\nshell-quote prior to 1.8.5 finalizes parsed tokens in parse() using Array.prototype.concat as a reduce accumulator, which reallocates and copies the entire growing array on every iteration. As a result parse() runs in O(n^2) time relative to the number of input tokens. An attacker who can supply an attacker-controlled string to any code path that calls parse() (no shell metacharacters are required; plain space-separated words suffice) can block the single-threaded Node.js event loop for an extended period with a small input, resulting in a denial of service. There is no code execution or data disclosure; impact is to availability only. Fixed in 1.8.5."
+              },
+              "properties": {
+                "cvssv3_baseScore": 7.5,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                "cvssv40_baseScore": 8.7,
+                "cvssv40_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N",
+                "precision": "very-high",
+                "security-severity": "7.5",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "HIGH"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2026-59873",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "tar: node-tar: Denial of Service via crafted gzip bomb"
+              },
+              "fullDescription": {
+                "text": "node-tar is a tar archive manipulation library for Node.js. Prior to 7.5.19, node-tar does not enforce hard upper bounds on total decompressed data, entry counts, or decompression ratio in extraction and parsing paths such as src/extract.ts, allowing a small crafted gzip bomb to exhaust disk space and CPU. This issue is fixed in version 7.5.19."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-59873",
+              "help": {
+                "text": "Vulnerability CVE-2026-59873\nSeverity: CRITICAL\nPackage: tar\nFixed Version: 7.5.19\nLink: [CVE-2026-59873](https://avd.aquasec.com/nvd/cve-2026-59873)\nnode-tar is a tar archive manipulation library for Node.js. Prior to 7.5.19, node-tar does not enforce hard upper bounds on total decompressed data, entry counts, or decompression ratio in extraction and parsing paths such as src/extract.ts, allowing a small crafted gzip bomb to exhaust disk space and CPU. This issue is fixed in version 7.5.19.",
+                "markdown": "**Vulnerability CVE-2026-59873**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|CRITICAL|tar|7.5.19|[CVE-2026-59873](https://avd.aquasec.com/nvd/cve-2026-59873)|\n\nnode-tar is a tar archive manipulation library for Node.js. Prior to 7.5.19, node-tar does not enforce hard upper bounds on total decompressed data, entry counts, or decompression ratio in extraction and parsing paths such as src/extract.ts, allowing a small crafted gzip bomb to exhaust disk space and CPU. This issue is fixed in version 7.5.19."
+              },
+              "properties": {
+                "cvssv3_baseScore": 7.5,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                "cvssv40_baseScore": 9.2,
+                "cvssv40_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:H",
+                "precision": "very-high",
+                "security-severity": "7.5",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "CRITICAL"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2026-59874",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "tar: Node-tar: Denial of Service via malformed tar archive header"
+              },
+              "fullDescription": {
+                "text": "node-tar is a tar archive manipulation library for Node.js. Prior to 7.5.18, tar.replace accepts a checksum-valid tar header with a negative base-256 encoded entry size, causing the archive scanner to make no progress while repeatedly parsing the same header. This issue is fixed in version 7.5.18."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-59874",
+              "help": {
+                "text": "Vulnerability CVE-2026-59874\nSeverity: HIGH\nPackage: tar\nFixed Version: 7.5.18\nLink: [CVE-2026-59874](https://avd.aquasec.com/nvd/cve-2026-59874)\nnode-tar is a tar archive manipulation library for Node.js. Prior to 7.5.18, tar.replace accepts a checksum-valid tar header with a negative base-256 encoded entry size, causing the archive scanner to make no progress while repeatedly parsing the same header. This issue is fixed in version 7.5.18.",
+                "markdown": "**Vulnerability CVE-2026-59874**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|tar|7.5.18|[CVE-2026-59874](https://avd.aquasec.com/nvd/cve-2026-59874)|\n\nnode-tar is a tar archive manipulation library for Node.js. Prior to 7.5.18, tar.replace accepts a checksum-valid tar header with a negative base-256 encoded entry size, causing the archive scanner to make no progress while repeatedly parsing the same header. This issue is fixed in version 7.5.18."
+              },
+              "properties": {
+                "cvssv3_baseScore": 7.5,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                "cvssv40_baseScore": 8.7,
+                "cvssv40_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N",
+                "precision": "very-high",
+                "security-severity": "7.5",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "HIGH"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2026-59871",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "node-tar: node-tar: Denial of Service due to incorrect PAX path handling"
+              },
+              "fullDescription": {
+                "text": "node-tar is a tar archive manipulation library for Node.js. Prior to 7.5.18, node-tar coerces all-digit PAX path and linkpath values in src/pax.ts to JavaScript numbers, causing downstream path handling such as normalizeWindowsPath(entry.path).split('/') to throw an uncaught TypeError. This issue is fixed in version 7.5.18."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-59871",
+              "help": {
+                "text": "Vulnerability CVE-2026-59871\nSeverity: MEDIUM\nPackage: tar\nFixed Version: 7.5.18\nLink: [CVE-2026-59871](https://avd.aquasec.com/nvd/cve-2026-59871)\nnode-tar is a tar archive manipulation library for Node.js. Prior to 7.5.18, node-tar coerces all-digit PAX path and linkpath values in src/pax.ts to JavaScript numbers, causing downstream path handling such as normalizeWindowsPath(entry.path).split('/') to throw an uncaught TypeError. This issue is fixed in version 7.5.18.",
+                "markdown": "**Vulnerability CVE-2026-59871**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|MEDIUM|tar|7.5.18|[CVE-2026-59871](https://avd.aquasec.com/nvd/cve-2026-59871)|\n\nnode-tar is a tar archive manipulation library for Node.js. Prior to 7.5.18, node-tar coerces all-digit PAX path and linkpath values in src/pax.ts to JavaScript numbers, causing downstream path handling such as normalizeWindowsPath(entry.path).split('/') to throw an uncaught TypeError. This issue is fixed in version 7.5.18."
+              },
+              "properties": {
+                "cvssv3_baseScore": 5.3,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+                "precision": "very-high",
+                "security-severity": "5.3",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "MEDIUM"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2026-59875",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "node-tar: node-tar: Denial of Service via crafted archive with NUL bytes in metadata"
+              },
+              "fullDescription": {
+                "text": "node-tar is a tar archive manipulation library for Node.js. Prior to 7.5.17, node-tar does not strip NUL bytes from PAX path and linkpath records in src/pax.ts, allowing a crafted archive with values to reach fs.lstat or fs.open and terminate the process with an uncaught exception. This issue is fixed in version 7.5.17."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-59875",
+              "help": {
+                "text": "Vulnerability CVE-2026-59875\nSeverity: MEDIUM\nPackage: tar\nFixed Version: 7.5.17\nLink: [CVE-2026-59875](https://avd.aquasec.com/nvd/cve-2026-59875)\nnode-tar is a tar archive manipulation library for Node.js. Prior to 7.5.17, node-tar does not strip NUL bytes from PAX path and linkpath records in src/pax.ts, allowing a crafted archive with values to reach fs.lstat or fs.open and terminate the process with an uncaught exception. This issue is fixed in version 7.5.17.",
+                "markdown": "**Vulnerability CVE-2026-59875**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|MEDIUM|tar|7.5.17|[CVE-2026-59875](https://avd.aquasec.com/nvd/cve-2026-59875)|\n\nnode-tar is a tar archive manipulation library for Node.js. Prior to 7.5.17, node-tar does not strip NUL bytes from PAX path and linkpath records in src/pax.ts, allowing a crafted archive with values to reach fs.lstat or fs.open and terminate the process with an uncaught exception. This issue is fixed in version 7.5.17."
+              },
+              "properties": {
+                "cvssv3_baseScore": 5.3,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+                "precision": "very-high",
+                "security-severity": "5.3",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "MEDIUM"
                 ]
               }
             },
@@ -133,8 +402,184 @@
       },
       "results": [
         {
-          "ruleId": "CVE-2026-55603",
+          "ruleId": "CVE-2026-12590",
           "ruleIndex": 0,
+          "level": "note",
+          "message": {
+            "text": "Package: body-parser\nInstalled Version: 2.2.2\nVulnerability CVE-2026-12590\nSeverity: LOW\nFixed Version: 1.20.6, 2.3.0\nLink: [CVE-2026-12590](https://avd.aquasec.com/nvd/cve-2026-12590)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 5698,
+                  "startColumn": 1,
+                  "endLine": 5721,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: body-parser@2.2.2"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-13149",
+          "ruleIndex": 1,
+          "level": "error",
+          "message": {
+            "text": "Package: brace-expansion\nInstalled Version: 1.1.14\nVulnerability CVE-2026-13149\nSeverity: HIGH\nFixed Version: 5.0.7, 1.1.16, 2.1.2\nLink: [CVE-2026-13149](https://avd.aquasec.com/nvd/cve-2026-13149)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 5755,
+                  "startColumn": 1,
+                  "endLine": 5764,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: brace-expansion@1.1.14"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-13149",
+          "ruleIndex": 1,
+          "level": "error",
+          "message": {
+            "text": "Package: brace-expansion\nInstalled Version: 2.1.1\nVulnerability CVE-2026-13149\nSeverity: HIGH\nFixed Version: 5.0.7, 1.1.16, 2.1.2\nLink: [CVE-2026-13149](https://avd.aquasec.com/nvd/cve-2026-13149)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 1886,
+                  "startColumn": 1,
+                  "endLine": 1894,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: brace-expansion@2.1.1"
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 11668,
+                  "startColumn": 1,
+                  "endLine": 11677,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: brace-expansion@2.1.1"
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 13214,
+                  "startColumn": 1,
+                  "endLine": 13223,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: brace-expansion@2.1.1"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-13149",
+          "ruleIndex": 1,
+          "level": "error",
+          "message": {
+            "text": "Package: brace-expansion\nInstalled Version: 5.0.6\nVulnerability CVE-2026-13149\nSeverity: HIGH\nFixed Version: 5.0.7, 1.1.16, 2.1.2\nLink: [CVE-2026-13149](https://avd.aquasec.com/nvd/cve-2026-13149)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 2166,
+                  "startColumn": 1,
+                  "endLine": 2177,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: brace-expansion@5.0.6"
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 4434,
+                  "startColumn": 1,
+                  "endLine": 4446,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: brace-expansion@5.0.6"
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 8936,
+                  "startColumn": 1,
+                  "endLine": 8947,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: brace-expansion@5.0.6"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-55603",
+          "ruleIndex": 2,
           "level": "error",
           "message": {
             "text": "Package: http-proxy-middleware\nInstalled Version: 3.0.5\nVulnerability CVE-2026-55603\nSeverity: HIGH\nFixed Version: 3.0.7, 4.1.1\nLink: [CVE-2026-55603](https://avd.aquasec.com/nvd/cve-2026-55603)"
@@ -161,7 +606,7 @@
         },
         {
           "ruleId": "CVE-2026-55602",
-          "ruleIndex": 1,
+          "ruleIndex": 3,
           "level": "warning",
           "message": {
             "text": "Package: http-proxy-middleware\nInstalled Version: 3.0.5\nVulnerability CVE-2026-55602\nSeverity: MEDIUM\nFixed Version: 3.0.6, 4.1.0, 2.0.10\nLink: [CVE-2026-55602](https://avd.aquasec.com/nvd/cve-2026-55602)"
@@ -187,8 +632,35 @@
           ]
         },
         {
+          "ruleId": "CVE-2026-59869",
+          "ruleIndex": 4,
+          "level": "error",
+          "message": {
+            "text": "Package: js-yaml\nInstalled Version: 4.2.0\nVulnerability CVE-2026-59869\nSeverity: HIGH\nFixed Version: 3.15.0, 4.3.0\nLink: [CVE-2026-59869](https://avd.aquasec.com/nvd/cve-2026-59869)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 10267,
+                  "startColumn": 1,
+                  "endLine": 10288,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: js-yaml@4.2.0"
+              }
+            }
+          ]
+        },
+        {
           "ruleId": "GHSA-p6gq-j5cr-w38f",
-          "ruleIndex": 2,
+          "ruleIndex": 5,
           "level": "error",
           "message": {
             "text": "Package: nodemailer\nInstalled Version: 9.0.0\nVulnerability GHSA-p6gq-j5cr-w38f\nSeverity: HIGH\nFixed Version: 9.0.1\nLink: [GHSA-p6gq-j5cr-w38f](https://github.com/advisories/GHSA-p6gq-j5cr-w38f)"
@@ -214,8 +686,170 @@
           ]
         },
         {
+          "ruleId": "CVE-2026-59877",
+          "ruleIndex": 6,
+          "level": "warning",
+          "message": {
+            "text": "Package: protobufjs\nInstalled Version: 7.6.4\nVulnerability CVE-2026-59877\nSeverity: MEDIUM\nFixed Version: 7.6.5, 8.6.6\nLink: [CVE-2026-59877](https://avd.aquasec.com/nvd/cve-2026-59877)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 12702,
+                  "startColumn": 1,
+                  "endLine": 12724,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: protobufjs@7.6.4"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-13311",
+          "ruleIndex": 7,
+          "level": "error",
+          "message": {
+            "text": "Package: shell-quote\nInstalled Version: 1.8.4\nVulnerability CVE-2026-13311\nSeverity: HIGH\nFixed Version: 1.9.0\nLink: [CVE-2026-13311](https://avd.aquasec.com/nvd/cve-2026-13311)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 13907,
+                  "startColumn": 1,
+                  "endLine": 13918,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: shell-quote@1.8.4"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-59873",
+          "ruleIndex": 8,
+          "level": "error",
+          "message": {
+            "text": "Package: tar\nInstalled Version: 7.5.16\nVulnerability CVE-2026-59873\nSeverity: CRITICAL\nFixed Version: 7.5.19\nLink: [CVE-2026-59873](https://avd.aquasec.com/nvd/cve-2026-59873)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 14441,
+                  "startColumn": 1,
+                  "endLine": 14456,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: tar@7.5.16"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-59874",
+          "ruleIndex": 9,
+          "level": "error",
+          "message": {
+            "text": "Package: tar\nInstalled Version: 7.5.16\nVulnerability CVE-2026-59874\nSeverity: HIGH\nFixed Version: 7.5.18\nLink: [CVE-2026-59874](https://avd.aquasec.com/nvd/cve-2026-59874)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 14441,
+                  "startColumn": 1,
+                  "endLine": 14456,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: tar@7.5.16"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-59871",
+          "ruleIndex": 10,
+          "level": "warning",
+          "message": {
+            "text": "Package: tar\nInstalled Version: 7.5.16\nVulnerability CVE-2026-59871\nSeverity: MEDIUM\nFixed Version: 7.5.18\nLink: [CVE-2026-59871](https://avd.aquasec.com/nvd/cve-2026-59871)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 14441,
+                  "startColumn": 1,
+                  "endLine": 14456,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: tar@7.5.16"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-59875",
+          "ruleIndex": 11,
+          "level": "warning",
+          "message": {
+            "text": "Package: tar\nInstalled Version: 7.5.16\nVulnerability CVE-2026-59875\nSeverity: MEDIUM\nFixed Version: 7.5.17\nLink: [CVE-2026-59875](https://avd.aquasec.com/nvd/cve-2026-59875)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 14441,
+                  "startColumn": 1,
+                  "endLine": 14456,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: tar@7.5.16"
+              }
+            }
+          ]
+        },
+        {
           "ruleId": "CVE-2026-41907",
-          "ruleIndex": 3,
+          "ruleIndex": 12,
           "level": "warning",
           "message": {
             "text": "Package: uuid\nInstalled Version: 7.0.3\nVulnerability CVE-2026-41907\nSeverity: MEDIUM\nFixed Version: 11.1.1, 12.0.1, 13.0.1\nLink: [CVE-2026-41907](https://avd.aquasec.com/nvd/cve-2026-41907)"
