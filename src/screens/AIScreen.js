@@ -35,6 +35,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { useSearchHistory } from '../context/SearchHistoryContext';
 import { useAuth }          from '../context/AuthContext';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   generateSmartResponse,
   crawlWeb,
@@ -472,6 +473,7 @@ function FollowUpSuggestions({ suggestions, onSelect }) {
 export default function AIScreen({ route, navigation }) {
   const { user }      = useAuth();
   const searchHistCtx = useSearchHistory();
+  const insets        = useSafeAreaInsets();
 
   // ── Tabs ───────────────────────────────────────────────────────
   const [tab, setTab] = useState('chat');
@@ -808,7 +810,7 @@ export default function AIScreen({ route, navigation }) {
       <StatusBar barStyle="light-content" backgroundColor="#0d0d14" />
 
       {/* ── Header ── */}
-      <LinearGradient colors={['#0d0d14', '#13131e']} style={s.header}>
+      <LinearGradient colors={['#0d0d14', '#13131e']} style={[s.header, { paddingTop: insets.top || 14 }]}>
         <View style={s.headerRow}>
           <View style={{ flex: 1 }}>
             <Text style={s.headerTitle}>🎓 Acadivo AI</Text>
