@@ -246,126 +246,6 @@
               }
             },
             {
-              "id": "CVE-2026-59873",
-              "name": "LanguageSpecificPackageVulnerability",
-              "shortDescription": {
-                "text": "tar: node-tar: Denial of Service via crafted gzip bomb"
-              },
-              "fullDescription": {
-                "text": "node-tar is a tar archive manipulation library for Node.js. Prior to 7.5.19, node-tar does not enforce hard upper bounds on total decompressed data, entry counts, or decompression ratio in extraction and parsing paths such as src/extract.ts, allowing a small crafted gzip bomb to exhaust disk space and CPU. This issue is fixed in version 7.5.19."
-              },
-              "defaultConfiguration": {
-                "level": "error"
-              },
-              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-59873",
-              "help": {
-                "text": "Vulnerability CVE-2026-59873\nSeverity: CRITICAL\nPackage: tar\nFixed Version: 7.5.19\nLink: [CVE-2026-59873](https://avd.aquasec.com/nvd/cve-2026-59873)\nnode-tar is a tar archive manipulation library for Node.js. Prior to 7.5.19, node-tar does not enforce hard upper bounds on total decompressed data, entry counts, or decompression ratio in extraction and parsing paths such as src/extract.ts, allowing a small crafted gzip bomb to exhaust disk space and CPU. This issue is fixed in version 7.5.19.",
-                "markdown": "**Vulnerability CVE-2026-59873**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|CRITICAL|tar|7.5.19|[CVE-2026-59873](https://avd.aquasec.com/nvd/cve-2026-59873)|\n\nnode-tar is a tar archive manipulation library for Node.js. Prior to 7.5.19, node-tar does not enforce hard upper bounds on total decompressed data, entry counts, or decompression ratio in extraction and parsing paths such as src/extract.ts, allowing a small crafted gzip bomb to exhaust disk space and CPU. This issue is fixed in version 7.5.19."
-              },
-              "properties": {
-                "cvssv3_baseScore": 7.5,
-                "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
-                "cvssv40_baseScore": 9.2,
-                "cvssv40_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:H",
-                "precision": "very-high",
-                "security-severity": "7.5",
-                "tags": [
-                  "vulnerability",
-                  "security",
-                  "CRITICAL"
-                ]
-              }
-            },
-            {
-              "id": "CVE-2026-59874",
-              "name": "LanguageSpecificPackageVulnerability",
-              "shortDescription": {
-                "text": "tar: Node-tar: Denial of Service via malformed tar archive header"
-              },
-              "fullDescription": {
-                "text": "node-tar is a tar archive manipulation library for Node.js. Prior to 7.5.18, tar.replace accepts a checksum-valid tar header with a negative base-256 encoded entry size, causing the archive scanner to make no progress while repeatedly parsing the same header. This issue is fixed in version 7.5.18."
-              },
-              "defaultConfiguration": {
-                "level": "error"
-              },
-              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-59874",
-              "help": {
-                "text": "Vulnerability CVE-2026-59874\nSeverity: HIGH\nPackage: tar\nFixed Version: 7.5.18\nLink: [CVE-2026-59874](https://avd.aquasec.com/nvd/cve-2026-59874)\nnode-tar is a tar archive manipulation library for Node.js. Prior to 7.5.18, tar.replace accepts a checksum-valid tar header with a negative base-256 encoded entry size, causing the archive scanner to make no progress while repeatedly parsing the same header. This issue is fixed in version 7.5.18.",
-                "markdown": "**Vulnerability CVE-2026-59874**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|tar|7.5.18|[CVE-2026-59874](https://avd.aquasec.com/nvd/cve-2026-59874)|\n\nnode-tar is a tar archive manipulation library for Node.js. Prior to 7.5.18, tar.replace accepts a checksum-valid tar header with a negative base-256 encoded entry size, causing the archive scanner to make no progress while repeatedly parsing the same header. This issue is fixed in version 7.5.18."
-              },
-              "properties": {
-                "cvssv3_baseScore": 7.5,
-                "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
-                "cvssv40_baseScore": 8.7,
-                "cvssv40_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N",
-                "precision": "very-high",
-                "security-severity": "7.5",
-                "tags": [
-                  "vulnerability",
-                  "security",
-                  "HIGH"
-                ]
-              }
-            },
-            {
-              "id": "CVE-2026-59871",
-              "name": "LanguageSpecificPackageVulnerability",
-              "shortDescription": {
-                "text": "node-tar: node-tar: Denial of Service due to incorrect PAX path handling"
-              },
-              "fullDescription": {
-                "text": "node-tar is a tar archive manipulation library for Node.js. Prior to 7.5.18, node-tar coerces all-digit PAX path and linkpath values in src/pax.ts to JavaScript numbers, causing downstream path handling such as normalizeWindowsPath(entry.path).split('/') to throw an uncaught TypeError. This issue is fixed in version 7.5.18."
-              },
-              "defaultConfiguration": {
-                "level": "warning"
-              },
-              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-59871",
-              "help": {
-                "text": "Vulnerability CVE-2026-59871\nSeverity: MEDIUM\nPackage: tar\nFixed Version: 7.5.18\nLink: [CVE-2026-59871](https://avd.aquasec.com/nvd/cve-2026-59871)\nnode-tar is a tar archive manipulation library for Node.js. Prior to 7.5.18, node-tar coerces all-digit PAX path and linkpath values in src/pax.ts to JavaScript numbers, causing downstream path handling such as normalizeWindowsPath(entry.path).split('/') to throw an uncaught TypeError. This issue is fixed in version 7.5.18.",
-                "markdown": "**Vulnerability CVE-2026-59871**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|MEDIUM|tar|7.5.18|[CVE-2026-59871](https://avd.aquasec.com/nvd/cve-2026-59871)|\n\nnode-tar is a tar archive manipulation library for Node.js. Prior to 7.5.18, node-tar coerces all-digit PAX path and linkpath values in src/pax.ts to JavaScript numbers, causing downstream path handling such as normalizeWindowsPath(entry.path).split('/') to throw an uncaught TypeError. This issue is fixed in version 7.5.18."
-              },
-              "properties": {
-                "cvssv3_baseScore": 5.3,
-                "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
-                "precision": "very-high",
-                "security-severity": "5.3",
-                "tags": [
-                  "vulnerability",
-                  "security",
-                  "MEDIUM"
-                ]
-              }
-            },
-            {
-              "id": "CVE-2026-59875",
-              "name": "LanguageSpecificPackageVulnerability",
-              "shortDescription": {
-                "text": "node-tar: node-tar: Denial of Service via crafted archive with NUL bytes in metadata"
-              },
-              "fullDescription": {
-                "text": "node-tar is a tar archive manipulation library for Node.js. Prior to 7.5.17, node-tar does not strip NUL bytes from PAX path and linkpath records in src/pax.ts, allowing a crafted archive with values to reach fs.lstat or fs.open and terminate the process with an uncaught exception. This issue is fixed in version 7.5.17."
-              },
-              "defaultConfiguration": {
-                "level": "warning"
-              },
-              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-59875",
-              "help": {
-                "text": "Vulnerability CVE-2026-59875\nSeverity: MEDIUM\nPackage: tar\nFixed Version: 7.5.17\nLink: [CVE-2026-59875](https://avd.aquasec.com/nvd/cve-2026-59875)\nnode-tar is a tar archive manipulation library for Node.js. Prior to 7.5.17, node-tar does not strip NUL bytes from PAX path and linkpath records in src/pax.ts, allowing a crafted archive with values to reach fs.lstat or fs.open and terminate the process with an uncaught exception. This issue is fixed in version 7.5.17.",
-                "markdown": "**Vulnerability CVE-2026-59875**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|MEDIUM|tar|7.5.17|[CVE-2026-59875](https://avd.aquasec.com/nvd/cve-2026-59875)|\n\nnode-tar is a tar archive manipulation library for Node.js. Prior to 7.5.17, node-tar does not strip NUL bytes from PAX path and linkpath records in src/pax.ts, allowing a crafted archive with values to reach fs.lstat or fs.open and terminate the process with an uncaught exception. This issue is fixed in version 7.5.17."
-              },
-              "properties": {
-                "cvssv3_baseScore": 5.3,
-                "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
-                "precision": "very-high",
-                "security-severity": "5.3",
-                "tags": [
-                  "vulnerability",
-                  "security",
-                  "MEDIUM"
-                ]
-              }
-            },
-            {
               "id": "CVE-2026-41907",
               "name": "LanguageSpecificPackageVulnerability",
               "shortDescription": {
@@ -416,9 +296,9 @@
                   "uriBaseId": "ROOTPATH"
                 },
                 "region": {
-                  "startLine": 5698,
+                  "startLine": 5418,
                   "startColumn": 1,
-                  "endLine": 5721,
+                  "endLine": 5441,
                   "endColumn": 1
                 }
               },
@@ -443,75 +323,14 @@
                   "uriBaseId": "ROOTPATH"
                 },
                 "region": {
-                  "startLine": 5755,
+                  "startLine": 5475,
                   "startColumn": 1,
-                  "endLine": 5764,
+                  "endLine": 5484,
                   "endColumn": 1
                 }
               },
               "message": {
                 "text": "package-lock.json: brace-expansion@1.1.14"
-              }
-            }
-          ]
-        },
-        {
-          "ruleId": "CVE-2026-13149",
-          "ruleIndex": 1,
-          "level": "error",
-          "message": {
-            "text": "Package: brace-expansion\nInstalled Version: 2.1.1\nVulnerability CVE-2026-13149\nSeverity: HIGH\nFixed Version: 5.0.7, 1.1.16, 2.1.2\nLink: [CVE-2026-13149](https://avd.aquasec.com/nvd/cve-2026-13149)"
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "package-lock.json",
-                  "uriBaseId": "ROOTPATH"
-                },
-                "region": {
-                  "startLine": 1886,
-                  "startColumn": 1,
-                  "endLine": 1894,
-                  "endColumn": 1
-                }
-              },
-              "message": {
-                "text": "package-lock.json: brace-expansion@2.1.1"
-              }
-            },
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "package-lock.json",
-                  "uriBaseId": "ROOTPATH"
-                },
-                "region": {
-                  "startLine": 11668,
-                  "startColumn": 1,
-                  "endLine": 11677,
-                  "endColumn": 1
-                }
-              },
-              "message": {
-                "text": "package-lock.json: brace-expansion@2.1.1"
-              }
-            },
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "package-lock.json",
-                  "uriBaseId": "ROOTPATH"
-                },
-                "region": {
-                  "startLine": 13214,
-                  "startColumn": 1,
-                  "endLine": 13223,
-                  "endColumn": 1
-                }
-              },
-              "message": {
-                "text": "package-lock.json: brace-expansion@2.1.1"
               }
             }
           ]
@@ -531,9 +350,9 @@
                   "uriBaseId": "ROOTPATH"
                 },
                 "region": {
-                  "startLine": 2166,
+                  "startLine": 1988,
                   "startColumn": 1,
-                  "endLine": 2177,
+                  "endLine": 1999,
                   "endColumn": 1
                 }
               },
@@ -548,9 +367,9 @@
                   "uriBaseId": "ROOTPATH"
                 },
                 "region": {
-                  "startLine": 4434,
+                  "startLine": 4197,
                   "startColumn": 1,
-                  "endLine": 4446,
+                  "endLine": 4209,
                   "endColumn": 1
                 }
               },
@@ -565,9 +384,9 @@
                   "uriBaseId": "ROOTPATH"
                 },
                 "region": {
-                  "startLine": 8936,
+                  "startLine": 8949,
                   "startColumn": 1,
-                  "endLine": 8947,
+                  "endLine": 8960,
                   "endColumn": 1
                 }
               },
@@ -592,9 +411,9 @@
                   "uriBaseId": "ROOTPATH"
                 },
                 "region": {
-                  "startLine": 9276,
+                  "startLine": 9289,
                   "startColumn": 1,
-                  "endLine": 9292,
+                  "endLine": 9305,
                   "endColumn": 1
                 }
               },
@@ -619,9 +438,9 @@
                   "uriBaseId": "ROOTPATH"
                 },
                 "region": {
-                  "startLine": 9276,
+                  "startLine": 9289,
                   "startColumn": 1,
-                  "endLine": 9292,
+                  "endLine": 9305,
                   "endColumn": 1
                 }
               },
@@ -646,9 +465,9 @@
                   "uriBaseId": "ROOTPATH"
                 },
                 "region": {
-                  "startLine": 10267,
+                  "startLine": 10280,
                   "startColumn": 1,
-                  "endLine": 10288,
+                  "endLine": 10301,
                   "endColumn": 1
                 }
               },
@@ -673,9 +492,9 @@
                   "uriBaseId": "ROOTPATH"
                 },
                 "region": {
-                  "startLine": 11926,
+                  "startLine": 11939,
                   "startColumn": 1,
-                  "endLine": 11934,
+                  "endLine": 11947,
                   "endColumn": 1
                 }
               },
@@ -700,9 +519,9 @@
                   "uriBaseId": "ROOTPATH"
                 },
                 "region": {
-                  "startLine": 12702,
+                  "startLine": 12715,
                   "startColumn": 1,
-                  "endLine": 12724,
+                  "endLine": 12737,
                   "endColumn": 1
                 }
               },
@@ -727,9 +546,9 @@
                   "uriBaseId": "ROOTPATH"
                 },
                 "region": {
-                  "startLine": 13907,
+                  "startLine": 13920,
                   "startColumn": 1,
-                  "endLine": 13918,
+                  "endLine": 13931,
                   "endColumn": 1
                 }
               },
@@ -740,116 +559,8 @@
           ]
         },
         {
-          "ruleId": "CVE-2026-59873",
-          "ruleIndex": 8,
-          "level": "error",
-          "message": {
-            "text": "Package: tar\nInstalled Version: 7.5.16\nVulnerability CVE-2026-59873\nSeverity: CRITICAL\nFixed Version: 7.5.19\nLink: [CVE-2026-59873](https://avd.aquasec.com/nvd/cve-2026-59873)"
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "package-lock.json",
-                  "uriBaseId": "ROOTPATH"
-                },
-                "region": {
-                  "startLine": 14441,
-                  "startColumn": 1,
-                  "endLine": 14456,
-                  "endColumn": 1
-                }
-              },
-              "message": {
-                "text": "package-lock.json: tar@7.5.16"
-              }
-            }
-          ]
-        },
-        {
-          "ruleId": "CVE-2026-59874",
-          "ruleIndex": 9,
-          "level": "error",
-          "message": {
-            "text": "Package: tar\nInstalled Version: 7.5.16\nVulnerability CVE-2026-59874\nSeverity: HIGH\nFixed Version: 7.5.18\nLink: [CVE-2026-59874](https://avd.aquasec.com/nvd/cve-2026-59874)"
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "package-lock.json",
-                  "uriBaseId": "ROOTPATH"
-                },
-                "region": {
-                  "startLine": 14441,
-                  "startColumn": 1,
-                  "endLine": 14456,
-                  "endColumn": 1
-                }
-              },
-              "message": {
-                "text": "package-lock.json: tar@7.5.16"
-              }
-            }
-          ]
-        },
-        {
-          "ruleId": "CVE-2026-59871",
-          "ruleIndex": 10,
-          "level": "warning",
-          "message": {
-            "text": "Package: tar\nInstalled Version: 7.5.16\nVulnerability CVE-2026-59871\nSeverity: MEDIUM\nFixed Version: 7.5.18\nLink: [CVE-2026-59871](https://avd.aquasec.com/nvd/cve-2026-59871)"
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "package-lock.json",
-                  "uriBaseId": "ROOTPATH"
-                },
-                "region": {
-                  "startLine": 14441,
-                  "startColumn": 1,
-                  "endLine": 14456,
-                  "endColumn": 1
-                }
-              },
-              "message": {
-                "text": "package-lock.json: tar@7.5.16"
-              }
-            }
-          ]
-        },
-        {
-          "ruleId": "CVE-2026-59875",
-          "ruleIndex": 11,
-          "level": "warning",
-          "message": {
-            "text": "Package: tar\nInstalled Version: 7.5.16\nVulnerability CVE-2026-59875\nSeverity: MEDIUM\nFixed Version: 7.5.17\nLink: [CVE-2026-59875](https://avd.aquasec.com/nvd/cve-2026-59875)"
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "package-lock.json",
-                  "uriBaseId": "ROOTPATH"
-                },
-                "region": {
-                  "startLine": 14441,
-                  "startColumn": 1,
-                  "endLine": 14456,
-                  "endColumn": 1
-                }
-              },
-              "message": {
-                "text": "package-lock.json: tar@7.5.16"
-              }
-            }
-          ]
-        },
-        {
           "ruleId": "CVE-2026-41907",
-          "ruleIndex": 12,
+          "ruleIndex": 8,
           "level": "warning",
           "message": {
             "text": "Package: uuid\nInstalled Version: 7.0.3\nVulnerability CVE-2026-41907\nSeverity: MEDIUM\nFixed Version: 11.1.1, 12.0.1, 13.0.1\nLink: [CVE-2026-41907](https://avd.aquasec.com/nvd/cve-2026-41907)"
@@ -862,9 +573,9 @@
                   "uriBaseId": "ROOTPATH"
                 },
                 "region": {
-                  "startLine": 15183,
+                  "startLine": 15196,
                   "startColumn": 1,
-                  "endLine": 15191,
+                  "endLine": 15204,
                   "endColumn": 1
                 }
               },
