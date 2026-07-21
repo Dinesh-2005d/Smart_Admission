@@ -593,6 +593,26 @@ const buildDatabase = () => {
 
   // Combine: curated top colleges + gap-filling extras + all parsed colleges
   _cachedDatabase = [...TOP_COLLEGES, ...EXTRA_COLLEGES, ...PARSED_COLLEGES];
+
+  // Hydrate any admin edits saved in localStorage (web) so they survive refresh
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const storedRaw = window.localStorage.getItem('acadivo_custom_colleges');
+      if (storedRaw) {
+        const storedMap = JSON.parse(storedRaw);
+        Object.keys(storedMap).forEach(key => {
+          const item = storedMap[key];
+          const idx = _cachedDatabase.findIndex(c => c.id === key || (c.name && c.name.toLowerCase() === (item.name || '').toLowerCase()));
+          if (idx !== -1) {
+            _cachedDatabase[idx] = { ..._cachedDatabase[idx], ...item, id: key };
+          } else {
+            _cachedDatabase.unshift({ id: key, ...item });
+          }
+        });
+      }
+    } catch (_e) {}
+  }
+
   return _cachedDatabase;
 };
 
@@ -607,11 +627,22 @@ export const COLLEGE_DATABASE = new Proxy([], {
     if (prop === 'map') return db.map.bind(db);
     if (prop === 'slice') return db.slice.bind(db);
     if (prop === 'find') return db.find.bind(db);
+    if (prop === 'findIndex') return db.findIndex.bind(db);
+    if (prop === 'indexOf') return db.indexOf.bind(db);
     if (prop === 'some') return db.some.bind(db);
     if (prop === 'forEach') return db.forEach.bind(db);
     if (prop === 'reduce') return db.reduce.bind(db);
+    if (prop === 'unshift') return db.unshift.bind(db);
+    if (prop === 'splice') return db.splice.bind(db);
+    if (prop === 'push') return db.push.bind(db);
+    if (prop === 'concat') return db.concat.bind(db);
     if (typeof prop === 'string' && !isNaN(prop)) return db[prop];
     return db[prop];
+  },
+  set(_, prop, value) {
+    const db = buildDatabase();
+    db[prop] = value;
+    return true;
   },
 });
 
@@ -750,23 +781,29 @@ export const getAllCollegesInState = (targetState) => {
 };
 
 /**
- * Update college in memory & persistent localStorage
+ * Update college in memory & persistent localStorage.
+ * Works directly on _cachedDatabase (via buildDatabase()) to ensure
+ * all screens reading from COLLEGE_DATABASE see the updated data.
  */
 export const updateCollegeInMemory = (collegeData) => {
   if (!collegeData) return;
   const targetId = collegeData.id || collegeData.name?.toLowerCase().replace(/[^a-z0-9]/g, '_');
 
-  const idx = COLLEGE_DATABASE.findIndex(c =>
+  // Ensure the database is built, then mutate the actual backing array
+  const db = buildDatabase();
+
+  const idx = db.findIndex(c =>
     c.id === targetId ||
     (c.name && c.name.toLowerCase() === (collegeData.name || '').toLowerCase())
   );
 
   if (idx !== -1) {
-    COLLEGE_DATABASE[idx] = { ...COLLEGE_DATABASE[idx], ...collegeData, id: targetId };
+    db[idx] = { ...db[idx], ...collegeData, id: targetId };
   } else {
-    COLLEGE_DATABASE.unshift({ id: targetId, ...collegeData });
+    db.unshift({ id: targetId, ...collegeData });
   }
 
+  // Persist to localStorage (web only) so edits survive page refresh
   if (typeof window !== 'undefined' && window.localStorage) {
     try {
       const storedRaw = window.localStorage.getItem('acadivo_custom_colleges');
@@ -776,23 +813,4 @@ export const updateCollegeInMemory = (collegeData) => {
     } catch (_e) {}
   }
 };
-
-// Auto-hydrate saved local edits on module load
-if (typeof window !== 'undefined' && window.localStorage) {
-  try {
-    const storedRaw = window.localStorage.getItem('acadivo_custom_colleges');
-    if (storedRaw) {
-      const storedMap = JSON.parse(storedRaw);
-      Object.keys(storedMap).forEach(key => {
-        const item = storedMap[key];
-        const idx = COLLEGE_DATABASE.findIndex(c => c.id === key || (c.name && c.name.toLowerCase() === (item.name || '').toLowerCase()));
-        if (idx !== -1) {
-          COLLEGE_DATABASE[idx] = { ...COLLEGE_DATABASE[idx], ...item, id: key };
-        } else {
-          COLLEGE_DATABASE.unshift({ id: key, ...item });
-        }
-      });
-    }
-  } catch (_e) {}
-}
 
