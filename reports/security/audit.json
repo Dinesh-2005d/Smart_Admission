@@ -1,6 +1,20 @@
 {
   "auditReportVersion": 2,
   "vulnerabilities": {
+    "@eslint/eslintrc": {
+      "name": "@eslint/eslintrc",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "js-yaml"
+      ],
+      "effects": [],
+      "range": "",
+      "nodes": [
+        "node_modules/@eslint/eslintrc"
+      ],
+      "fixAvailable": true
+    },
     "@expo/cli": {
       "name": "@expo/cli",
       "severity": "moderate",
@@ -111,6 +125,34 @@
         "version": "57.0.4",
         "isSemVerMajor": true
       }
+    },
+    "@expo/xcpretty": {
+      "name": "@expo/xcpretty",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "js-yaml"
+      ],
+      "effects": [],
+      "range": "",
+      "nodes": [
+        "node_modules/@expo/xcpretty"
+      ],
+      "fixAvailable": true
+    },
+    "@istanbuljs/load-nyc-config": {
+      "name": "@istanbuljs/load-nyc-config",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "js-yaml"
+      ],
+      "effects": [],
+      "range": "",
+      "nodes": [
+        "node_modules/@istanbuljs/load-nyc-config"
+      ],
+      "fixAvailable": true
     },
     "autocannon": {
       "name": "autocannon",
@@ -415,8 +457,8 @@
         "node_modules/expo-manifests"
       ],
       "fixAvailable": {
-        "name": "expo-updates",
-        "version": "57.0.8",
+        "name": "expo-dev-client",
+        "version": "57.0.7",
         "isSemVerMajor": true
       }
     },
@@ -545,19 +587,29 @@
           "range": ">=4.0.0 <4.3.0"
         }
       ],
-      "effects": [],
+      "effects": [
+        "@eslint/eslintrc",
+        "@expo/xcpretty",
+        "@istanbuljs/load-nyc-config",
+        "mocha"
+      ],
       "range": "4.0.0 - 4.2.0",
       "nodes": [
         "node_modules/js-yaml"
       ],
-      "fixAvailable": true
+      "fixAvailable": {
+        "name": "mocha",
+        "version": "11.3.0",
+        "isSemVerMajor": true
+      }
     },
     "mocha": {
       "name": "mocha",
-      "severity": "moderate",
+      "severity": "high",
       "isDirect": true,
       "via": [
         "diff",
+        "js-yaml",
         "serialize-javascript"
       ],
       "effects": [],
@@ -776,10 +828,10 @@
     "vulnerabilities": {
       "info": 0,
       "low": 2,
-      "moderate": 21,
-      "high": 6,
+      "moderate": 20,
+      "high": 10,
       "critical": 0,
-      "total": 29
+      "total": 32
     },
     "dependencies": {
       "prod": 833,
