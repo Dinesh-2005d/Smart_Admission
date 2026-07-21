@@ -34,7 +34,7 @@ export default function AdminPanelScreen() {
     setConfirm(null);
     setActionId(u.id);
     const fn  = u.blocked ? adminUnblockUser : adminBlockUser;
-    const res = await fn(u.id);
+    const res = await fn(u);
     setActionId(null);
     if (res.success) { showToast('ok', res.message); fetchUsers(); }
     else              showToast('err', res.message || 'Action failed');
@@ -43,7 +43,7 @@ export default function AdminPanelScreen() {
   const doDelete = async (u) => {
     setConfirm(null);
     setActionId(u.id);
-    const res = await adminDeleteUser(u.id);
+    const res = await adminDeleteUser(u);
     setActionId(null);
     if (res.success) { showToast('ok', `${u.email} removed`); fetchUsers(); }
     else              showToast('err', res.message || 'Delete failed');
