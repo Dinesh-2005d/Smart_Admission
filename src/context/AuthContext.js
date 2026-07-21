@@ -207,23 +207,52 @@ export function AuthProvider({ children }) {
 
   // ── Admin: get all users ──────────────────────────────────────────────────
   const adminGetUsers = async () => {
+    let deletedUids = new Set();
     try {
-      // Fetch deleted users list to filter out
       const deletedSnap = await getDocs(collection(db, 'deleted_users'));
-      const deletedUids = new Set(deletedSnap.docs.map(d => d.id));
+      if (deletedSnap && deletedSnap.docs) {
+        deletedUids = new Set(deletedSnap.docs.map(d => d.id));
+      }
+    } catch (_e) {
+      // Safe fallback if deleted_users collection is empty or missing
+    }
 
-      // Fetch all Firestore user docs
+    try {
       const snap = await getDocs(collection(db, 'users'));
       const list = snap.docs
         .map(d => ({ id: d.id, ...d.data() }))
-        .filter(u => !deletedUids.has(u.id) && !u.deleted)
+        .filter(u => u.id && !deletedUids.has(u.id) && !u.deleted)
         .map(u => ({
           ...u,
           role: (u.email || '').trim().toLowerCase() === ADMIN_EMAIL ? 'Admin' : 'Student',
         }));
 
+      // Ensure logged-in admin is present in list
+      if (user && user.email && !list.some(u => (u.email || '').toLowerCase() === user.email.toLowerCase())) {
+        list.unshift({
+          id: user.uid || 'admin_self',
+          uid: user.uid,
+          name: user.name || 'Dinesh R',
+          email: user.email,
+          role: 'Admin',
+          blocked: false,
+          provider: 'email',
+        });
+      }
+
       return list;
     } catch (_e) {
+      if (user && user.email) {
+        return [{
+          id: user.uid || 'admin_self',
+          uid: user.uid,
+          name: user.name || 'Dinesh R',
+          email: user.email,
+          role: 'Admin',
+          blocked: false,
+          provider: 'email',
+        }];
+      }
       return [];
     }
   };
