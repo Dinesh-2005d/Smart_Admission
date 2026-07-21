@@ -17,6 +17,19 @@ const ADMIN_EMAIL = 'dineshr2209.sse@saveetha.com';
 
 const AuthContext = createContext(null);
 
+// ── Known Firebase Auth users list for automatic initial synchronization ────
+const INITIAL_FIREBASE_USERS = [
+  { uid: '8sB5yRkGoJMJie6FEkvRJ3yl9', email: 'dineshr2209.sse@saveetha.com', name: 'Dinesh R', role: 'Admin' },
+  { uid: 'MvSNo8zTdmgzPToo4Lh6egK2', email: 'dineshramesh2899@gmail.com', name: 'Jagan', role: 'Student' },
+  { uid: 'Rv9FE0vQmpaqT2BbfX10BzJk2', email: 'deepandee132@gmail.com', name: 'Deepan', role: 'Student' },
+  { uid: 'jG6A9QuHYIaIScSx56jG65jwel2', email: 'text123@gmail.com', name: 'abc', role: 'Student' },
+  { uid: 'KNmfC1zDfsar7owNC87Uletik2', email: 'test@example.com', name: 'Test User', role: 'Student' },
+  { uid: 'RuElYqYQ3Qh1zoegvuH8lisssr2', email: 'kishorecht149@gmail.com', name: 'Kishore', role: 'Student' },
+  { uid: 'zYLXOemOy7WWvGwVQyKD', email: 'testuser_unique_123@example.com', name: 'Test User 123', role: 'Student' },
+  { uid: 'BdNZQ7K9cpVvN9AcRqfog1E3', email: 'admin@example.com', name: 'Admin Example', role: 'Student' },
+  { uid: 'kALtztbcfNe60yXuelmeCrVgi2', email: 'shdgg36@gmail.com', name: 'Shdgg User', role: 'Student' },
+];
+
 export function AuthProvider({ children }) {
   const [user,    setUser]    = useState(null);
   const [loading, setLoading] = useState(true);
@@ -47,20 +60,19 @@ export function AuthProvider({ children }) {
               setUser(null);
               setError('Account suspended. Contact admin.');
             } else {
-              // ── Always enforce Admin role for the admin email ──────────────
+              // ── STRICT: Only dineshr2209.sse@saveetha.com can be Admin ──────
               const isAdminEmail =
                 (firebaseUser.email || '').trim().toLowerCase() === ADMIN_EMAIL;
-              const finalProfile = isAdminEmail
-                ? { ...profile, role: 'Admin' }
-                : profile;
-              // If role in Firestore is wrong, silently fix it
-              if (isAdminEmail && profile.role !== 'Admin') {
-                updateDoc(doc(db, 'users', firebaseUser.uid), { role: 'Admin' }).catch(() => {});
+              const finalRole = isAdminEmail ? 'Admin' : 'Student';
+              const finalProfile = { ...profile, role: finalRole };
+
+              if (profile.role !== finalRole) {
+                updateDoc(doc(db, 'users', firebaseUser.uid), { role: finalRole }).catch(() => {});
               }
               setUser({ uid: firebaseUser.uid, ...finalProfile });
             }
           } else {
-            // Firestore doc missing — create a minimal one so the admin can log in
+            // Firestore doc missing — create a minimal one
             const isAdminEmail =
               (firebaseUser.email || '').trim().toLowerCase() === ADMIN_EMAIL;
             const fallbackProfile = {
@@ -91,6 +103,7 @@ export function AuthProvider({ children }) {
     setLoading(true); setError(null);
     try {
       const cred = await createUserWithEmailAndPassword(auth, email.trim(), password);
+      // STRICT: Only dineshr2209.sse@saveetha.com is Admin
       const role = email.trim().toLowerCase() === ADMIN_EMAIL ? 'Admin' : 'Student';
       const profile = {
         uid:       cred.user.uid,
@@ -135,12 +148,13 @@ export function AuthProvider({ children }) {
         setError('Account suspended. Contact admin.');
         return { success: false, message: 'Account suspended. Contact admin.' };
       }
-      // ── Enforce Admin role for the admin email ─────────────────────────────
+      // ── STRICT: Enforce Admin role ONLY for dineshr2209.sse@saveetha.com ───
       if (snap.exists()) {
         const profile = snap.data();
         const isAdminEmail = email.trim().toLowerCase() === ADMIN_EMAIL;
-        if (isAdminEmail && profile.role !== 'Admin') {
-          await updateDoc(doc(db, 'users', cred.user.uid), { role: 'Admin' });
+        const expectedRole = isAdminEmail ? 'Admin' : 'Student';
+        if (profile.role !== expectedRole) {
+          await updateDoc(doc(db, 'users', cred.user.uid), { role: expectedRole });
         }
       }
       setLoading(false);
@@ -178,14 +192,47 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // ── Admin: get all users ──────────────────────────────────────────────────
+  // ── Admin: get all users (syncs Firebase Auth & Firestore) ───────────────
   const adminGetUsers = async () => {
     try {
+      // 1. Fetch deleted users list to filter out
+      const deletedSnap = await getDocs(collection(db, 'deleted_users'));
+      const deletedUids = new Set(deletedSnap.docs.map(d => d.id));
+
+      // 2. Fetch existing Firestore user docs
       const snap = await getDocs(collection(db, 'users'));
-      return snap.docs
-        .map(d => ({ id: d.id, ...d.data() }))
-        .filter(u => !u.deleted);
-    } catch {
+      const existingMap = {};
+      snap.docs.forEach(d => {
+        existingMap[d.id] = { id: d.id, ...d.data() };
+      });
+
+      // 3. Ensure all initial Firebase Auth accounts exist in Firestore if not deleted
+      for (const initUser of INITIAL_FIREBASE_USERS) {
+        if (!deletedUids.has(initUser.uid) && !existingMap[initUser.uid]) {
+          const profile = {
+            uid: initUser.uid,
+            name: initUser.name,
+            email: initUser.email,
+            role: initUser.email.toLowerCase() === ADMIN_EMAIL ? 'Admin' : 'Student',
+            blocked: false,
+            provider: 'email',
+            createdAt: new Date().toISOString(),
+          };
+          await setDoc(doc(db, 'users', initUser.uid), profile).catch(() => {});
+          existingMap[initUser.uid] = { id: initUser.uid, ...profile };
+        }
+      }
+
+      // 4. Return formatted users list, strictly enforcing single admin (dineshr2209.sse@saveetha.com)
+      const list = Object.values(existingMap)
+        .filter(u => !deletedUids.has(u.id) && !u.deleted)
+        .map(u => ({
+          ...u,
+          role: (u.email || '').trim().toLowerCase() === ADMIN_EMAIL ? 'Admin' : 'Student',
+        }));
+
+      return list;
+    } catch (_e) {
       return [];
     }
   };
@@ -210,7 +257,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // ── Admin: delete user ────────────────────────────────────────────────────
+  // ── Admin: delete user (permanently removes from Firestore & blocks Auth) ─
   const adminDeleteUser = async (userId) => {
     try {
       // 1. Mark in deleted_users collection so authentication is permanently blocked
