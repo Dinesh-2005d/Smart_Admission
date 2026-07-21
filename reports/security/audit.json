@@ -457,8 +457,8 @@
         "node_modules/expo-manifests"
       ],
       "fixAvailable": {
-        "name": "expo-updates",
-        "version": "57.0.8",
+        "name": "expo-dev-client",
+        "version": "57.0.7",
         "isSemVerMajor": true
       }
     },
