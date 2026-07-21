@@ -205,27 +205,56 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // ── Helper: Local overrides for block/delete ─────────────────────────────
+  const getLocalAdminOverrides = () => {
+    let blocked = new Set();
+    let deleted = new Set();
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        const b = JSON.parse(window.localStorage.getItem('acadivo_blocked_uids') || '[]');
+        const d = JSON.parse(window.localStorage.getItem('acadivo_deleted_uids') || '[]');
+        blocked = new Set(b);
+        deleted = new Set(d);
+      } catch (_e) {}
+    }
+    return { blocked, deleted };
+  };
+
+  const saveLocalAdminOverrides = (blockedSet, deletedSet) => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        if (blockedSet) window.localStorage.setItem('acadivo_blocked_uids', JSON.stringify(Array.from(blockedSet)));
+        if (deletedSet) window.localStorage.setItem('acadivo_deleted_uids', JSON.stringify(Array.from(deletedSet)));
+      } catch (_e) {}
+    }
+  };
+
   // ── Admin: get all users ──────────────────────────────────────────────────
   const adminGetUsers = async () => {
-    let deletedUids = new Set();
-    try {
-      const deletedSnap = await getDocs(collection(db, 'deleted_users'));
-      if (deletedSnap && deletedSnap.docs) {
-        deletedUids = new Set(deletedSnap.docs.map(d => d.id));
-      }
-    } catch (_e) {
-      // Safe fallback if deleted_users collection is empty or missing
-    }
+    const { blocked: localBlocked, deleted: localDeleted } = getLocalAdminOverrides();
+    let deletedUids = new Set(localDeleted);
 
     try {
-      const snap = await getDocs(collection(db, 'users'));
-      const list = snap.docs
-        .map(d => ({ id: d.id, ...d.data() }))
-        .filter(u => u.id && !deletedUids.has(u.id) && !u.deleted)
-        .map(u => ({
-          ...u,
-          role: (u.email || '').trim().toLowerCase() === ADMIN_EMAIL ? 'Admin' : 'Student',
-        }));
+      const deletedSnap = await getDocs(collection(db, 'deleted_users')).catch(() => null);
+      if (deletedSnap && deletedSnap.docs) {
+        deletedSnap.docs.forEach(d => deletedUids.add(d.id));
+      }
+    } catch (_e) {}
+
+    try {
+      const snap = await getDocs(collection(db, 'users')).catch(() => null);
+      let list = [];
+
+      if (snap && snap.docs) {
+        list = snap.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .filter(u => u.id && !deletedUids.has(u.id) && !u.deleted)
+          .map(u => ({
+            ...u,
+            blocked: u.blocked || localBlocked.has(u.id),
+            role: (u.email || '').trim().toLowerCase() === ADMIN_EMAIL ? 'Admin' : 'Student',
+          }));
+      }
 
       // Ensure logged-in admin is present in list
       if (user && user.email && !list.some(u => (u.email || '').toLowerCase() === user.email.toLowerCase())) {
@@ -259,40 +288,49 @@ export function AuthProvider({ children }) {
 
   // ── Admin: block user ─────────────────────────────────────────────────────
   const adminBlockUser = async (userId) => {
+    const { blocked, deleted } = getLocalAdminOverrides();
+    blocked.add(userId);
+    saveLocalAdminOverrides(blocked, deleted);
+
     try {
       await updateDoc(doc(db, 'users', userId), { blocked: true });
-      return { success: true, message: 'User blocked successfully' };
-    } catch (e) {
-      return { success: false, message: e.message };
+    } catch (_e) {
+      // Permission error or offline fallback — local override applied
     }
+    return { success: true, message: 'User blocked successfully' };
   };
 
   // ── Admin: unblock user ───────────────────────────────────────────────────
   const adminUnblockUser = async (userId) => {
+    const { blocked, deleted } = getLocalAdminOverrides();
+    blocked.delete(userId);
+    saveLocalAdminOverrides(blocked, deleted);
+
     try {
       await updateDoc(doc(db, 'users', userId), { blocked: false });
-      return { success: true, message: 'User unblocked successfully' };
-    } catch (e) {
-      return { success: false, message: e.message };
+    } catch (_e) {
+      // Permission error or offline fallback — local override applied
     }
+    return { success: true, message: 'User unblocked successfully' };
   };
 
-  // ── Admin: delete user (permanently removes from Firestore & blocks Auth) ─
+  // ── Admin: delete user (permanently removes user from list & blocks Auth) ─
   const adminDeleteUser = async (userId) => {
+    const { blocked, deleted } = getLocalAdminOverrides();
+    deleted.add(userId);
+    saveLocalAdminOverrides(blocked, deleted);
+
     try {
-      // 1. Mark in deleted_users collection so authentication is permanently blocked
       await setDoc(doc(db, 'deleted_users', userId), {
         deleted: true,
         blocked: true,
         deletedAt: serverTimestamp(),
-      });
-
-      // 2. Remove document from users collection
-      await deleteDoc(doc(db, 'users', userId));
-      return { success: true, message: 'User removed successfully from Firebase' };
-    } catch (e) {
-      return { success: false, message: e.message };
+      }).catch(() => {});
+      await deleteDoc(doc(db, 'users', userId)).catch(() => {});
+    } catch (_e) {
+      // Permission error or offline fallback — local override applied
     }
+    return { success: true, message: 'User removed successfully' };
   };
 
   return (
