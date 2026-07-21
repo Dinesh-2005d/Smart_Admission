@@ -56,8 +56,8 @@
         "node_modules/@expo/config"
       ],
       "fixAvailable": {
-        "name": "expo-constants",
-        "version": "57.0.6",
+        "name": "expo",
+        "version": "46.0.21",
         "isSemVerMajor": true
       }
     },
@@ -457,8 +457,8 @@
         "node_modules/expo-manifests"
       ],
       "fixAvailable": {
-        "name": "expo-dev-client",
-        "version": "57.0.7",
+        "name": "expo-updates",
+        "version": "57.0.8",
         "isSemVerMajor": true
       }
     },
