@@ -15,7 +15,7 @@ const AFINN = {
   // Positive (+2 / +3)
   good: 3, great: 3, nice: 3, beautiful: 3, happy: 3, joy: 3, joyful: 3,
   enjoy: 3, enjoyed: 3, enjoyable: 3, better: 3, benefit: 3, beneficial: 3,
-  excellent: 3, success: 3, successful: 3, achieve: 3, achievement: 3,
+  success: 3, successful: 3, achieve: 3, achievement: 3,
   win: 3, winning: 3, winner: 3, recommend: 3, recommended: 3,
   positive: 3, inspired: 3, innovative: 3, innovation: 3, advance: 3,
   advanced: 3, growth: 3, grow: 3, improve: 3, improved: 3, improvement: 3,
@@ -25,7 +25,7 @@ const AFINN = {
   like: 2, liked: 2, smart: 2, clever: 2, capable: 2, efficient: 2,
   easy: 2, clean: 2, clear: 2, fast: 2, quick: 2, safe: 2, safety: 2,
   friendly: 2, kind: 2, helpful: 2, help: 2, honest: 2, strong: 2,
-  strength: 2, confident: 2, confident: 2, opportunity: 2, free: 2,
+  strength: 2, confident: 2, opportunity: 2, free: 2,
   popular: 2, recognised: 2, recognized: 2, reputed: 2, reputable: 2,
   accredited: 2, awarded: 2, award: 2, top: 2, leading: 2, premier: 2,
   renowned: 2, established: 2, experienced: 2, skilled: 2, trained: 2,
@@ -43,7 +43,7 @@ const AFINN = {
   lack: -1, lacking: -1, limited: -1, slow: -1, delayed: -1, delay: -1,
   concern: -1, concerned: -1, issue: -1, issues: -1, problem: -1,
   problems: -1, question: -1, doubt: -1, unclear: -1, uncertain: -1,
-  average: -1, mediocre: -1, basic: -1, minimal: -1, narrow: -1,
+  mediocre: -1, basic: -1, minimal: -1, narrow: -1,
   restricted: -1, rigid: -1, outdated: -1, old: -1, overloaded: -1,
   busy: -1, crowded: -1, congested: -1, noisy: -1, messy: -1,
 

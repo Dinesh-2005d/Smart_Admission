@@ -571,7 +571,7 @@ export default function DetailsScreen({ route, navigation }) {
                       <Text style={styles.realTagText}>{rev.tag}</Text>
                     </View>
 
-                    <Text style={styles.realReviewText}>"{rev.review}"</Text>
+                    <Text style={styles.realReviewText}>{"\"" + rev.review + "\""}</Text>
                   </View>
                 ))}
               </View>

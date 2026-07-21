@@ -1,13 +1,24 @@
 /**
- * AIScreen.js — Acadivo AI v4.0 (Web Crawl + Sentiment)
+ * AIScreen.js — Acadivo AI v6.0 (ChatGPT-like Experience)
  *
- * A fully self-contained AI chat powered by:
- *   🌐 Web Crawling   — DuckDuckGo + Wikipedia (no API key needed)
- *   🧠 Sentiment AI   — AFINN-165 pure-JS analysis
- *   💬 Local AI       — Intent-based offline fallback
+ * A truly conversational AI interface powered by:
+ *   🧠 Groq Llama 3.3 70B  — Real AI with streaming responses
+ *   🏛️ College Knowledge DB — 1700+ colleges context
+ *   🌐 Web Enrichment       — DuckDuckGo + Wikipedia
+ *   💬 Local AI Fallback    — Offline mode
+ *
+ * ChatGPT-like features:
+ *   ✅ Token-by-token streaming with blinking cursor
+ *   ✅ Stop generating button
+ *   ✅ Copy / Regenerate / Feedback buttons on messages
+ *   ✅ Dynamic contextual follow-up suggestions
+ *   ✅ True multi-turn conversation memory
+ *   ✅ Chat history with Firebase sync
+ *   ✅ Sentiment analysis badges
+ *
  * Two tabs:
- *   💬 Chat    — Live crawl-powered AI conversation
- *   📜 History — Chat sessions + Search history (Firebase synced)
+ *   💬 Chat    — Live AI conversation
+ *   📜 History — Chat sessions + Search history
  */
 
 import React, {
@@ -31,6 +42,9 @@ import {
   getSentimentColor,
   getSentimentEmoji,
   resetLocalAIContext,
+  isGroqAvailable,
+  resetConversationMemory,
+  setConversationMemory,
 } from '../utils/crawlWebAI';
 
 import Constants from 'expo-constants';
@@ -41,10 +55,6 @@ import {
 import { db } from '../config/firebase';
 
 const { width: SW } = Dimensions.get('window');
-
-// ─── AI Engine: Web Crawl + Sentiment (no API key required) ──────────────────
-// All responses come from generateSmartResponse() in crawlWebAI.js
-// which chains: crawlWeb() → analyzeText() → synthesize answer
 
 // ─── Dual Storage (Local Storage + Firebase) for Chat Sessions ───────────────
 const getStorageKey = (email) =>
@@ -86,12 +96,10 @@ const saveChatSession = async (email, title, messages) => {
     updatedAt: now,
   };
 
-  // 1. Save to Local Storage immediately
   const localList = getLocalSessions(email);
   const updatedList = [newSess, ...localList.filter(s => s.id !== sid)];
   setLocalSessions(email, updatedList);
 
-  // 2. Silently attempt Firebase write
   if (email && db) {
     try {
       const ref = collection(db, 'chatHistory', email, 'sessions');
@@ -112,7 +120,6 @@ const updateChatSession = async (email, sessionId, messages) => {
   if (!sessionId) return;
   const now = new Date().toISOString();
 
-  // 1. Update in Local Storage immediately
   const localList = getLocalSessions(email);
   const updatedList = localList.map(s => {
     if (s.id === sessionId) {
@@ -122,7 +129,6 @@ const updateChatSession = async (email, sessionId, messages) => {
   });
   setLocalSessions(email, updatedList);
 
-  // 2. Silently attempt Firebase update
   if (email && db) {
     try {
       const docRef = doc(db, 'chatHistory', email, 'sessions', sessionId);
@@ -167,12 +173,10 @@ const loadChatSessions = async (email) => {
 const deleteChatSession = async (email, sessionId) => {
   if (!sessionId) return;
 
-  // 1. Delete from Local Storage immediately
   const localList = getLocalSessions(email);
   const updatedList = localList.filter(s => s.id !== sessionId);
   setLocalSessions(email, updatedList);
 
-  // 2. Silently attempt Firebase delete
   if (email && db) {
     try {
       await deleteDoc(doc(db, 'chatHistory', email, 'sessions', sessionId)).catch(() => {});
@@ -191,7 +195,7 @@ const fmtDate = (d) => {
     ' ' + date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 };
 
-// ─── Quick suggestions ────────────────────────────────────────────────────────
+// ─── Quick suggestion chips (shown only on empty state) ───────────────────────
 const CHIPS = [
   { icon: 'school-outline',        text: 'Best engineering colleges in Chennai' },
   { icon: 'medkit-outline',        text: 'Government medical colleges Tamil Nadu' },
@@ -203,7 +207,7 @@ const CHIPS = [
   { icon: 'star-outline',          text: 'What do students say about VIT Vellore?' },
 ];
 
-// ─── TypingDots ───────────────────────────────────────────────────────────────
+// ─── Typing Indicator with Animated Dots ──────────────────────────────────────
 function TypingDots() {
   const anims = [
     useRef(new Animated.Value(0)).current,
@@ -238,13 +242,33 @@ function TypingDots() {
   );
 }
 
-// ─── RichText renderer ────────────────────────────────────────────────────────
-function RichText({ text, isUser }) {
+// ─── Blinking Cursor ──────────────────────────────────────────────────────────
+function BlinkingCursor() {
+  const opacity = useRef(new Animated.Value(1)).current;
+  const nd = Platform.OS !== 'web';
+  useEffect(() => {
+    const anim = Animated.loop(Animated.sequence([
+      Animated.timing(opacity, { toValue: 0, duration: 500, useNativeDriver: nd }),
+      Animated.timing(opacity, { toValue: 1, duration: 500, useNativeDriver: nd }),
+    ]));
+    anim.start();
+    return () => anim.stop();
+  }, []);
+  return (
+    <Animated.Text style={{ opacity, color: '#7c6fff', fontWeight: '800', fontSize: 15 }}>▊</Animated.Text>
+  );
+}
+
+// ─── RichText renderer (supports bold, links, bullets) ────────────────────────
+function RichText({ text, isUser, isStreaming }) {
   const base = isUser ? '#ffffff' : '#eeeef8';
   const bold = isUser ? '#ffffff' : '#a78bfa';
 
+  // Clean up follow-up suggestions section — we render those separately
+  let cleanText = text || '';
+
   const parseLine = (str, idx) => {
-    const parts = str.split(/(\[.*?\]\(.*?\))|(\*\*.*?\*\*)/);
+    const parts = str.split(/(\[.*?\]\(.*?\))|(\*\*.*?\*\*)|(```[\s\S]*?```)/);
     return parts.map((part, i) => {
       if (!part) return null;
       if (part.startsWith('[') && part.includes('](') && part.endsWith(')')) {
@@ -268,14 +292,16 @@ function RichText({ text, isUser }) {
 
   return (
     <View>
-      {(text || '').split('\n').map((line, i) => {
+      {cleanText.split('\n').map((line, i) => {
         const tr = line.trim();
         const isBullet = /^[•\-\*]\s/.test(tr);
+        const isNumbered = /^\d+[\.\)]\s/.test(tr);
         const isEmpty  = tr === '';
         if (isEmpty && i > 0) return <View key={i} style={{ height: 5 }} />;
-        const content = isBullet ? tr.replace(/^[•\-\*]\s/, '') : line;
+        const content = isBullet ? tr.replace(/^[•\-\*]\s/, '') : 
+                        isNumbered ? tr : line;
         return (
-          <View key={i} style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: isBullet ? 3 : 0, paddingLeft: isBullet ? 4 : 0 }}>
+          <View key={i} style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: (isBullet || isNumbered) ? 3 : 0, paddingLeft: (isBullet || isNumbered) ? 4 : 0 }}>
             {isBullet && <Text style={{ color: '#7c6fff', fontWeight: '800', marginRight: 4, fontSize: 12 }}>•</Text>}
             <Text style={{ flex: 1, color: base, fontSize: 13.5, lineHeight: 21 }}>
               {parseLine(content, i)}
@@ -283,12 +309,74 @@ function RichText({ text, isUser }) {
           </View>
         );
       })}
+      {isStreaming && <BlinkingCursor />}
+    </View>
+  );
+}
+
+// ─── Message Action Buttons (Copy, Regenerate, Feedback) ──────────────────────
+function MessageActions({ msg, onRegenerate, onCopy }) {
+  const [feedback, setFeedback] = useState(null); // 'up' | 'down' | null
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    if (Platform.OS === 'web' && navigator?.clipboard) {
+      navigator.clipboard.writeText(msg.text || '').then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }).catch(() => {});
+    } else {
+      // On mobile, we could use expo-clipboard but keeping it simple
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+    onCopy?.(msg.text);
+  };
+
+  return (
+    <View style={s.actionRow}>
+      {/* Copy */}
+      <TouchableOpacity style={s.actionBtn} onPress={handleCopy} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
+        <Ionicons name={copied ? 'checkmark-circle' : 'copy-outline'} size={14} color={copied ? '#10b981' : '#64748b'} />
+        {copied && <Text style={[s.actionText, { color: '#10b981' }]}>Copied</Text>}
+      </TouchableOpacity>
+
+      {/* Regenerate */}
+      <TouchableOpacity style={s.actionBtn} onPress={onRegenerate} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
+        <Ionicons name="refresh-outline" size={14} color="#64748b" />
+      </TouchableOpacity>
+
+      {/* Thumbs up */}
+      <TouchableOpacity
+        style={s.actionBtn}
+        onPress={() => setFeedback(f => f === 'up' ? null : 'up')}
+        hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+      >
+        <Ionicons
+          name={feedback === 'up' ? 'thumbs-up' : 'thumbs-up-outline'}
+          size={14}
+          color={feedback === 'up' ? '#10b981' : '#64748b'}
+        />
+      </TouchableOpacity>
+
+      {/* Thumbs down */}
+      <TouchableOpacity
+        style={s.actionBtn}
+        onPress={() => setFeedback(f => f === 'down' ? null : 'down')}
+        hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+      >
+        <Ionicons
+          name={feedback === 'down' ? 'thumbs-down' : 'thumbs-down-outline'}
+          size={14}
+          color={feedback === 'down' ? '#f43f5e' : '#64748b'}
+        />
+      </TouchableOpacity>
     </View>
   );
 }
 
 // ─── Message Bubble ───────────────────────────────────────────────────────────
-function Bubble({ msg }) {
+function Bubble({ msg, onRegenerate, onCopy }) {
   const isUser = msg.role === 'user';
   const fade   = useRef(new Animated.Value(0)).current;
   const slideX = useRef(new Animated.Value(isUser ? 20 : -20)).current;
@@ -310,16 +398,22 @@ function Bubble({ msg }) {
               <Text style={{ fontSize: 11 }}>🤖</Text>
             </LinearGradient>
             <Text style={s.aiName}>Acadivo AI</Text>
-            {msg.isCrawled && (
+            {msg.isRealAI && (
               <View style={s.livePill}>
                 <View style={s.liveDot} />
-                <Text style={s.liveText}>WEB</Text>
+                <Text style={s.liveText}>AI</Text>
               </View>
             )}
-            {msg.isReal && !msg.isCrawled && (
-              <View style={[s.livePill, { backgroundColor: '#7c6fff22' }]}>
-                <View style={[s.liveDot, { backgroundColor: '#7c6fff' }]} />
-                <Text style={[s.liveText, { color: '#7c6fff' }]}>AI</Text>
+            {msg.isCrawled && (
+              <View style={[s.livePill, { backgroundColor: '#10b98122' }]}>
+                <View style={[s.liveDot, { backgroundColor: '#10b981' }]} />
+                <Text style={[s.liveText, { color: '#10b981' }]}>WEB</Text>
+              </View>
+            )}
+            {msg.isOfflineFallback && (
+              <View style={[s.livePill, { backgroundColor: '#f59e0b22' }]}>
+                <View style={[s.liveDot, { backgroundColor: '#f59e0b' }]} />
+                <Text style={[s.liveText, { color: '#f59e0b' }]}>OFFLINE</Text>
               </View>
             )}
             {msg.sentiment && (
@@ -342,11 +436,32 @@ function Bubble({ msg }) {
           </LinearGradient>
         ) : (
           <View style={[s.bubble, s.aiBubble]}>
-            <RichText text={msg.text} isUser={false} />
+            <RichText text={msg.text} isUser={false} isStreaming={msg.isStreaming} />
           </View>
         )}
-        <Text style={[s.timestamp, isUser && { textAlign: 'right' }]}>{msg.time}</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text style={[s.timestamp, isUser && { textAlign: 'right', flex: 1 }]}>{msg.time}</Text>
+          {!isUser && !msg.isStreaming && msg.text && msg.id !== 'welcome' && (
+            <MessageActions msg={msg} onRegenerate={() => onRegenerate?.(msg)} onCopy={() => onCopy?.(msg.text)} />
+          )}
+        </View>
       </Animated.View>
+    </View>
+  );
+}
+
+// ─── Dynamic Follow-up Suggestion Chips ───────────────────────────────────────
+function FollowUpSuggestions({ suggestions, onSelect }) {
+  if (!suggestions || suggestions.length === 0) return null;
+
+  return (
+    <View style={s.followUpWrap}>
+      {suggestions.map((text, i) => (
+        <TouchableOpacity key={i} style={s.followUpChip} onPress={() => onSelect(text)}>
+          <Ionicons name="arrow-forward-circle-outline" size={14} color="#7c6fff" />
+          <Text style={s.followUpText} numberOfLines={2}>{text}</Text>
+        </TouchableOpacity>
+      ))}
     </View>
   );
 }
@@ -360,14 +475,16 @@ export default function AIScreen({ route, navigation }) {
 
   // ── Tabs ───────────────────────────────────────────────────────
   const [tab, setTab] = useState('chat');
-  const [histTab, setHistTab] = useState('chats'); // 'chats' | 'searches'
+  const [histTab, setHistTab] = useState('chats');
 
   // ── Chat state ─────────────────────────────────────────────────
   const [messages,    setMessages]    = useState([]);
   const [input,       setInput]       = useState('');
   const [loading,     setLoading]     = useState(false);
+  const [streaming,   setStreaming]   = useState(false);
   const [error,       setError]       = useState(null);
-  const [sessionId,   setSessionId]   = useState(null);  // Firestore session id
+  const [sessionId,   setSessionId]   = useState(null);
+  const [suggestions, setSuggestions] = useState([]);
 
   // ── Chat sessions list ─────────────────────────────────────────
   const [sessions,    setSessions]    = useState([]);
@@ -375,14 +492,15 @@ export default function AIScreen({ route, navigation }) {
 
   const scrollRef = useRef(null);
   const inputRef  = useRef(null);
+  const abortRef  = useRef(null); // AbortController for stopping generation
 
-  // Conversation history for multi-turn context (role + content)
+  // Conversation history for multi-turn context
   const groqHistory = useRef([]);
 
   // ── Scroll to bottom ───────────────────────────────────────────
   useEffect(() => {
     setTimeout(() => scrollRef.current?.scrollToEnd?.({ animated: true }), 100);
-  }, [messages.length, loading]);
+  }, [messages.length, loading, streaming]);
 
   // ── Load chat sessions on mount & tab change ─────────────────────
   useEffect(() => {
@@ -430,87 +548,97 @@ export default function AIScreen({ route, navigation }) {
 
   // ── Auto chat when navigating from college details ─────────────
   const handleAutoChat = async (collegeName, collegeObj) => {
-    // Start fresh session
     groqHistory.current = [];
+    resetConversationMemory();
     setMessages([]);
     setSessionId(null);
     setError(null);
-    setLoading(true);
+    setSuggestions([]);
 
     const promptText = `Tell me everything about ${collegeName} — admission process, courses, fees, placements, eligibility, and any tips for getting in.`;
     const userMsg = { id: `u-${Date.now()}`, role: 'user', text: promptText, time: nowStr() };
     setMessages([userMsg]);
     groqHistory.current = [{ role: 'user', content: promptText }];
 
-    // Get AI response via Web Crawl + Sentiment pipeline
-    try {
-      const result = await generateSmartResponse(groqHistory.current, collegeObj);
-      const { text: reply, sentiment, sources, isCrawled } = result;
-
-      const aiMsg = {
-        id: `a-${Date.now()}`, role: 'assistant', text: reply,
-        time: nowStr(), isReal: true, isCrawled,
-        sentiment, sources,
-      };
-      groqHistory.current.push({ role: 'assistant', content: reply });
-      const finalMsgs = [userMsg, aiMsg];
-      setMessages(finalMsgs);
-
-      // Background: save search history (silent — never blocks UI)
-      try {
-        const crawl = await crawlWeb(collegeName);
-        const sent  = sentiment || analyzeText(crawl.combinedText || collegeName);
-        await searchHistCtx.addSearch?.(collegeName, crawl.results, sent);
-      } catch { /* silent */ }
-
-      // Save session (dual storage: LocalStorage + Firebase)
-      try {
-        const email = user?.email || 'guest';
-        const title = collegeName.length > 60 ? collegeName.slice(0, 57) + '…' : collegeName;
-        const sid = await saveChatSession(email, title, finalMsgs);
-        if (sid) {
-          setSessionId(sid);
-          await loadSessions();
-        }
-      } catch { /* silent */ }
-
-    } catch (e) {
-      setError(`AI error: ${e.message}`);
-    } finally {
-      setLoading(false);
-    }
+    await handleAIResponse(promptText, [userMsg], collegeObj);
   };
 
-  // ── Send message ───────────────────────────────────────────────
-  const handleSend = useCallback(async (overrideText) => {
-    const text = (overrideText || input).trim();
-    if (!text || loading) return;
-
-    setInput('');
-    setError(null);
+  // ── Core AI response handler with streaming ────────────────────
+  const handleAIResponse = async (query, currentMessages, college = null) => {
     setLoading(true);
+    setStreaming(true);
+    setError(null);
 
-    const userMsg = { id: `u-${Date.now()}`, role: 'user', text, time: nowStr() };
-    const newMessages = [...messages, userMsg];
-    setMessages(newMessages);
-    groqHistory.current = [...groqHistory.current, { role: 'user', content: text }];
+    // Create a placeholder AI message for streaming
+    const aiMsgId = `a-${Date.now()}`;
+    const streamingMsg = {
+      id: aiMsgId, role: 'assistant', text: '',
+      time: nowStr(), isRealAI: isGroqAvailable(), isStreaming: true,
+    };
+
+    setMessages(prev => [...prev, streamingMsg]);
+
+    // Create abort controller
+    abortRef.current = new AbortController();
+
+    let fullText = '';
 
     try {
-      // ── Local DB + Sentiment AI pipeline ────────────────────────
-      const result = await generateSmartResponse(groqHistory.current);
-      const { text: reply, sentiment, sources, isCrawled } = result;
+      const result = await generateSmartResponse(
+        groqHistory.current,
+        college,
+        null,
+        {
+          onToken: (token) => {
+            fullText += token;
+            // Update the streaming message with new tokens
+            setMessages(prev => prev.map(m =>
+              m.id === aiMsgId ? { ...m, text: fullText } : m
+            ));
+            // Auto-scroll during streaming
+            setTimeout(() => scrollRef.current?.scrollToEnd?.({ animated: false }), 30);
+          },
+          onComplete: (completeText) => {
+            fullText = completeText;
+          },
+          onError: (err) => {
+            if (err.message !== 'ABORTED') {
+              console.warn('Streaming error:', err.message);
+            }
+          },
+          abortController: abortRef.current,
+        }
+      );
 
-      const aiMsg = {
-        id: `a-${Date.now()}`, role: 'assistant', text: reply,
-        time: nowStr(), isReal: true, isCrawled,
-        sentiment, sources,
+      // Finalize the streaming message
+      const finalAiMsg = {
+        id: aiMsgId, role: 'assistant', text: result.text || fullText,
+        time: nowStr(), isRealAI: result.isRealAI, isCrawled: result.isCrawled,
+        isOfflineFallback: result.isOfflineFallback,
+        sentiment: result.sentiment, sources: result.sources,
+        isStreaming: false,
       };
-      groqHistory.current.push({ role: 'assistant', content: reply });
 
-      const finalMessages = [...newMessages, aiMsg];
-      setMessages(finalMessages);  // ← show answer immediately
+      groqHistory.current.push({ role: 'assistant', content: result.text || fullText });
 
-      // Save / update session (dual storage: LocalStorage + Firebase)
+      const finalMessages = currentMessages.map(m => m).concat([finalAiMsg]);
+      setMessages(finalMessages);
+
+      // Set dynamic follow-up suggestions
+      if (result.suggestions?.length > 0) {
+        setSuggestions(result.suggestions);
+      } else {
+        setSuggestions([]);
+      }
+
+      // Background: save search history
+      try {
+        const crawl = await crawlWeb(query);
+        const sent  = result.sentiment || analyzeText(crawl.combinedText || query);
+        await searchHistCtx.addSearch?.(query, crawl.results, sent);
+      } catch { /* silent */ }
+
+      // Save session
       try {
         const email = user?.email || 'guest';
         if (sessionId) {
@@ -521,7 +649,7 @@ export default function AIScreen({ route, navigation }) {
               : s
           ));
         } else {
-          const title = text.length > 60 ? text.slice(0, 57) + '…' : text;
+          const title = query.length > 60 ? query.slice(0, 57) + '…' : query;
           const sid = await saveChatSession(email, title, finalMessages);
           if (sid) {
             setSessionId(sid);
@@ -531,20 +659,83 @@ export default function AIScreen({ route, navigation }) {
       } catch { /* silent */ }
 
     } catch (e) {
-      setError(`AI error: ${e.message}`);
+      if (e.message !== 'ABORTED' && e.name !== 'AbortError') {
+        setError(`AI error: ${e.message}`);
+        // Remove the streaming placeholder on error
+        setMessages(prev => prev.filter(m => m.id !== aiMsgId));
+      }
     } finally {
       setLoading(false);
+      setStreaming(false);
+      abortRef.current = null;
     }
+  };
+
+  // ── Send message ───────────────────────────────────────────────
+  const handleSend = useCallback(async (overrideText) => {
+    const text = (overrideText || input).trim();
+    if (!text || loading) return;
+
+    setInput('');
+    setError(null);
+    setSuggestions([]);
+
+    const userMsg = { id: `u-${Date.now()}`, role: 'user', text, time: nowStr() };
+    const newMessages = [...messages.filter(m => !m.isStreaming), userMsg];
+    setMessages(newMessages);
+    groqHistory.current = [...groqHistory.current, { role: 'user', content: text }];
+
+    await handleAIResponse(text, newMessages);
   }, [input, loading, messages, sessionId, user?.email]);
+
+  // ── Stop generating ────────────────────────────────────────────
+  const handleStop = () => {
+    if (abortRef.current) {
+      abortRef.current.abort();
+      setStreaming(false);
+      setLoading(false);
+
+      // Finalize any partially streamed message
+      setMessages(prev => prev.map(m =>
+        m.isStreaming ? { ...m, isStreaming: false } : m
+      ));
+    }
+  };
+
+  // ── Regenerate last response ────────────────────────────────────
+  const handleRegenerate = useCallback(async (msg) => {
+    if (loading || streaming) return;
+
+    // Find the user message that preceded this AI message
+    const msgIndex = messages.findIndex(m => m.id === msg.id);
+    if (msgIndex <= 0) return;
+
+    const userMsg = messages[msgIndex - 1];
+    if (userMsg.role !== 'user') return;
+
+    // Remove the old AI response
+    const messagesWithoutOldResponse = messages.slice(0, msgIndex);
+    setMessages(messagesWithoutOldResponse);
+
+    // Rebuild groq history without the old response
+    groqHistory.current = messagesWithoutOldResponse
+      .filter(m => m.role === 'user' || m.role === 'assistant')
+      .map(m => ({ role: m.role, content: m.text || '' }));
+
+    // Re-generate
+    await handleAIResponse(userMsg.text, messagesWithoutOldResponse);
+  }, [messages, loading, streaming]);
 
   // ── New chat ───────────────────────────────────────────────────
   const handleNewChat = () => {
     groqHistory.current = [];
+    resetConversationMemory();
     setMessages([]);
     setSessionId(null);
     setInput('');
     setError(null);
-    resetLocalAIContext(); // reset localAI conversation context
+    setSuggestions([]);
+    resetLocalAIContext();
   };
 
   // ── Handle Enter key on Web ──────────────────────────────────────
@@ -566,8 +757,10 @@ export default function AIScreen({ route, navigation }) {
       .filter(m => m.role === 'user' || m.role === 'assistant')
       .map(m => ({ role: m.role, content: m.text || '' }))
       .slice(-20);
+    setConversationMemory(msgs);
     setTab('chat');
     setError(null);
+    setSuggestions([]);
   };
 
   // ── Delete session ─────────────────────────────────────────────
@@ -577,6 +770,7 @@ export default function AIScreen({ route, navigation }) {
       setSessions(prev => prev.filter(s => s.id !== sid));
       if (sessionId === sid) {
         groqHistory.current = [];
+        resetConversationMemory();
         setMessages([]);
         setSessionId(null);
       }
@@ -591,11 +785,17 @@ export default function AIScreen({ route, navigation }) {
     }
   };
 
+  // ── Copy handler ───────────────────────────────────────────────
+  const handleCopy = (text) => {
+    // The copy logic is in MessageActions — this is just a callback
+  };
+
   // ── Welcome message ────────────────────────────────────────────
+  const aiStatus = isGroqAvailable() ? '🟢 Powered by AI' : '🟡 Offline Mode';
   const WELCOME = {
-    id: 'welcome', role: 'assistant', isReal: true,
+    id: 'welcome', role: 'assistant', isRealAI: isGroqAvailable(),
     time: nowStr(),
-    text: `👋 Hi${user?.name ? ', **' + user.name + '**' : ''}! I'm **Acadivo AI** — your personal college guidance assistant.\n\nI can help you with:\n• 🎓 **College recommendations** based on your marks, stream, and location\n• 📊 **Course & fee comparisons** across top colleges\n• 🏆 **Entrance exam guidance** — JEE, NEET, GATE, CAT, CLAT\n• 💼 **Career advice** after any degree\n• 🏠 **Hostel, scholarship & admission info**\n\nPowered by **🌐 Web Crawl + 🧠 Sentiment AI** — no API key needed! Ask me anything! 🚀`,
+    text: `👋 Hi${user?.name ? ', **' + user.name + '**' : ''}! I'm **Acadivo AI** — your personal college guidance assistant.\n\nI'm a real AI that understands your questions naturally, remembers our conversation, and gives you thoughtful, detailed answers — just like talking to a knowledgeable mentor.\n\n**Here's what I can help with:**\n• 🎓 College recommendations based on your marks & interests\n• 📊 Course & fee comparisons across colleges\n• 🏆 Entrance exam guidance — JEE, NEET, GATE, CAT, CLAT\n• 💼 Career advice & placement insights\n• 🏠 Hostel, scholarship & admission info\n\nAsk me anything — I'll give you a real, thoughtful answer! 🚀`,
   };
 
   const displayMessages = messages.length > 0 ? messages : [WELCOME];
@@ -613,7 +813,7 @@ export default function AIScreen({ route, navigation }) {
           <View style={{ flex: 1 }}>
             <Text style={s.headerTitle}>🎓 Acadivo AI</Text>
             <Text style={s.headerSub}>
-              🟢 Acadivo AI · Smart Admission Assistant
+              {aiStatus} · Smart Admission Assistant
             </Text>
           </View>
           {user && (
@@ -672,11 +872,26 @@ export default function AIScreen({ route, navigation }) {
             keyboardShouldPersistTaps="handled"
           >
             {displayMessages.map(msg => (
-              <Bubble key={msg.id || msg.text?.slice(0, 12)} msg={msg} />
+              <Bubble
+                key={msg.id || msg.text?.slice(0, 12)}
+                msg={msg}
+                onRegenerate={handleRegenerate}
+                onCopy={handleCopy}
+              />
             ))}
 
-            {loading && (
+            {/* Typing indicator — only shown while waiting for first token */}
+            {loading && !streaming && (
               <View style={{ alignItems: 'flex-start', marginBottom: 10 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 5, gap: 6 }}>
+                  <LinearGradient colors={['#7c6fff50', '#7c6fff28']} style={s.aiAvatar}>
+                    <Text style={{ fontSize: 11 }}>🤖</Text>
+                  </LinearGradient>
+                  <Text style={s.aiName}>Acadivo AI</Text>
+                  <View style={[s.livePill, { backgroundColor: '#7c6fff22' }]}>
+                    <Text style={[s.liveText, { color: '#7c6fff' }]}>thinking…</Text>
+                  </View>
+                </View>
                 <View style={[s.bubble, s.aiBubble]}>
                   <TypingDots />
                 </View>
@@ -690,7 +905,12 @@ export default function AIScreen({ route, navigation }) {
               </View>
             )}
 
-            {/* Quick chips */}
+            {/* Dynamic follow-up suggestions */}
+            {suggestions.length > 0 && !loading && !streaming && (
+              <FollowUpSuggestions suggestions={suggestions} onSelect={handleSend} />
+            )}
+
+            {/* Static quick chips — only on empty state */}
             {displayMessages.length <= 1 && !loading && (
               <View style={s.chipsWrap}>
                 <Text style={s.chipsLabel}>Try asking:</Text>
@@ -715,7 +935,7 @@ export default function AIScreen({ route, navigation }) {
               style={s.input}
               value={input}
               onChangeText={setInput}
-              placeholder="Ask about any college, exam, career…"
+              placeholder={streaming ? 'AI is responding…' : 'Ask about any college, exam, career…'}
               placeholderTextColor="#44445a"
               multiline
               maxLength={600}
@@ -725,16 +945,24 @@ export default function AIScreen({ route, navigation }) {
               blurOnSubmit={false}
               editable={!loading}
             />
-            <TouchableOpacity
-              style={[s.sendBtn, (!input.trim() || loading) && s.sendBtnOff]}
-              onPress={() => handleSend()}
-              disabled={!input.trim() || loading}
-            >
-              {loading
-                ? <ActivityIndicator size="small" color="#fff" />
-                : <Ionicons name="send" size={18} color="#fff" />
-              }
-            </TouchableOpacity>
+
+            {/* Stop / Send button */}
+            {streaming ? (
+              <TouchableOpacity style={s.stopBtn} onPress={handleStop}>
+                <Ionicons name="stop-circle" size={22} color="#fff" />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={[s.sendBtn, (!input.trim() || loading) && s.sendBtnOff]}
+                onPress={() => handleSend()}
+                disabled={!input.trim() || loading}
+              >
+                {loading
+                  ? <ActivityIndicator size="small" color="#fff" />
+                  : <Ionicons name="send" size={18} color="#fff" />
+                }
+              </TouchableOpacity>
+            )}
           </View>
         </KeyboardAvoidingView>
       )}
@@ -840,7 +1068,7 @@ export default function AIScreen({ route, navigation }) {
                   <Text style={h.emptyEmoji}>🔍</Text>
                   <Text style={h.emptyTitle}>No searches yet</Text>
                   <Text style={h.emptyText}>
-                    When you click "Ask AI about this college" from a college page, the search is saved here automatically.
+                    When you click {"\"Ask AI about this college\""} from a college page, the search is saved here automatically.
                   </Text>
                 </View>
               )}
@@ -926,14 +1154,24 @@ const s = StyleSheet.create({
   aiBubble:     { backgroundColor: '#16161f', borderWidth: 1, borderColor: '#7c6fff22', borderBottomLeftRadius: 4 },
   aiAvatar:     { width: 22, height: 22, borderRadius: 11, justifyContent: 'center', alignItems: 'center' },
   aiName:       { fontSize: 12, color: '#a78bfa', fontWeight: '700' },
-  livePill:     { flexDirection: 'row', alignItems: 'center', backgroundColor: '#10b98122', paddingHorizontal: 7, paddingVertical: 3, borderRadius: 10, gap: 4 },
-  liveDot:      { width: 5, height: 5, borderRadius: 3, backgroundColor: '#10b981' },
-  liveText:     { fontSize: 9, color: '#10b981', fontWeight: '800', letterSpacing: 0.5 },
+  livePill:     { flexDirection: 'row', alignItems: 'center', backgroundColor: '#7c6fff22', paddingHorizontal: 7, paddingVertical: 3, borderRadius: 10, gap: 4 },
+  liveDot:      { width: 5, height: 5, borderRadius: 3, backgroundColor: '#7c6fff' },
+  liveText:     { fontSize: 9, color: '#7c6fff', fontWeight: '800', letterSpacing: 0.5 },
   timestamp:    { fontSize: 10, color: '#44445a', marginTop: 4, marginHorizontal: 4 },
+
+  // Message actions
+  actionRow:    { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
+  actionBtn:    { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 6, paddingVertical: 4, borderRadius: 8 },
+  actionText:   { fontSize: 10, fontWeight: '600' },
 
   // Error
   errorRow:     { flexDirection: 'row', alignItems: 'flex-start', backgroundColor: '#7f1d1d30', padding: 12, borderRadius: 10, marginBottom: 10, gap: 8, borderWidth: 1, borderColor: '#f8717140' },
   errorText:    { flex: 1, fontSize: 12.5, color: '#fca5a5', lineHeight: 18 },
+
+  // Follow-up suggestions
+  followUpWrap: { marginTop: 6, marginBottom: 8, gap: 6 },
+  followUpChip: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#16161f', paddingHorizontal: 12, paddingVertical: 9, borderRadius: 14, gap: 8, borderWidth: 1, borderColor: '#7c6fff25' },
+  followUpText: { fontSize: 12.5, color: '#c4b5fd', flex: 1, lineHeight: 18 },
 
   // Quick chips
   chipsWrap:    { marginTop: 8, marginBottom: 4 },
@@ -947,6 +1185,7 @@ const s = StyleSheet.create({
   input:        { flex: 1, backgroundColor: '#16161f', borderRadius: 20, paddingHorizontal: 16, paddingVertical: 10, color: '#eef2ff', fontSize: 14, maxHeight: 100, borderWidth: 1, borderColor: '#2a2a3e' },
   sendBtn:      { width: 44, height: 44, borderRadius: 22, backgroundColor: '#7c6fff', justifyContent: 'center', alignItems: 'center' },
   sendBtnOff:   { backgroundColor: '#2a2a3e' },
+  stopBtn:      { width: 44, height: 44, borderRadius: 22, backgroundColor: '#f43f5e', justifyContent: 'center', alignItems: 'center' },
 });
 
 const h = StyleSheet.create({

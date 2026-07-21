@@ -156,7 +156,7 @@ function AdminReportCard({ report, onStatusChange, onReply }) {
                 {report.adminReply ? 'Edit Reply' : 'Add Reply'}
               </Text>
               {report.adminReply && (
-                <Text style={aStyles.replyPreview} numberOfLines={1}> — "{report.adminReply}"</Text>
+                <Text style={aStyles.replyPreview} numberOfLines={1}>{" — \"" + report.adminReply + "\""}</Text>
               )}
             </TouchableOpacity>
           )}

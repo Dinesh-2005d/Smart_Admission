@@ -8,8 +8,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Speech from 'expo-speech';
-import { askGroqAboutCollege, isGroqConfigured, resetConversation } from '../utils/groqAI';
-import { resetLocalAIContext } from '../utils/localAI';
+import {
+  generateSmartResponse,
+  isGroqAvailable,
+  resetConversationMemory,
+  setConversationMemory,
+  resetLocalAIContext,
+} from '../utils/crawlWebAI';
 import { useChatHistory } from '../context/ChatHistoryContext';
 import { useAuth } from '../context/AuthContext';
 
@@ -299,7 +304,7 @@ function MessageBubble({ msg }) {
 // ── Main Screen ────────────────────────────────────────────────────────────────
 export default function CollegeChatScreen({ route, navigation }) {
   const { college, departmentLabel } = route.params || {};
-  const groqActive = isGroqConfigured();
+  const groqActive = isGroqAvailable();
   const insets = useSafeAreaInsets();
   const getTime = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -317,8 +322,11 @@ export default function CollegeChatScreen({ route, navigation }) {
   }]);
   const [inputText, setInputText]       = useState('');
   const [isTyping, setIsTyping]         = useState(false);
+  const [isStreaming, setIsStreaming]    = useState(false);
   const [chipsVisible, setChipsVisible] = useState(true);
   const [savedIndicator, setSavedIndicator] = useState(false);
+  const abortRef = useRef(null);
+  const groqHistory = useRef([]);
 
   // ── Firestore session (ChatHistoryContext) ────────────────────────────────
   const chatCtx       = useChatHistory();
@@ -387,36 +395,97 @@ export default function CollegeChatScreen({ route, navigation }) {
     setInputText('');
     setChipsVisible(false);
     setIsTyping(true);
+    setIsStreaming(true);
 
     const userMsg = { id: Date.now(), sender: 'user', text: msgText, time: getTime() };
     setMessages(prev => [...prev, userMsg]);
+    groqHistory.current = [...groqHistory.current, { role: 'user', content: msgText }];
 
     // Ensure Firestore session exists, then save user message
     const sid = await ensureSession(msgText);
     await saveToFirestore(sid, 'user', msgText, 'user', false);
 
+    // Create streaming placeholder
+    const aiMsgId = Date.now() + 1;
+    const streamingMsg = {
+      id: aiMsgId, sender: 'ai', text: '',
+      type: 'groq', isRealAI: groqActive, time: getTime(),
+      isStreaming: true,
+    };
+    setMessages(prev => [...prev, streamingMsg]);
+
+    abortRef.current = new AbortController();
+    let fullText = '';
+
     try {
-      const res = await askGroqAboutCollege(msgText, college || {}, departmentLabel || '');
-      const aiMsg = {
-        id: Date.now() + 1, sender: 'ai',
-        text: res.text, type: res.type, isRealAI: res.isRealAI, time: getTime(),
+      const result = await generateSmartResponse(
+        groqHistory.current,
+        college || null,
+        departmentLabel || null,
+        {
+          onToken: (token) => {
+            fullText += token;
+            setMessages(prev => prev.map(m =>
+              m.id === aiMsgId ? { ...m, text: fullText } : m
+            ));
+            setTimeout(() => scrollRef.current?.scrollToEnd?.({ animated: false }), 30);
+          },
+          onComplete: (completeText) => {
+            fullText = completeText;
+          },
+          onError: () => {},
+          abortController: abortRef.current,
+        }
+      );
+
+      const finalAiMsg = {
+        id: aiMsgId, sender: 'ai',
+        text: result.text || fullText,
+        type: result.isRealAI ? 'groq' : 'local',
+        isRealAI: result.isRealAI,
+        time: getTime(),
+        isStreaming: false,
       };
-      setMessages(prev => [...prev, aiMsg]);
+      groqHistory.current.push({ role: 'assistant', content: result.text || fullText });
+      setMessages(prev => prev.map(m => m.id === aiMsgId ? finalAiMsg : m));
+
       // Save AI response to Firestore
-      await saveToFirestore(sid, 'assistant', res.text, res.type, res.isRealAI);
-    } catch {
-      setMessages(prev => [...prev, {
-        id: Date.now() + 1, sender: 'ai',
-        text: '⚠️ Something went wrong. Please try again.',
-        type: 'rejected', isRealAI: false, time: getTime(),
-      }]);
+      await saveToFirestore(sid, 'assistant', result.text || fullText, finalAiMsg.type, result.isRealAI);
+    } catch (e) {
+      if (e.message !== 'ABORTED' && e.name !== 'AbortError') {
+        setMessages(prev => prev.map(m =>
+          m.id === aiMsgId ? {
+            ...m, text: '⚠️ Something went wrong. Please try again.',
+            type: 'rejected', isRealAI: false, isStreaming: false,
+          } : m
+        ));
+      } else {
+        // User stopped — finalize partial text
+        setMessages(prev => prev.map(m =>
+          m.id === aiMsgId ? { ...m, isStreaming: false } : m
+        ));
+      }
     }
     setIsTyping(false);
-  }, [inputText, isTyping, college, departmentLabel, ensureSession, saveToFirestore]);
+    setIsStreaming(false);
+    abortRef.current = null;
+  }, [inputText, isTyping, college, departmentLabel, ensureSession, saveToFirestore, groqActive]);
+
+  const handleStop = () => {
+    if (abortRef.current) {
+      abortRef.current.abort();
+      setIsStreaming(false);
+      setIsTyping(false);
+      setMessages(prev => prev.map(m =>
+        m.isStreaming ? { ...m, isStreaming: false } : m
+      ));
+    }
+  };
 
   const clearChat = () => {
-    resetConversation();
+    resetConversationMemory();
     resetLocalAIContext();
+    groqHistory.current = [];
     setMessages([{
       id: Date.now(), sender: 'ai', type: 'welcome',
       isRealAI: groqActive, time: getTime(),
@@ -515,17 +584,27 @@ export default function CollegeChatScreen({ route, navigation }) {
             selectionColor={C.accent}
           />
 
-          <TouchableOpacity
-            style={[styles.sendBtn, inputText.trim() && !isTyping && styles.sendBtnActive]}
-            onPress={() => sendMessage()}
-            disabled={!inputText.trim() || isTyping}
-            activeOpacity={0.8}
-          >
-            {isTyping
-              ? <ActivityIndicator size="small" color={C.accent} />
-              : <Ionicons name="send" size={16} color={inputText.trim() ? C.white : C.textDim} />
-            }
-          </TouchableOpacity>
+          {isStreaming ? (
+            <TouchableOpacity
+              style={[styles.sendBtn, { backgroundColor: C.rose, borderColor: C.rose }]}
+              onPress={handleStop}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="stop-circle" size={18} color={C.white} />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={[styles.sendBtn, inputText.trim() && !isTyping && styles.sendBtnActive]}
+              onPress={() => sendMessage()}
+              disabled={!inputText.trim() || isTyping}
+              activeOpacity={0.8}
+            >
+              {isTyping
+                ? <ActivityIndicator size="small" color={C.accent} />
+                : <Ionicons name="send" size={16} color={inputText.trim() ? C.white : C.textDim} />
+              }
+            </TouchableOpacity>
+          )}
         </View>
 
         <Text style={styles.footer}>

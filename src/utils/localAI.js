@@ -265,6 +265,7 @@ class LocalAIEngine {
   }
 
   classifyIntent(text) {
+    this.lastQuery = text;
     const tokens = this.tokenize(text);
     const textLower = text.toLowerCase().trim();
 
@@ -611,7 +612,7 @@ class LocalAIEngine {
       case 'general_chat':
       default: {
         // Check if the message is very short (1-3 words) — likely a follow-up
-        const wordCount = text?.split(/\s+/).length || 0;
+        const wordCount = this.lastQuery?.split(/\s+/).length || 0;
         if (wordCount <= 3 && this.lastSubject) {
           // Try to interpret short messages as related to last subject
           const subject = this.lastSubject;
@@ -638,7 +639,8 @@ export const generateAIResponse = (text, college, departmentLabel) => {
   const intent = engine.classifyIntent(text);
   return {
     text: engine.generateResponse(intent, college, departmentLabel),
-    type: intent
+    type: intent,
+    isOfflineFallback: true,
   };
 };
 
