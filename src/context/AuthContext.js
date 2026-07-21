@@ -26,12 +26,22 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        // Load profile from Firestore
+        // Check if user was deleted
         try {
+          const deletedSnap = await getDoc(doc(db, 'deleted_users', firebaseUser.uid));
+          if (deletedSnap.exists()) {
+            await signOut(auth);
+            setUser(null);
+            setError('This account has been deleted by admin.');
+            setLoading(false);
+            return;
+          }
+
+          // Load profile from Firestore
           const snap = await getDoc(doc(db, 'users', firebaseUser.uid));
           if (snap.exists()) {
             const profile = snap.data();
-            if (profile.blocked) {
+            if (profile.blocked || profile.deleted) {
               // Blocked user — sign them out immediately
               await signOut(auth);
               setUser(null);
@@ -108,17 +118,24 @@ export function AuthProvider({ children }) {
     setLoading(true); setError(null);
     try {
       const cred = await signInWithEmailAndPassword(auth, email.trim(), password);
+      // Check deleted status
+      const deletedSnap = await getDoc(doc(db, 'deleted_users', cred.user.uid));
+      if (deletedSnap.exists()) {
+        await signOut(auth);
+        setLoading(false);
+        setError('This account has been deleted by admin.');
+        return { success: false, message: 'This account has been deleted by admin.' };
+      }
+
       // Check blocked status in Firestore
       const snap = await getDoc(doc(db, 'users', cred.user.uid));
-      if (snap.exists() && snap.data().blocked) {
+      if (snap.exists() && (snap.data().blocked || snap.data().deleted)) {
         await signOut(auth);
         setLoading(false);
         setError('Account suspended. Contact admin.');
         return { success: false, message: 'Account suspended. Contact admin.' };
       }
       // ── Enforce Admin role for the admin email ─────────────────────────────
-      // onAuthStateChanged will handle setting user with correct role.
-      // But if Firestore has wrong role, fix it immediately.
       if (snap.exists()) {
         const profile = snap.data();
         const isAdminEmail = email.trim().toLowerCase() === ADMIN_EMAIL;
@@ -147,8 +164,6 @@ export function AuthProvider({ children }) {
   const forgotPassword = async (email) => {
     try {
       const actionCodeSettings = {
-        // After the user clicks the reset link, redirect them back to the app.
-        // Must be added to Firebase Console → Authentication → Authorized domains.
         url: 'https://dinesh-2005d.github.io/Smart_Admission/',
         handleCodeInApp: false,
       };
@@ -167,7 +182,9 @@ export function AuthProvider({ children }) {
   const adminGetUsers = async () => {
     try {
       const snap = await getDocs(collection(db, 'users'));
-      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      return snap.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .filter(u => !u.deleted);
     } catch {
       return [];
     }
@@ -196,8 +213,16 @@ export function AuthProvider({ children }) {
   // ── Admin: delete user ────────────────────────────────────────────────────
   const adminDeleteUser = async (userId) => {
     try {
+      // 1. Mark in deleted_users collection so authentication is permanently blocked
+      await setDoc(doc(db, 'deleted_users', userId), {
+        deleted: true,
+        blocked: true,
+        deletedAt: serverTimestamp(),
+      });
+
+      // 2. Remove document from users collection
       await deleteDoc(doc(db, 'users', userId));
-      return { success: true, message: 'User removed successfully' };
+      return { success: true, message: 'User removed successfully from Firebase' };
     } catch (e) {
       return { success: false, message: e.message };
     }
