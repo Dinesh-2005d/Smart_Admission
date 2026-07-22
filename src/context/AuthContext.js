@@ -94,7 +94,6 @@ export function AuthProvider({ children }) {
                 uid:      firebaseUser.uid,
                 name:     profile.name || firebaseUser.displayName || cleanEmail.split('@')[0],
                 email:    cleanEmail,
-                role:     defaultRole,
                 blocked:  false,
                 provider: profile.provider || 'email',
                 ...profile,

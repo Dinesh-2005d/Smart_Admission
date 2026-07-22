@@ -28,13 +28,14 @@ import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
   TextInput, ActivityIndicator, Animated, Platform,
   Dimensions, StatusBar, Linking, KeyboardAvoidingView,
-  Alert,
+  Alert, Keyboard,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { useSearchHistory } from '../context/SearchHistoryContext';
 import { useAuth }          from '../context/AuthContext';
+import { useChatHistory }   from '../context/ChatHistoryContext';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   generateSmartResponse,
@@ -48,142 +49,9 @@ import {
   setConversationMemory,
 } from '../utils/crawlWebAI';
 
-import Constants from 'expo-constants';
-import {
-  collection, addDoc, getDocs, query as fsQuery,
-  orderBy, limit, serverTimestamp, updateDoc, doc, deleteDoc,
-} from 'firebase/firestore';
-import { db } from '../config/firebase';
 
-const { width: SW } = Dimensions.get('window');
 
-// ─── Dual Storage (Local Storage + Firebase) for Chat Sessions ───────────────
-const getStorageKey = (email) =>
-  `acadivo_chat_sessions_${(email || 'guest').toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
 
-const getLocalSessions = (email) => {
-  if (Platform.OS === 'web' && typeof window !== 'undefined' && window.localStorage) {
-    try {
-      const key = getStorageKey(email);
-      const raw = window.localStorage.getItem(key);
-      return raw ? JSON.parse(raw) : [];
-    } catch {
-      return [];
-    }
-  }
-  return [];
-};
-
-const setLocalSessions = (email, sessions) => {
-  if (Platform.OS === 'web' && typeof window !== 'undefined' && window.localStorage) {
-    try {
-      const key = getStorageKey(email);
-      window.localStorage.setItem(key, JSON.stringify(sessions));
-    } catch { /* ignore */ }
-  }
-};
-
-const saveChatSession = async (email, title, messages) => {
-  const sid = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-  const safeTitle = (title || 'Chat Session').slice(0, 60);
-  const now = new Date().toISOString();
-
-  const newSess = {
-    id: sid,
-    title: safeTitle,
-    userEmail: email || 'guest',
-    messages,
-    createdAt: now,
-    updatedAt: now,
-  };
-
-  const localList = getLocalSessions(email);
-  const updatedList = [newSess, ...localList.filter(s => s.id !== sid)];
-  setLocalSessions(email, updatedList);
-
-  if (email && db) {
-    try {
-      const ref = collection(db, 'chatHistory', email, 'sessions');
-      await addDoc(ref, {
-        title: safeTitle,
-        userEmail: email,
-        messages,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      }).catch(() => {});
-    } catch { /* silent */ }
-  }
-
-  return sid;
-};
-
-const updateChatSession = async (email, sessionId, messages) => {
-  if (!sessionId) return;
-  const now = new Date().toISOString();
-
-  const localList = getLocalSessions(email);
-  const updatedList = localList.map(s => {
-    if (s.id === sessionId) {
-      return { ...s, messages, updatedAt: now };
-    }
-    return s;
-  });
-  setLocalSessions(email, updatedList);
-
-  if (email && db) {
-    try {
-      const docRef = doc(db, 'chatHistory', email, 'sessions', sessionId);
-      await updateDoc(docRef, {
-        messages,
-        updatedAt: serverTimestamp(),
-      }).catch(() => {});
-    } catch { /* silent */ }
-  }
-};
-
-const loadChatSessions = async (email) => {
-  const localList = getLocalSessions(email);
-
-  if (!email || !db) return localList;
-
-  try {
-    const ref = collection(db, 'chatHistory', email, 'sessions');
-    const q = fsQuery(ref, orderBy('updatedAt', 'desc'), limit(50));
-    const snap = await getDocs(q);
-    const remoteList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-    if (remoteList.length > 0) {
-      const map = new Map();
-      localList.forEach(s => map.set(s.id, s));
-      remoteList.forEach(s => map.set(s.id, { ...map.get(s.id), ...s }));
-      const merged = Array.from(map.values()).sort((a, b) => {
-        const timeA = a.updatedAt?.toDate ? a.updatedAt.toDate().getTime() : new Date(a.updatedAt || 0).getTime();
-        const timeB = b.updatedAt?.toDate ? b.updatedAt.toDate().getTime() : new Date(b.updatedAt || 0).getTime();
-        return timeB - timeA;
-      });
-      setLocalSessions(email, merged);
-      return merged;
-    }
-  } catch (e) {
-    console.warn('loadChatSessions error:', e.message);
-  }
-
-  return localList;
-};
-
-const deleteChatSession = async (email, sessionId) => {
-  if (!sessionId) return;
-
-  const localList = getLocalSessions(email);
-  const updatedList = localList.filter(s => s.id !== sessionId);
-  setLocalSessions(email, updatedList);
-
-  if (email && db) {
-    try {
-      await deleteDoc(doc(db, 'chatHistory', email, 'sessions', sessionId)).catch(() => {});
-    } catch { /* silent */ }
-  }
-};
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const nowStr = () =>
@@ -432,20 +300,20 @@ function Bubble({ msg, onRegenerate, onCopy }) {
           </View>
         )}
         {isUser ? (
-          <LinearGradient colors={['#8b83ff', '#6c63ff']} style={[s.bubble, s.userBubble]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
+          <View style={[s.bubble, s.userBubble]}>
             <Text style={{ color: '#fff', fontSize: 13.5, lineHeight: 21 }}>{msg.text}</Text>
-          </LinearGradient>
+          </View>
         ) : (
           <View style={[s.bubble, s.aiBubble]}>
             <RichText text={msg.text} isUser={false} isStreaming={msg.isStreaming} />
+            {!msg.isStreaming && msg.text && msg.id !== 'welcome' && (
+              <View style={{ marginTop: 6 }}>
+                <MessageActions msg={msg} onRegenerate={() => onRegenerate?.(msg)} onCopy={() => onCopy?.(msg.text)} />
+              </View>
+            )}
           </View>
         )}
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text style={[s.timestamp, isUser && { textAlign: 'right', flex: 1 }]}>{msg.time}</Text>
-          {!isUser && !msg.isStreaming && msg.text && msg.id !== 'welcome' && (
-            <MessageActions msg={msg} onRegenerate={() => onRegenerate?.(msg)} onCopy={() => onCopy?.(msg.text)} />
-          )}
-        </View>
+        <Text style={[s.timestamp, isUser && { textAlign: 'right' }]}>{msg.time}</Text>
       </Animated.View>
     </View>
   );
@@ -473,7 +341,27 @@ function FollowUpSuggestions({ suggestions, onSelect }) {
 export default function AIScreen({ route, navigation }) {
   const { user }      = useAuth();
   const searchHistCtx = useSearchHistory();
+  const chatHistory   = useChatHistory();
   const insets        = useSafeAreaInsets();
+
+  // Keyboard height for Android (ChatGPT-style)
+  const [kbHeight, setKbHeight] = useState(0);
+
+  // Android keyboard listeners to adjust padding and scroll
+  useEffect(() => {
+    if (Platform.OS !== 'android') return;
+    const show = Keyboard.addListener('keyboardDidShow', (e) => {
+      setKbHeight(e.endCoordinates.height);
+      setTimeout(() => scrollRef.current?.scrollToEnd?.({ animated: true }), 80);
+    });
+    const hide = Keyboard.addListener('keyboardDidHide', () => {
+      setKbHeight(0);
+    });
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
 
   // ── Tabs ───────────────────────────────────────────────────────
   const [tab, setTab] = useState('chat');
@@ -487,10 +375,6 @@ export default function AIScreen({ route, navigation }) {
   const [error,       setError]       = useState(null);
   const [sessionId,   setSessionId]   = useState(null);
   const [suggestions, setSuggestions] = useState([]);
-
-  // ── Chat sessions list ─────────────────────────────────────────
-  const [sessions,    setSessions]    = useState([]);
-  const [sessLoading, setSessLoading] = useState(false);
 
   const scrollRef = useRef(null);
   const inputRef  = useRef(null);
@@ -506,24 +390,13 @@ export default function AIScreen({ route, navigation }) {
 
   // ── Load chat sessions on mount & tab change ─────────────────────
   useEffect(() => {
-    loadSessions();
+    if (user?.uid) {
+      chatHistory.loadSessions();
+    }
     if (tab === 'history') {
       searchHistCtx.loadHistory?.();
     }
-  }, [tab, user?.email]);
-
-  const loadSessions = async () => {
-    setSessLoading(true);
-    try {
-      const email = user?.email || 'guest';
-      const list = await loadChatSessions(email);
-      setSessions(list);
-    } catch (e) {
-      console.warn('loadSessions failed:', e.message);
-    } finally {
-      setSessLoading(false);
-    }
-  };
+  }, [tab, user?.uid]);
 
   // ── Handle college navigation from DetailsScreen ───────────────
   const lastCollegeRef = useRef(null);
@@ -570,6 +443,23 @@ export default function AIScreen({ route, navigation }) {
     setLoading(true);
     setStreaming(true);
     setError(null);
+
+    let activeSid = sessionId;
+    if (user?.uid) {
+      try {
+        if (!activeSid) {
+          const title = query.length > 50 ? query.slice(0, 47) + '…' : query;
+          activeSid = await chatHistory.createSession(title);
+          setSessionId(activeSid);
+        }
+        const userMsg = currentMessages[currentMessages.length - 1];
+        if (userMsg && userMsg.role === 'user') {
+          await chatHistory.addMessage(activeSid, userMsg);
+        }
+      } catch (e) {
+        console.warn('Failed to save user message to history:', e.message);
+      }
+    }
 
     // Create a placeholder AI message for streaming
     const aiMsgId = `a-${Date.now()}`;
@@ -640,25 +530,14 @@ export default function AIScreen({ route, navigation }) {
         await searchHistCtx.addSearch?.(query, crawl.results, sent);
       } catch { /* silent */ }
 
-      // Save session
-      try {
-        const email = user?.email || 'guest';
-        if (sessionId) {
-          await updateChatSession(email, sessionId, finalMessages);
-          setSessions(prev => prev.map(s =>
-            s.id === sessionId
-              ? { ...s, messages: finalMessages, updatedAt: new Date().toISOString() }
-              : s
-          ));
-        } else {
-          const title = query.length > 60 ? query.slice(0, 57) + '…' : query;
-          const sid = await saveChatSession(email, title, finalMessages);
-          if (sid) {
-            setSessionId(sid);
-            await loadSessions();
-          }
+      // Save AI message to session
+      if (user?.uid && activeSid) {
+        try {
+          await chatHistory.addMessage(activeSid, finalAiMsg);
+        } catch (e) {
+          console.warn('Failed to save AI response to history:', e.message);
         }
-      } catch { /* silent */ }
+      }
 
     } catch (e) {
       if (e.message !== 'ABORTED' && e.name !== 'AbortError') {
@@ -688,7 +567,7 @@ export default function AIScreen({ route, navigation }) {
     groqHistory.current = [...groqHistory.current, { role: 'user', content: text }];
 
     await handleAIResponse(text, newMessages);
-  }, [input, loading, messages, sessionId, user?.email]);
+  }, [input, loading, messages, sessionId, user?.uid, chatHistory]);
 
   // ── Stop generating ────────────────────────────────────────────
   const handleStop = () => {
@@ -768,8 +647,7 @@ export default function AIScreen({ route, navigation }) {
   // ── Delete session ─────────────────────────────────────────────
   const handleDeleteSession = (sid) => {
     const doDelete = async () => {
-      await deleteChatSession(user?.email, sid).catch(() => {});
-      setSessions(prev => prev.filter(s => s.id !== sid));
+      await chatHistory.deleteSession(sid).catch(() => {});
       if (sessionId === sid) {
         groqHistory.current = [];
         resetConversationMemory();
@@ -806,7 +684,7 @@ export default function AIScreen({ route, navigation }) {
   // RENDER
   // ════════════════════════════════════════════════════════════════
   return (
-    <View style={s.root}>
+    <View style={[s.root, Platform.OS === 'android' && { paddingBottom: kbHeight }]}>
       <StatusBar barStyle="light-content" backgroundColor="#0d0d14" />
 
       {/* ── Header ── */}
@@ -932,39 +810,53 @@ export default function AIScreen({ route, navigation }) {
 
           {/* Input bar */}
           <View style={s.inputBar}>
-            <TextInput
-              ref={inputRef}
-              style={s.input}
-              value={input}
-              onChangeText={setInput}
-              placeholder={streaming ? 'AI is responding…' : 'Ask about any college, exam, career…'}
-              placeholderTextColor="#44445a"
-              multiline
-              maxLength={600}
-              onKeyPress={handleKeyPress}
-              onSubmitEditing={() => handleSend()}
-              returnKeyType="send"
-              blurOnSubmit={false}
-              editable={!loading}
-            />
+            {/* Left New Chat Button */}
+            <TouchableOpacity style={s.leftCircleBtn} onPress={handleNewChat} activeOpacity={0.7}>
+              <Ionicons name="add" size={20} color="#fff" />
+            </TouchableOpacity>
 
-            {/* Stop / Send button */}
-            {streaming ? (
-              <TouchableOpacity style={s.stopBtn} onPress={handleStop}>
-                <Ionicons name="stop-circle" size={22} color="#fff" />
+            {/* Input Capsule */}
+            <View style={s.inputContainer}>
+              <TextInput
+                ref={inputRef}
+                style={s.input}
+                value={input}
+                onChangeText={setInput}
+                placeholder={streaming ? 'AI is responding…' : 'Ask ChatGPT…'}
+                placeholderTextColor="#64748b"
+                multiline
+                maxLength={600}
+                onKeyPress={handleKeyPress}
+                onSubmitEditing={() => handleSend()}
+                returnKeyType="send"
+                blurOnSubmit={false}
+                editable={!loading}
+              />
+
+              {/* Mic Icon */}
+              <TouchableOpacity style={s.micBtn} activeOpacity={0.7}>
+                <Ionicons name="mic-outline" size={18} color="#64748b" />
               </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                style={[s.sendBtn, (!input.trim() || loading) && s.sendBtnOff]}
-                onPress={() => handleSend()}
-                disabled={!input.trim() || loading}
-              >
-                {loading
-                  ? <ActivityIndicator size="small" color="#fff" />
-                  : <Ionicons name="send" size={18} color="#fff" />
-                }
-              </TouchableOpacity>
-            )}
+
+              {/* Send / Wave / Stop Circular Button */}
+              {streaming ? (
+                <TouchableOpacity style={s.stopIconCircle} onPress={handleStop} activeOpacity={0.7}>
+                  <Ionicons name="stop" size={12} color="#fff" />
+                </TouchableOpacity>
+              ) : input.trim() ? (
+                <TouchableOpacity style={s.sendIconCircle} onPress={() => handleSend()} activeOpacity={0.7}>
+                  <Ionicons name="arrow-up" size={14} color="#fff" />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity style={s.waveIconCircle} activeOpacity={0.7}>
+                  {loading ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                  ) : (
+                    <Ionicons name="stats-chart-outline" size={12} color="#fff" />
+                  )}
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
         </KeyboardAvoidingView>
       )}
@@ -983,11 +875,11 @@ export default function AIScreen({ route, navigation }) {
           <View style={h.subTabRow}>
             <TouchableOpacity
               style={[h.subTab, histTab === 'chats' && h.subTabActive]}
-              onPress={() => { setHistTab('chats'); loadSessions(); }}
+              onPress={() => { setHistTab('chats'); if (user?.uid) chatHistory.loadSessions(); }}
             >
               <Ionicons name="chatbubbles-outline" size={14} color={histTab === 'chats' ? '#7c6fff' : '#64748b'} />
               <Text style={[h.subTabText, histTab === 'chats' && h.subTabTextActive]}>
-                Chats ({sessions.length})
+                Chats ({chatHistory.sessions.length})
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -1004,14 +896,14 @@ export default function AIScreen({ route, navigation }) {
           {/* ── Chat sessions list ── */}
           {histTab === 'chats' && (
             <ScrollView style={h.list} contentContainerStyle={h.listContent} showsVerticalScrollIndicator={false}>
-              {sessLoading && (
+              {chatHistory.loading && (
                 <View style={h.center}>
                   <ActivityIndicator size="large" color="#7c6fff" />
                   <Text style={h.loadText}>Loading conversations…</Text>
                 </View>
               )}
 
-              {!sessLoading && sessions.length === 0 && (
+              {!chatHistory.loading && chatHistory.sessions.length === 0 && (
                 <View style={h.empty}>
                   <Text style={h.emptyEmoji}>💬</Text>
                   <Text style={h.emptyTitle}>No conversations yet</Text>
@@ -1023,7 +915,7 @@ export default function AIScreen({ route, navigation }) {
                 </View>
               )}
 
-              {sessions.map(sess => {
+              {!chatHistory.loading && chatHistory.sessions.map(sess => {
                 const preview = (sess.messages || []).find(m => m.role === 'user')?.text || 'Chat session';
                 return (
                   <TouchableOpacity
@@ -1151,9 +1043,9 @@ const s = StyleSheet.create({
   msgContent:   { paddingHorizontal: 16, paddingTop: 12 },
 
   // Message bubbles
-  bubble:       { borderRadius: 16, paddingHorizontal: 14, paddingVertical: 10, maxWidth: '100%' },
-  userBubble:   { borderBottomRightRadius: 4, paddingHorizontal: 16, paddingVertical: 10 },
-  aiBubble:     { backgroundColor: '#16161f', borderWidth: 1, borderColor: '#7c6fff22', borderBottomLeftRadius: 4 },
+  bubble:       { borderRadius: 20, paddingHorizontal: 16, paddingVertical: 10, maxWidth: '100%' },
+  userBubble:   { backgroundColor: '#222235', borderBottomRightRadius: 4 },
+  aiBubble:     { backgroundColor: 'transparent', borderWidth: 0, paddingHorizontal: 4, paddingVertical: 4 },
   aiAvatar:     { width: 22, height: 22, borderRadius: 11, justifyContent: 'center', alignItems: 'center' },
   aiName:       { fontSize: 12, color: '#a78bfa', fontWeight: '700' },
   livePill:     { flexDirection: 'row', alignItems: 'center', backgroundColor: '#7c6fff22', paddingHorizontal: 7, paddingVertical: 3, borderRadius: 10, gap: 4 },
@@ -1183,11 +1075,14 @@ const s = StyleSheet.create({
   chipText:     { fontSize: 12, color: '#c4b5fd' },
 
   // Input bar
-  inputBar:     { flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 14, paddingVertical: 12, backgroundColor: '#0d0d14', borderTopWidth: 1, borderTopColor: '#1a1a26', gap: 10 },
-  input:        { flex: 1, backgroundColor: '#16161f', borderRadius: 20, paddingHorizontal: 16, paddingVertical: 10, color: '#eef2ff', fontSize: 14, maxHeight: 100, borderWidth: 1, borderColor: '#2a2a3e' },
-  sendBtn:      { width: 44, height: 44, borderRadius: 22, backgroundColor: '#7c6fff', justifyContent: 'center', alignItems: 'center' },
-  sendBtnOff:   { backgroundColor: '#2a2a3e' },
-  stopBtn:      { width: 44, height: 44, borderRadius: 22, backgroundColor: '#f43f5e', justifyContent: 'center', alignItems: 'center' },
+  inputBar:       { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 10, backgroundColor: '#0d0d14', borderTopWidth: 1, borderTopColor: '#1a1a26', gap: 8 },
+  leftCircleBtn:  { width: 36, height: 36, borderRadius: 18, backgroundColor: '#16161f', justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#2a2a3e' },
+  inputContainer: { flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: '#16161f', borderRadius: 24, paddingHorizontal: 10, paddingVertical: 2, borderWidth: 1, borderColor: '#2a2a3e' },
+  input:          { flex: 1, backgroundColor: 'transparent', color: '#eef2ff', fontSize: 14, maxHeight: 100, paddingHorizontal: 6, paddingVertical: Platform.OS === 'ios' ? 8 : 6 },
+  micBtn:         { padding: 6, marginRight: 2 },
+  sendIconCircle: { width: 28, height: 28, borderRadius: 14, backgroundColor: '#7c6fff', justifyContent: 'center', alignItems: 'center' },
+  waveIconCircle: { width: 28, height: 28, borderRadius: 14, backgroundColor: '#7c6fff', justifyContent: 'center', alignItems: 'center' },
+  stopIconCircle: { width: 28, height: 28, borderRadius: 14, backgroundColor: '#f43f5e', justifyContent: 'center', alignItems: 'center' },
 });
 
 const h = StyleSheet.create({
