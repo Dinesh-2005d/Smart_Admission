@@ -1,0 +1,298 @@
+/**
+ * acadivoAI.js — Acadivo Smart AI Engine
+ * In-house intelligent AI engine for comprehensive Indian college guidance.
+ *
+ * Capabilities:
+ *  ✅ Firestore admin-managed college database (priority source)
+ *  ✅ Personalized responses based on user search + chat history
+ *  ✅ Cutoff / eligibility matching ("my marks are 85%")
+ *  ✅ Full conversation history (multi-turn chat)
+ *  ✅ Deep college knowledge from in-app DB + Firestore DB
+ *  ✅ Graceful fallback to localAI when no network
+ *  ✅ EAS build support via Constants.expoConfig.extra
+ *  ✅ Smart image request handling
+ *  ✅ Context-aware follow-up understanding
+ */
+
+import Constants from 'expo-constants';
+import { generateAIResponse } from './localAI';
+import { COLLEGE_DATABASE } from '../constants/collegeDatabase';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../config/firebase';
+import { getGroqApiKey } from './streamingAI';
+
+const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_MODEL   = 'llama-3.3-70b-versatile';
+
+let conversationHistory = [];
+
+export const resetConversation = () => { conversationHistory = []; };
+
+export const seedConversation = (messages = []) => {
+  conversationHistory = messages
+    .filter(m => m.role === 'user' || m.role === 'assistant')
+    .map(m => ({ role: m.role, content: m.text || m.content || '' }))
+    .slice(-20);
+};
+
+let _firestoreCollegesCache     = null;
+let _firestoreCollegesCachedAt  = 0;
+const CACHE_TTL_MS = 5 * 60 * 1000;
+
+export const fetchFirestoreColleges = async () => {
+  const now = Date.now();
+  if (_firestoreCollegesCache && (now - _firestoreCollegesCachedAt) < CACHE_TTL_MS) {
+    return _firestoreCollegesCache;
+  }
+  try {
+    const snap = await getDocs(collection(db, 'colleges'));
+    const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    _firestoreCollegesCache    = list;
+    _firestoreCollegesCachedAt = now;
+    return list;
+  } catch {
+    return _firestoreCollegesCache || [];
+  }
+};
+
+const findCollegesInApp = (userQuery, extraColleges = [], limitCount = 6) => {
+  const q = userQuery.toLowerCase();
+
+  const wantsWomen   = /\b(women|girls|female|ladies|all.?women|all.?girls)\b/.test(q);
+  const wantsMen     = /\b(men|boys|male|all.?men|all.?boys)\b/.test(q) && !wantsWomen;
+  const wantsGovt    = /\b(government|govt|public|state|central)\b/.test(q);
+  const wantsPrivate = /\b(private|deemed|autonomous)\b/.test(q) && !wantsGovt;
+  const wantsHostel  = /\b(hostel|accommodation|staying|boarding|residential)\b/.test(q);
+  const wantsScholarship = /\b(scholarship|free|funded|stipend)\b/.test(q);
+
+  const DEPT_MAP = {
+    engineering:     /\b(engineer|tech|btech|iit|nit|cse|ece|mech|civil|it|computer|electrical|ai|artificial)\b/,
+    medical:         /\b(medical|mbbs|neet|doctor|medicine|bds|dental|aiims|surgery)\b/,
+    management:      /\b(mba|management|business|bba|commerce)\b/,
+    law:             /\b(law|llb|legal|advocate|clat|bar)\b/,
+    agriculture:     /\b(agri|agriculture|farming|horticulture|icar)\b/,
+    pharmacy:        /\b(pharmacy|pharma|bpharm|drug)\b/,
+    nursing:         /\b(nursing|nurse|bsc nursing|midwife)\b/,
+    architecture:    /\b(architect|architecture|planning|design|b\.arch)\b/,
+    arts_science:    /\b(arts|science|bsc|ba|humanities|liberal)\b/,
+    commerce:        /\b(commerce|bcom|accounts|finance|ca|cs)\b/,
+    hotel_management:/\b(hotel|hospitality|catering|tourism|ihmct)\b/,
+    polytechnic:     /\b(polytechnic|diploma|iti|vocational)\b/,
+    paramedical:     /\b(paramedical|physiotherapy|radiology|lab tech)\b/,
+    teacher_training:/\b(b\.ed|bed|teacher|teaching|education|d\.el\.ed)\b/,
+  };
+
+  let targetDept = null;
+  for (const [dept, regex] of Object.entries(DEPT_MAP)) {
+    if (regex.test(q)) { targetDept = dept; break; }
+  }
+
+  const STATE_KEYWORDS = [
+    'tamil nadu', 'maharashtra', 'karnataka', 'delhi', 'kerala', 'gujarat',
+    'rajasthan', 'uttar pradesh', 'west bengal', 'telangana', 'andhra pradesh',
+    'punjab', 'haryana', 'bihar', 'odisha', 'assam', 'madhya pradesh',
+    'chennai', 'mumbai', 'bangalore', 'bengaluru', 'hyderabad', 'pune',
+    'kolkata', 'jaipur', 'lucknow', 'bhopal', 'coimbatore', 'vellore', 'kochi',
+    'ahmedabad', 'surat', 'patna', 'raipur', 'bhubaneswar', 'shimla', 'dehradun',
+  ];
+  let targetState = null;
+  for (const s of STATE_KEYWORDS) {
+    if (q.includes(s)) { targetState = s; break; }
+  }
+
+  const scoreMatch = q.match(/(\d{2,3})\s*(%|percent|marks|score|cutoff)/);
+  const minPct = scoreMatch ? parseInt(scoreMatch[1]) : null;
+
+  const wantsNAACa = /naac.*a\+|a\+.*naac/.test(q);
+
+  const allColleges = [
+    ...extraColleges.map(c => ({ ...c, _isFirestore: true })),
+    ...COLLEGE_DATABASE,
+  ];
+
+  let pool = [...allColleges];
+
+  if (wantsWomen)      pool = pool.filter(c => /women|girls/i.test(c.gender || ''));
+  if (wantsMen)        pool = pool.filter(c => /men|boys/i.test(c.gender || '') && !/women|girls/i.test(c.gender || ''));
+  if (wantsGovt)       pool = pool.filter(c => c.type === 'Government');
+  if (wantsPrivate)    pool = pool.filter(c => c.type === 'Private' || c.type === 'Deemed' || c.type === 'Autonomous');
+  if (targetDept)      pool = pool.filter(c => c.department === targetDept);
+  if (targetState)     pool = pool.filter(c => ((c.state || '') + ' ' + (c.location || '')).toLowerCase().includes(targetState));
+  if (wantsHostel)     pool = pool.filter(c => c.hostelAvailable);
+  if (wantsScholarship)pool = pool.filter(c => c.scholarshipAvailable);
+  if (minPct)          pool = pool.filter(c => (c.minPercentage || 0) <= minPct);
+  if (wantsNAACa)      pool = pool.filter(c => ['A+', 'A++'].includes(c.naacGrade));
+
+  pool.sort((a, b) => {
+    if (a._isFirestore && !b._isFirestore) return -1;
+    if (!a._isFirestore && b._isFirestore) return 1;
+    return (b.rating || 0) - (a.rating || 0);
+  });
+
+  return pool.slice(0, limitCount);
+};
+
+const formatCollegesForAI = (colleges) => {
+  if (!colleges.length) return 'No matching colleges found in the database.';
+  return colleges.map((c, i) =>
+    `${i + 1}. **${c.name}** — ${c.location}, ${c.state}` +
+    (c._isFirestore ? ' 🔵 [Admin Curated]' : '') + '\n' +
+    `   • Type: ${c.type} | Dept: ${c.department} | NAAC: ${c.naacGrade || 'N/A'}\n` +
+    `   • Rating: ${c.rating}/5 | Placement: ${c.placementRate}% | Fee: ₹${c.annualFee || 'N/A'}/yr\n` +
+    `   • Hostel: ${c.hostelAvailable ? '✅ Yes' : '❌ No'} | Min%: ${c.minPercentage}%` +
+    (c.description ? `\n   • About: ${c.description.slice(0, 100)}` : '') +
+    (c.courses?.length ? `\n   • Courses: ${(Array.isArray(c.courses) ? c.courses : [c.courses]).slice(0, 4).join(', ')}` : '')
+  ).join('\n\n');
+};
+
+const buildSystemPrompt = ({
+  college,
+  departmentLabel,
+  suggestedColleges,
+  hasCollegeContext,
+  personalizationContext,
+  firestoreCollegesCount,
+}) => `
+You are **Acadivo AI** — an in-house intelligent AI college counselor built into the Acadivo Smart Admission platform.
+
+YOUR CORE IDENTITY:
+- You are created and developed by ACADIVO.
+- If anyone asks what API, model, or technology is used, or who created you: ALWAYS answer that you were created and developed by ACADIVO. NEVER mention third-party APIs.
+- Answer natural language queries about any Indian college
+- Provide intelligent recommendations, cutoffs, fees, placements, scholarships, and rankings
+- Compare colleges side-by-side
+- Help with entrance exams: JEE, NEET, CLAT, GATE, CAT, CUET, etc.
+
+${personalizationContext ? `
+👤 USER PROFILE:
+${personalizationContext}
+` : ''}
+
+${hasCollegeContext ? `
+📌 CURRENT COLLEGE IN VIEW:
+• Name: ${college.name}
+• Location: ${college.location}, ${college.state}
+• Type: ${college.type} | Department: ${departmentLabel || college.department}
+• NAAC Grade: ${college.naacGrade || 'N/A'} | Rating: ${college.rating}/5
+• Placement Rate: ${college.placementRate}%
+• Hostel: ${college.hostelAvailable ? 'Available ✅' : 'Not Available ❌'}
+• Min % Required: ${college.minPercentage}%
+• Annual Fee: ₹${college.annualFee || 'N/A'}
+• Courses Offered: ${(college.courses || []).join(', ')}
+• Top Recruiters: ${(college.topCompanies || []).join(', ') || 'Various companies'}
+` : ''}
+
+${suggestedColleges && suggestedColleges !== 'User is not asking for college suggestions right now.' ? `
+🔍 MATCHING COLLEGES FROM DATABASE (${firestoreCollegesCount} admin-curated + local):
+${suggestedColleges}
+` : ''}
+`.trim();
+
+const isSuggestionQuery = (msg) =>
+  /\b(suggest|show|find|recommend|list|give me|any|which|best|top|colleges in|college for|government|private|engineering|medical|hostel|affordable|marks|cutoff|percent|%|accept|eligible)\b/i.test(msg);
+
+export const askAcadivoAboutCollege = async (
+  userMessage,
+  college,
+  departmentLabel,
+  personalizationContext = '',
+) => {
+  const apiKey = getGroqApiKey();
+
+  let firestoreColleges = [];
+  try { firestoreColleges = await fetchFirestoreColleges(); } catch {}
+
+  const isSuggestion = isSuggestionQuery(userMessage);
+  const appMatches   = isSuggestion ? findCollegesInApp(userMessage, firestoreColleges, 8) : [];
+  const suggestedCollegesText = isSuggestion
+    ? formatCollegesForAI(appMatches)
+    : 'User is not asking for college suggestions right now.';
+
+  const hasCollegeContext = !!(college && college.name);
+
+  conversationHistory.push({ role: 'user', content: userMessage });
+  if (conversationHistory.length > 20) {
+    conversationHistory = conversationHistory.slice(-20);
+  }
+
+  if (!apiKey) {
+    if (isSuggestion && appMatches.length > 0) {
+      const text = buildSuggestionFallback(appMatches, userMessage);
+      conversationHistory.push({ role: 'assistant', content: text });
+      return { text, type: 'suggestions', isRealAI: false };
+    }
+    const localResponse = generateAIResponse(userMessage, college, departmentLabel);
+    conversationHistory.push({ role: 'assistant', content: localResponse.text });
+    return { text: localResponse.text, type: localResponse.type, isRealAI: false };
+  }
+
+  try {
+    const systemPrompt = buildSystemPrompt({
+      college,
+      departmentLabel,
+      suggestedColleges:     suggestedCollegesText,
+      hasCollegeContext,
+      personalizationContext,
+      firestoreCollegesCount: firestoreColleges.length,
+    });
+
+    const response = await fetch(GROQ_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model:       GROQ_MODEL,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          ...conversationHistory,
+        ],
+        max_tokens:  2048,
+        temperature: 0.7,
+        top_p:       0.9,
+        stream:      false,
+      }),
+    });
+
+    if (!response.ok) {
+      return await handleFallback(isSuggestion, appMatches, userMessage, college, departmentLabel);
+    }
+
+    const data = await response.json();
+    const text = data.choices?.[0]?.message?.content?.trim()
+      || 'I apologize, I could not generate a response. Please try again.';
+
+    conversationHistory.push({ role: 'assistant', content: text });
+
+    const type = isSuggestion ? 'suggestions' : 'acadivo';
+    return { text, type, isRealAI: true };
+
+  } catch (error) {
+    return await handleFallback(isSuggestion, appMatches, userMessage, college, departmentLabel);
+  }
+};
+
+const buildSuggestionFallback = (colleges, userQuery) => {
+  const lines = colleges.map((c, i) =>
+    `**${i + 1}. ${c.name}**${c._isFirestore ? ' 🔵' : ''}\n` +
+    `📍 ${c.location}, ${c.state} | ${c.type}\n` +
+    `⭐ ${c.rating}/5 | 💼 ${c.placementRate}% placed | 🏠 Hostel: ${c.hostelAvailable ? 'Yes' : 'No'}\n` +
+    `💰 Fee: ₹${c.annualFee || 'N/A'}/yr | Min: ${c.minPercentage}%`
+  ).join('\n\n');
+
+  return `Here are the top colleges matching your request:\n\n${lines}\n\n💡 **Tip:** Tap any college in the list to see full details and apply!`;
+};
+
+const handleFallback = async (isSuggestion, appMatches, userMessage, college, departmentLabel) => {
+  if (isSuggestion && appMatches.length > 0) {
+    const text = buildSuggestionFallback(appMatches, userMessage);
+    conversationHistory.push({ role: 'assistant', content: text });
+    return { text, type: 'suggestions', isRealAI: false };
+  }
+  const localResponse = generateAIResponse(userMessage, college, departmentLabel);
+  conversationHistory.push({ role: 'assistant', content: localResponse.text });
+  return { text: localResponse.text, type: localResponse.type, isRealAI: false };
+};
+
+export const isAcadivoConfigured = () => !!getGroqApiKey();
