@@ -62,14 +62,16 @@ export function ChatHistoryProvider({ children }) {
 
   // ── Firestore collection ref helpers ─────────────────────────────────────────
   const sessionsRef = useCallback(() => {
-    if (!user?.uid) return null;
-    return collection(db, 'chatHistory', user.uid, 'sessions');
-  }, [user?.uid]);
+    const key = user?.uid || (user?.email ? user.email.replace(/[@.]/g, '_') : null);
+    if (!key) return null;
+    return collection(db, 'users', key, 'chatHistory');
+  }, [user?.uid, user?.email]);
 
   const sessionDocRef = useCallback((sid) => {
-    if (!user?.uid || !sid) return null;
-    return doc(db, 'chatHistory', user.uid, 'sessions', sid);
-  }, [user?.uid]);
+    const key = user?.uid || (user?.email ? user.email.replace(/[@.]/g, '_') : null);
+    if (!key || !sid) return null;
+    return doc(db, 'users', key, 'chatHistory', sid);
+  }, [user?.uid, user?.email]);
 
   // ── Load sessions list (LocalStorage + Firestore dual sync) ──────────────────
   const loadSessions = useCallback(async () => {

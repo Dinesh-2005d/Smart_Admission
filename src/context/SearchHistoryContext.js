@@ -46,9 +46,10 @@ export function SearchHistoryProvider({ children }) {
   const [error,   setError]     = useState(null);
 
   const queriesRef = useCallback(() => {
-    if (!user?.uid) return null;
-    return collection(db, 'searchHistory', user.uid, 'queries');
-  }, [user?.uid]);
+    const key = user?.uid || (user?.email ? user.email.replace(/[@.]/g, '_') : null);
+    if (!key) return null;
+    return collection(db, 'users', key, 'searchHistory');
+  }, [user?.uid, user?.email]);
 
   const loadHistory = useCallback(async () => {
     if (!user?.uid && !user?.email) {
@@ -146,8 +147,9 @@ export function SearchHistoryProvider({ children }) {
       return updated;
     });
     try {
-      if (user?.uid) {
-        await deleteDoc(doc(db, 'searchHistory', user.uid, 'queries', id));
+      const key = user?.uid || (user?.email ? user.email.replace(/[@.]/g, '_') : null);
+      if (key) {
+        await deleteDoc(doc(db, 'users', key, 'searchHistory', id));
       }
     } catch (e) {
       console.warn('Firestore deleteSearch warning:', e.message);
