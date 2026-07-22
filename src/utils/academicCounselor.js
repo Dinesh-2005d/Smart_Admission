@@ -32,6 +32,11 @@ function norm(s = '') {
 export function answerCounselingQuestion(query) {
   const q = norm(query);
 
+  // ── 0a. API / Technology / Creator Questions ──────────────────────────────────
+  if (/what (api|model|technology|tech|llm|engine|ai|backend) (do you|is) (use|used|based on|running|built on)|who (created|developed|built|made) (you|this ai|acadivo)|which api/.test(q)) {
+    return `🤖 **Acadivo AI Engine**\n\nI am an in-house intelligent AI college counselor created and developed by **ACADIVO** to provide real-time academic guidance, college cutoffs, and career recommendations!`;
+  }
+
   // ── 0. Interactive Step-by-Step Questioning (Q541 - Q570) ─────────────────────
   if (/ask me (questions|my 12th stream|my marks|one by one|questions first)|step by step guidance|narrow it down for me|recommend three departments/.test(q)) {
     return [
