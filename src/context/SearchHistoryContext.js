@@ -8,6 +8,7 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 import {
   collection, addDoc, getDocs, deleteDoc, doc,
   query as firestoreQuery, orderBy, limit, writeBatch, serverTimestamp,
+  onSnapshot,
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { useAuth } from './AuthContext';
@@ -46,7 +47,7 @@ export function SearchHistoryProvider({ children }) {
   const [error,   setError]     = useState(null);
 
   const queriesRef = useCallback(() => {
-    const key = user?.uid || (user?.email ? user.email.replace(/[@.]/g, '_') : null);
+    const key = (user?.email ? user.email.trim().toLowerCase().replace(/[^a-z0-9]/g, '_') : null) || user?.uid;
     if (!key) return null;
     return collection(db, 'users', key, 'searchHistory');
   }, [user?.uid, user?.email]);
@@ -59,13 +60,11 @@ export function SearchHistoryProvider({ children }) {
     setLoading(true);
     setError(null);
 
-    // 1. Instant local load
     const localItems = loadFromLocalStorage(user);
     if (localItems && localItems.length > 0) {
       setHistory(localItems);
     }
 
-    // 2. Background Firestore sync
     try {
       const ref = queriesRef();
       if (ref) {
@@ -79,15 +78,43 @@ export function SearchHistoryProvider({ children }) {
       }
     } catch (e) {
       console.warn('Firestore loadHistory warning:', e.message);
-      // Fail silently: localItems is already displayed to user with 0 errors
     } finally {
       setLoading(false);
     }
   }, [user, queriesRef]);
 
+  // Real-time Firestore Push Listener for live Search History sync across Web & Mobile
   useEffect(() => {
-    loadHistory();
-  }, [user?.uid, user?.email]);
+    if (!user?.uid && !user?.email) {
+      setHistory([]);
+      return;
+    }
+
+    const localItems = loadFromLocalStorage(user);
+    if (localItems && localItems.length > 0) {
+      setHistory(localItems);
+    }
+
+    try {
+      const ref = queriesRef();
+      if (ref) {
+        const q = firestoreQuery(ref, orderBy('timestamp', 'desc'), limit(50));
+        const unsubscribe = onSnapshot(q, (snap) => {
+          const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          if (docs && docs.length > 0) {
+            setHistory(docs);
+            saveToLocalStorage(user, docs);
+          }
+        }, (err) => {
+          console.warn('Firestore onSnapshot searchHistory info:', err.message);
+        });
+
+        return () => unsubscribe();
+      }
+    } catch (e) {
+      console.warn('Firestore searchHistory onSnapshot init error:', e.message);
+    }
+  }, [user?.uid, user?.email, queriesRef]);
 
   const addSearch = useCallback(async (queryStr, crawlResults, sentimentResult) => {
     if (!user?.uid && !user?.email) return null;

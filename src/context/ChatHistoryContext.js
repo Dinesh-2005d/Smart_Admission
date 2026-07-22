@@ -10,7 +10,7 @@ import React, {
 import {
   collection, setDoc, getDocs, updateDoc, deleteDoc,
   doc, query as firestoreQuery, orderBy, limit,
-  serverTimestamp, getDoc,
+  serverTimestamp, getDoc, onSnapshot,
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { useAuth } from './AuthContext';
@@ -60,15 +60,15 @@ export function ChatHistoryProvider({ children }) {
   const activeIdRef = useRef(null);
   activeIdRef.current = activeSessionId;
 
-  // ── Firestore collection ref helpers ─────────────────────────────────────────
+  // ── Firestore collection ref helpers (Strictly Gmail Keyed) ───────────────────
   const sessionsRef = useCallback(() => {
-    const key = user?.uid || (user?.email ? user.email.replace(/[@.]/g, '_') : null);
+    const key = (user?.email ? user.email.trim().toLowerCase().replace(/[^a-z0-9]/g, '_') : null) || user?.uid;
     if (!key) return null;
     return collection(db, 'users', key, 'chatHistory');
   }, [user?.uid, user?.email]);
 
   const sessionDocRef = useCallback((sid) => {
-    const key = user?.uid || (user?.email ? user.email.replace(/[@.]/g, '_') : null);
+    const key = (user?.email ? user.email.trim().toLowerCase().replace(/[^a-z0-9]/g, '_') : null) || user?.uid;
     if (!key || !sid) return null;
     return doc(db, 'users', key, 'chatHistory', sid);
   }, [user?.uid, user?.email]);
@@ -105,16 +105,48 @@ export function ChatHistoryProvider({ children }) {
       setSessionsLoaded(true);
     } catch (e) {
       console.warn('Firestore loadSessions warning:', e.message);
-      // Fallback: localList is already loaded — DO NOT trigger red permission error to user!
     } finally {
       setLoading(false);
     }
   }, [user, sessionsRef]);
 
-  // Auto load on mount or user change
+  // Auto load on mount + Real-time Firestore Push listener for live PC <-> Mobile sync
   useEffect(() => {
-    loadSessions();
-  }, [user?.uid, user?.email]);
+    if (!user?.uid && !user?.email) {
+      setSessions([]);
+      setSessionsLoaded(true);
+      return;
+    }
+
+    const localList = loadFromLocalStorage(user);
+    if (localList && localList.length > 0) {
+      setSessions(localList);
+      setSessionsLoaded(true);
+    }
+
+    try {
+      const ref = sessionsRef();
+      if (ref) {
+        const q = firestoreQuery(ref, orderBy('updatedAt', 'desc'), limit(MAX_SESSIONS));
+        const unsubscribe = onSnapshot(q, (snap) => {
+          const remoteList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          if (remoteList && remoteList.length > 0) {
+            setSessions(remoteList);
+            saveToLocalStorage(user, remoteList);
+          }
+          setSessionsLoaded(true);
+        }, (err) => {
+          console.warn('Firestore onSnapshot sessions info:', err.message);
+          setSessionsLoaded(true);
+        });
+
+        return () => unsubscribe();
+      }
+    } catch (e) {
+      console.warn('Firestore onSnapshot init error:', e.message);
+      setSessionsLoaded(true);
+    }
+  }, [user?.uid, user?.email, sessionsRef]);
 
   // ── Create new session ────────────────────────────────────────────────────────
   const createSession = useCallback(async (firstMessage = '') => {
