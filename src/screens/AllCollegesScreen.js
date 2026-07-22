@@ -5,7 +5,7 @@ import {
   TextInput,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { getAllCollegesInState } from '../constants/collegeDatabase';
+import { getAllCollegesInState, useLiveColleges } from '../constants/collegeDatabase';
 import { predictAdmissionChance } from '../constants/offlineAI';
 import { useSavedColleges } from '../context/SavedCollegesContext';
 import CollegeLogo from '../components/CollegeLogo';
@@ -139,6 +139,7 @@ function CollegeCard({ college, index, percentage, navigation, departmentLabel }
 
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 export default function AllCollegesScreen({ navigation, route }) {
+  useLiveColleges();
   const { targetState, department, departmentLabel, percentage } = route.params || {};
 
   const [allSearch, setAllSearch]         = useState('');

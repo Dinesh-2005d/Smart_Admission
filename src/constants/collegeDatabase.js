@@ -1,6 +1,7 @@
 // src/constants/collegeDatabase.js
-// NOTE: Heavy data (20MB JSON) is NOT imported at module load.
-// It is loaded lazily on first use to avoid blocking the JS thread at startup.
+import { useState, useEffect } from 'react';
+import { collection, onSnapshot, query } from 'firebase/firestore';
+import { db } from '../config/firebase';
 
 const getCompanies = (dept, tier) => {
   const top = {
@@ -789,21 +790,19 @@ export const updateCollegeInMemory = (collegeData) => {
   if (!collegeData) return;
   const targetId = collegeData.id || collegeData.name?.toLowerCase().replace(/[^a-z0-9]/g, '_');
 
-  // Ensure the database is built, then mutate the actual backing array
-  const db = buildDatabase();
+  const cDb = buildDatabase();
 
-  const idx = db.findIndex(c =>
+  const idx = cDb.findIndex(c =>
     c.id === targetId ||
     (c.name && c.name.toLowerCase() === (collegeData.name || '').toLowerCase())
   );
 
   if (idx !== -1) {
-    db[idx] = { ...db[idx], ...collegeData, id: targetId };
+    cDb[idx] = { ...cDb[idx], ...collegeData, id: targetId };
   } else {
-    db.unshift({ id: targetId, ...collegeData });
+    cDb.unshift({ id: targetId, ...collegeData });
   }
 
-  // Persist to localStorage (web only) so edits survive page refresh
   if (typeof window !== 'undefined' && window.localStorage) {
     try {
       const storedRaw = window.localStorage.getItem('acadivo_custom_colleges');
@@ -812,5 +811,75 @@ export const updateCollegeInMemory = (collegeData) => {
       window.localStorage.setItem('acadivo_custom_colleges', JSON.stringify(storedMap));
     } catch (_e) {}
   }
+  notifyListeners();
 };
+
+export const deleteCollegeFromMemory = (collegeId) => {
+  if (!collegeId) return;
+  const cDb = buildDatabase();
+  const idx = cDb.findIndex(c => c.id === collegeId || (c.name && c.name.toLowerCase().replace(/[^a-z0-9]/g, '_') === collegeId));
+  if (idx !== -1) {
+    cDb.splice(idx, 1);
+  }
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const storedRaw = window.localStorage.getItem('acadivo_custom_colleges');
+      if (storedRaw) {
+        const storedMap = JSON.parse(storedRaw);
+        delete storedMap[collegeId];
+        window.localStorage.setItem('acadivo_custom_colleges', JSON.stringify(storedMap));
+      }
+    } catch (_e) {}
+  }
+  notifyListeners();
+};
+
+// ── Real-time synchronization listeners ─────────────────────────────────────────
+const listeners = new Set();
+
+export const subscribeColleges = (fn) => {
+  listeners.add(fn);
+  return () => listeners.delete(fn);
+};
+
+export const notifyListeners = () => {
+  listeners.forEach(fn => {
+    try { fn(); } catch (_e) {}
+  });
+};
+
+export const useLiveColleges = () => {
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    return subscribeColleges(() => setTick(t => t + 1));
+  }, []);
+};
+
+// ── Global real-time listener for Firestore push sync across Web & Mobile ──────
+let isFirestoreListening = false;
+
+export const initRealtimeCollegesSync = () => {
+  if (isFirestoreListening || !db) return;
+  isFirestoreListening = true;
+
+  try {
+    const q = query(collection(db, 'colleges'));
+    onSnapshot(q, (snap) => {
+      snap.docChanges().forEach(change => {
+        const item = { id: change.doc.id, ...change.doc.data() };
+        if (change.type === 'removed') {
+          deleteCollegeFromMemory(change.doc.id);
+        } else {
+          updateCollegeInMemory(item);
+        }
+      });
+      notifyListeners();
+    }, (err) => {
+      console.warn("Colleges realtime sync warning:", err?.message);
+    });
+  } catch (_e) {}
+};
+
+// Auto-initialize live sync engine
+initRealtimeCollegesSync();
 

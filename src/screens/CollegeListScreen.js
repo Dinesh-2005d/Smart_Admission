@@ -5,7 +5,7 @@ import {
   Modal, FlatList, TextInput,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { getTop25ForPercentage, getAllCollegesInState } from '../constants/collegeDatabase';
+import { getTop25ForPercentage, getAllCollegesInState, useLiveColleges } from '../constants/collegeDatabase';
 import { getAIMessage, predictAdmissionChance } from '../constants/offlineAI';
 import { useSavedColleges } from '../context/SavedCollegesContext';
 import { DEPARTMENTS, STATES } from '../constants/indiaData';
@@ -166,6 +166,7 @@ function SectionHeader({ emoji, title, subtitle, color = C.purple }) {
 
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 export default function CollegeListScreen({ navigation, route }) {
+  useLiveColleges();
   const {
     targetState: initialTargetState,
     department: initialDept,
