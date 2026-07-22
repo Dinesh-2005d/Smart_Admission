@@ -259,8 +259,18 @@ function Bubble({ msg, onRegenerate, onCopy }) {
   }, []);
 
   return (
-    <View style={{ width: '100%', alignItems: isUser ? 'flex-end' : 'flex-start', marginBottom: 10 }}>
-      <Animated.View style={{ opacity: fade, transform: [{ translateX: slideX }], maxWidth: isUser ? 340 : 500 }}>
+    <View style={{
+      flexDirection: 'row',
+      justifyContent: isUser ? 'flex-end' : 'flex-start',
+      marginBottom: 10,
+      width: '100%',
+    }}>
+      <Animated.View style={{
+        opacity: fade,
+        transform: [{ translateX: slideX }],
+        maxWidth: isUser ? '80%' : '100%',
+        flex: isUser ? 0 : 1,
+      }}>
         {!isUser && (
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 5, gap: 6 }}>
             <LinearGradient colors={['#7c6fff50', '#7c6fff28']} style={s.aiAvatar}>
@@ -896,6 +906,12 @@ export default function AIScreen({ route, navigation }) {
           {/* ── Chat sessions list ── */}
           {histTab === 'chats' && (
             <ScrollView style={h.list} contentContainerStyle={h.listContent} showsVerticalScrollIndicator={false}>
+              {chatHistory.error && (
+                <View style={{ backgroundColor: '#ef444415', borderColor: '#ef444430', borderWidth: 1, borderRadius: 8, padding: 12, marginHorizontal: 16, marginBottom: 12, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                  <Ionicons name="alert-circle-outline" size={16} color="#ef4444" />
+                  <Text style={{ color: '#ef4444', fontSize: 13, flex: 1 }}>{chatHistory.error}</Text>
+                </View>
+              )}
               {chatHistory.loading && (
                 <View style={h.center}>
                   <ActivityIndicator size="large" color="#7c6fff" />

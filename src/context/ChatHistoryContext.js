@@ -162,9 +162,9 @@ export function ChatHistoryProvider({ children }) {
         ...titleUpdate,
       });
 
-      // Update local session list metadata
+      // Update local session list metadata and messages array
       setSessions(prev => prev.map(s => s.id === sessionId
-        ? { ...s, updatedAt: { toDate: () => new Date() }, ...titleUpdate }
+        ? { ...s, messages: updated, updatedAt: { toDate: () => new Date() }, ...titleUpdate }
         : s
       ));
     } catch (e) {
