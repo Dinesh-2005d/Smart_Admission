@@ -262,17 +262,18 @@ function MessageBubble({ msg }) {
   );
 
   // ── Web layout: alignItems on parent (flex:0 collapses on CSS/web) ─────────
-  if (Platform.OS === 'web') {
+  if (isUser) {
     return (
       <View style={{
         width: '100%',
-        alignItems: isUser ? 'flex-end' : 'flex-start',
-        marginBottom: 5,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        marginBottom: 10,
+        paddingLeft: 40,
       }}>
         <Animated.View style={{
           opacity: fade,
-          transform: [{ translateX: slideX }],
-          maxWidth: isUser ? 300 : 460,
+          maxWidth: '85%',
         }}>
           {bubbleContent}
         </Animated.View>
@@ -280,19 +281,18 @@ function MessageBubble({ msg }) {
     );
   }
 
-  // ── Native layout: flex-row + justifyContent (alignSelf on Animated is buggy on Android) ──
   return (
     <View style={{
-      flexDirection: 'row',
-      justifyContent: isUser ? 'flex-end' : 'flex-start',
-      marginBottom: 5,
       width: '100%',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      marginBottom: 10,
+      paddingRight: 20,
     }}>
       <Animated.View style={{
         opacity: fade,
-        transform: [{ translateX: slideX }],
-        maxWidth: isUser ? '72%' : '85%',
-        flex: isUser ? 0 : 1,
+        width: '100%',
+        maxWidth: '100%',
       }}>
         {bubbleContent}
       </Animated.View>

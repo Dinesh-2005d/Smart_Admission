@@ -254,71 +254,86 @@ function Bubble({ msg, onRegenerate, onCopy }) {
     Animated.timing(fade, { toValue: 1, duration: 200, useNativeDriver: nd }).start();
   }, []);
 
+  if (isUser) {
+    return (
+      <View style={{
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        marginBottom: 14,
+        paddingLeft: 40,
+      }}>
+        <Animated.View style={{
+          opacity: fade,
+          maxWidth: '85%',
+        }}>
+          <View style={[s.bubble, s.userBubble]}>
+            <Text style={{ color: '#ffffff', fontSize: 14, lineHeight: 21, fontWeight: '500' }}>{msg.text}</Text>
+          </View>
+          <Text style={[s.timestamp, { textAlign: 'right', marginRight: 4 }]}>{msg.time}</Text>
+        </Animated.View>
+      </View>
+    );
+  }
+
   return (
     <View style={{
-      flexDirection: 'row',
-      justifyContent: isUser ? 'flex-end' : 'flex-start',
-      marginBottom: 12,
       width: '100%',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      marginBottom: 14,
+      paddingRight: 20,
     }}>
       <Animated.View style={{
         opacity: fade,
-        maxWidth: isUser ? '80%' : '100%',
-        flex: isUser ? 0 : 1,
+        width: '100%',
+        maxWidth: '100%',
       }}>
-        {!isUser && (
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 5, gap: 6 }}>
-            <LinearGradient colors={['#7c6fff50', '#7c6fff28']} style={s.aiAvatar}>
-              <Text style={{ fontSize: 11 }}>🤖</Text>
-            </LinearGradient>
-            <Text style={s.aiName}>Acadivo AI</Text>
-            {msg.isRealAI && (
-              <View style={s.livePill}>
-                <View style={s.liveDot} />
-                <Text style={s.liveText}>AI</Text>
-              </View>
-            )}
-            {msg.isCrawled && (
-              <View style={[s.livePill, { backgroundColor: '#10b98122' }]}>
-                <View style={[s.liveDot, { backgroundColor: '#10b981' }]} />
-                <Text style={[s.liveText, { color: '#10b981' }]}>WEB</Text>
-              </View>
-            )}
-            {msg.isOfflineFallback && (
-              <View style={[s.livePill, { backgroundColor: '#f59e0b22' }]}>
-                <View style={[s.liveDot, { backgroundColor: '#f59e0b' }]} />
-                <Text style={[s.liveText, { color: '#f59e0b' }]}>OFFLINE</Text>
-              </View>
-            )}
-            {msg.sentiment && (
-              <View style={[
-                s.livePill,
-                { backgroundColor: getSentimentColor(msg.sentiment.label) + '22',
-                  borderWidth: 1, borderColor: getSentimentColor(msg.sentiment.label) + '50' }
-              ]}>
-                <Text style={{ fontSize: 9 }}>{getSentimentEmoji(msg.sentiment.label)}</Text>
-                <Text style={[s.liveText, { color: getSentimentColor(msg.sentiment.label) }]}>
-                  {msg.sentiment.label}
-                </Text>
-              </View>
-            )}
-          </View>
-        )}
-        {isUser ? (
-          <View style={[s.bubble, s.userBubble]}>
-            <Text style={{ color: '#fff', fontSize: 13.5, lineHeight: 21 }}>{msg.text}</Text>
-          </View>
-        ) : (
-          <View style={[s.bubble, s.aiBubble]}>
-            <RichText text={msg.text} isUser={false} isStreaming={msg.isStreaming} />
-            {!msg.isStreaming && msg.text && msg.id !== 'welcome' && (
-              <View style={{ marginTop: 6 }}>
-                <MessageActions msg={msg} onRegenerate={() => onRegenerate?.(msg)} onCopy={() => onCopy?.(msg.text)} />
-              </View>
-            )}
-          </View>
-        )}
-        <Text style={[s.timestamp, isUser && { textAlign: 'right' }]}>{msg.time}</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 5, gap: 6 }}>
+          <LinearGradient colors={['#7c6fff50', '#7c6fff28']} style={s.aiAvatar}>
+            <Text style={{ fontSize: 11 }}>🤖</Text>
+          </LinearGradient>
+          <Text style={s.aiName}>Acadivo AI</Text>
+          {msg.isRealAI && (
+            <View style={s.livePill}>
+              <View style={s.liveDot} />
+              <Text style={s.liveText}>AI</Text>
+            </View>
+          )}
+          {msg.isCrawled && (
+            <View style={[s.livePill, { backgroundColor: '#10b98122' }]}>
+              <View style={[s.liveDot, { backgroundColor: '#10b981' }]} />
+              <Text style={[s.liveText, { color: '#10b981' }]}>WEB</Text>
+            </View>
+          )}
+          {msg.isOfflineFallback && (
+            <View style={[s.livePill, { backgroundColor: '#f59e0b22' }]}>
+              <View style={[s.liveDot, { backgroundColor: '#f59e0b' }]} />
+              <Text style={[s.liveText, { color: '#f59e0b' }]}>OFFLINE</Text>
+            </View>
+          )}
+          {msg.sentiment && (
+            <View style={[
+              s.livePill,
+              { backgroundColor: getSentimentColor(msg.sentiment.label) + '22',
+                borderWidth: 1, borderColor: getSentimentColor(msg.sentiment.label) + '50' }
+            ]}>
+              <Text style={{ fontSize: 9 }}>{getSentimentEmoji(msg.sentiment.label)}</Text>
+              <Text style={[s.liveText, { color: getSentimentColor(msg.sentiment.label) }]}>
+                {msg.sentiment.label}
+              </Text>
+            </View>
+          )}
+        </View>
+        <View style={[s.bubble, s.aiBubble]}>
+          <RichText text={msg.text} isUser={false} isStreaming={msg.isStreaming} />
+          {!msg.isStreaming && msg.text && msg.id !== 'welcome' && (
+            <View style={{ marginTop: 6 }}>
+              <MessageActions msg={msg} onRegenerate={() => onRegenerate?.(msg)} onCopy={() => onCopy?.(msg.text)} />
+            </View>
+          )}
+        </View>
+        <Text style={s.timestamp}>{msg.time}</Text>
       </Animated.View>
     </View>
   );
