@@ -1,0 +1,15 @@
+{
+  "critical": 0,
+  "high": 0,
+  "medium": 0,
+  "low": 10,
+  "score": 10,
+  "checksTotal": 30,
+  "checksPassed": 30,
+  "checksFailed": 0,
+  "checksWarned": 0,
+  "buildNumber": "74",
+  "commitSha": "c47283d",
+  "branch": "main",
+  "executionDate": "2026-07-22 03:09:30 UTC"
+}
