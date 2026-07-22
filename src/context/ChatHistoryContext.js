@@ -51,13 +51,13 @@ export function ChatHistoryProvider({ children }) {
   // ── Firestore collection ref helpers ─────────────────────────────────────────
   const sessionsRef = useCallback(() => {
     if (!user?.uid) return null;
-    return collection(db, 'chatHistory', user.email || user.uid, 'sessions');
-  }, [user?.uid, user?.email]);
+    return collection(db, 'chatHistory', user.uid, 'sessions');
+  }, [user?.uid]);
 
   const sessionDocRef = useCallback((sid) => {
     if (!user?.uid || !sid) return null;
-    return doc(db, 'chatHistory', user.email || user.uid, 'sessions', sid);
-  }, [user?.uid, user?.email]);
+    return doc(db, 'chatHistory', user.uid, 'sessions', sid);
+  }, [user?.uid]);
 
   // ── Load sessions list ────────────────────────────────────────────────────────
   const loadSessions = useCallback(async () => {

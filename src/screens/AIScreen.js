@@ -248,26 +248,21 @@ function MessageActions({ msg, onRegenerate, onCopy }) {
 function Bubble({ msg, onRegenerate, onCopy }) {
   const isUser = msg.role === 'user';
   const fade   = useRef(new Animated.Value(0)).current;
-  const slideX = useRef(new Animated.Value(isUser ? 20 : -20)).current;
-  const nd = Platform.OS !== 'web';
+  const nd     = Platform.OS !== 'web';
 
   useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fade,  { toValue: 1, duration: 280, useNativeDriver: nd }),
-      Animated.spring(slideX, { toValue: 0, tension: 90, friction: 12, useNativeDriver: nd }),
-    ]).start();
+    Animated.timing(fade, { toValue: 1, duration: 200, useNativeDriver: nd }).start();
   }, []);
 
   return (
     <View style={{
       flexDirection: 'row',
       justifyContent: isUser ? 'flex-end' : 'flex-start',
-      marginBottom: 10,
+      marginBottom: 12,
       width: '100%',
     }}>
       <Animated.View style={{
         opacity: fade,
-        transform: [{ translateX: slideX }],
         maxWidth: isUser ? '80%' : '100%',
         flex: isUser ? 0 : 1,
       }}>
