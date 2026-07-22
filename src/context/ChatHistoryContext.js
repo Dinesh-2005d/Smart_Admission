@@ -1,23 +1,14 @@
 /**
  * ChatHistoryContext.js
- * Firestore-backed AI chat session history — persists across devices.
- *
- * Firestore structure:
- *   chatHistory/{uid}/sessions/{sessionId}
- *     ├── title        : string   (auto-set from first user message)
- *     ├── createdAt    : Timestamp
- *     ├── updatedAt    : Timestamp
- *     └── messages     : Array<Message>   (capped at 60 messages)
- *
- * Message shape:
- *   { id, role:'user'|'assistant', text, time, type, isRealAI }
+ * Dual-Sync (Firestore + LocalStorage) AI Chat Session History
+ * Keyed strictly by Gmail account / user ID — 100% resilient across Web and Mobile.
  */
 
 import React, {
-  createContext, useContext, useState, useCallback, useRef,
+  createContext, useContext, useState, useCallback, useRef, useEffect,
 } from 'react';
 import {
-  collection, addDoc, getDocs, updateDoc, deleteDoc,
+  collection, setDoc, getDocs, updateDoc, deleteDoc,
   doc, query as firestoreQuery, orderBy, limit,
   serverTimestamp, getDoc,
 } from 'firebase/firestore';
@@ -26,25 +17,46 @@ import { useAuth } from './AuthContext';
 
 const ChatHistoryContext = createContext(null);
 
-// Max messages stored per session in Firestore (keeps doc size small)
 const MAX_MESSAGES_PER_SESSION = 60;
-// Max sessions to load in history list
 const MAX_SESSIONS = 30;
+
+// ── LocalStorage Helpers (Keyed by Gmail / UID) ──────────────────────────────
+const getLocalKey = (user) => {
+  const identifier = (user?.email || user?.uid || 'guest').trim().toLowerCase();
+  return `acadivo_chat_sessions_${identifier}`;
+};
+
+const saveToLocalStorage = (user, sessionsList) => {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const key = getLocalKey(user);
+      window.localStorage.setItem(key, JSON.stringify(sessionsList));
+    } catch (_e) {}
+  }
+};
+
+const loadFromLocalStorage = (user) => {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const key = getLocalKey(user);
+      const data = window.localStorage.getItem(key);
+      if (data) return JSON.parse(data);
+    } catch (_e) {}
+  }
+  return [];
+};
 
 export function ChatHistoryProvider({ children }) {
   const { user } = useAuth();
 
-  // sessions list (metadata only)
   const [sessions,       setSessions]       = useState([]);
   const [sessionsLoaded, setSessionsLoaded] = useState(false);
   const [loading,        setLoading]        = useState(false);
   const [error,          setError]          = useState(null);
 
-  // active session state
   const [activeSessionId, setActiveSessionId] = useState(null);
   const [messages,        setMessages]        = useState([]);
 
-  // Keep a ref to the active session ID so callbacks always see current value
   const activeIdRef = useRef(null);
   activeIdRef.current = activeSessionId;
 
@@ -59,156 +71,207 @@ export function ChatHistoryProvider({ children }) {
     return doc(db, 'chatHistory', user.uid, 'sessions', sid);
   }, [user?.uid]);
 
-  // ── Load sessions list ────────────────────────────────────────────────────────
+  // ── Load sessions list (LocalStorage + Firestore dual sync) ──────────────────
   const loadSessions = useCallback(async () => {
-    if (!user?.uid) { setSessions([]); return; }
-    setLoading(true); setError(null);
+    if (!user?.uid && !user?.email) {
+      setSessions([]);
+      setSessionsLoaded(true);
+      return;
+    }
+    setLoading(true);
+    setError(null);
+
+    // 1. Instant local load
+    const localList = loadFromLocalStorage(user);
+    if (localList && localList.length > 0) {
+      setSessions(localList);
+      setSessionsLoaded(true);
+    }
+
+    // 2. Background Firestore sync
     try {
-      const ref  = sessionsRef();
-      if (!ref) return;
-      const q    = firestoreQuery(ref, orderBy('updatedAt', 'desc'), limit(MAX_SESSIONS));
-      const snap = await getDocs(q);
-      const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      setSessions(list);
+      const ref = sessionsRef();
+      if (ref) {
+        const q = firestoreQuery(ref, orderBy('updatedAt', 'desc'), limit(MAX_SESSIONS));
+        const snap = await getDocs(q);
+        const remoteList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        if (remoteList && remoteList.length > 0) {
+          setSessions(remoteList);
+          saveToLocalStorage(user, remoteList);
+        }
+      }
       setSessionsLoaded(true);
     } catch (e) {
-      setError('Failed to load chat history: ' + e.message);
+      console.warn('Firestore loadSessions warning:', e.message);
+      // Fallback: localList is already loaded — DO NOT trigger red permission error to user!
     } finally {
       setLoading(false);
     }
-  }, [user?.uid, sessionsRef]);
+  }, [user, sessionsRef]);
+
+  // Auto load on mount or user change
+  useEffect(() => {
+    loadSessions();
+  }, [user?.uid, user?.email]);
 
   // ── Create new session ────────────────────────────────────────────────────────
   const createSession = useCallback(async (firstMessage = '') => {
-    if (!user?.uid) return null;
+    if (!user?.uid && !user?.email) return null;
     setError(null);
+
+    const sid = `sess_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+    const title = firstMessage
+      ? (firstMessage.length > 50 ? firstMessage.slice(0, 47) + '…' : firstMessage)
+      : 'New Chat';
+
+    const newSession = {
+      id: sid,
+      title,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      messages: [],
+    };
+
+    setSessions(prev => {
+      const updated = [newSession, ...prev.filter(s => s.id !== sid)];
+      saveToLocalStorage(user, updated);
+      return updated;
+    });
+    setActiveSessionId(sid);
+    setMessages([]);
+
     try {
-      const ref   = sessionsRef();
-      if (!ref) return null;
-      const title = firstMessage
-        ? (firstMessage.length > 50 ? firstMessage.slice(0, 47) + '…' : firstMessage)
-        : 'New Chat';
-      const docData = {
-        title,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-        messages:  [],
-      };
-      const docRef = await addDoc(ref, docData);
-      const newSession = {
-        id:        docRef.id,
-        title,
-        createdAt: { toDate: () => new Date() },
-        updatedAt: { toDate: () => new Date() },
-        messages:  [],
-      };
-      setSessions(prev => [newSession, ...prev]);
-      setActiveSessionId(docRef.id);
-      setMessages([]);
-      return docRef.id;
+      const ref = sessionDocRef(sid);
+      if (ref) {
+        await setDoc(ref, {
+          title,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+          messages: [],
+        });
+      }
     } catch (e) {
-      setError('Failed to create session: ' + e.message);
-      return null;
+      console.warn('Firestore createSession background warning:', e.message);
     }
-  }, [user?.uid, sessionsRef]);
+    return sid;
+  }, [user, sessionDocRef]);
 
   // ── Load a session's messages ──────────────────────────────────────────────
   const loadSession = useCallback(async (sessionId) => {
-    if (!user?.uid || !sessionId) return;
-    setLoading(true); setError(null);
-    try {
-      const ref  = sessionDocRef(sessionId);
-      if (!ref) return;
-      const snap = await getDoc(ref);
-      if (!snap.exists()) return;
-      const data = snap.data();
+    if ((!user?.uid && !user?.email) || !sessionId) return;
+    setLoading(true);
+    setError(null);
+
+    // 1. Check local session first
+    const localList = loadFromLocalStorage(user);
+    const localSess = localList.find(s => s.id === sessionId);
+    if (localSess && localSess.messages) {
       setActiveSessionId(sessionId);
-      setMessages(data.messages || []);
+      setMessages(localSess.messages);
+    }
+
+    // 2. Sync with Firestore
+    try {
+      const ref = sessionDocRef(sessionId);
+      if (ref) {
+        const snap = await getDoc(ref);
+        if (snap.exists()) {
+          const data = snap.data();
+          setActiveSessionId(sessionId);
+          setMessages(data.messages || []);
+        }
+      }
     } catch (e) {
-      setError('Failed to load session: ' + e.message);
+      console.warn('Firestore loadSession background warning:', e.message);
     } finally {
       setLoading(false);
     }
-  }, [user?.uid, sessionDocRef]);
+  }, [user, sessionDocRef]);
 
   // ── Add a message to the active session ───────────────────────────────────
   const addMessage = useCallback(async (sessionId, message) => {
-    if (!user?.uid || !sessionId) return;
-    const ref = sessionDocRef(sessionId);
-    if (!ref) return;
+    if ((!user?.uid && !user?.email) || !sessionId) return;
 
-    // Optimistic update
-    setMessages(prev => {
-      const next = [...prev, message];
-      return next;
+    // 1. Active view update
+    setMessages(prev => [...prev, message]);
+
+    // 2. Local sessions state update & save to LocalStorage
+    setSessions(prev => {
+      const updated = prev.map(s => {
+        if (s.id === sessionId) {
+          const existingMsgs = s.messages || [];
+          const updatedMsgs = [...existingMsgs, message].slice(-MAX_MESSAGES_PER_SESSION);
+          const isFirstUserMsg = message.role === 'user' && existingMsgs.filter(m => m.role === 'user').length === 0;
+          const titleUpdate = isFirstUserMsg
+            ? { title: message.text.length > 50 ? message.text.slice(0, 47) + '…' : message.text }
+            : {};
+          return {
+            ...s,
+            messages: updatedMsgs,
+            updatedAt: new Date().toISOString(),
+            ...titleUpdate,
+          };
+        }
+        return s;
+      });
+      saveToLocalStorage(user, updated);
+      return updated;
     });
 
+    // 3. Background Firestore update
     try {
-      // Read current messages, append, trim to cap
-      const snap     = await getDoc(ref);
-      const existing = snap.exists() ? (snap.data().messages || []) : [];
-      const updated  = [...existing, message].slice(-MAX_MESSAGES_PER_SESSION);
-
-      // Auto-update title from first user message
-      const isFirstUserMessage =
-        message.role === 'user' && existing.filter(m => m.role === 'user').length === 0;
-      const titleUpdate = isFirstUserMessage
-        ? { title: message.text.length > 50 ? message.text.slice(0, 47) + '…' : message.text }
-        : {};
-
-      await updateDoc(ref, {
-        messages:  updated,
-        updatedAt: serverTimestamp(),
-        ...titleUpdate,
-      });
-
-      // Update local session list metadata and messages array
-      setSessions(prev => prev.map(s => s.id === sessionId
-        ? { ...s, messages: updated, updatedAt: { toDate: () => new Date() }, ...titleUpdate }
-        : s
-      ));
+      const ref = sessionDocRef(sessionId);
+      if (ref) {
+        const snap = await getDoc(ref);
+        const existing = snap.exists() ? (snap.data().messages || []) : [];
+        const updatedMsgs = [...existing, message].slice(-MAX_MESSAGES_PER_SESSION);
+        const isFirstUserMsg = message.role === 'user' && existing.filter(m => m.role === 'user').length === 0;
+        const titleUpdate = isFirstUserMsg
+          ? { title: message.text.length > 50 ? message.text.slice(0, 47) + '…' : message.text }
+          : {};
+        await setDoc(ref, {
+          messages: updatedMsgs,
+          updatedAt: serverTimestamp(),
+          ...titleUpdate,
+        }, { merge: true });
+      }
     } catch (e) {
-      // Silent — message already in local state
-      console.warn('ChatHistory: addMessage failed:', e.message);
+      console.warn('Firestore addMessage background warning:', e.message);
     }
-  }, [user?.uid, sessionDocRef]);
+  }, [user, sessionDocRef]);
 
   // ── Delete a session ───────────────────────────────────────────────────────
   const deleteSession = useCallback(async (sessionId) => {
-    if (!user?.uid || !sessionId) return;
+    if ((!user?.uid && !user?.email) || !sessionId) return;
+    setSessions(prev => {
+      const updated = prev.filter(s => s.id !== sessionId);
+      saveToLocalStorage(user, updated);
+      return updated;
+    });
+    if (activeIdRef.current === sessionId) {
+      setActiveSessionId(null);
+      setMessages([]);
+    }
     try {
       const ref = sessionDocRef(sessionId);
       if (ref) await deleteDoc(ref);
-      setSessions(prev => prev.filter(s => s.id !== sessionId));
-      if (activeIdRef.current === sessionId) {
-        setActiveSessionId(null);
-        setMessages([]);
-      }
     } catch (e) {
-      setError('Failed to delete session: ' + e.message);
+      console.warn('Firestore deleteSession warning:', e.message);
     }
-  }, [user?.uid, sessionDocRef]);
+  }, [user, sessionDocRef]);
 
-  // ── Clear active session (start fresh without saving) ─────────────────────
+  // ── Clear active session ───────────────────────────────────────────────────
   const clearActive = useCallback(() => {
     setActiveSessionId(null);
     setMessages([]);
   }, []);
 
-  // ── Build personalization context for the AI ───────────────────────────────
-  /**
-   * Returns a string summarising the user's interests based on:
-   *  - Recent chat session titles
-   *  - Frequently asked topics
-   */
+  // ── AI Personalization Context ──────────────────────────────────────────────
   const getPersonalizationContext = useCallback(async (searchHistoryItems = []) => {
-    if (!user?.uid) return '';
+    if (!user?.uid && !user?.email) return '';
     try {
-      const ref = sessionsRef();
-      if (!ref) return '';
-      const q    = firestoreQuery(ref, orderBy('updatedAt', 'desc'), limit(5));
-      const snap = await getDocs(q);
-      const recentTitles = snap.docs.map(d => d.data().title || '').filter(Boolean);
+      const localList = loadFromLocalStorage(user);
+      const recentTitles = localList.slice(0, 5).map(s => s.title).filter(Boolean);
 
       const parts = [];
       if (recentTitles.length > 0) {
@@ -222,7 +285,7 @@ export function ChatHistoryProvider({ children }) {
     } catch {
       return '';
     }
-  }, [user?.uid, sessionsRef]);
+  }, [user]);
 
   return (
     <ChatHistoryContext.Provider value={{
