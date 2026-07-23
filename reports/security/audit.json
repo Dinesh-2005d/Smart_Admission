@@ -56,8 +56,8 @@
         "node_modules/@expo/config"
       ],
       "fixAvailable": {
-        "name": "expo-constants",
-        "version": "57.0.6",
+        "name": "expo",
+        "version": "46.0.21",
         "isSemVerMajor": true
       }
     },
@@ -122,7 +122,7 @@
       ],
       "fixAvailable": {
         "name": "expo-splash-screen",
-        "version": "57.0.4",
+        "version": "57.0.5",
         "isSemVerMajor": true
       }
     },
@@ -385,7 +385,7 @@
       ],
       "fixAvailable": {
         "name": "expo-constants",
-        "version": "57.0.6",
+        "version": "57.0.7",
         "isSemVerMajor": true
       }
     },
@@ -404,7 +404,7 @@
       ],
       "fixAvailable": {
         "name": "expo-dev-client",
-        "version": "57.0.7",
+        "version": "57.0.8",
         "isSemVerMajor": true
       }
     },
@@ -436,7 +436,7 @@
       ],
       "fixAvailable": {
         "name": "expo-linking",
-        "version": "57.0.3",
+        "version": "57.0.4",
         "isSemVerMajor": true
       }
     },
@@ -458,7 +458,7 @@
       ],
       "fixAvailable": {
         "name": "expo-dev-client",
-        "version": "57.0.7",
+        "version": "57.0.8",
         "isSemVerMajor": true
       }
     },
@@ -476,7 +476,7 @@
       ],
       "fixAvailable": {
         "name": "expo-splash-screen",
-        "version": "57.0.4",
+        "version": "57.0.5",
         "isSemVerMajor": true
       }
     },
@@ -494,7 +494,7 @@
       ],
       "fixAvailable": {
         "name": "expo-updates",
-        "version": "57.0.8",
+        "version": "57.0.9",
         "isSemVerMajor": true
       }
     },

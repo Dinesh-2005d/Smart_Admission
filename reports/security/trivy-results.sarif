@@ -70,6 +70,35 @@
               }
             },
             {
+              "id": "CVE-2026-16221",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "Impact: fast-uri versions from 2.3.1 through 4.1.0 (including the 3.x  ..."
+              },
+              "fullDescription": {
+                "text": "Impact: fast-uri versions from 2.3.1 through 4.1.0 (including the 3.x line up to 3.1.3 and the 2.x line up to 2.4.2) do not treat a literal backslash character (U+005C) as an authority delimiter. Node's native WHATWG URL parser, used by fetch, undici, and Node's http and https clients, normalizes the backslash to a forward slash for special schemes such as http, https, ws, wss, ftp, and file. As a result, the two parsers extract different hosts from the same input string. Applications that use fast-uri to enforce host-based policy such as allowlists, denylists, loopback or SSRF filtering, redirect validation, or outbound proxy routing before passing the same URL into Node's URL or fetch consumers can be steered to an unintended destination, including cloud metadata endpoints, loopback, or internal hosts. \n\nPatches: upgrade to fast-uri 4.1.1, 3.1.4, or 2.4.3.\n\nWorkarounds: none."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-16221",
+              "help": {
+                "text": "Vulnerability CVE-2026-16221\nSeverity: HIGH\nPackage: fast-uri\nFixed Version: 2.4.3, 3.1.4, 4.1.1\nLink: [CVE-2026-16221](https://avd.aquasec.com/nvd/cve-2026-16221)\nImpact: fast-uri versions from 2.3.1 through 4.1.0 (including the 3.x line up to 3.1.3 and the 2.x line up to 2.4.2) do not treat a literal backslash character (U+005C) as an authority delimiter. Node's native WHATWG URL parser, used by fetch, undici, and Node's http and https clients, normalizes the backslash to a forward slash for special schemes such as http, https, ws, wss, ftp, and file. As a result, the two parsers extract different hosts from the same input string. Applications that use fast-uri to enforce host-based policy such as allowlists, denylists, loopback or SSRF filtering, redirect validation, or outbound proxy routing before passing the same URL into Node's URL or fetch consumers can be steered to an unintended destination, including cloud metadata endpoints, loopback, or internal hosts. \n\nPatches: upgrade to fast-uri 4.1.1, 3.1.4, or 2.4.3.\n\nWorkarounds: none.",
+                "markdown": "**Vulnerability CVE-2026-16221**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|fast-uri|2.4.3, 3.1.4, 4.1.1|[CVE-2026-16221](https://avd.aquasec.com/nvd/cve-2026-16221)|\n\nImpact: fast-uri versions from 2.3.1 through 4.1.0 (including the 3.x line up to 3.1.3 and the 2.x line up to 2.4.2) do not treat a literal backslash character (U+005C) as an authority delimiter. Node's native WHATWG URL parser, used by fetch, undici, and Node's http and https clients, normalizes the backslash to a forward slash for special schemes such as http, https, ws, wss, ftp, and file. As a result, the two parsers extract different hosts from the same input string. Applications that use fast-uri to enforce host-based policy such as allowlists, denylists, loopback or SSRF filtering, redirect validation, or outbound proxy routing before passing the same URL into Node's URL or fetch consumers can be steered to an unintended destination, including cloud metadata endpoints, loopback, or internal hosts. \n\nPatches: upgrade to fast-uri 4.1.1, 3.1.4, or 2.4.3.\n\nWorkarounds: none."
+              },
+              "properties": {
+                "cvssv3_baseScore": 7.5,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N",
+                "precision": "very-high",
+                "security-severity": "7.5",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "HIGH"
+                ]
+              }
+            },
+            {
               "id": "CVE-2026-55603",
               "name": "LanguageSpecificPackageVulnerability",
               "shortDescription": {
@@ -189,7 +218,7 @@
               "id": "CVE-2026-59877",
               "name": "LanguageSpecificPackageVulnerability",
               "shortDescription": {
-                "text": "protobufjs: Denial of Service via infinite loop in .proto option parsing"
+                "text": "protobufjs: protobufjs: Denial of Service via crafted .proto schema"
               },
               "fullDescription": {
                 "text": "protobufjs compiles protobuf definitions into JavaScript (JS) functions. Prior to 7.6.5 and 8.6.6, protobufjs parsed option names by advancing through schema tokens until reaching an = token without checking for end of input, so a crafted .proto schema that opens an option declaration and ends prematurely can cause parse, Root.load, or Root.loadSync to loop indefinitely. This issue is fixed in versions 7.6.5 and 8.6.6."
@@ -397,8 +426,35 @@
           ]
         },
         {
-          "ruleId": "CVE-2026-55603",
+          "ruleId": "CVE-2026-16221",
           "ruleIndex": 2,
+          "level": "error",
+          "message": {
+            "text": "Package: fast-uri\nInstalled Version: 3.1.3\nVulnerability CVE-2026-16221\nSeverity: HIGH\nFixed Version: 2.4.3, 3.1.4, 4.1.1\nLink: [CVE-2026-16221](https://avd.aquasec.com/nvd/cve-2026-16221)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 8242,
+                  "startColumn": 1,
+                  "endLine": 8257,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: fast-uri@3.1.3"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-55603",
+          "ruleIndex": 3,
           "level": "error",
           "message": {
             "text": "Package: http-proxy-middleware\nInstalled Version: 3.0.5\nVulnerability CVE-2026-55603\nSeverity: HIGH\nFixed Version: 3.0.7, 4.1.1\nLink: [CVE-2026-55603](https://avd.aquasec.com/nvd/cve-2026-55603)"
@@ -425,7 +481,7 @@
         },
         {
           "ruleId": "CVE-2026-55602",
-          "ruleIndex": 3,
+          "ruleIndex": 4,
           "level": "warning",
           "message": {
             "text": "Package: http-proxy-middleware\nInstalled Version: 3.0.5\nVulnerability CVE-2026-55602\nSeverity: MEDIUM\nFixed Version: 3.0.6, 4.1.0, 2.0.10\nLink: [CVE-2026-55602](https://avd.aquasec.com/nvd/cve-2026-55602)"
@@ -452,7 +508,7 @@
         },
         {
           "ruleId": "CVE-2026-59869",
-          "ruleIndex": 4,
+          "ruleIndex": 5,
           "level": "error",
           "message": {
             "text": "Package: js-yaml\nInstalled Version: 4.2.0\nVulnerability CVE-2026-59869\nSeverity: HIGH\nFixed Version: 3.15.0, 4.3.0\nLink: [CVE-2026-59869](https://avd.aquasec.com/nvd/cve-2026-59869)"
@@ -479,7 +535,7 @@
         },
         {
           "ruleId": "GHSA-p6gq-j5cr-w38f",
-          "ruleIndex": 5,
+          "ruleIndex": 6,
           "level": "error",
           "message": {
             "text": "Package: nodemailer\nInstalled Version: 9.0.0\nVulnerability GHSA-p6gq-j5cr-w38f\nSeverity: HIGH\nFixed Version: 9.0.1\nLink: [GHSA-p6gq-j5cr-w38f](https://github.com/advisories/GHSA-p6gq-j5cr-w38f)"
@@ -506,7 +562,7 @@
         },
         {
           "ruleId": "CVE-2026-59877",
-          "ruleIndex": 6,
+          "ruleIndex": 7,
           "level": "warning",
           "message": {
             "text": "Package: protobufjs\nInstalled Version: 7.6.4\nVulnerability CVE-2026-59877\nSeverity: MEDIUM\nFixed Version: 7.6.5, 8.6.6\nLink: [CVE-2026-59877](https://avd.aquasec.com/nvd/cve-2026-59877)"
@@ -533,7 +589,7 @@
         },
         {
           "ruleId": "CVE-2026-13311",
-          "ruleIndex": 7,
+          "ruleIndex": 8,
           "level": "error",
           "message": {
             "text": "Package: shell-quote\nInstalled Version: 1.8.4\nVulnerability CVE-2026-13311\nSeverity: HIGH\nFixed Version: 1.9.0\nLink: [CVE-2026-13311](https://avd.aquasec.com/nvd/cve-2026-13311)"
@@ -560,7 +616,7 @@
         },
         {
           "ruleId": "CVE-2026-41907",
-          "ruleIndex": 8,
+          "ruleIndex": 9,
           "level": "warning",
           "message": {
             "text": "Package: uuid\nInstalled Version: 7.0.3\nVulnerability CVE-2026-41907\nSeverity: MEDIUM\nFixed Version: 11.1.1, 12.0.1, 13.0.1\nLink: [CVE-2026-41907](https://avd.aquasec.com/nvd/cve-2026-41907)"
