@@ -1,29 +1,57 @@
 {
   "auditReportVersion": 2,
   "vulnerabilities": {
+    "@eslint/config-array": {
+      "name": "@eslint/config-array",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "minimatch"
+      ],
+      "effects": [
+        "eslint"
+      ],
+      "range": "<=0.22.0",
+      "nodes": [
+        "node_modules/@eslint/config-array"
+      ],
+      "fixAvailable": {
+        "name": "eslint",
+        "version": "10.8.0",
+        "isSemVerMajor": true
+      }
+    },
     "@eslint/eslintrc": {
       "name": "@eslint/eslintrc",
       "severity": "high",
       "isDirect": false,
       "via": [
-        "js-yaml"
+        "minimatch"
       ],
-      "effects": [],
-      "range": "",
+      "effects": [
+        "eslint"
+      ],
+      "range": "0.0.1 || >=0.1.1",
       "nodes": [
         "node_modules/@eslint/eslintrc"
       ],
-      "fixAvailable": true
+      "fixAvailable": {
+        "name": "eslint",
+        "version": "10.8.0",
+        "isSemVerMajor": true
+      }
     },
     "@expo/cli": {
       "name": "@expo/cli",
-      "severity": "moderate",
+      "severity": "high",
       "isDirect": false,
       "via": [
         "@expo/config",
         "@expo/config-plugins",
         "@expo/metro-config",
-        "@expo/prebuild-config"
+        "@expo/prebuild-config",
+        "@react-native/dev-middleware",
+        "minimatch"
       ],
       "effects": [
         "expo"
@@ -34,7 +62,7 @@
       ],
       "fixAvailable": {
         "name": "expo",
-        "version": "46.0.21",
+        "version": "57.0.9",
         "isSemVerMajor": true
       }
     },
@@ -56,8 +84,8 @@
         "node_modules/@expo/config"
       ],
       "fixAvailable": {
-        "name": "expo",
-        "version": "46.0.21",
+        "name": "expo-constants",
+        "version": "57.0.8",
         "isSemVerMajor": true
       }
     },
@@ -80,18 +108,20 @@
       ],
       "fixAvailable": {
         "name": "expo",
-        "version": "46.0.21",
+        "version": "57.0.9",
         "isSemVerMajor": true
       }
     },
     "@expo/metro-config": {
       "name": "@expo/metro-config",
-      "severity": "moderate",
+      "severity": "high",
       "isDirect": false,
       "via": [
-        "@expo/config"
+        "@expo/config",
+        "postcss"
       ],
       "effects": [
+        "@expo/cli",
         "expo"
       ],
       "range": "<=0.0.1-canary-20240418-8d74597 || >=0.1.49-alpha.0",
@@ -100,7 +130,7 @@
       ],
       "fixAvailable": {
         "name": "expo",
-        "version": "46.0.21",
+        "version": "57.0.9",
         "isSemVerMajor": true
       }
     },
@@ -126,33 +156,171 @@
         "isSemVerMajor": true
       }
     },
-    "@expo/xcpretty": {
-      "name": "@expo/xcpretty",
+    "@jest/transform": {
+      "name": "@jest/transform",
       "severity": "high",
       "isDirect": false,
       "via": [
-        "js-yaml"
+        "babel-plugin-istanbul"
       ],
-      "effects": [],
-      "range": "",
+      "effects": [
+        "babel-jest"
+      ],
+      "range": "*",
       "nodes": [
-        "node_modules/@expo/xcpretty"
+        "node_modules/@jest/transform"
       ],
-      "fixAvailable": true
+      "fixAvailable": {
+        "name": "react-native",
+        "version": "0.86.2",
+        "isSemVerMajor": true
+      }
     },
-    "@istanbuljs/load-nyc-config": {
-      "name": "@istanbuljs/load-nyc-config",
+    "@react-native/babel-plugin-codegen": {
+      "name": "@react-native/babel-plugin-codegen",
       "severity": "high",
       "isDirect": false,
       "via": [
-        "js-yaml"
+        "@react-native/codegen"
       ],
-      "effects": [],
-      "range": "",
+      "effects": [
+        "@react-native/babel-preset"
+      ],
+      "range": "0.73.0-nightly-20230603-fd9e295be - 0.73.0-nightly-20230922-52104c6ee || 0.73.2 - 0.74.0-nightly-20240220-e9351f0f8 || 0.74.1 - 0.84.0-rc.5 || 0.87.0-nightly-20260507-ba204faa7 - 0.87.0-nightly-20260618-65bdf2608",
       "nodes": [
-        "node_modules/@istanbuljs/load-nyc-config"
+        "node_modules/@react-native/babel-plugin-codegen"
       ],
-      "fixAvailable": true
+      "fixAvailable": {
+        "name": "expo",
+        "version": "57.0.9",
+        "isSemVerMajor": true
+      }
+    },
+    "@react-native/babel-preset": {
+      "name": "@react-native/babel-preset",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "@react-native/babel-plugin-codegen"
+      ],
+      "effects": [
+        "babel-preset-expo"
+      ],
+      "range": "<=0.73.0-nightly-20230922-52104c6ee || 0.73.19 - 0.74.0-nightly-20240220-e9351f0f8 || 0.74.1 - 0.84.0-rc.5",
+      "nodes": [
+        "node_modules/@react-native/babel-preset"
+      ],
+      "fixAvailable": {
+        "name": "expo",
+        "version": "57.0.9",
+        "isSemVerMajor": true
+      }
+    },
+    "@react-native/codegen": {
+      "name": "@react-native/codegen",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "glob"
+      ],
+      "effects": [
+        "@react-native/babel-plugin-codegen",
+        "react-native"
+      ],
+      "range": "0.72.8 || 0.73.2 - 0.74.0-nightly-20240220-e9351f0f8 || 0.74.1 - 0.84.0-rc.5",
+      "nodes": [
+        "node_modules/@react-native/codegen"
+      ],
+      "fixAvailable": {
+        "name": "react-native",
+        "version": "0.86.2",
+        "isSemVerMajor": true
+      }
+    },
+    "@react-native/community-cli-plugin": {
+      "name": "@react-native/community-cli-plugin",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "@react-native/dev-middleware"
+      ],
+      "effects": [
+        "react-native"
+      ],
+      "range": "<=0.73.0-nightly-20231002-0371014a3 || 0.73.2 - 0.74.0-nightly-20240220-e9351f0f8 || 0.75.0-main - 0.84.1",
+      "nodes": [
+        "node_modules/@react-native/community-cli-plugin"
+      ],
+      "fixAvailable": {
+        "name": "react-native",
+        "version": "0.86.2",
+        "isSemVerMajor": true
+      }
+    },
+    "@react-native/dev-middleware": {
+      "name": "@react-native/dev-middleware",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "chromium-edge-launcher"
+      ],
+      "effects": [
+        "@expo/cli",
+        "@react-native/community-cli-plugin"
+      ],
+      "range": "<=0.73.0-nightly-20231002-0371014a3 || 0.73.2 - 0.74.0 || 0.75.0-main - 0.84.1",
+      "nodes": [
+        "node_modules/@react-native/dev-middleware"
+      ],
+      "fixAvailable": {
+        "name": "expo",
+        "version": "57.0.9",
+        "isSemVerMajor": true
+      }
+    },
+    "archiver": {
+      "name": "archiver",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "archiver-utils",
+        "readdir-glob",
+        "zip-stream"
+      ],
+      "effects": [
+        "exceljs"
+      ],
+      "range": "0.20.0 - 7.0.1",
+      "nodes": [
+        "node_modules/archiver"
+      ],
+      "fixAvailable": {
+        "name": "exceljs",
+        "version": "3.4.0",
+        "isSemVerMajor": true
+      }
+    },
+    "archiver-utils": {
+      "name": "archiver-utils",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "glob"
+      ],
+      "effects": [
+        "archiver",
+        "zip-stream"
+      ],
+      "range": ">=0.2.0",
+      "nodes": [
+        "node_modules/archiver-utils",
+        "node_modules/zip-stream/node_modules/archiver-utils"
+      ],
+      "fixAvailable": {
+        "name": "exceljs",
+        "version": "3.4.0",
+        "isSemVerMajor": true
+      }
     },
     "autocannon": {
       "name": "autocannon",
@@ -169,6 +337,68 @@
       "fixAvailable": {
         "name": "autocannon",
         "version": "2.0.1",
+        "isSemVerMajor": true
+      }
+    },
+    "babel-jest": {
+      "name": "babel-jest",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "@jest/transform",
+        "babel-plugin-istanbul"
+      ],
+      "effects": [
+        "react-native"
+      ],
+      "range": ">=24.0.0-alpha.0",
+      "nodes": [
+        "node_modules/babel-jest"
+      ],
+      "fixAvailable": {
+        "name": "react-native",
+        "version": "0.86.2",
+        "isSemVerMajor": true
+      }
+    },
+    "babel-plugin-istanbul": {
+      "name": "babel-plugin-istanbul",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "test-exclude"
+      ],
+      "effects": [
+        "@jest/transform",
+        "babel-jest"
+      ],
+      "range": "5.0.1 - 7.0.1",
+      "nodes": [
+        "node_modules/babel-plugin-istanbul"
+      ],
+      "fixAvailable": {
+        "name": "react-native",
+        "version": "0.86.2",
+        "isSemVerMajor": true
+      }
+    },
+    "babel-preset-expo": {
+      "name": "babel-preset-expo",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "@react-native/babel-preset"
+      ],
+      "effects": [
+        "expo"
+      ],
+      "range": "<=0.0.1-canary-20240418-8d74597 || 11.0.0 - 56.0.0-canary-20260402-87c5ce2",
+      "nodes": [
+        "node_modules/expo/node_modules/babel-preset-expo"
+      ],
+      "fixAvailable": {
+        "name": "expo",
+        "version": "57.0.9",
         "isSemVerMajor": true
       }
     },
@@ -256,19 +486,63 @@
             "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
           },
           "range": ">=3.0.0 <5.0.7"
+        },
+        {
+          "source": 1124334,
+          "name": "brace-expansion",
+          "dependency": "brace-expansion",
+          "title": "brace-expansion: DoS via unbounded expansion length causing an out-of-memory process crash",
+          "url": "https://github.com/advisories/GHSA-mh99-v99m-4gvg",
+          "severity": "high",
+          "cwe": [
+            "CWE-400",
+            "CWE-770"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": "<=5.0.7"
         }
       ],
-      "effects": [],
-      "range": "<=1.1.15 || 2.0.0 - 2.1.1 || 3.0.0 - 5.0.6",
+      "effects": [
+        "minimatch"
+      ],
+      "range": "<=5.0.7",
       "nodes": [
         "node_modules/@expo/fingerprint/node_modules/brace-expansion",
         "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion",
         "node_modules/brace-expansion",
+        "node_modules/expo/node_modules/brace-expansion",
         "node_modules/glob/node_modules/brace-expansion",
         "node_modules/mocha/node_modules/brace-expansion",
         "node_modules/readdir-glob/node_modules/brace-expansion"
       ],
-      "fixAvailable": true
+      "fixAvailable": {
+        "name": "mocha",
+        "version": "11.3.0",
+        "isSemVerMajor": true
+      }
+    },
+    "chromium-edge-launcher": {
+      "name": "chromium-edge-launcher",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "rimraf"
+      ],
+      "effects": [
+        "@react-native/dev-middleware"
+      ],
+      "range": "<=0.2.0 || 1.0.0",
+      "nodes": [
+        "node_modules/chromium-edge-launcher"
+      ],
+      "fixAvailable": {
+        "name": "expo",
+        "version": "57.0.9",
+        "isSemVerMajor": true
+      }
     },
     "diff": {
       "name": "diff",
@@ -306,11 +580,114 @@
         "isSemVerMajor": true
       }
     },
-    "exceljs": {
-      "name": "exceljs",
-      "severity": "moderate",
+    "eslint": {
+      "name": "eslint",
+      "severity": "high",
       "isDirect": true,
       "via": [
+        "@eslint/config-array",
+        "@eslint/eslintrc",
+        "minimatch"
+      ],
+      "effects": [
+        "eslint-plugin-expo"
+      ],
+      "range": "0.12.0 - 2.0.0-rc.1 || 4.1.0 - 10.0.0-rc.2",
+      "nodes": [
+        "node_modules/eslint"
+      ],
+      "fixAvailable": {
+        "name": "eslint",
+        "version": "10.8.0",
+        "isSemVerMajor": true
+      }
+    },
+    "eslint-config-expo": {
+      "name": "eslint-config-expo",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        "eslint-plugin-expo",
+        "eslint-plugin-import",
+        "eslint-plugin-react"
+      ],
+      "effects": [],
+      "range": "*",
+      "nodes": [
+        "node_modules/eslint-config-expo"
+      ],
+      "fixAvailable": {
+        "name": "eslint-config-expo",
+        "version": "6.0.0",
+        "isSemVerMajor": true
+      }
+    },
+    "eslint-plugin-expo": {
+      "name": "eslint-plugin-expo",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "eslint"
+      ],
+      "effects": [
+        "eslint-config-expo"
+      ],
+      "range": ">=0.0.2-canary-20240625-2333e70",
+      "nodes": [
+        "node_modules/eslint-plugin-expo"
+      ],
+      "fixAvailable": {
+        "name": "eslint-config-expo",
+        "version": "6.0.0",
+        "isSemVerMajor": true
+      }
+    },
+    "eslint-plugin-import": {
+      "name": "eslint-plugin-import",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "minimatch"
+      ],
+      "effects": [
+        "eslint-config-expo"
+      ],
+      "range": ">=1.15.0",
+      "nodes": [
+        "node_modules/eslint-plugin-import"
+      ],
+      "fixAvailable": {
+        "name": "eslint-config-expo",
+        "version": "6.0.0",
+        "isSemVerMajor": true
+      }
+    },
+    "eslint-plugin-react": {
+      "name": "eslint-plugin-react",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "minimatch"
+      ],
+      "effects": [
+        "eslint-config-expo"
+      ],
+      "range": ">=7.23.0",
+      "nodes": [
+        "node_modules/eslint-plugin-react"
+      ],
+      "fixAvailable": {
+        "name": "eslint-config-expo",
+        "version": "6.0.0",
+        "isSemVerMajor": true
+      }
+    },
+    "exceljs": {
+      "name": "exceljs",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        "archiver",
         "uuid"
       ],
       "effects": [],
@@ -326,24 +703,25 @@
     },
     "expo": {
       "name": "expo",
-      "severity": "moderate",
+      "severity": "high",
       "isDirect": true,
       "via": [
         "@expo/cli",
         "@expo/config",
         "@expo/config-plugins",
         "@expo/metro-config",
+        "babel-preset-expo",
         "expo-asset",
         "expo-constants"
       ],
       "effects": [],
-      "range": "40.0.0-alpha.0 - 40.0.0-beta.5 || >=41.0.0-alpha.0",
+      "range": ">=41.0.0-alpha.0",
       "nodes": [
         "node_modules/expo"
       ],
       "fixAvailable": {
         "name": "expo",
-        "version": "46.0.21",
+        "version": "57.0.9",
         "isSemVerMajor": true
       }
     },
@@ -363,7 +741,7 @@
       ],
       "fixAvailable": {
         "name": "expo",
-        "version": "46.0.21",
+        "version": "57.0.9",
         "isSemVerMajor": true
       }
     },
@@ -385,7 +763,7 @@
       ],
       "fixAvailable": {
         "name": "expo-constants",
-        "version": "57.0.7",
+        "version": "57.0.8",
         "isSemVerMajor": true
       }
     },
@@ -404,7 +782,7 @@
       ],
       "fixAvailable": {
         "name": "expo-dev-client",
-        "version": "57.0.8",
+        "version": "57.0.10",
         "isSemVerMajor": true
       }
     },
@@ -430,7 +808,7 @@
         "expo-constants"
       ],
       "effects": [],
-      "range": "<=0.0.1-canary-20240418-8d74597 || 2.2.2 - 55.0.0-canary-20260223-05214f1 || 55.0.4-canary-20260128-67ce8d5 || 55.0.8-canary-20260424-7bedc9d - 55.0.8-canary-20260429-a5e59cf || 55.0.10-canary-20260327-0789fbc - 55.0.10-canary-20260402-9da566b || 56.0.0-canary-20260212-4f61309 - 56.0.0-canary-20260506-964f25d || 56.0.13-canary-20260526-6cd5e37 - 56.0.13-canary-20260701-9100865 || 57.0.0-canary-20260526-13e89ca - 57.0.0-canary-20260623-1c70a78",
+      "range": "<=0.0.1-canary-20240418-8d74597 || 2.2.2 - 55.0.0-canary-20260223-05214f1 || 55.0.4-canary-20260128-67ce8d5 || 55.0.8-canary-20260424-7bedc9d - 55.0.8-canary-20260429-a5e59cf || 55.0.10-canary-20260327-0789fbc - 55.0.10-canary-20260402-9da566b || 56.0.0-canary-20260212-4f61309 - 56.0.0-canary-20260506-964f25d || 57.0.0-canary-20260526-13e89ca - 57.0.0-canary-20260623-1c70a78",
       "nodes": [
         "node_modules/expo-linking"
       ],
@@ -457,8 +835,8 @@
         "node_modules/expo-manifests"
       ],
       "fixAvailable": {
-        "name": "expo-dev-client",
-        "version": "57.0.8",
+        "name": "expo-updates",
+        "version": "57.0.11",
         "isSemVerMajor": true
       }
     },
@@ -494,7 +872,7 @@
       ],
       "fixAvailable": {
         "name": "expo-updates",
-        "version": "57.0.9",
+        "version": "57.0.11",
         "isSemVerMajor": true
       }
     },
@@ -526,6 +904,38 @@
         "node_modules/fast-uri"
       ],
       "fixAvailable": true
+    },
+    "glob": {
+      "name": "glob",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "minimatch"
+      ],
+      "effects": [
+        "@react-native/codegen",
+        "archiver-utils",
+        "mocha",
+        "react-native",
+        "rimraf",
+        "test-exclude"
+      ],
+      "range": "4.3.0 - 10.5.0",
+      "nodes": [
+        "node_modules/@react-native/codegen/node_modules/glob",
+        "node_modules/archiver-utils/node_modules/glob",
+        "node_modules/fstream/node_modules/glob",
+        "node_modules/mocha/node_modules/glob",
+        "node_modules/react-native/node_modules/glob",
+        "node_modules/rimraf/node_modules/glob",
+        "node_modules/test-exclude/node_modules/glob",
+        "node_modules/zip-stream/node_modules/glob"
+      ],
+      "fixAvailable": {
+        "name": "mocha",
+        "version": "11.3.0",
+        "isSemVerMajor": true
+      }
     },
     "http-proxy-middleware": {
       "name": "http-proxy-middleware",
@@ -616,15 +1026,38 @@
           "range": ">=4.0.0 <4.3.0"
         }
       ],
-      "effects": [
-        "@eslint/eslintrc",
-        "@expo/xcpretty",
-        "@istanbuljs/load-nyc-config",
-        "mocha"
-      ],
+      "effects": [],
       "range": "4.0.0 - 4.2.0",
       "nodes": [
         "node_modules/js-yaml"
+      ],
+      "fixAvailable": true
+    },
+    "minimatch": {
+      "name": "minimatch",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "brace-expansion"
+      ],
+      "effects": [
+        "@eslint/config-array",
+        "@eslint/eslintrc",
+        "@expo/cli",
+        "eslint",
+        "eslint-plugin-import",
+        "eslint-plugin-react",
+        "glob",
+        "mocha",
+        "readdir-glob",
+        "test-exclude"
+      ],
+      "range": "2.0.0 - 10.0.2",
+      "nodes": [
+        "node_modules/expo/node_modules/minimatch",
+        "node_modules/minimatch",
+        "node_modules/mocha/node_modules/minimatch",
+        "node_modules/readdir-glob/node_modules/minimatch"
       ],
       "fixAvailable": {
         "name": "mocha",
@@ -638,11 +1071,12 @@
       "isDirect": true,
       "via": [
         "diff",
-        "js-yaml",
+        "glob",
+        "minimatch",
         "serialize-javascript"
       ],
       "effects": [],
-      "range": "8.2.0 - 12.0.0-beta-3",
+      "range": "3.0.0-0 - 12.0.0-beta-9",
       "nodes": [
         "node_modules/mocha"
       ],
@@ -682,6 +1116,41 @@
       ],
       "fixAvailable": true
     },
+    "postcss": {
+      "name": "postcss",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1124288,
+          "name": "postcss",
+          "dependency": "postcss",
+          "title": "PostCSS: Path Traversal in Previous Source Map Auto-Loading (sourceMappingURL) leads to Arbitrary .map File Disclosure",
+          "url": "https://github.com/advisories/GHSA-r28c-9q8g-f849",
+          "severity": "high",
+          "cwe": [
+            "CWE-22"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+          },
+          "range": "<=8.5.17"
+        }
+      ],
+      "effects": [
+        "@expo/metro-config"
+      ],
+      "range": "<=8.5.17",
+      "nodes": [
+        "node_modules/postcss"
+      ],
+      "fixAvailable": {
+        "name": "expo",
+        "version": "57.0.9",
+        "isSemVerMajor": true
+      }
+    },
     "protobufjs": {
       "name": "protobufjs",
       "severity": "moderate",
@@ -710,6 +1179,84 @@
         "node_modules/protobufjs"
       ],
       "fixAvailable": true
+    },
+    "react-native": {
+      "name": "react-native",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        "@react-native/codegen",
+        "@react-native/community-cli-plugin",
+        "babel-jest",
+        "glob"
+      ],
+      "effects": [
+        "react-native-reanimated"
+      ],
+      "range": "0.28.0-rc.0 - 0.59.10 || 0.72.8 - 0.85.0-rc.7",
+      "nodes": [
+        "node_modules/react-native"
+      ],
+      "fixAvailable": {
+        "name": "react-native",
+        "version": "0.86.2",
+        "isSemVerMajor": true
+      }
+    },
+    "react-native-reanimated": {
+      "name": "react-native-reanimated",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        "react-native"
+      ],
+      "effects": [],
+      "range": "<=1.0.1 || 4.1.7",
+      "nodes": [
+        "node_modules/react-native-reanimated"
+      ],
+      "fixAvailable": true
+    },
+    "readdir-glob": {
+      "name": "readdir-glob",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "minimatch"
+      ],
+      "effects": [
+        "archiver"
+      ],
+      "range": "<=2.0.3",
+      "nodes": [
+        "node_modules/readdir-glob"
+      ],
+      "fixAvailable": {
+        "name": "exceljs",
+        "version": "3.4.0",
+        "isSemVerMajor": true
+      }
+    },
+    "rimraf": {
+      "name": "rimraf",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "glob"
+      ],
+      "effects": [
+        "chromium-edge-launcher"
+      ],
+      "range": "2.3.0 - 3.0.2 || 4.2.0 - 5.0.10",
+      "nodes": [
+        "node_modules/fstream/node_modules/rimraf",
+        "node_modules/rimraf"
+      ],
+      "fixAvailable": {
+        "name": "expo",
+        "version": "57.0.9",
+        "isSemVerMajor": true
+      }
     },
     "serialize-javascript": {
       "name": "serialize-javascript",
@@ -792,6 +1339,57 @@
       ],
       "fixAvailable": true
     },
+    "tar": {
+      "name": "tar",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1124287,
+          "name": "tar",
+          "dependency": "tar",
+          "title": "node-tar: Uncontrolled recursion in mapHas/filesFilter allows uncatchable stack-overflow DoS via crafted long-path tar with member selection",
+          "url": "https://github.com/advisories/GHSA-r292-9mhp-454m",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-400",
+            "CWE-674"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+          },
+          "range": "<=7.5.20"
+        }
+      ],
+      "effects": [],
+      "range": "<=7.5.20",
+      "nodes": [
+        "node_modules/tar"
+      ],
+      "fixAvailable": true
+    },
+    "test-exclude": {
+      "name": "test-exclude",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "glob",
+        "minimatch"
+      ],
+      "effects": [
+        "babel-plugin-istanbul"
+      ],
+      "range": "4.2.2 || 5.0.0 - 7.0.2",
+      "nodes": [
+        "node_modules/test-exclude"
+      ],
+      "fixAvailable": {
+        "name": "react-native",
+        "version": "0.86.2",
+        "isSemVerMajor": true
+      }
+    },
     "uuid": {
       "name": "uuid",
       "severity": "moderate",
@@ -848,19 +1446,33 @@
       ],
       "fixAvailable": {
         "name": "expo",
-        "version": "46.0.21",
+        "version": "57.0.9",
         "isSemVerMajor": true
       }
+    },
+    "zip-stream": {
+      "name": "zip-stream",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "archiver-utils"
+      ],
+      "effects": [],
+      "range": "0.8.0 - 6.0.1",
+      "nodes": [
+        "node_modules/zip-stream"
+      ],
+      "fixAvailable": true
     }
   },
   "metadata": {
     "vulnerabilities": {
       "info": 0,
       "low": 2,
-      "moderate": 20,
-      "high": 11,
+      "moderate": 17,
+      "high": 40,
       "critical": 0,
-      "total": 33
+      "total": 59
     },
     "dependencies": {
       "prod": 833,
