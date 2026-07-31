@@ -15,31 +15,22 @@
       "nodes": [
         "node_modules/@eslint/config-array"
       ],
-      "fixAvailable": {
-        "name": "eslint",
-        "version": "10.8.0",
-        "isSemVerMajor": true
-      }
+      "fixAvailable": false
     },
     "@eslint/eslintrc": {
       "name": "@eslint/eslintrc",
       "severity": "high",
       "isDirect": false,
       "via": [
+        "js-yaml",
         "minimatch"
       ],
-      "effects": [
-        "eslint"
-      ],
+      "effects": [],
       "range": "0.0.1 || >=0.1.1",
       "nodes": [
         "node_modules/@eslint/eslintrc"
       ],
-      "fixAvailable": {
-        "name": "eslint",
-        "version": "10.8.0",
-        "isSemVerMajor": true
-      }
+      "fixAvailable": true
     },
     "@expo/cli": {
       "name": "@expo/cli",
@@ -84,8 +75,8 @@
         "node_modules/@expo/config"
       ],
       "fixAvailable": {
-        "name": "expo-constants",
-        "version": "57.0.8",
+        "name": "expo",
+        "version": "57.0.9",
         "isSemVerMajor": true
       }
     },
@@ -155,6 +146,34 @@
         "version": "57.0.5",
         "isSemVerMajor": true
       }
+    },
+    "@expo/xcpretty": {
+      "name": "@expo/xcpretty",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "js-yaml"
+      ],
+      "effects": [],
+      "range": "",
+      "nodes": [
+        "node_modules/@expo/xcpretty"
+      ],
+      "fixAvailable": true
+    },
+    "@istanbuljs/load-nyc-config": {
+      "name": "@istanbuljs/load-nyc-config",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "js-yaml"
+      ],
+      "effects": [],
+      "range": "",
+      "nodes": [
+        "node_modules/@istanbuljs/load-nyc-config"
+      ],
+      "fixAvailable": true
     },
     "@jest/transform": {
       "name": "@jest/transform",
@@ -519,8 +538,8 @@
         "node_modules/readdir-glob/node_modules/brace-expansion"
       ],
       "fixAvailable": {
-        "name": "mocha",
-        "version": "11.3.0",
+        "name": "exceljs",
+        "version": "3.4.0",
         "isSemVerMajor": true
       }
     },
@@ -586,7 +605,6 @@
       "isDirect": true,
       "via": [
         "@eslint/config-array",
-        "@eslint/eslintrc",
         "minimatch"
       ],
       "effects": [
@@ -596,11 +614,7 @@
       "nodes": [
         "node_modules/eslint"
       ],
-      "fixAvailable": {
-        "name": "eslint",
-        "version": "10.8.0",
-        "isSemVerMajor": true
-      }
+      "fixAvailable": false
     },
     "eslint-config-expo": {
       "name": "eslint-config-expo",
@@ -616,11 +630,7 @@
       "nodes": [
         "node_modules/eslint-config-expo"
       ],
-      "fixAvailable": {
-        "name": "eslint-config-expo",
-        "version": "6.0.0",
-        "isSemVerMajor": true
-      }
+      "fixAvailable": false
     },
     "eslint-plugin-expo": {
       "name": "eslint-plugin-expo",
@@ -636,11 +646,7 @@
       "nodes": [
         "node_modules/eslint-plugin-expo"
       ],
-      "fixAvailable": {
-        "name": "eslint-config-expo",
-        "version": "6.0.0",
-        "isSemVerMajor": true
-      }
+      "fixAvailable": false
     },
     "eslint-plugin-import": {
       "name": "eslint-plugin-import",
@@ -656,11 +662,7 @@
       "nodes": [
         "node_modules/eslint-plugin-import"
       ],
-      "fixAvailable": {
-        "name": "eslint-config-expo",
-        "version": "6.0.0",
-        "isSemVerMajor": true
-      }
+      "fixAvailable": false
     },
     "eslint-plugin-react": {
       "name": "eslint-plugin-react",
@@ -676,11 +678,7 @@
       "nodes": [
         "node_modules/eslint-plugin-react"
       ],
-      "fixAvailable": {
-        "name": "eslint-config-expo",
-        "version": "6.0.0",
-        "isSemVerMajor": true
-      }
+      "fixAvailable": false
     },
     "exceljs": {
       "name": "exceljs",
@@ -835,8 +833,8 @@
         "node_modules/expo-manifests"
       ],
       "fixAvailable": {
-        "name": "expo-updates",
-        "version": "57.0.11",
+        "name": "expo-dev-client",
+        "version": "57.0.10",
         "isSemVerMajor": true
       }
     },
@@ -1026,12 +1024,21 @@
           "range": ">=4.0.0 <4.3.0"
         }
       ],
-      "effects": [],
+      "effects": [
+        "@eslint/eslintrc",
+        "@expo/xcpretty",
+        "@istanbuljs/load-nyc-config",
+        "mocha"
+      ],
       "range": "4.0.0 - 4.2.0",
       "nodes": [
         "node_modules/js-yaml"
       ],
-      "fixAvailable": true
+      "fixAvailable": {
+        "name": "mocha",
+        "version": "11.3.0",
+        "isSemVerMajor": true
+      }
     },
     "minimatch": {
       "name": "minimatch",
@@ -1060,8 +1067,8 @@
         "node_modules/readdir-glob/node_modules/minimatch"
       ],
       "fixAvailable": {
-        "name": "mocha",
-        "version": "11.3.0",
+        "name": "exceljs",
+        "version": "3.4.0",
         "isSemVerMajor": true
       }
     },
@@ -1072,6 +1079,7 @@
       "via": [
         "diff",
         "glob",
+        "js-yaml",
         "minimatch",
         "serialize-javascript"
       ],
@@ -1470,9 +1478,9 @@
       "info": 0,
       "low": 2,
       "moderate": 17,
-      "high": 40,
+      "high": 42,
       "critical": 0,
-      "total": 59
+      "total": 61
     },
     "dependencies": {
       "prod": 833,
