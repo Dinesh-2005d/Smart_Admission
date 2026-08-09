@@ -73,7 +73,7 @@
               "id": "CVE-2026-14257",
               "name": "LanguageSpecificPackageVulnerability",
               "shortDescription": {
-                "text": "brace-expansion through 5.0.7 is vulnerable to denial of service via m ..."
+                "text": "brace-expansion: Brace-expansion: Denial of Service via memory exhaustion in expand() function"
               },
               "fullDescription": {
                 "text": "brace-expansion through 5.0.7 is vulnerable to denial of service via memory exhaustion. The expand() function limits the number of results with a max option (default 100,000) but does not bound the length of each result string. By chaining multiple brace groups, an attacker keeps the result count under the limit while making each result progressively longer, so total memory scales with both count and string length until the process hits a fatal, uncatchable out-of-memory error. About 7.5 KB of input ('{a,b}'.repeat(1500)) crashes a default Node.js process. Any application that passes attacker-influenced strings to brace-expansion.expand() - directly or transitively via minimatch / glob brace patterns - can be crashed by a small request. Fixed in 5.0.8 by adding a maxLength option (default 4,000,000) that bounds accumulated output and intermediate arrays."
@@ -83,8 +83,37 @@
               },
               "helpUri": "https://avd.aquasec.com/nvd/cve-2026-14257",
               "help": {
-                "text": "Vulnerability CVE-2026-14257\nSeverity: HIGH\nPackage: brace-expansion\nFixed Version: 5.0.8\nLink: [CVE-2026-14257](https://avd.aquasec.com/nvd/cve-2026-14257)\nbrace-expansion through 5.0.7 is vulnerable to denial of service via memory exhaustion. The expand() function limits the number of results with a max option (default 100,000) but does not bound the length of each result string. By chaining multiple brace groups, an attacker keeps the result count under the limit while making each result progressively longer, so total memory scales with both count and string length until the process hits a fatal, uncatchable out-of-memory error. About 7.5 KB of input ('{a,b}'.repeat(1500)) crashes a default Node.js process. Any application that passes attacker-influenced strings to brace-expansion.expand() - directly or transitively via minimatch / glob brace patterns - can be crashed by a small request. Fixed in 5.0.8 by adding a maxLength option (default 4,000,000) that bounds accumulated output and intermediate arrays.",
-                "markdown": "**Vulnerability CVE-2026-14257**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|brace-expansion|5.0.8|[CVE-2026-14257](https://avd.aquasec.com/nvd/cve-2026-14257)|\n\nbrace-expansion through 5.0.7 is vulnerable to denial of service via memory exhaustion. The expand() function limits the number of results with a max option (default 100,000) but does not bound the length of each result string. By chaining multiple brace groups, an attacker keeps the result count under the limit while making each result progressively longer, so total memory scales with both count and string length until the process hits a fatal, uncatchable out-of-memory error. About 7.5 KB of input ('{a,b}'.repeat(1500)) crashes a default Node.js process. Any application that passes attacker-influenced strings to brace-expansion.expand() - directly or transitively via minimatch / glob brace patterns - can be crashed by a small request. Fixed in 5.0.8 by adding a maxLength option (default 4,000,000) that bounds accumulated output and intermediate arrays."
+                "text": "Vulnerability CVE-2026-14257\nSeverity: HIGH\nPackage: brace-expansion\nFixed Version: 5.0.8, 3.0.3, 2.1.3, 1.1.17\nLink: [CVE-2026-14257](https://avd.aquasec.com/nvd/cve-2026-14257)\nbrace-expansion through 5.0.7 is vulnerable to denial of service via memory exhaustion. The expand() function limits the number of results with a max option (default 100,000) but does not bound the length of each result string. By chaining multiple brace groups, an attacker keeps the result count under the limit while making each result progressively longer, so total memory scales with both count and string length until the process hits a fatal, uncatchable out-of-memory error. About 7.5 KB of input ('{a,b}'.repeat(1500)) crashes a default Node.js process. Any application that passes attacker-influenced strings to brace-expansion.expand() - directly or transitively via minimatch / glob brace patterns - can be crashed by a small request. Fixed in 5.0.8 by adding a maxLength option (default 4,000,000) that bounds accumulated output and intermediate arrays.",
+                "markdown": "**Vulnerability CVE-2026-14257**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|brace-expansion|5.0.8, 3.0.3, 2.1.3, 1.1.17|[CVE-2026-14257](https://avd.aquasec.com/nvd/cve-2026-14257)|\n\nbrace-expansion through 5.0.7 is vulnerable to denial of service via memory exhaustion. The expand() function limits the number of results with a max option (default 100,000) but does not bound the length of each result string. By chaining multiple brace groups, an attacker keeps the result count under the limit while making each result progressively longer, so total memory scales with both count and string length until the process hits a fatal, uncatchable out-of-memory error. About 7.5 KB of input ('{a,b}'.repeat(1500)) crashes a default Node.js process. Any application that passes attacker-influenced strings to brace-expansion.expand() - directly or transitively via minimatch / glob brace patterns - can be crashed by a small request. Fixed in 5.0.8 by adding a maxLength option (default 4,000,000) that bounds accumulated output and intermediate arrays."
+              },
+              "properties": {
+                "cvssv3_baseScore": 7.5,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                "precision": "very-high",
+                "security-severity": "7.5",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "HIGH"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2026-69152",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "brace-expansion: brace-expansion: Denial of Service via unbounded intermediate arrays"
+              },
+              "fullDescription": {
+                "text": "The brace-expansion library generates arbitrary strings containing a common prefix and suffix. Prior to 1.1.18, 2.1.4, 3.0.6, and 5.0.9, expand() does not apply maxLength while constructing comma-alternative intermediate arrays or padded sequences, allowing attacker-controlled input to exhaust memory or block the event loop. The fix for CVE-2026-14257 is bypassed by the vulnerability. This issue is fixed in versions 1.1.18, 2.1.4, 3.0.6, and 5.0.9."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-69152",
+              "help": {
+                "text": "Vulnerability CVE-2026-69152\nSeverity: HIGH\nPackage: brace-expansion\nFixed Version: 1.1.18, 2.1.4, 3.0.6, 5.0.9\nLink: [CVE-2026-69152](https://avd.aquasec.com/nvd/cve-2026-69152)\nThe brace-expansion library generates arbitrary strings containing a common prefix and suffix. Prior to 1.1.18, 2.1.4, 3.0.6, and 5.0.9, expand() does not apply maxLength while constructing comma-alternative intermediate arrays or padded sequences, allowing attacker-controlled input to exhaust memory or block the event loop. The fix for CVE-2026-14257 is bypassed by the vulnerability. This issue is fixed in versions 1.1.18, 2.1.4, 3.0.6, and 5.0.9.",
+                "markdown": "**Vulnerability CVE-2026-69152**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|brace-expansion|1.1.18, 2.1.4, 3.0.6, 5.0.9|[CVE-2026-69152](https://avd.aquasec.com/nvd/cve-2026-69152)|\n\nThe brace-expansion library generates arbitrary strings containing a common prefix and suffix. Prior to 1.1.18, 2.1.4, 3.0.6, and 5.0.9, expand() does not apply maxLength while constructing comma-alternative intermediate arrays or padded sequences, allowing attacker-controlled input to exhaust memory or block the event loop. The fix for CVE-2026-14257 is bypassed by the vulnerability. This issue is fixed in versions 1.1.18, 2.1.4, 3.0.6, and 5.0.9."
               },
               "properties": {
                 "cvssv3_baseScore": 7.5,
@@ -114,6 +143,35 @@
               "help": {
                 "text": "Vulnerability CVE-2026-16221\nSeverity: HIGH\nPackage: fast-uri\nFixed Version: 2.4.3, 3.1.4, 4.1.1\nLink: [CVE-2026-16221](https://avd.aquasec.com/nvd/cve-2026-16221)\nImpact: fast-uri versions from 2.3.1 through 4.1.0 (including the 3.x line up to 3.1.3 and the 2.x line up to 2.4.2) do not treat a literal backslash character (U+005C) as an authority delimiter. Node's native WHATWG URL parser, used by fetch, undici, and Node's http and https clients, normalizes the backslash to a forward slash for special schemes such as http, https, ws, wss, ftp, and file. As a result, the two parsers extract different hosts from the same input string. Applications that use fast-uri to enforce host-based policy such as allowlists, denylists, loopback or SSRF filtering, redirect validation, or outbound proxy routing before passing the same URL into Node's URL or fetch consumers can be steered to an unintended destination, including cloud metadata endpoints, loopback, or internal hosts. \n\nPatches: upgrade to fast-uri 4.1.1, 3.1.4, or 2.4.3.\n\nWorkarounds: none.",
                 "markdown": "**Vulnerability CVE-2026-16221**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|fast-uri|2.4.3, 3.1.4, 4.1.1|[CVE-2026-16221](https://avd.aquasec.com/nvd/cve-2026-16221)|\n\nImpact: fast-uri versions from 2.3.1 through 4.1.0 (including the 3.x line up to 3.1.3 and the 2.x line up to 2.4.2) do not treat a literal backslash character (U+005C) as an authority delimiter. Node's native WHATWG URL parser, used by fetch, undici, and Node's http and https clients, normalizes the backslash to a forward slash for special schemes such as http, https, ws, wss, ftp, and file. As a result, the two parsers extract different hosts from the same input string. Applications that use fast-uri to enforce host-based policy such as allowlists, denylists, loopback or SSRF filtering, redirect validation, or outbound proxy routing before passing the same URL into Node's URL or fetch consumers can be steered to an unintended destination, including cloud metadata endpoints, loopback, or internal hosts. \n\nPatches: upgrade to fast-uri 4.1.1, 3.1.4, or 2.4.3.\n\nWorkarounds: none."
+              },
+              "properties": {
+                "cvssv3_baseScore": 7.5,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N",
+                "precision": "very-high",
+                "security-severity": "7.5",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "HIGH"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2026-18446",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "fast-uri: fast-uri: Host confusion vulnerability via backslash in URI authority"
+              },
+              "fullDescription": {
+                "text": "fast-uri before 4.1.2, 3.1.5, and 2.4.4 requires a literal double forward slash to recognize a URI authority, so a reference that uses a backslash based introducer in place of it (backslash backslash, forward slash backslash, or backslash forward slash) is parsed with no authority and folds into the path. Node's native WHATWG URL parser instead treats a backslash as interchangeable with a forward slash for special schemes, so the two parsers extract different hosts from the same input. Applications that use fast-uri to enforce host based policy such as allowlists, SSRF filtering, or redirect validation before passing the same URL into Node's URL or fetch consumers can be steered to an unintended host. Upgrade to fast-uri 4.1.2, 3.1.5, or 2.4.4."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-18446",
+              "help": {
+                "text": "Vulnerability CVE-2026-18446\nSeverity: HIGH\nPackage: fast-uri\nFixed Version: 2.4.4, 3.1.5, 4.1.2\nLink: [CVE-2026-18446](https://avd.aquasec.com/nvd/cve-2026-18446)\nfast-uri before 4.1.2, 3.1.5, and 2.4.4 requires a literal double forward slash to recognize a URI authority, so a reference that uses a backslash based introducer in place of it (backslash backslash, forward slash backslash, or backslash forward slash) is parsed with no authority and folds into the path. Node's native WHATWG URL parser instead treats a backslash as interchangeable with a forward slash for special schemes, so the two parsers extract different hosts from the same input. Applications that use fast-uri to enforce host based policy such as allowlists, SSRF filtering, or redirect validation before passing the same URL into Node's URL or fetch consumers can be steered to an unintended host. Upgrade to fast-uri 4.1.2, 3.1.5, or 2.4.4.",
+                "markdown": "**Vulnerability CVE-2026-18446**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|fast-uri|2.4.4, 3.1.5, 4.1.2|[CVE-2026-18446](https://avd.aquasec.com/nvd/cve-2026-18446)|\n\nfast-uri before 4.1.2, 3.1.5, and 2.4.4 requires a literal double forward slash to recognize a URI authority, so a reference that uses a backslash based introducer in place of it (backslash backslash, forward slash backslash, or backslash forward slash) is parsed with no authority and folds into the path. Node's native WHATWG URL parser instead treats a backslash as interchangeable with a forward slash for special schemes, so the two parsers extract different hosts from the same input. Applications that use fast-uri to enforce host based policy such as allowlists, SSRF filtering, or redirect validation before passing the same URL into Node's URL or fetch consumers can be steered to an unintended host. Upgrade to fast-uri 4.1.2, 3.1.5, or 2.4.4."
               },
               "properties": {
                 "cvssv3_baseScore": 7.5,
@@ -186,6 +244,68 @@
               }
             },
             {
+              "id": "CVE-2025-71329",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "image-size: image-size: Denial of Service via crafted image buffer with zero-valued size field"
+              },
+              "fullDescription": {
+                "text": "image-size through 2.0.2 contains a denial of service vulnerability that allows remote attackers to permanently block the Node.js event loop by supplying a specially crafted image buffer with a zero-valued size field in a recognized box-type. Attackers can trigger an infinite loop in the JXL or HEIF image parsers by providing a crafted image containing a box with a size of zero, causing the offset to never advance and permanently hanging the application."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2025-71329",
+              "help": {
+                "text": "Vulnerability CVE-2025-71329\nSeverity: HIGH\nPackage: image-size\nFixed Version: \nLink: [CVE-2025-71329](https://avd.aquasec.com/nvd/cve-2025-71329)\nimage-size through 2.0.2 contains a denial of service vulnerability that allows remote attackers to permanently block the Node.js event loop by supplying a specially crafted image buffer with a zero-valued size field in a recognized box-type. Attackers can trigger an infinite loop in the JXL or HEIF image parsers by providing a crafted image containing a box with a size of zero, causing the offset to never advance and permanently hanging the application.",
+                "markdown": "**Vulnerability CVE-2025-71329**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|image-size||[CVE-2025-71329](https://avd.aquasec.com/nvd/cve-2025-71329)|\n\nimage-size through 2.0.2 contains a denial of service vulnerability that allows remote attackers to permanently block the Node.js event loop by supplying a specially crafted image buffer with a zero-valued size field in a recognized box-type. Attackers can trigger an infinite loop in the JXL or HEIF image parsers by providing a crafted image containing a box with a size of zero, causing the offset to never advance and permanently hanging the application."
+              },
+              "properties": {
+                "cvssv3_baseScore": 7.5,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                "cvssv40_baseScore": 8.7,
+                "cvssv40_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N",
+                "precision": "very-high",
+                "security-severity": "7.5",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "HIGH"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2025-71330",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "image-size: image-size: Denial of Service via crafted ICNS image buffer"
+              },
+              "fullDescription": {
+                "text": "image-size through 2.0.2 contains a denial of service vulnerability that allows remote attackers to permanently block the Node.js event loop by supplying a specially crafted ICNS image buffer. Attackers can craft an ICNS buffer containing valid magic bytes and a zero-valued entry length field to trigger an infinite loop in the ICNS parser, as the offset is never incremented when the entry length field is 0, causing the while loop condition to remain true indefinitely."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2025-71330",
+              "help": {
+                "text": "Vulnerability CVE-2025-71330\nSeverity: HIGH\nPackage: image-size\nFixed Version: \nLink: [CVE-2025-71330](https://avd.aquasec.com/nvd/cve-2025-71330)\nimage-size through 2.0.2 contains a denial of service vulnerability that allows remote attackers to permanently block the Node.js event loop by supplying a specially crafted ICNS image buffer. Attackers can craft an ICNS buffer containing valid magic bytes and a zero-valued entry length field to trigger an infinite loop in the ICNS parser, as the offset is never incremented when the entry length field is 0, causing the while loop condition to remain true indefinitely.",
+                "markdown": "**Vulnerability CVE-2025-71330**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|image-size||[CVE-2025-71330](https://avd.aquasec.com/nvd/cve-2025-71330)|\n\nimage-size through 2.0.2 contains a denial of service vulnerability that allows remote attackers to permanently block the Node.js event loop by supplying a specially crafted ICNS image buffer. Attackers can craft an ICNS buffer containing valid magic bytes and a zero-valued entry length field to trigger an infinite loop in the ICNS parser, as the offset is never incremented when the entry length field is 0, causing the while loop condition to remain true indefinitely."
+              },
+              "properties": {
+                "cvssv3_baseScore": 7.5,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                "cvssv40_baseScore": 8.7,
+                "cvssv40_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N",
+                "precision": "very-high",
+                "security-severity": "7.5",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "HIGH"
+                ]
+              }
+            },
+            {
               "id": "CVE-2026-59869",
               "name": "LanguageSpecificPackageVulnerability",
               "shortDescription": {
@@ -207,6 +327,97 @@
                 "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
                 "precision": "very-high",
                 "security-severity": "7.5",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "HIGH"
+                ]
+              }
+            },
+            {
+              "id": "GHSA-5p4m-2wfm-xmqj",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "JS-YAML: Quadratic CPU consumption in !!omap resolution (3.x and 4.x) — CVE-2026-59870 fix not backported"
+              },
+              "fullDescription": {
+                "text": "# Quadratic CPU consumption in `!!omap` resolution (js-yaml 3.x and 4.x)\n\n## Summary\n\n`resolveYamlOmap()` enforces key uniqueness for `!!omap` sequences with a linear\nscan (`objectKeys.indexOf(...)`) inside the per-element loop, making resolution\n**O(n²)** in the number of entries. A modestly sized YAML document therefore\nconsumes disproportionate CPU inside `yaml.load()`, giving a denial of service\nagainst any consumer that parses untrusted YAML.\n\n`!!omap` is registered in the **default schema**\n(`lib/schema/default.js` → `require('../type/omap')`), so a plain\n`yaml.load(untrustedInput)` with no options is affected — no custom schema or\nnon-default configuration is required.\n\n**This is the same weakness as CVE-2026-59870 / GHSA-724g-mxrg-4qvm**, which was\nfixed in the 5.x line in 5.2.1. That fix was never backported: both currently\nmaintained legacy lines still carry the original implementation.\n\n## Affected versions\n\n| Line | Latest tested | Status |\n|---|---|---|\n| 3.x | **3.15.0** | Affected — `objectKeys.indexOf(pairKey)` at `lib/type/omap.js:29` |\n| 4.x | **4.3.0** | Affected — `objectKeys.indexOf(pairKey)` at `lib/type/omap.js:30` |\n| 5.x | 5.2.2 | **Not affected** — fixed in 5.2.1 (uses a `Set`) |\n\nBoth figures are the newest release of each line at the time of writing, so\nthis is not a \"you are on an old version\" issue.\n\n## Details\n\n`lib/type/omap.js` (js-yaml 4.3.0):\n\n```js\nif (objectKeys.indexOf(pairKey) === -1) objectKeys.push(pairKey)\nelse return false\n```\n\n`objectKeys` grows by one element per entry, and `Array.prototype.indexOf` is a\nlinear scan, so resolving an `n`-entry `!!omap` performs roughly\n`1 + 2 + … + n` comparisons — quadratic in `n`. The work happens synchronously\ninside `yaml.load()`, blocking the event loop for its whole duration.\n\nThe 5.x line already solves exactly this by tracking seen keys in a `Set`\n(`src/tag/sequence/omap.ts`):\n\n```ts\nif (carrier.seen.has(key)) return 'duplicate key in ordered map'\ncarrier.seen.add(key)\n```\n\n## Proof of concept\n\n```js\n// poc.js  —  node poc.js\nconst yaml = require('js-yaml');\nconst doc = n =\u003e '!!omap\\n' + Array.from({length: n}, (_, i) =\u003e `- k${i}: ${i}`).join('\\n') + '\\n';\n\nfor (const n of [10000, 20000, 40000, 80000]) {\n  const d = doc(n), t = Date.now();\n  yaml.load(d);                      // default schema, no options\n  console.log(`n=${n} bytes=${d.length} load=${Date.now() - t}ms`);\n}\n```\n\n### Measured (node v20.20.2, default heap, no flags)\n\n**js-yaml 4.3.0**\n\n```\nn=10000  bytes=137787   load=54ms\nn=20000  bytes=297787   load=169ms\nn=40000  bytes=617787   load=646ms\nn=80000  bytes=1257787  load=2607ms\n```\n\n**js-yaml 3.15.0**\n\n```\nn=10000  bytes=137787   load=53ms\nn=20000  bytes=297787   load=166ms\nn=40000  bytes=617787   load=641ms\nn=80000  bytes=1257787  load=2567ms\n```\n\nRuntime grows by a factor of ~4 for each doubling of `n`, which is the\nsignature of O(n²) (linear growth would be ~2×).\n\nScaling further: a **2.48 MB** document with 150,000 entries blocked\n`yaml.load()` for **10.8 seconds**.\n\n## Impact\n\nAny service that parses attacker-influenced YAML with js-yaml 3.x or 4.x can be\nstalled with a small input. Because the loop is synchronous, a single request\nblocks the Node.js event loop and stalls every other request in the process —\nso the amplification is per-process, not just per-request.\n\nSuggested severity: consistent with **CVE-2026-59870** (the same weakness in\n5.x), i.e. Availability-only impact, network attack vector, no privileges or\nuser interaction required.\n\n## Suggested fix\n\nMirror the 5.x fix — replace the linear scan with a `Set`:\n\n```js\n// lib/type/omap.js\nconst seen = new Set()\n// ...\nif (seen.has(pairKey)) return false\nseen.add(pairKey)\n```\n\nThis preserves the existing duplicate-key rejection semantics exactly while\nmaking resolution O(n). A `maxOmapLength`-style cap would also work, but the\n`Set` matches what 5.x already ships and requires no new option.\n\n## References\n\n- CVE-2026-59870 / GHSA-724g-mxrg-4qvm — same weakness in 5.0.0–5.2.0, fixed in 5.2.1\n- `lib/type/omap.js` (3.x, 4.x) — the affected resolver\n- `lib/schema/default.js` — registers `!!omap` in the default schema\n\n## Discovery\n\nFound by an automated static-analysis and executed-proof-of-concept scanner run\nagainst js-yaml 4.2.0, then manually verified against 3.15.0 and 4.3.0 by\nexecuting the proof of concept above. All timings in this report were measured\non the **current** releases of each line, not on the version originally scanned."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-5p4m-2wfm-xmqj",
+              "help": {
+                "text": "Vulnerability GHSA-5p4m-2wfm-xmqj\nSeverity: HIGH\nPackage: js-yaml\nFixed Version: 4.3.1, 3.15.1\nLink: [GHSA-5p4m-2wfm-xmqj](https://github.com/advisories/GHSA-5p4m-2wfm-xmqj)\n# Quadratic CPU consumption in `!!omap` resolution (js-yaml 3.x and 4.x)\n\n## Summary\n\n`resolveYamlOmap()` enforces key uniqueness for `!!omap` sequences with a linear\nscan (`objectKeys.indexOf(...)`) inside the per-element loop, making resolution\n**O(n²)** in the number of entries. A modestly sized YAML document therefore\nconsumes disproportionate CPU inside `yaml.load()`, giving a denial of service\nagainst any consumer that parses untrusted YAML.\n\n`!!omap` is registered in the **default schema**\n(`lib/schema/default.js` → `require('../type/omap')`), so a plain\n`yaml.load(untrustedInput)` with no options is affected — no custom schema or\nnon-default configuration is required.\n\n**This is the same weakness as CVE-2026-59870 / GHSA-724g-mxrg-4qvm**, which was\nfixed in the 5.x line in 5.2.1. That fix was never backported: both currently\nmaintained legacy lines still carry the original implementation.\n\n## Affected versions\n\n| Line | Latest tested | Status |\n|---|---|---|\n| 3.x | **3.15.0** | Affected — `objectKeys.indexOf(pairKey)` at `lib/type/omap.js:29` |\n| 4.x | **4.3.0** | Affected — `objectKeys.indexOf(pairKey)` at `lib/type/omap.js:30` |\n| 5.x | 5.2.2 | **Not affected** — fixed in 5.2.1 (uses a `Set`) |\n\nBoth figures are the newest release of each line at the time of writing, so\nthis is not a \"you are on an old version\" issue.\n\n## Details\n\n`lib/type/omap.js` (js-yaml 4.3.0):\n\n```js\nif (objectKeys.indexOf(pairKey) === -1) objectKeys.push(pairKey)\nelse return false\n```\n\n`objectKeys` grows by one element per entry, and `Array.prototype.indexOf` is a\nlinear scan, so resolving an `n`-entry `!!omap` performs roughly\n`1 + 2 + … + n` comparisons — quadratic in `n`. The work happens synchronously\ninside `yaml.load()`, blocking the event loop for its whole duration.\n\nThe 5.x line already solves exactly this by tracking seen keys in a `Set`\n(`src/tag/sequence/omap.ts`):\n\n```ts\nif (carrier.seen.has(key)) return 'duplicate key in ordered map'\ncarrier.seen.add(key)\n```\n\n## Proof of concept\n\n```js\n// poc.js  —  node poc.js\nconst yaml = require('js-yaml');\nconst doc = n =\u003e '!!omap\\n' + Array.from({length: n}, (_, i) =\u003e `- k${i}: ${i}`).join('\\n') + '\\n';\n\nfor (const n of [10000, 20000, 40000, 80000]) {\n  const d = doc(n), t = Date.now();\n  yaml.load(d);                      // default schema, no options\n  console.log(`n=${n} bytes=${d.length} load=${Date.now() - t}ms`);\n}\n```\n\n### Measured (node v20.20.2, default heap, no flags)\n\n**js-yaml 4.3.0**\n\n```\nn=10000  bytes=137787   load=54ms\nn=20000  bytes=297787   load=169ms\nn=40000  bytes=617787   load=646ms\nn=80000  bytes=1257787  load=2607ms\n```\n\n**js-yaml 3.15.0**\n\n```\nn=10000  bytes=137787   load=53ms\nn=20000  bytes=297787   load=166ms\nn=40000  bytes=617787   load=641ms\nn=80000  bytes=1257787  load=2567ms\n```\n\nRuntime grows by a factor of ~4 for each doubling of `n`, which is the\nsignature of O(n²) (linear growth would be ~2×).\n\nScaling further: a **2.48 MB** document with 150,000 entries blocked\n`yaml.load()` for **10.8 seconds**.\n\n## Impact\n\nAny service that parses attacker-influenced YAML with js-yaml 3.x or 4.x can be\nstalled with a small input. Because the loop is synchronous, a single request\nblocks the Node.js event loop and stalls every other request in the process —\nso the amplification is per-process, not just per-request.\n\nSuggested severity: consistent with **CVE-2026-59870** (the same weakness in\n5.x), i.e. Availability-only impact, network attack vector, no privileges or\nuser interaction required.\n\n## Suggested fix\n\nMirror the 5.x fix — replace the linear scan with a `Set`:\n\n```js\n// lib/type/omap.js\nconst seen = new Set()\n// ...\nif (seen.has(pairKey)) return false\nseen.add(pairKey)\n```\n\nThis preserves the existing duplicate-key rejection semantics exactly while\nmaking resolution O(n). A `maxOmapLength`-style cap would also work, but the\n`Set` matches what 5.x already ships and requires no new option.\n\n## References\n\n- CVE-2026-59870 / GHSA-724g-mxrg-4qvm — same weakness in 5.0.0–5.2.0, fixed in 5.2.1\n- `lib/type/omap.js` (3.x, 4.x) — the affected resolver\n- `lib/schema/default.js` — registers `!!omap` in the default schema\n\n## Discovery\n\nFound by an automated static-analysis and executed-proof-of-concept scanner run\nagainst js-yaml 4.2.0, then manually verified against 3.15.0 and 4.3.0 by\nexecuting the proof of concept above. All timings in this report were measured\non the **current** releases of each line, not on the version originally scanned.",
+                "markdown": "**Vulnerability GHSA-5p4m-2wfm-xmqj**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|js-yaml|4.3.1, 3.15.1|[GHSA-5p4m-2wfm-xmqj](https://github.com/advisories/GHSA-5p4m-2wfm-xmqj)|\n\n# Quadratic CPU consumption in `!!omap` resolution (js-yaml 3.x and 4.x)\n\n## Summary\n\n`resolveYamlOmap()` enforces key uniqueness for `!!omap` sequences with a linear\nscan (`objectKeys.indexOf(...)`) inside the per-element loop, making resolution\n**O(n²)** in the number of entries. A modestly sized YAML document therefore\nconsumes disproportionate CPU inside `yaml.load()`, giving a denial of service\nagainst any consumer that parses untrusted YAML.\n\n`!!omap` is registered in the **default schema**\n(`lib/schema/default.js` → `require('../type/omap')`), so a plain\n`yaml.load(untrustedInput)` with no options is affected — no custom schema or\nnon-default configuration is required.\n\n**This is the same weakness as CVE-2026-59870 / GHSA-724g-mxrg-4qvm**, which was\nfixed in the 5.x line in 5.2.1. That fix was never backported: both currently\nmaintained legacy lines still carry the original implementation.\n\n## Affected versions\n\n| Line | Latest tested | Status |\n|---|---|---|\n| 3.x | **3.15.0** | Affected — `objectKeys.indexOf(pairKey)` at `lib/type/omap.js:29` |\n| 4.x | **4.3.0** | Affected — `objectKeys.indexOf(pairKey)` at `lib/type/omap.js:30` |\n| 5.x | 5.2.2 | **Not affected** — fixed in 5.2.1 (uses a `Set`) |\n\nBoth figures are the newest release of each line at the time of writing, so\nthis is not a \"you are on an old version\" issue.\n\n## Details\n\n`lib/type/omap.js` (js-yaml 4.3.0):\n\n```js\nif (objectKeys.indexOf(pairKey) === -1) objectKeys.push(pairKey)\nelse return false\n```\n\n`objectKeys` grows by one element per entry, and `Array.prototype.indexOf` is a\nlinear scan, so resolving an `n`-entry `!!omap` performs roughly\n`1 + 2 + … + n` comparisons — quadratic in `n`. The work happens synchronously\ninside `yaml.load()`, blocking the event loop for its whole duration.\n\nThe 5.x line already solves exactly this by tracking seen keys in a `Set`\n(`src/tag/sequence/omap.ts`):\n\n```ts\nif (carrier.seen.has(key)) return 'duplicate key in ordered map'\ncarrier.seen.add(key)\n```\n\n## Proof of concept\n\n```js\n// poc.js  —  node poc.js\nconst yaml = require('js-yaml');\nconst doc = n =\u003e '!!omap\\n' + Array.from({length: n}, (_, i) =\u003e `- k${i}: ${i}`).join('\\n') + '\\n';\n\nfor (const n of [10000, 20000, 40000, 80000]) {\n  const d = doc(n), t = Date.now();\n  yaml.load(d);                      // default schema, no options\n  console.log(`n=${n} bytes=${d.length} load=${Date.now() - t}ms`);\n}\n```\n\n### Measured (node v20.20.2, default heap, no flags)\n\n**js-yaml 4.3.0**\n\n```\nn=10000  bytes=137787   load=54ms\nn=20000  bytes=297787   load=169ms\nn=40000  bytes=617787   load=646ms\nn=80000  bytes=1257787  load=2607ms\n```\n\n**js-yaml 3.15.0**\n\n```\nn=10000  bytes=137787   load=53ms\nn=20000  bytes=297787   load=166ms\nn=40000  bytes=617787   load=641ms\nn=80000  bytes=1257787  load=2567ms\n```\n\nRuntime grows by a factor of ~4 for each doubling of `n`, which is the\nsignature of O(n²) (linear growth would be ~2×).\n\nScaling further: a **2.48 MB** document with 150,000 entries blocked\n`yaml.load()` for **10.8 seconds**.\n\n## Impact\n\nAny service that parses attacker-influenced YAML with js-yaml 3.x or 4.x can be\nstalled with a small input. Because the loop is synchronous, a single request\nblocks the Node.js event loop and stalls every other request in the process —\nso the amplification is per-process, not just per-request.\n\nSuggested severity: consistent with **CVE-2026-59870** (the same weakness in\n5.x), i.e. Availability-only impact, network attack vector, no privileges or\nuser interaction required.\n\n## Suggested fix\n\nMirror the 5.x fix — replace the linear scan with a `Set`:\n\n```js\n// lib/type/omap.js\nconst seen = new Set()\n// ...\nif (seen.has(pairKey)) return false\nseen.add(pairKey)\n```\n\nThis preserves the existing duplicate-key rejection semantics exactly while\nmaking resolution O(n). A `maxOmapLength`-style cap would also work, but the\n`Set` matches what 5.x already ships and requires no new option.\n\n## References\n\n- CVE-2026-59870 / GHSA-724g-mxrg-4qvm — same weakness in 5.0.0–5.2.0, fixed in 5.2.1\n- `lib/type/omap.js` (3.x, 4.x) — the affected resolver\n- `lib/schema/default.js` — registers `!!omap` in the default schema\n\n## Discovery\n\nFound by an automated static-analysis and executed-proof-of-concept scanner run\nagainst js-yaml 4.2.0, then manually verified against 3.15.0 and 4.3.0 by\nexecuting the proof of concept above. All timings in this report were measured\non the **current** releases of each line, not on the version originally scanned."
+              },
+              "properties": {
+                "cvssv3_baseScore": 7.5,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                "precision": "very-high",
+                "security-severity": "7.5",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "HIGH"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2026-67213",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "nanoid (Nano ID) before 5.1.6 contains an infinite loop in the customA ..."
+              },
+              "fullDescription": {
+                "text": "nanoid (Nano ID) before 5.1.6 contains an infinite loop in the customAlphabet and customRandom functions. When these functions are configured with a size of 0, the internal generation loop never satisfies its exit condition and spins indefinitely, hanging the calling thread. An application that passes an unvalidated, attacker-controlled size of 0 to these functions is exposed to a denial-of-service condition."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-67213",
+              "help": {
+                "text": "Vulnerability CVE-2026-67213\nSeverity: HIGH\nPackage: nanoid\nFixed Version: 3.3.17, 5.1.6\nLink: [CVE-2026-67213](https://avd.aquasec.com/nvd/cve-2026-67213)\nnanoid (Nano ID) before 5.1.6 contains an infinite loop in the customAlphabet and customRandom functions. When these functions are configured with a size of 0, the internal generation loop never satisfies its exit condition and spins indefinitely, hanging the calling thread. An application that passes an unvalidated, attacker-controlled size of 0 to these functions is exposed to a denial-of-service condition.",
+                "markdown": "**Vulnerability CVE-2026-67213**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|nanoid|3.3.17, 5.1.6|[CVE-2026-67213](https://avd.aquasec.com/nvd/cve-2026-67213)|\n\nnanoid (Nano ID) before 5.1.6 contains an infinite loop in the customAlphabet and customRandom functions. When these functions are configured with a size of 0, the internal generation loop never satisfies its exit condition and spins indefinitely, hanging the calling thread. An application that passes an unvalidated, attacker-controlled size of 0 to these functions is exposed to a denial-of-service condition."
+              },
+              "properties": {
+                "cvssv3_baseScore": 5.9,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                "cvssv40_baseScore": 8.2,
+                "cvssv40_vector": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N",
+                "precision": "very-high",
+                "security-severity": "5.9",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "HIGH"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2026-67214",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "nanoid (Nano ID) before 5.1.16 contains an infinite loop in the custom ..."
+              },
+              "fullDescription": {
+                "text": "nanoid (Nano ID) before 5.1.16 contains an infinite loop in the customAlphabet and nanoid functions of its non-secure module (nanoid/non-secure). When these functions are given a negative size, the loop counter is decremented from a negative value and never reaches its termination condition, spinning indefinitely and hanging the calling thread. An application that passes an unvalidated, attacker-controlled negative size to these functions is exposed to a denial-of-service condition."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-67214",
+              "help": {
+                "text": "Vulnerability CVE-2026-67214\nSeverity: HIGH\nPackage: nanoid\nFixed Version: 3.3.16, 5.1.16\nLink: [CVE-2026-67214](https://avd.aquasec.com/nvd/cve-2026-67214)\nnanoid (Nano ID) before 5.1.16 contains an infinite loop in the customAlphabet and nanoid functions of its non-secure module (nanoid/non-secure). When these functions are given a negative size, the loop counter is decremented from a negative value and never reaches its termination condition, spinning indefinitely and hanging the calling thread. An application that passes an unvalidated, attacker-controlled negative size to these functions is exposed to a denial-of-service condition.",
+                "markdown": "**Vulnerability CVE-2026-67214**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|nanoid|3.3.16, 5.1.16|[CVE-2026-67214](https://avd.aquasec.com/nvd/cve-2026-67214)|\n\nnanoid (Nano ID) before 5.1.16 contains an infinite loop in the customAlphabet and nanoid functions of its non-secure module (nanoid/non-secure). When these functions are given a negative size, the loop counter is decremented from a negative value and never reaches its termination condition, spinning indefinitely and hanging the calling thread. An application that passes an unvalidated, attacker-controlled negative size to these functions is exposed to a denial-of-service condition."
+              },
+              "properties": {
+                "cvssv3_baseScore": 5.9,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                "cvssv40_baseScore": 8.2,
+                "cvssv40_vector": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N",
+                "precision": "very-high",
+                "security-severity": "5.9",
                 "tags": [
                   "vulnerability",
                   "security",
@@ -269,6 +480,35 @@
                   "vulnerability",
                   "security",
                   "HIGH"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2026-69153",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "postcss: PostCSS: Information disclosure via crafted sourceMappingURL"
+              },
+              "fullDescription": {
+                "text": "PostCSS takes a CSS file and provides an API to analyze and modify its rules by transforming the rules into an Abstract Syntax Tree. Prior to 8.5.19, if from is unset, an attacker can cause PreviousMap.loadFile() to read an unintended source-map file by supplying an absolute or directory-traversal sourceMappingURL. The resulting map’s sources and sourcesContent may then be exposed to the application. This issue is fixed in version 8.5.19."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-69153",
+              "help": {
+                "text": "Vulnerability CVE-2026-69153\nSeverity: MEDIUM\nPackage: postcss\nFixed Version: 8.5.23\nLink: [CVE-2026-69153](https://avd.aquasec.com/nvd/cve-2026-69153)\nPostCSS takes a CSS file and provides an API to analyze and modify its rules by transforming the rules into an Abstract Syntax Tree. Prior to 8.5.19, if from is unset, an attacker can cause PreviousMap.loadFile() to read an unintended source-map file by supplying an absolute or directory-traversal sourceMappingURL. The resulting map’s sources and sourcesContent may then be exposed to the application. This issue is fixed in version 8.5.19.",
+                "markdown": "**Vulnerability CVE-2026-69153**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|MEDIUM|postcss|8.5.23|[CVE-2026-69153](https://avd.aquasec.com/nvd/cve-2026-69153)|\n\nPostCSS takes a CSS file and provides an API to analyze and modify its rules by transforming the rules into an Abstract Syntax Tree. Prior to 8.5.19, if from is unset, an attacker can cause PreviousMap.loadFile() to read an unintended source-map file by supplying an absolute or directory-traversal sourceMappingURL. The resulting map’s sources and sourcesContent may then be exposed to the application. This issue is fixed in version 8.5.19."
+              },
+              "properties": {
+                "cvssv40_baseScore": 6.3,
+                "cvssv40_vector": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:L/VI:N/VA:N/SC:N/SI:N/SA:N",
+                "precision": "very-high",
+                "security-severity": "5.5",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "MEDIUM"
                 ]
               }
             },
@@ -354,6 +594,93 @@
                 "cvssv3_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
                 "precision": "very-high",
                 "security-severity": "5.3",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "MEDIUM"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2026-15157",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "undici: undici: HTTP header injection via unvalidated blob-like body type property"
+              },
+              "fullDescription": {
+                "text": "undici does not validate the type property of a duck-typed blob-like request body before using it as the Content-Type header on the HTTP/1.1 dispatcher. In undici before 6.28.0, from 7.0.0 up to before 7.29.0, and from 8.0.0 up to before 8.9.0, an application that passes a hand-rolled blob-like body (via request, stream, pipeline, or dispatch) whose type is derived from untrusted input allows an attacker to inject CRLF sequences and append arbitrary HTTP headers, potentially smuggling a second request past the upstream. Native Blob objects are safe because their constructor strips CRLF from the type, and fetch is unaffected because it validates headers, but ecosystem libraries that build duck-typed blob shapes from user input can reach the vulnerable path. This is the same defect class as CVE-2022-35948 and CVE-2026-1527, on a header sink that the earlier fixes did not cover. The issue is fixed in undici 6.28.0, 7.29.0, and 8.9.0."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-15157",
+              "help": {
+                "text": "Vulnerability CVE-2026-15157\nSeverity: MEDIUM\nPackage: undici\nFixed Version: 6.28.0, 7.29.0, 8.9.0\nLink: [CVE-2026-15157](https://avd.aquasec.com/nvd/cve-2026-15157)\nundici does not validate the type property of a duck-typed blob-like request body before using it as the Content-Type header on the HTTP/1.1 dispatcher. In undici before 6.28.0, from 7.0.0 up to before 7.29.0, and from 8.0.0 up to before 8.9.0, an application that passes a hand-rolled blob-like body (via request, stream, pipeline, or dispatch) whose type is derived from untrusted input allows an attacker to inject CRLF sequences and append arbitrary HTTP headers, potentially smuggling a second request past the upstream. Native Blob objects are safe because their constructor strips CRLF from the type, and fetch is unaffected because it validates headers, but ecosystem libraries that build duck-typed blob shapes from user input can reach the vulnerable path. This is the same defect class as CVE-2022-35948 and CVE-2026-1527, on a header sink that the earlier fixes did not cover. The issue is fixed in undici 6.28.0, 7.29.0, and 8.9.0.",
+                "markdown": "**Vulnerability CVE-2026-15157**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|MEDIUM|undici|6.28.0, 7.29.0, 8.9.0|[CVE-2026-15157](https://avd.aquasec.com/nvd/cve-2026-15157)|\n\nundici does not validate the type property of a duck-typed blob-like request body before using it as the Content-Type header on the HTTP/1.1 dispatcher. In undici before 6.28.0, from 7.0.0 up to before 7.29.0, and from 8.0.0 up to before 8.9.0, an application that passes a hand-rolled blob-like body (via request, stream, pipeline, or dispatch) whose type is derived from untrusted input allows an attacker to inject CRLF sequences and append arbitrary HTTP headers, potentially smuggling a second request past the upstream. Native Blob objects are safe because their constructor strips CRLF from the type, and fetch is unaffected because it validates headers, but ecosystem libraries that build duck-typed blob shapes from user input can reach the vulnerable path. This is the same defect class as CVE-2022-35948 and CVE-2026-1527, on a header sink that the earlier fixes did not cover. The issue is fixed in undici 6.28.0, 7.29.0, and 8.9.0."
+              },
+              "properties": {
+                "cvssv3_baseScore": 4.2,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:N",
+                "precision": "very-high",
+                "security-severity": "4.2",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "MEDIUM"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2026-16728",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "undici: undici: Response desynchronization via retry interceptor with mismatched Content-Length"
+              },
+              "fullDescription": {
+                "text": "undici's retry interceptor can deliver a response whose body length does not match the Content-Length header exposed to the application after a retry or resume of a partial response. In undici before 6.28.0, from 7.0.0 up to before 7.29.0, and from 8.0.0 up to before 8.9.0, a malicious or faulty upstream can return a partial response with a mismatched framing header, close the socket early, and have the retry interceptor assemble a body of a different length while the original Content-Length stays attached. Applications that use the retry interceptor and forward upstream headers and bodies downstream, such as proxies or gateways, may then emit an invalid HTTP response with a stale Content-Length, leading to downstream response desynchronization, connection hangs, or response corruption. Exploitation requires the retry interceptor enabled, an upstream returning a mismatched partial response, and a downstream forwarder that does not remove or recalculate Content-Length. The issue is fixed in undici 6.28.0, 7.29.0, and 8.9.0."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-16728",
+              "help": {
+                "text": "Vulnerability CVE-2026-16728\nSeverity: MEDIUM\nPackage: undici\nFixed Version: 6.28.0, 7.29.0, 8.9.0\nLink: [CVE-2026-16728](https://avd.aquasec.com/nvd/cve-2026-16728)\nundici's retry interceptor can deliver a response whose body length does not match the Content-Length header exposed to the application after a retry or resume of a partial response. In undici before 6.28.0, from 7.0.0 up to before 7.29.0, and from 8.0.0 up to before 8.9.0, a malicious or faulty upstream can return a partial response with a mismatched framing header, close the socket early, and have the retry interceptor assemble a body of a different length while the original Content-Length stays attached. Applications that use the retry interceptor and forward upstream headers and bodies downstream, such as proxies or gateways, may then emit an invalid HTTP response with a stale Content-Length, leading to downstream response desynchronization, connection hangs, or response corruption. Exploitation requires the retry interceptor enabled, an upstream returning a mismatched partial response, and a downstream forwarder that does not remove or recalculate Content-Length. The issue is fixed in undici 6.28.0, 7.29.0, and 8.9.0.",
+                "markdown": "**Vulnerability CVE-2026-16728**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|MEDIUM|undici|6.28.0, 7.29.0, 8.9.0|[CVE-2026-16728](https://avd.aquasec.com/nvd/cve-2026-16728)|\n\nundici's retry interceptor can deliver a response whose body length does not match the Content-Length header exposed to the application after a retry or resume of a partial response. In undici before 6.28.0, from 7.0.0 up to before 7.29.0, and from 8.0.0 up to before 8.9.0, a malicious or faulty upstream can return a partial response with a mismatched framing header, close the socket early, and have the retry interceptor assemble a body of a different length while the original Content-Length stays attached. Applications that use the retry interceptor and forward upstream headers and bodies downstream, such as proxies or gateways, may then emit an invalid HTTP response with a stale Content-Length, leading to downstream response desynchronization, connection hangs, or response corruption. Exploitation requires the retry interceptor enabled, an upstream returning a mismatched partial response, and a downstream forwarder that does not remove or recalculate Content-Length. The issue is fixed in undici 6.28.0, 7.29.0, and 8.9.0."
+              },
+              "properties": {
+                "cvssv3_baseScore": 4.8,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:N",
+                "precision": "very-high",
+                "security-severity": "4.8",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "MEDIUM"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2026-16729",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "undici: Undici: Cookie attribute injection allows bypassing security protections"
+              },
+              "fullDescription": {
+                "text": "undici's setCookie function does not fully sanitize cookie attributes. In undici before 6.28.0, from 7.0.0 up to before 7.29.0, and from 8.0.0 up to before 8.9.0, a domain value is not checked for semicolons and entries in the unparsed array are not sanitized, so attacker-influenced input can inject additional cookie attributes. For example, a domain value containing a semicolon can append attributes such as SameSite, and an unparsed entry can inject attributes such as HttpOnly, without the caller setting them. Applications that pass user-controlled input to these fields, such as multi-tenant or reverse-proxy servers that scope session cookies to a tenant-supplied domain, can have SameSite CSRF protections bypassed, or the Secure, HttpOnly, and SameSite attributes forced, stripped, or overridden. The issue is fixed in undici 6.28.0, 7.29.0, and 8.9.0."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2026-16729",
+              "help": {
+                "text": "Vulnerability CVE-2026-16729\nSeverity: MEDIUM\nPackage: undici\nFixed Version: 6.28.0, 7.29.0, 8.9.0\nLink: [CVE-2026-16729](https://avd.aquasec.com/nvd/cve-2026-16729)\nundici's setCookie function does not fully sanitize cookie attributes. In undici before 6.28.0, from 7.0.0 up to before 7.29.0, and from 8.0.0 up to before 8.9.0, a domain value is not checked for semicolons and entries in the unparsed array are not sanitized, so attacker-influenced input can inject additional cookie attributes. For example, a domain value containing a semicolon can append attributes such as SameSite, and an unparsed entry can inject attributes such as HttpOnly, without the caller setting them. Applications that pass user-controlled input to these fields, such as multi-tenant or reverse-proxy servers that scope session cookies to a tenant-supplied domain, can have SameSite CSRF protections bypassed, or the Secure, HttpOnly, and SameSite attributes forced, stripped, or overridden. The issue is fixed in undici 6.28.0, 7.29.0, and 8.9.0.",
+                "markdown": "**Vulnerability CVE-2026-16729**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|MEDIUM|undici|6.28.0, 7.29.0, 8.9.0|[CVE-2026-16729](https://avd.aquasec.com/nvd/cve-2026-16729)|\n\nundici's setCookie function does not fully sanitize cookie attributes. In undici before 6.28.0, from 7.0.0 up to before 7.29.0, and from 8.0.0 up to before 8.9.0, a domain value is not checked for semicolons and entries in the unparsed array are not sanitized, so attacker-influenced input can inject additional cookie attributes. For example, a domain value containing a semicolon can append attributes such as SameSite, and an unparsed entry can inject attributes such as HttpOnly, without the caller setting them. Applications that pass user-controlled input to these fields, such as multi-tenant or reverse-proxy servers that scope session cookies to a tenant-supplied domain, can have SameSite CSRF protections bypassed, or the Secure, HttpOnly, and SameSite attributes forced, stripped, or overridden. The issue is fixed in undici 6.28.0, 7.29.0, and 8.9.0."
+              },
+              "properties": {
+                "cvssv3_baseScore": 4.8,
+                "cvssv3_vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:N",
+                "precision": "very-high",
+                "security-severity": "4.8",
                 "tags": [
                   "vulnerability",
                   "security",
@@ -456,7 +783,34 @@
           "ruleIndex": 2,
           "level": "error",
           "message": {
-            "text": "Package: brace-expansion\nInstalled Version: 1.1.14\nVulnerability CVE-2026-14257\nSeverity: HIGH\nFixed Version: 5.0.8\nLink: [CVE-2026-14257](https://avd.aquasec.com/nvd/cve-2026-14257)"
+            "text": "Package: brace-expansion\nInstalled Version: 1.1.14\nVulnerability CVE-2026-14257\nSeverity: HIGH\nFixed Version: 5.0.8, 3.0.3, 2.1.3, 1.1.17\nLink: [CVE-2026-14257](https://avd.aquasec.com/nvd/cve-2026-14257)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 5475,
+                  "startColumn": 1,
+                  "endLine": 5484,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: brace-expansion@1.1.14"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-69152",
+          "ruleIndex": 3,
+          "level": "error",
+          "message": {
+            "text": "Package: brace-expansion\nInstalled Version: 1.1.14\nVulnerability CVE-2026-69152\nSeverity: HIGH\nFixed Version: 1.1.18, 2.1.4, 3.0.6, 5.0.9\nLink: [CVE-2026-69152](https://avd.aquasec.com/nvd/cve-2026-69152)"
           },
           "locations": [
             {
@@ -483,7 +837,34 @@
           "ruleIndex": 2,
           "level": "error",
           "message": {
-            "text": "Package: brace-expansion\nInstalled Version: 2.1.2\nVulnerability CVE-2026-14257\nSeverity: HIGH\nFixed Version: 5.0.8\nLink: [CVE-2026-14257](https://avd.aquasec.com/nvd/cve-2026-14257)"
+            "text": "Package: brace-expansion\nInstalled Version: 2.1.2\nVulnerability CVE-2026-14257\nSeverity: HIGH\nFixed Version: 5.0.8, 3.0.3, 2.1.3, 1.1.17\nLink: [CVE-2026-14257](https://avd.aquasec.com/nvd/cve-2026-14257)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 7897,
+                  "startColumn": 1,
+                  "endLine": 7905,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: brace-expansion@2.1.2"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-69152",
+          "ruleIndex": 3,
+          "level": "error",
+          "message": {
+            "text": "Package: brace-expansion\nInstalled Version: 2.1.2\nVulnerability CVE-2026-69152\nSeverity: HIGH\nFixed Version: 1.1.18, 2.1.4, 3.0.6, 5.0.9\nLink: [CVE-2026-69152](https://avd.aquasec.com/nvd/cve-2026-69152)"
           },
           "locations": [
             {
@@ -571,7 +952,68 @@
           "ruleIndex": 2,
           "level": "error",
           "message": {
-            "text": "Package: brace-expansion\nInstalled Version: 5.0.6\nVulnerability CVE-2026-14257\nSeverity: HIGH\nFixed Version: 5.0.8\nLink: [CVE-2026-14257](https://avd.aquasec.com/nvd/cve-2026-14257)"
+            "text": "Package: brace-expansion\nInstalled Version: 5.0.6\nVulnerability CVE-2026-14257\nSeverity: HIGH\nFixed Version: 5.0.8, 3.0.3, 2.1.3, 1.1.17\nLink: [CVE-2026-14257](https://avd.aquasec.com/nvd/cve-2026-14257)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 1988,
+                  "startColumn": 1,
+                  "endLine": 1999,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: brace-expansion@5.0.6"
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 4197,
+                  "startColumn": 1,
+                  "endLine": 4209,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: brace-expansion@5.0.6"
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 8949,
+                  "startColumn": 1,
+                  "endLine": 8960,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: brace-expansion@5.0.6"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-69152",
+          "ruleIndex": 3,
+          "level": "error",
+          "message": {
+            "text": "Package: brace-expansion\nInstalled Version: 5.0.6\nVulnerability CVE-2026-69152\nSeverity: HIGH\nFixed Version: 1.1.18, 2.1.4, 3.0.6, 5.0.9\nLink: [CVE-2026-69152](https://avd.aquasec.com/nvd/cve-2026-69152)"
           },
           "locations": [
             {
@@ -629,7 +1071,7 @@
         },
         {
           "ruleId": "CVE-2026-16221",
-          "ruleIndex": 3,
+          "ruleIndex": 4,
           "level": "error",
           "message": {
             "text": "Package: fast-uri\nInstalled Version: 3.1.3\nVulnerability CVE-2026-16221\nSeverity: HIGH\nFixed Version: 2.4.3, 3.1.4, 4.1.1\nLink: [CVE-2026-16221](https://avd.aquasec.com/nvd/cve-2026-16221)"
@@ -655,8 +1097,35 @@
           ]
         },
         {
+          "ruleId": "CVE-2026-18446",
+          "ruleIndex": 5,
+          "level": "error",
+          "message": {
+            "text": "Package: fast-uri\nInstalled Version: 3.1.3\nVulnerability CVE-2026-18446\nSeverity: HIGH\nFixed Version: 2.4.4, 3.1.5, 4.1.2\nLink: [CVE-2026-18446](https://avd.aquasec.com/nvd/cve-2026-18446)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 8242,
+                  "startColumn": 1,
+                  "endLine": 8257,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: fast-uri@3.1.3"
+              }
+            }
+          ]
+        },
+        {
           "ruleId": "CVE-2026-55603",
-          "ruleIndex": 4,
+          "ruleIndex": 6,
           "level": "error",
           "message": {
             "text": "Package: http-proxy-middleware\nInstalled Version: 3.0.5\nVulnerability CVE-2026-55603\nSeverity: HIGH\nFixed Version: 3.0.7, 4.1.1\nLink: [CVE-2026-55603](https://avd.aquasec.com/nvd/cve-2026-55603)"
@@ -683,7 +1152,7 @@
         },
         {
           "ruleId": "CVE-2026-55602",
-          "ruleIndex": 5,
+          "ruleIndex": 7,
           "level": "warning",
           "message": {
             "text": "Package: http-proxy-middleware\nInstalled Version: 3.0.5\nVulnerability CVE-2026-55602\nSeverity: MEDIUM\nFixed Version: 3.0.6, 4.1.0, 2.0.10\nLink: [CVE-2026-55602](https://avd.aquasec.com/nvd/cve-2026-55602)"
@@ -709,8 +1178,62 @@
           ]
         },
         {
+          "ruleId": "CVE-2025-71329",
+          "ruleIndex": 8,
+          "level": "error",
+          "message": {
+            "text": "Package: image-size\nInstalled Version: 1.2.1\nVulnerability CVE-2025-71329\nSeverity: HIGH\nFixed Version: \nLink: [CVE-2025-71329](https://avd.aquasec.com/nvd/cve-2025-71329)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 9399,
+                  "startColumn": 1,
+                  "endLine": 9413,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: image-size@1.2.1"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2025-71330",
+          "ruleIndex": 9,
+          "level": "error",
+          "message": {
+            "text": "Package: image-size\nInstalled Version: 1.2.1\nVulnerability CVE-2025-71330\nSeverity: HIGH\nFixed Version: \nLink: [CVE-2025-71330](https://avd.aquasec.com/nvd/cve-2025-71330)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 9399,
+                  "startColumn": 1,
+                  "endLine": 9413,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: image-size@1.2.1"
+              }
+            }
+          ]
+        },
+        {
           "ruleId": "CVE-2026-59869",
-          "ruleIndex": 6,
+          "ruleIndex": 10,
           "level": "error",
           "message": {
             "text": "Package: js-yaml\nInstalled Version: 4.2.0\nVulnerability CVE-2026-59869\nSeverity: HIGH\nFixed Version: 3.15.0, 4.3.0\nLink: [CVE-2026-59869](https://avd.aquasec.com/nvd/cve-2026-59869)"
@@ -736,8 +1259,89 @@
           ]
         },
         {
+          "ruleId": "GHSA-5p4m-2wfm-xmqj",
+          "ruleIndex": 11,
+          "level": "error",
+          "message": {
+            "text": "Package: js-yaml\nInstalled Version: 4.2.0\nVulnerability GHSA-5p4m-2wfm-xmqj\nSeverity: HIGH\nFixed Version: 4.3.1, 3.15.1\nLink: [GHSA-5p4m-2wfm-xmqj](https://github.com/advisories/GHSA-5p4m-2wfm-xmqj)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 10280,
+                  "startColumn": 1,
+                  "endLine": 10301,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: js-yaml@4.2.0"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-67213",
+          "ruleIndex": 12,
+          "level": "error",
+          "message": {
+            "text": "Package: nanoid\nInstalled Version: 3.3.12\nVulnerability CVE-2026-67213\nSeverity: HIGH\nFixed Version: 3.3.17, 5.1.6\nLink: [CVE-2026-67213](https://avd.aquasec.com/nvd/cve-2026-67213)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 11803,
+                  "startColumn": 1,
+                  "endLine": 11820,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: nanoid@3.3.12"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-67214",
+          "ruleIndex": 13,
+          "level": "error",
+          "message": {
+            "text": "Package: nanoid\nInstalled Version: 3.3.12\nVulnerability CVE-2026-67214\nSeverity: HIGH\nFixed Version: 3.3.16, 5.1.16\nLink: [CVE-2026-67214](https://avd.aquasec.com/nvd/cve-2026-67214)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 11803,
+                  "startColumn": 1,
+                  "endLine": 11820,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: nanoid@3.3.12"
+              }
+            }
+          ]
+        },
+        {
           "ruleId": "GHSA-p6gq-j5cr-w38f",
-          "ruleIndex": 7,
+          "ruleIndex": 14,
           "level": "error",
           "message": {
             "text": "Package: nodemailer\nInstalled Version: 9.0.0\nVulnerability GHSA-p6gq-j5cr-w38f\nSeverity: HIGH\nFixed Version: 9.0.1\nLink: [GHSA-p6gq-j5cr-w38f](https://github.com/advisories/GHSA-p6gq-j5cr-w38f)"
@@ -764,7 +1368,7 @@
         },
         {
           "ruleId": "GHSA-r28c-9q8g-f849",
-          "ruleIndex": 8,
+          "ruleIndex": 15,
           "level": "error",
           "message": {
             "text": "Package: postcss\nInstalled Version: 8.5.15\nVulnerability GHSA-r28c-9q8g-f849\nSeverity: HIGH\nFixed Version: 8.5.18\nLink: [GHSA-r28c-9q8g-f849](https://github.com/advisories/GHSA-r28c-9q8g-f849)"
@@ -790,8 +1394,35 @@
           ]
         },
         {
+          "ruleId": "CVE-2026-69153",
+          "ruleIndex": 16,
+          "level": "warning",
+          "message": {
+            "text": "Package: postcss\nInstalled Version: 8.5.15\nVulnerability CVE-2026-69153\nSeverity: MEDIUM\nFixed Version: 8.5.23\nLink: [CVE-2026-69153](https://avd.aquasec.com/nvd/cve-2026-69153)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 12561,
+                  "startColumn": 1,
+                  "endLine": 12588,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: postcss@8.5.15"
+              }
+            }
+          ]
+        },
+        {
           "ruleId": "CVE-2026-59877",
-          "ruleIndex": 9,
+          "ruleIndex": 17,
           "level": "warning",
           "message": {
             "text": "Package: protobufjs\nInstalled Version: 7.6.4\nVulnerability CVE-2026-59877\nSeverity: MEDIUM\nFixed Version: 7.6.5, 8.6.6\nLink: [CVE-2026-59877](https://avd.aquasec.com/nvd/cve-2026-59877)"
@@ -818,7 +1449,7 @@
         },
         {
           "ruleId": "CVE-2026-13311",
-          "ruleIndex": 10,
+          "ruleIndex": 18,
           "level": "error",
           "message": {
             "text": "Package: shell-quote\nInstalled Version: 1.8.4\nVulnerability CVE-2026-13311\nSeverity: HIGH\nFixed Version: 1.9.0\nLink: [CVE-2026-13311](https://avd.aquasec.com/nvd/cve-2026-13311)"
@@ -845,7 +1476,7 @@
         },
         {
           "ruleId": "GHSA-r292-9mhp-454m",
-          "ruleIndex": 11,
+          "ruleIndex": 19,
           "level": "warning",
           "message": {
             "text": "Package: tar\nInstalled Version: 7.5.20\nVulnerability GHSA-r292-9mhp-454m\nSeverity: MEDIUM\nFixed Version: 7.5.21\nLink: [GHSA-r292-9mhp-454m](https://github.com/advisories/GHSA-r292-9mhp-454m)"
@@ -871,8 +1502,89 @@
           ]
         },
         {
+          "ruleId": "CVE-2026-15157",
+          "ruleIndex": 20,
+          "level": "warning",
+          "message": {
+            "text": "Package: undici\nInstalled Version: 6.27.0\nVulnerability CVE-2026-15157\nSeverity: MEDIUM\nFixed Version: 6.28.0, 7.29.0, 8.9.0\nLink: [CVE-2026-15157](https://avd.aquasec.com/nvd/cve-2026-15157)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 14964,
+                  "startColumn": 1,
+                  "endLine": 14972,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: undici@6.27.0"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-16728",
+          "ruleIndex": 21,
+          "level": "warning",
+          "message": {
+            "text": "Package: undici\nInstalled Version: 6.27.0\nVulnerability CVE-2026-16728\nSeverity: MEDIUM\nFixed Version: 6.28.0, 7.29.0, 8.9.0\nLink: [CVE-2026-16728](https://avd.aquasec.com/nvd/cve-2026-16728)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 14964,
+                  "startColumn": 1,
+                  "endLine": 14972,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: undici@6.27.0"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2026-16729",
+          "ruleIndex": 22,
+          "level": "warning",
+          "message": {
+            "text": "Package: undici\nInstalled Version: 6.27.0\nVulnerability CVE-2026-16729\nSeverity: MEDIUM\nFixed Version: 6.28.0, 7.29.0, 8.9.0\nLink: [CVE-2026-16729](https://avd.aquasec.com/nvd/cve-2026-16729)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 14964,
+                  "startColumn": 1,
+                  "endLine": 14972,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "package-lock.json: undici@6.27.0"
+              }
+            }
+          ]
+        },
+        {
           "ruleId": "CVE-2026-41907",
-          "ruleIndex": 12,
+          "ruleIndex": 23,
           "level": "warning",
           "message": {
             "text": "Package: uuid\nInstalled Version: 7.0.3\nVulnerability CVE-2026-41907\nSeverity: MEDIUM\nFixed Version: 11.1.1, 12.0.1, 13.0.1\nLink: [CVE-2026-41907](https://avd.aquasec.com/nvd/cve-2026-41907)"
